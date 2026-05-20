@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.0...v1.3.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* **et0:** chart renders calculated series when sensor leg is empty ([#59](https://github.com/AgriLogy/agrilogy-front/issues/59)) ([dc22869](https://github.com/AgriLogy/agrilogy-front/commit/dc22869dd3597a61e3c86d07d5879f6edb278a18))
+
 # [1.3.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.2.3...v1.3.0) (2026-05-16)
 
 
