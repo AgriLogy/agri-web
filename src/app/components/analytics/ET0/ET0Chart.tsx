@@ -55,24 +55,46 @@ const EC0Chart = ({
   const chartRef = useRef<HTMLDivElement>(null);
   const unitRev = useUnitOverridesRevision();
 
-  const chartData = useMemo(
-    () =>
-      addTimeMsToChartRows(
-        weatherData.map((item, index) => {
-          const calculated = calculatedData[index]?.value ?? null;
-          return {
-            name: item.timestamp,
-            et0_sensor: calibrateChartValue('et0', item.value),
-            et0_calculated:
-              calculated != null && Number.isFinite(calculated)
-                ? calibrateChartValue('et0', calculated)
-                : null,
-          };
-        }),
-        'name'
-      ),
-    [weatherData, calculatedData, unitRev]
-  );
+  // Build chart rows from a timestamp-keyed UNION of the two series rather
+  // than zipping by index. The previous implementation iterated weatherData
+  // and looked up calculatedData[index], which collapsed to an empty chart
+  // the moment weatherData was empty — even when the calculated series had
+  // hundreds of points. Today that is the production state: Et0Weather has
+  // no ingest path, Et0Calculated is filled hourly by the Celery task.
+  const chartData = useMemo(() => {
+    const calibrate = (v: number | null | undefined) =>
+      v != null && Number.isFinite(v) ? calibrateChartValue('et0', v) : null;
+
+    const rowsByTimestamp = new Map<
+      string,
+      { name: string; et0_sensor: number | null; et0_calculated: number | null }
+    >();
+
+    for (const item of weatherData) {
+      rowsByTimestamp.set(item.timestamp, {
+        name: item.timestamp,
+        et0_sensor: calibrate(item.value),
+        et0_calculated: null,
+      });
+    }
+    for (const item of calculatedData) {
+      const existing = rowsByTimestamp.get(item.timestamp);
+      if (existing) {
+        existing.et0_calculated = calibrate(item.value);
+      } else {
+        rowsByTimestamp.set(item.timestamp, {
+          name: item.timestamp,
+          et0_sensor: null,
+          et0_calculated: calibrate(item.value),
+        });
+      }
+    }
+
+    const merged = Array.from(rowsByTimestamp.values()).sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+    return addTimeMsToChartRows(merged, 'name');
+  }, [weatherData, calculatedData, unitRev]);
 
   const textColor = useColorModeValue('gray.800', 'gray.200');
   const { axis, tickFill, grid } = useChartAxisColors();
