@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.2...v1.3.3) (2026-05-21)
+
+
+### Bug Fixes
+
+* **notifications:** make units visible in card view (°C, %, L) ([#63](https://github.com/AgriLogy/agrilogy-front/issues/63)) ([3d9543e](https://github.com/AgriLogy/agrilogy-front/commit/3d9543e0e1a756362bfc64e0f3804c05a0e007b3))
+
 ## [1.3.2](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.1...v1.3.2) (2026-05-21)
 
 ## [1.3.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.0...v1.3.1) (2026-05-20)
