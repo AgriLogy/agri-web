@@ -101,3 +101,7 @@ node_modules
 .venv
 
 push-personal.sh
+
+# Local agent / editor scratch — should never be committed
+.claude/
+Untitled-*
