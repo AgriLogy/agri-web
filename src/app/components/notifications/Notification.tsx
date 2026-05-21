@@ -228,16 +228,16 @@ const Notification: React.FC<NotificationProps> = ({
         <Text fontWeight="bold" fontSize="md">
           🌡️ Température
         </Text>
-        <Text>• Hier : {notification.yesterday_temperature}°C</Text>
-        <Text>• Aujourd’hui : {notification.today_temperature}°C</Text>
+        <Text>• Hier : {notification.yesterday_temperature} °C</Text>
+        <Text>• Aujourd’hui : {notification.today_temperature} °C</Text>
       </Box>
 
       <Box mt={3}>
         <Text fontWeight="bold" fontSize="md">
           💧 Humidité
         </Text>
-        <Text>• Hier : {notification.yesterday_humidity}%</Text>
-        <Text>• Aujourd’hui : {notification.today_humidity}%</Text>
+        <Text>• Hier : {notification.yesterday_humidity} %</Text>
+        <Text>• Aujourd’hui : {notification.today_humidity} %</Text>
       </Box>
 
       <Box mt={3}>
@@ -251,8 +251,8 @@ const Notification: React.FC<NotificationProps> = ({
         <Text fontWeight="bold" fontSize="md">
           🌱 Sol
         </Text>
-        <Text>• Humidité : {notification.soil_humidity}%</Text>
-        <Text>• Température : {notification.soil_temperature}°C</Text>
+        <Text>• Humidité : {notification.soil_humidity} %</Text>
+        <Text>• Température : {notification.soil_temperature} °C</Text>
         <Text>• pH : {notification.soil_ph}</Text>
       </Box>
 
@@ -262,9 +262,7 @@ const Notification: React.FC<NotificationProps> = ({
         </Text>
         <Text>• Période idéale : {notification.perfect_irrigation_period}</Text>
         <Text>• Dernière date : {notification.last_irrigation_date}</Text>
-        <Text>
-          • Eau utilisée : {notification.used_water_irrigation} litres
-        </Text>
+        <Text>• Eau utilisée : {notification.used_water_irrigation} L</Text>
       </Box>
 
       {zoneId != null && (onEditZone || onDeleteZone) && (
