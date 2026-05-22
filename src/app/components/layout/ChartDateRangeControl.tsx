@@ -93,13 +93,15 @@ export function ChartDateRangeControl({
 }
 
 /**
- * Convenience: an initial range covering the last 7 days, the project's
- * default analytics window. Exported so each page can call it once on
- * mount instead of duplicating the dayjs arithmetic.
+ * Convenience: an initial range covering the last 24 hours, the project's
+ * default analytics window. A wider default (we used to ship 7 days) makes
+ * freshly-deployed devices look broken — 22 readings clustered in 8 minutes
+ * disappear inside a 7-day X-axis. 24h is dense enough to be readable for a
+ * new device and still gives several hundred points for an established one.
  */
 export function defaultChartDateRange(): ChartDateRange {
   return {
-    startDate: toIso(dayjs().subtract(6, 'day')),
+    startDate: toIso(dayjs().subtract(24, 'hour')),
     endDate: toIso(dayjs()),
   };
 }

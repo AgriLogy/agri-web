@@ -101,8 +101,6 @@ const SoilTemperatureMain = ({
                 <SoilTemperatureChart
                   data={data.slice(startIdx, endIdx + 1)}
                   loading={loading}
-                  bestValueMin={12} // °C
-                  bestValueMax={250} // °C
                 />
                 <ChartDateRangeDragger
                   timestamps={timeline}
