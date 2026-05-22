@@ -8,9 +8,8 @@ import {
   Legend,
   ResponsiveContainer,
   CartesianGrid,
-  ReferenceArea, // ⬅️ add this
 } from 'recharts';
-import { Box, Flex, Button, HStack, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Button, HStack } from '@chakra-ui/react';
 import { FaDownload, FaCamera } from 'react-icons/fa';
 import html2canvas from 'html2canvas';
 import ChartPanelHeading from '../../common/ChartPanelHeading';
@@ -32,7 +31,6 @@ import ChartLegend, {
 import {
   activeDotForSeries,
   addTimeMsToChartRows,
-  CHART_TIME_MS_KEY,
   defaultLegendWrapperStyle,
   getAdaptiveTimeXAxisProps,
   getDefaultYAxisProps,
@@ -51,13 +49,9 @@ const SOIL_TEMP_AXIS_UNIT = getCatalogDefaultUnit('soil_temp_low') || '°C';
 const SoilTemperatureChart = ({
   data,
   loading,
-  bestValueMin,
-  bestValueMax,
 }: {
   data: TemperaturePoint[];
   loading: boolean;
-  bestValueMin: number;
-  bestValueMax: number;
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const unitRev = useUnitOverridesRevision();
@@ -112,31 +106,6 @@ const SoilTemperatureChart = ({
     [data, unitRev]
   );
 
-  const bandY1 = useMemo(
-    () =>
-      typeof bestValueMin === 'number' && Number.isFinite(bestValueMin)
-        ? calibratedValueInAxisUnit(
-            'soil_temp_medium',
-            bestValueMin,
-            SOIL_TEMP_AXIS_UNIT,
-            SOIL_TEMP_AXIS_UNIT
-          )
-        : bestValueMin,
-    [bestValueMin, unitRev]
-  );
-  const bandY2 = useMemo(
-    () =>
-      typeof bestValueMax === 'number' && Number.isFinite(bestValueMax)
-        ? calibratedValueInAxisUnit(
-            'soil_temp_medium',
-            bestValueMax,
-            SOIL_TEMP_AXIS_UNIT,
-            SOIL_TEMP_AXIS_UNIT
-          )
-        : bestValueMax,
-    [bestValueMax, unitRev]
-  );
-
   const { textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
   const xAxisProps = mergeAxisTheme(
@@ -145,17 +114,6 @@ const SoilTemperatureChart = ({
     tickFill
   );
   const yProps = mergeAxisTheme(getDefaultYAxisProps(1), axis, tickFill);
-  const isNumericTimeX =
-    'type' in xAxisProps && (xAxisProps as { type?: string }).type === 'number';
-
-  const bandFill = useColorModeValue(
-    'rgba(72,187,120,0.18)',
-    'rgba(72,187,120,0.28)'
-  ); // green
-  const bandStroke = useColorModeValue(
-    'rgba(56,161,105,0.8)',
-    'rgba(154,230,180,0.9)'
-  );
 
   const handleLegendClick = (e: ChartLegendPayloadEntry) => {
     const k = e.dataKey;
@@ -195,24 +153,13 @@ const SoilTemperatureChart = ({
     URL.revokeObjectURL(url);
   };
 
-  const xStart = chartData[0]?.name;
-  const xEnd = chartData[chartData.length - 1]?.name;
-  const xMsStart = chartData[0]?.[CHART_TIME_MS_KEY];
-  const xMsEnd = chartData[chartData.length - 1]?.[CHART_TIME_MS_KEY];
-  const showBand =
-    typeof bandY1 === 'number' &&
-    typeof bandY2 === 'number' &&
-    bandY1 < bandY2 &&
-    xStart &&
-    xEnd;
-
   return (
     <Box {...analyticsChartPanelLayoutProps}>
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
           title={`Température du sol (${soilTempDisplayUnits})`}
-          subtitle="Profondeurs basse, moyenne et haute — plage et zone optimale mises en évidence."
+          subtitle="Profondeurs basse, moyenne et haute."
         />
         <HStack spacing={2}>
           <Button
@@ -249,34 +196,6 @@ const SoilTemperatureChart = ({
             }}
           >
             <CartesianGrid {...themedCartesianGrid(grid)} />
-
-            {/* Y-band for ideal irrigation temperature */}
-            {showBand &&
-              (isNumericTimeX &&
-              typeof xMsStart === 'number' &&
-              typeof xMsEnd === 'number' ? (
-                <ReferenceArea
-                  x1={xMsStart}
-                  x2={xMsEnd}
-                  y1={bandY1}
-                  y2={bandY2}
-                  fill={bandFill}
-                  stroke={bandStroke}
-                  strokeOpacity={1}
-                  ifOverflow="extendDomain"
-                />
-              ) : (
-                <ReferenceArea
-                  x1={xStart}
-                  x2={xEnd}
-                  y1={bandY1}
-                  y2={bandY2}
-                  fill={bandFill}
-                  stroke={bandStroke}
-                  strokeOpacity={1}
-                  ifOverflow="extendDomain"
-                />
-              ))}
 
             <XAxis {...xAxisProps} />
             <YAxis
