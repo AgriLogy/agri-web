@@ -1,3 +1,10 @@
+## [1.3.4](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.3...v1.3.4) (2026-05-22)
+
+
+### Bug Fixes
+
+* **charts:** make soil moisture + temperature charts usable ([#66](https://github.com/AgriLogy/agrilogy-front/issues/66)) ([f7110d5](https://github.com/AgriLogy/agrilogy-front/commit/f7110d528e91b4683ba3673363a2d213d047187f))
+
 ## [1.3.3](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.2...v1.3.3) (2026-05-21)
 
 
