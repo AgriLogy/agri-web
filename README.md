@@ -51,8 +51,8 @@ This repository contains the **frontend** application, built with
 ### Install & run
 
 ```bash
-git clone git@github.com:mks-zakaria/agrilogy-front.git
-cd agrilogy-front
+git clone git@github.com:mks-zakaria/agri-front.git
+cd agri-front
 npm install
 cp env-example .env.local   # then edit values
 npm run dev
