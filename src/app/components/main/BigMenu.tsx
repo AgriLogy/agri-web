@@ -39,7 +39,7 @@ const BigMenu = () => {
 
   useEffect(() => {
     api
-      .get('/api/header/')
+      .get('/users/me')
       .then((response) => setUsername(response.data.username ?? ''))
       .catch(() => setUsername(''));
   }, []);

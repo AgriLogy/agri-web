@@ -39,18 +39,15 @@ const VPDMain = ({
   const unitRev = useUnitOverridesRevision();
 
   useEffect(() => {
-    const fetchHumidity = api.get<WeatherData[]>(
-      '/api/sensors/humidityweather/',
-      {
-        params: {
-          start_date: startDate,
-          end_date: endDate,
-          zone: selectedZone,
-        },
-      }
-    );
+    const fetchHumidity = api.get<WeatherData[]>('/sensors/humidityweather', {
+      params: {
+        start_date: startDate,
+        end_date: endDate,
+        zone: selectedZone,
+      },
+    });
     const fetchTemperature = api.get<WeatherData[]>(
-      '/api/sensors/temperatureweather/',
+      '/sensors/temperatureweather',
       {
         params: {
           start_date: startDate,

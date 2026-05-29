@@ -42,7 +42,7 @@ const WindSpeedMain = ({
       setLoading(true);
       try {
         const [speedRes, gustRows] = await Promise.all([
-          api.get<SensorData[]>('/api/sensors/windspeed/', { params }),
+          api.get<SensorData[]>('/sensors/windspeed', { params }),
           fetchWindGustRows(params),
         ]);
         if (cancelled) return;

@@ -29,7 +29,7 @@ export default function LoginBox() {
 
     try {
       const { status, data } = await axiosInstance.post<SignInResponse>(
-        '/auth/signin/',
+        '/auth/sessions',
         values
       );
 

@@ -10,7 +10,7 @@ import { useActiveZoneId } from './ActiveZoneContext';
 export interface LastDataAddAlertButtonProps {
   /** Sensor registry key (e.g. "temperature_weather"). When present
    *  the drawer prefills its form with mean-based defaults from
-   *  /api/alerts/suggest/. */
+   *  /alerts/suggest. */
   sensorKey?: string;
   /** Explicit zone scope. Falls back to ActiveZoneContext when omitted
    *  so callers inside StationMain don't have to prop-drill it. */

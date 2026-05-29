@@ -33,7 +33,7 @@ const SoilSalinityConductivityMain = ({
 
   useEffect(() => {
     api
-      .get<SensorData[]>('/api/sensors/soilsalinity/', {
+      .get<SensorData[]>('/sensors/soilsalinity', {
         params: {
           start_date: startDate,
           end_date: endDate,
@@ -45,7 +45,7 @@ const SoilSalinityConductivityMain = ({
       .finally(() => setLoading(false));
 
     api
-      .get<SensorData[]>('/api/sensors/soilconductivity/', {
+      .get<SensorData[]>('/sensors/soilconductivity', {
         params: {
           start_date: startDate,
           end_date: endDate,

@@ -24,7 +24,7 @@ export interface SensorKeyOption {
 }
 
 // Mirror of analytics.alerts.SENSOR_KEY_REGISTRY on the backend. Used as
-// the fallback before /api/alerts/sensor-keys/ resolves so the form
+// the fallback before /sensors resolves so the form
 // never renders an empty Select on first paint.
 export const DEFAULT_SENSOR_KEYS: SensorKeyOption[] = [
   { key: 'temperature_weather', label: "Température de l'air", unit: '°C' },

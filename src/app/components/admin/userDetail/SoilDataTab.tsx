@@ -9,7 +9,7 @@ export type SoilDataTabProps = { username: string };
 
 /**
  * Admin read-only soil charts. Until the back exposes
- * `POST /api/admin/users/<u>/sensor-data/` (Sprint 7 backend), this
+ * `POST /users<u>/sensor-data/` (Sprint 7 backend), this
  * tab points at the user-facing /soil page with a zone preselected.
  */
 export function SoilDataTab({ username }: SoilDataTabProps) {

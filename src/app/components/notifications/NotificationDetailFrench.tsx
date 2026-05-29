@@ -179,7 +179,7 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
 
   useEffect(() => {
     api
-      .get<{ username?: string; first_name?: string }>('/api/header/')
+      .get<{ username?: string; first_name?: string }>('/users/me')
       .then((res) => {
         const first = res.data?.first_name?.trim();
         const user = res.data?.username?.trim();

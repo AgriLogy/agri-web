@@ -57,7 +57,7 @@ const WindSpeedForm: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      await api.post('/api/alert/', formData);
+      await api.post('/alerts', formData);
       toast({
         title: 'Alerte créée',
         description: 'Alerte de vitesse du vent ajoutée avec succès.',

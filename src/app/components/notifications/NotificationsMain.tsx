@@ -78,7 +78,7 @@ const NotificationsMain: React.FC = () => {
 
   const refetchNotifications = () => {
     void axiosInstance
-      .get('/api/notifications-and-alerts/')
+      .get('/notifications')
       .then((r) => {
         const apiRows = normalizeApiNotificationsList(r.data?.notifications);
         const merged = mergeNotificationsForStorage(apiRows);
@@ -97,9 +97,7 @@ const NotificationsMain: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get(
-          '/api/notifications-and-alerts/'
-        );
+        const response = await axiosInstance.get('/notifications');
         const apiRows = normalizeApiNotificationsList(
           response.data?.notifications
         );

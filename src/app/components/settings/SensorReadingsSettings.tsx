@@ -156,7 +156,7 @@ const SensorReadingsSettings = () => {
 
   useEffect(() => {
     api
-      .get<{ id: number; name: string }[]>('/api/zones-names-per-user/')
+      .get<{ id: number; name: string }[]>('/zones')
       .then((res) => {
         const list = res.data ?? [];
         setZones(list);

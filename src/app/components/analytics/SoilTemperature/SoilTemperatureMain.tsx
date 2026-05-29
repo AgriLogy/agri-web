@@ -46,9 +46,9 @@ const SoilTemperatureMain = ({
       });
 
     Promise.all([
-      fetchSeries('/api/sensors/soiltemperaturelow/'),
-      fetchSeries('/api/sensors/soiltemperaturemedium/'),
-      fetchSeries('/api/sensors/soiltemperaturehigh/'),
+      fetchSeries('/sensors/soiltemperaturelow'),
+      fetchSeries('/sensors/soiltemperaturemedium'),
+      fetchSeries('/sensors/soiltemperaturehigh'),
     ])
       .then(([lowRes, medRes, highRes]) => {
         const map = new Map<string, TemperaturePoint>();

@@ -26,7 +26,7 @@ const PhWaterMain = ({
 
   useEffect(() => {
     api
-      .get<SensorData[]>('/api/sensors/phwater/', {
+      .get<SensorData[]>('/sensors/phwater', {
         params: {
           start_date: startDate,
           end_date: endDate,

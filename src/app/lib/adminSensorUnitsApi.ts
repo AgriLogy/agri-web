@@ -1,4 +1,4 @@
-/** Typed wrapper for /api/admin/users/<u>/sensor-units/. */
+/** Typed wrapper for /users/<u>/sensor-units. */
 import api from './api';
 
 export type SensorUnitsMap = Record<string, string>;
@@ -6,7 +6,7 @@ export type SensorUnitsMap = Record<string, string>;
 export const adminSensorUnitsApi = {
   get: async (username: string): Promise<SensorUnitsMap> => {
     const res = await api.get<SensorUnitsMap>(
-      `/api/admin/users/${encodeURIComponent(username)}/sensor-units/`
+      `/users/${encodeURIComponent(username)}/sensor-units`
     );
     return res.data ?? {};
   },
@@ -15,7 +15,7 @@ export const adminSensorUnitsApi = {
     units: SensorUnitsMap
   ): Promise<SensorUnitsMap> => {
     const res = await api.patch<SensorUnitsMap>(
-      `/api/admin/users/${encodeURIComponent(username)}/sensor-units/`,
+      `/users/${encodeURIComponent(username)}/sensor-units`,
       units
     );
     return res.data ?? {};

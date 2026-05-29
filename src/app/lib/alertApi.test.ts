@@ -39,17 +39,17 @@ beforeEach(() => {
 });
 
 describe('alertApi.list', () => {
-  it('hits /api/alert/ with params', async () => {
+  it('hits /alerts/ with params', async () => {
     mocked.get.mockResolvedValueOnce({ data: [] });
     await alertApi.list({ sensor_key: 'temperature_weather' });
-    expect(mocked.get).toHaveBeenCalledWith('/api/alert/', {
+    expect(mocked.get).toHaveBeenCalledWith('/alerts', {
       params: { sensor_key: 'temperature_weather' },
     });
   });
 });
 
 describe('alertApi.create', () => {
-  it('posts to /api/alert/ with the write payload', async () => {
+  it('posts to /alerts/ with the write payload', async () => {
     mocked.post.mockResolvedValueOnce({ data: { id: 1 } });
     const payload = {
       name: 'Heat',
@@ -60,7 +60,7 @@ describe('alertApi.create', () => {
       is_active: true,
     };
     await alertApi.create(payload);
-    expect(mocked.post).toHaveBeenCalledWith('/api/alert/', payload);
+    expect(mocked.post).toHaveBeenCalledWith('/alerts', payload);
   });
 });
 
@@ -68,7 +68,7 @@ describe('alertApi.update', () => {
   it('patches the detail URL', async () => {
     mocked.patch.mockResolvedValueOnce({ data: { id: 7 } });
     await alertApi.update(7, { is_active: false });
-    expect(mocked.patch).toHaveBeenCalledWith('/api/alert/7/', {
+    expect(mocked.patch).toHaveBeenCalledWith('/alerts/7', {
       is_active: false,
     });
   });
@@ -78,7 +78,7 @@ describe('alertApi.remove', () => {
   it('deletes by id', async () => {
     mocked.delete.mockResolvedValueOnce({ data: undefined });
     await alertApi.remove(99);
-    expect(mocked.delete).toHaveBeenCalledWith('/api/alert/99/');
+    expect(mocked.delete).toHaveBeenCalledWith('/alerts/99');
   });
 });
 
@@ -92,7 +92,7 @@ describe('alertApi.forGraph', () => {
       zone_id: 5,
     });
     expect(out).toEqual([{ id: 1, threshold: 30 }]);
-    expect(mocked.get).toHaveBeenCalledWith('/api/alerts/for-graph/', {
+    expect(mocked.get).toHaveBeenCalledWith('/alerts/for-graph', {
       params: { sensor_key: 'temperature_weather', zone_id: 5 },
     });
   });

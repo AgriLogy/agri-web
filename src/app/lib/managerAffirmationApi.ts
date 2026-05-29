@@ -1,4 +1,4 @@
-/** Typed wrapper for /api/manager-affirmations/* . */
+/** Typed wrapper for /manager-affirmations* . */
 import api from './api';
 
 export type AffirmationAction =
@@ -38,14 +38,14 @@ const unwrap = <T>(data: unknown): T[] => {
 export const managerAffirmationApi = {
   list: async (status?: AffirmationStatus): Promise<Affirmation[]> => {
     const config = status ? { params: { status } } : undefined;
-    const res = await api.get('/api/manager-affirmations/', config);
+    const res = await api.get('/manager-affirmations', config);
     return unwrap<Affirmation>(res.data);
   },
   create: async (
     action: AffirmationAction,
     payload: Record<string, unknown> = {}
   ): Promise<Affirmation> => {
-    const res = await api.post<Affirmation>('/api/manager-affirmations/', {
+    const res = await api.post<Affirmation>('/manager-affirmations', {
       action,
       payload,
     });
@@ -57,7 +57,7 @@ export const managerAffirmationApi = {
     note?: string
   ): Promise<Affirmation> => {
     const res = await api.post<Affirmation>(
-      `/api/manager-affirmations/${id}/${decision}/`,
+      `/manager-affirmations${id}/${decision}/`,
       note ? { note } : {}
     );
     return res.data;

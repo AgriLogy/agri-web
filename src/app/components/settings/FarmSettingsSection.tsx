@@ -34,7 +34,7 @@ const FarmSettingsSection = () => {
 
   useEffect(() => {
     api
-      .get<{ username: string }>('/api/header/')
+      .get<{ username: string }>('/users/me')
       .then((r) => setUsername(r.data.username))
       .catch(() => {})
       .finally(() => setLoading(false));

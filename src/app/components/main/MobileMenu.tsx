@@ -78,7 +78,7 @@ const MobileMenu = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await api.get('/api/header/');
+        const response = await api.get('/users/me');
         setUsername(response.data.first_name ?? response.data.username ?? '');
       } catch (error) {
         logOptionalApiFailure('MobileMenu: header', error);

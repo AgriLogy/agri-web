@@ -10,10 +10,10 @@ export type WindSpeedSensorRow = SensorData & { wind_gust?: number };
  * — rafale may only exist there. If your Django API exposes a dedicated route, prepend it here.
  */
 const WIND_GUST_ENDPOINTS = [
-  '/api/sensors/windgust/',
-  '/api/sensors/wind_gust/',
-  '/api/sensors/windgust',
-  '/api/sensors/wind_gust',
+  '/sensors/windgust',
+  '/sensors/wind_gust',
+  '/sensors/windgust',
+  '/sensors/wind_gust',
 ] as const;
 
 function unwrapSensorList(data: unknown): SensorData[] {

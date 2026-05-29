@@ -29,7 +29,7 @@ const FruiteSizeMain = ({
     // if (!selectedZone || !startDate || !endDate) return;
 
     api
-      .get<SensorData[]>('/api/sensors/fruitsize/', {
+      .get<SensorData[]>('/sensors/fruitsize', {
         params: {
           start_date: startDate,
           end_date: endDate,

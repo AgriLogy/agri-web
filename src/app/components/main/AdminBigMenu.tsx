@@ -18,7 +18,7 @@ const AdminBigMenu = () => {
 
   useEffect(() => {
     api
-      .get('/api/header/')
+      .get('/users/me')
       .then((res) => {
         if (res.data?.username) setUsername(res.data.username);
       })

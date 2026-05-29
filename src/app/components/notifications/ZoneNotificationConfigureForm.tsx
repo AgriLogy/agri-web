@@ -278,9 +278,7 @@ const ZoneNotificationConfigureForm: React.FC<
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await api.get<{ id: number; name: string }[]>(
-          '/api/zones-names-per-user/'
-        );
+        const res = await api.get<{ id: number; name: string }[]>('/zones');
         const z = res.data || [];
         setZones(z);
         if (z.length > 0) {

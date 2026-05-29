@@ -26,7 +26,7 @@ const WaterFlowMain = ({
 
   useEffect(() => {
     api
-      .get<SensorData[]>('/api/sensors/waterflow/', {
+      .get<SensorData[]>('/sensors/waterflow', {
         params: {
           start_date: startDate,
           end_date: endDate,

@@ -32,7 +32,8 @@ api.interceptors.response.use(
   (error) => {
     const requestUrl = error.config?.url ?? '';
     const isAuthEndpoint =
-      requestUrl.includes('/auth/signin') || requestUrl.includes('/auth/token');
+      requestUrl.includes('/auth/sessions') ||
+      requestUrl.includes('/auth/token');
 
     if (error.response && error.response.status === 401 && !isAuthEndpoint) {
       localStorage.removeItem('accessToken');

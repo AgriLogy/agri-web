@@ -26,7 +26,7 @@ const PrecipitationRateMain = ({
 
   useEffect(() => {
     api
-      .get<SensorData[]>('/api/sensors/precipitationrate/', {
+      .get<SensorData[]>('/sensors/precipitationrate', {
         params: {
           start_date: startDate,
           end_date: endDate,

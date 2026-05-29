@@ -8,7 +8,7 @@
  * value" cards (inline, never navigates) and by the /alerts page
  * (Nouvelle alerte / Modifier).
  *
- * When `sensorKey` is provided the drawer hits /api/alerts/suggest/ on
+ * When `sensorKey` is provided the drawer hits /alerts/suggest on
  * open and prefills the form with mean-based defaults so the user only
  * has to nudge the threshold.
  */
@@ -31,7 +31,7 @@ export interface AlertCreateDrawerProps {
   open: boolean;
   onClose: () => void;
   /** Pre-select a sensor (and optionally a zone) and prefill the form
-   *  from /api/alerts/suggest/. Ignored when `editing` is set. */
+   *  from /alerts/suggest. Ignored when `editing` is set. */
   sensorKey?: string;
   zoneId?: number;
   /** When set, the drawer becomes an "edit" drawer for that alert. */
@@ -72,7 +72,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
         /* fall back to defaults */
       });
     void api
-      .get<{ id: number; name: string }[]>('/api/zones-names-per-user/')
+      .get<{ id: number; name: string }[]>('/zones')
       .then((r) => {
         if (Array.isArray(r.data)) setZones(r.data);
       })

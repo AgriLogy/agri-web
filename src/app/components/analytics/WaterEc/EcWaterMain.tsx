@@ -26,7 +26,7 @@ const EcWaterMain = ({
 
   useEffect(() => {
     api
-      .get<SensorData[]>('/api/sensors/waterec/', {
+      .get<SensorData[]>('/sensors/waterec', {
         params: {
           start_date: startDate,
           end_date: endDate,

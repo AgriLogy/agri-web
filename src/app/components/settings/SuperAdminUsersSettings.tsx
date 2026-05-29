@@ -55,7 +55,7 @@ const SuperAdminUsersSettings = () => {
 
   const refreshUsers = () => {
     api
-      .get<ListedUser[]>('/auth/users')
+      .get<ListedUser[]>('/users')
       .then((r) => setUsers(r.data ?? []))
       .catch(() =>
         toast({
@@ -124,7 +124,7 @@ const SuperAdminUsersSettings = () => {
     };
 
     try {
-      await api.post('/auth/admin-signup/', payload);
+      await api.post('/users', payload);
       setUserSensorAccess(u, {
         sensorKeys: keys,
         role,

@@ -241,7 +241,7 @@ const NavbarNotificationsButton: React.FC = () => {
     setLoading(true);
     try {
       const res = await api.get<{ notifications?: PopupNotification[] }>(
-        '/api/notifications-and-alerts/'
+        '/notifications'
       );
       const apiRows = normalizeApiNotificationsList(res.data?.notifications);
       const merged = mergeNotificationsForStorage(apiRows);

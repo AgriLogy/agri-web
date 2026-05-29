@@ -25,7 +25,7 @@ const LargeFruitDiameterMain = ({
 
   useEffect(() => {
     api
-      .get<SensorData[]>('/api/sensors/largefruitdiameter/', {
+      .get<SensorData[]>('/sensors/largefruitdiameter', {
         params: {
           start_date: startDate,
           end_date: endDate,
