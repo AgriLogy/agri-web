@@ -1,4 +1,11 @@
-import { Box, Text, VStack, useColorModeValue } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import {
+  Box,
+  Text,
+  VStack,
+  Divider,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { GiWaterDrop } from 'react-icons/gi';
 import {
   formatCalibratedReading,
@@ -7,6 +14,7 @@ import {
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
+import { aggregateEt0Daily } from '@/app/utils/et0Daily';
 
 interface ET0Data {
   id: number;
@@ -46,6 +54,13 @@ const ET0LastData = ({
   const valueMeteo = useColorModeValue('blue.700', 'blue.200');
   const valueCalc = useColorModeValue('teal.700', 'teal.200');
   const subColor = useColorModeValue('gray.500', 'gray.400');
+  const valueDaily = useColorModeValue('green.700', 'green.200');
+
+  // Daily / previous-day / cumulative ET₀ (see aggregateEt0Daily for the math).
+  const daily = useMemo(
+    () => aggregateEt0Daily(calculatedData),
+    [calculatedData]
+  );
 
   const newestTs =
     latestWeather && latestCalculated
@@ -110,6 +125,43 @@ const ET0LastData = ({
           <Text mt={4} fontSize="sm" color={subColor}>
             Aucune donnée récente
           </Text>
+        )}
+
+        {daily && (
+          <>
+            <Divider my={4} />
+            <VStack spacing={3} align="stretch" w="100%">
+              <Box>
+                <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
+                  ET₀ du jour ({daily.latestDay})
+                </Text>
+                <Text fontSize="lg" fontWeight="bold" color={valueDaily}>
+                  {daily.latestTotal.toFixed(2)} mm/j
+                </Text>
+              </Box>
+              {daily.prevTotal != null && (
+                <Box>
+                  <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
+                    ET₀ de la veille ({daily.prevDay})
+                  </Text>
+                  <Text fontSize="lg" fontWeight="semibold" color={valueDaily}>
+                    {daily.prevTotal.toFixed(2)} mm/j
+                  </Text>
+                  <Text fontSize="xs" color={subColor}>
+                    utilisée pour l’irrigation du jour
+                  </Text>
+                </Box>
+              )}
+              <Box>
+                <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
+                  Cumul ({daily.dayCount} j)
+                </Text>
+                <Text fontSize="md" fontWeight="semibold" color={valueDaily}>
+                  {daily.cumulative.toFixed(2)} mm
+                </Text>
+              </Box>
+            </VStack>
+          </>
         )}
 
         {newestTs && (
