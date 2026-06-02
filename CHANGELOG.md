@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.2...v1.4.3) (2026-06-02)
+
+
+### Bug Fixes
+
+* **ui:** unify reading panels to brand-green + meteo forecast fit ([#91](https://github.com/AgriLogy/agrilogy-front/issues/91)) ([0899e53](https://github.com/AgriLogy/agrilogy-front/commit/0899e532d3a01422bd9c57de9392e01ce253a30e))
+
 ## [1.4.2](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.1...v1.4.2) (2026-06-02)
 
 
