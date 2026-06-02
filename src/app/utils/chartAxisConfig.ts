@@ -58,13 +58,17 @@ export const chartAxisStyles = {
   fontFamily: FONT_FAMILY,
 } as const;
 
-/** Props to spread on CartesianGrid for subtle grid lines */
+/**
+ * Props to spread on CartesianGrid for subtle grid lines.
+ * Horizontal lines only — vertical lines made the charts look busy/"foggy"
+ * (modifications list #3); this matches the cleaner precipitation-cumul style.
+ */
 export const defaultCartesianGridProps = {
   stroke: GRID_STROKE,
   strokeDasharray: '3 3',
   strokeWidth: 1,
   strokeOpacity: 0.65,
-  vertical: true,
+  vertical: false,
   horizontal: true,
 };
 
