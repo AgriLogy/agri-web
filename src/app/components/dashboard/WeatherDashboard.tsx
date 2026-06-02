@@ -100,7 +100,7 @@ const WeatherDashboard = () => {
     });
 
   const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString('fr-FR', { weekday: 'long' });
+    new Date(date).toLocaleDateString('fr-FR', { weekday: 'short' });
 
   if (loading) {
     return <Loading />;
@@ -225,21 +225,27 @@ const WeatherDashboard = () => {
       </Grid>
 
       {/* Forecast */}
-      <SimpleGrid minChildWidth="84px" spacing={3}>
+      <SimpleGrid columns={{ base: 4, sm: 7 }} spacing={2}>
         {daily.time.slice(0, 7).map((date, index) => (
           <Box
             _hover={{ cursor: 'pointer', borderColor: hoverColor }}
             key={date}
             bg={bgColor}
-            p={4}
+            p={2}
             textAlign="center"
             boxShadow="md"
             borderWidth="1px"
             borderRadius="xl"
             mb={1}
           >
-            <Text fontSize="xs" color={secondaryText} mb={1}>
-              {index === 0 ? "aujourd'hui" : formatDate(date)}
+            <Text
+              fontSize="xs"
+              color={secondaryText}
+              mb={1}
+              noOfLines={1}
+              textTransform="capitalize"
+            >
+              {index === 0 ? 'Auj.' : formatDate(date)}
             </Text>
             <Flex justify="center" mb={1}>
               {getWeatherIcon(daily.weather_code[index])}
