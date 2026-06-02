@@ -41,7 +41,7 @@ const SensorRow = ({
   data?: SensorData;
   sensorKey: string;
 }) => {
-  const valueColor = useColorModeValue('blue.700', 'blue.200');
+  const valueColor = useColorModeValue('brand.700', 'brand.200');
   const textColor = useColorModeValue('gray.600', 'gray.400');
   const timeColor = useColorModeValue('gray.500', 'gray.500');
 

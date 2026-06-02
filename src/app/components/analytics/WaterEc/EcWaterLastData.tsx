@@ -27,7 +27,7 @@ const EcWaterLastData = ({ data }: { data: SensorData[] }) => {
   const latest = data[data.length - 1];
   const unit = resolveAxisUnit('water_ec', latest?.default_unit);
 
-  const valueColor = useColorModeValue('blue.700', 'blue.200');
+  const valueColor = useColorModeValue('brand.700', 'brand.200');
   const textColor = useColorModeValue('gray.600', 'gray.300');
   const subColor = useColorModeValue('gray.500', 'gray.400');
 

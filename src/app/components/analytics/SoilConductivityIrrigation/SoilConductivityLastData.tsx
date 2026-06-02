@@ -60,7 +60,7 @@ const SoilConductivityLastData = ({
   const headingColor = useColorModeValue('gray.600', 'gray.300');
   const subColor = useColorModeValue('gray.500', 'gray.400');
   const rowLabelColor = useColorModeValue('gray.500', 'gray.400');
-  const cLow = useColorModeValue('blue.600', 'blue.300');
+  const cLow = useColorModeValue('brand.600', 'brand.300');
   const cHigh = useColorModeValue('teal.600', 'teal.300');
   const cFlow = useColorModeValue('cyan.700', 'cyan.300');
 

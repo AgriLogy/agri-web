@@ -27,7 +27,7 @@ const CumulPrecipitationLastData = ({ data }: { data: SensorData[] }) => {
   useUnitOverridesRevision();
   const unit = resolveAxisUnit('precipitation_rate', latest?.default_unit);
 
-  const valueColor = useColorModeValue('blue.700', 'blue.200');
+  const valueColor = useColorModeValue('brand.700', 'brand.200');
   const textColor = useColorModeValue('gray.600', 'gray.300');
   const subColor = useColorModeValue('gray.500', 'gray.400');
 

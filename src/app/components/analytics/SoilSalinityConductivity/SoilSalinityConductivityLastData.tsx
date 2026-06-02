@@ -35,7 +35,7 @@ const Block = ({
   sensorKey: string;
 }) => {
   const textColor = useColorModeValue('gray.600', 'gray.300');
-  const valueColor = useColorModeValue('blue.700', 'blue.200');
+  const valueColor = useColorModeValue('brand.700', 'brand.200');
   const subColor = useColorModeValue('gray.500', 'gray.400');
 
   return (

@@ -51,7 +51,7 @@ const ET0LastData = ({
 
   const titleColor = useColorModeValue('gray.600', 'gray.300');
   const labelMuted = useColorModeValue('gray.500', 'gray.400');
-  const valueMeteo = useColorModeValue('blue.700', 'blue.200');
+  const valueMeteo = useColorModeValue('brand.700', 'brand.200');
   const valueCalc = useColorModeValue('teal.700', 'teal.200');
   const subColor = useColorModeValue('gray.500', 'gray.400');
   const valueDaily = useColorModeValue('green.700', 'green.200');

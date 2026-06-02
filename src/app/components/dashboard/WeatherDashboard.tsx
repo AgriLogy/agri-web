@@ -7,6 +7,7 @@ import {
   useBreakpointValue,
   Switch,
   Grid,
+  SimpleGrid,
   HStack,
   Icon,
   Flex,
@@ -224,20 +225,13 @@ const WeatherDashboard = () => {
       </Grid>
 
       {/* Forecast */}
-      <HStack
-        spacing={4}
-        overflowX="auto"
-        justify={{ base: 'flex-start', lg: 'center' }}
-        align="center"
-      >
+      <SimpleGrid minChildWidth="84px" spacing={3}>
         {daily.time.slice(0, 7).map((date, index) => (
           <Box
             _hover={{ cursor: 'pointer', borderColor: hoverColor }}
             key={date}
             bg={bgColor}
             p={4}
-            minW="90px"
-            w="fit-content"
             textAlign="center"
             boxShadow="md"
             borderWidth="1px"
@@ -264,7 +258,7 @@ const WeatherDashboard = () => {
             </Text>
           </Box>
         ))}
-      </HStack>
+      </SimpleGrid>
     </Box>
   );
 };

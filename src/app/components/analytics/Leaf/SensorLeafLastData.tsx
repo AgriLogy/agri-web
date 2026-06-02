@@ -38,7 +38,7 @@ const SensorLeafLastData = ({
   const titleColor = useColorModeValue('gray.600', 'gray.300');
   const labelMuted = useColorModeValue('gray.500', 'gray.400');
   const valueTemp = useColorModeValue('orange.700', 'orange.200');
-  const valueMoist = useColorModeValue('blue.700', 'blue.200');
+  const valueMoist = useColorModeValue('brand.700', 'brand.200');
   const subColor = useColorModeValue('gray.500', 'gray.400');
 
   return (

@@ -76,7 +76,7 @@ const SoilTemperatureLastData = ({
   const headingColor = useColorModeValue('gray.600', 'gray.300');
   const iconColor = useColorModeValue('orange.600', 'orange.300');
 
-  const lowColor = useColorModeValue('blue.600', 'blue.300');
+  const lowColor = useColorModeValue('brand.600', 'brand.300');
   const medColor = useColorModeValue('teal.600', 'teal.300');
   const highColor = useColorModeValue('red.600', 'red.300');
 
