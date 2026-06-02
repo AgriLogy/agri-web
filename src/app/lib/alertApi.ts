@@ -60,10 +60,9 @@ export const alertApi = {
     api.post<AlertRecord>('/alerts', payload).then((r) => r.data),
 
   update: (id: number, payload: Partial<AlertWritePayload>) =>
-    api.patch<AlertRecord>(`/alerts/${id}/`, payload).then((r) => r.data),
+    api.patch<AlertRecord>(`/alerts/${id}`, payload).then((r) => r.data),
 
-  remove: (id: number) =>
-    api.delete<void>(`/alerts/${id}/`).then((r) => r.data),
+  remove: (id: number) => api.delete<void>(`/alerts/${id}`).then((r) => r.data),
 
   forGraph: (params: { sensor_key: string; zone_id?: number }) =>
     api
