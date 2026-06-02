@@ -87,8 +87,8 @@ export const SENSOR_CATALOG: SensorCatalogItem[] = [
   // PDF « mm » = cumul ; ici l’app suit le taux (mm/h) côté API.
   {
     key: 'water_flow',
-    readingLabel: 'Débit eau / irrigation',
-    typeLabel: 'Débit',
+    readingLabel: 'Irrigation',
+    typeLabel: 'Irrigation',
     defaultUnit: 'm³/h',
     category: 'lecture',
   },
