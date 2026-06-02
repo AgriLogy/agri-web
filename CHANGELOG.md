@@ -1,3 +1,10 @@
+## [1.3.8](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.7...v1.3.8) (2026-06-02)
+
+
+### Bug Fixes
+
+* **api:** default API base to back.agrogo-datafarm.com ([#73](https://github.com/AgriLogy/agrilogy-front/issues/73)) ([e24229f](https://github.com/AgriLogy/agrilogy-front/commit/e24229f146403c8c606c20460d18750d47d6b909)), closes [#72](https://github.com/AgriLogy/agrilogy-front/issues/72)
+
 ## [1.3.7](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.6...v1.3.7) (2026-05-29)
 
 ## [1.3.6](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.5...v1.3.6) (2026-05-29)
