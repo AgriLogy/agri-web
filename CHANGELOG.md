@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.0...v1.4.1) (2026-06-02)
+
+
+### Bug Fixes
+
+* **charts:** horizontal-only gridlines ([#87](https://github.com/AgriLogy/agrilogy-front/issues/87)) ([a99ee63](https://github.com/AgriLogy/agrilogy-front/commit/a99ee63900603ae02fe3eaa88d50ace8a1d41c99))
+
 # [1.4.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.8...v1.4.0) (2026-06-02)
 
 
