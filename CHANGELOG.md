@@ -1,3 +1,18 @@
+# [1.4.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.8...v1.4.0) (2026-06-02)
+
+
+### Bug Fixes
+
+* **dashboard:** cap content max-width at 1400px and center ([#75](https://github.com/AgriLogy/agrilogy-front/issues/75)) ([d92deec](https://github.com/AgriLogy/agrilogy-front/commit/d92deec876325e5bbc46249204bce046d8039ead)), closes [#74](https://github.com/AgriLogy/agrilogy-front/issues/74)
+* **sensors:** rename water_flow label to 'Irrigation' ([#77](https://github.com/AgriLogy/agrilogy-front/issues/77)) ([6ecc66e](https://github.com/AgriLogy/agrilogy-front/commit/6ecc66e6241adfa1d8e2aa9f32f47429d0b0d3b1))
+* **wind:** drop dead /sensors/windgust fetch (404 spam) ([#85](https://github.com/AgriLogy/agrilogy-front/issues/85)) ([33ba144](https://github.com/AgriLogy/agrilogy-front/commit/33ba144d55feb21d7aeba027487ed494137e5171)), closes [#6](https://github.com/AgriLogy/agrilogy-front/issues/6)
+
+
+### Features
+
+* **et0:** show daily total, previous-day & cumulative ET₀ ([#79](https://github.com/AgriLogy/agrilogy-front/issues/79)) ([d8ddbbc](https://github.com/AgriLogy/agrilogy-front/commit/d8ddbbcde67978dd3b949c9ddd658bd706b6224a)), closes [#78](https://github.com/AgriLogy/agrilogy-front/issues/78) [#78](https://github.com/AgriLogy/agrilogy-front/issues/78) [#78](https://github.com/AgriLogy/agrilogy-front/issues/78)
+* **weather:** add point de rosée (dew point) line ([#81](https://github.com/AgriLogy/agrilogy-front/issues/81)) ([d61e3b8](https://github.com/AgriLogy/agrilogy-front/commit/d61e3b802f670d395cc4f7cbe90902f708cb329d)), closes [#80](https://github.com/AgriLogy/agrilogy-front/issues/80)
+
 ## [1.3.8](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.7...v1.3.8) (2026-06-02)
 
 
