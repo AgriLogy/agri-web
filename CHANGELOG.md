@@ -1,3 +1,10 @@
+## [1.4.5](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.4...v1.4.5) (2026-06-02)
+
+
+### Bug Fixes
+
+* **alerts:** drop trailing slash on alert update/delete URLs ([#95](https://github.com/AgriLogy/agrilogy-front/issues/95)) ([fa6cb73](https://github.com/AgriLogy/agrilogy-front/commit/fa6cb7360bdcc476a46dec61722fa95800bdbad5))
+
 ## [1.4.4](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.3...v1.4.4) (2026-06-02)
 
 
