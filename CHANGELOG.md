@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.1...v1.4.2) (2026-06-02)
+
+
+### Bug Fixes
+
+* **dashboard:** match other pages' full-width layout ([#89](https://github.com/AgriLogy/agrilogy-front/issues/89)) ([ce807c9](https://github.com/AgriLogy/agrilogy-front/commit/ce807c9cb73172874697aa4e2268a0a60769580a)), closes [#75](https://github.com/AgriLogy/agrilogy-front/issues/75)
+
 ## [1.4.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.0...v1.4.1) (2026-06-02)
 
 
