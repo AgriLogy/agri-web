@@ -39,6 +39,22 @@ import {
   yAxisLabelInsideRight,
 } from '@/app/utils/chartAxisConfig';
 
+// Point de rosée (Magnus/Tetens) — "Les modifications" #15. RH clamped 1–100%.
+const DEW_A = 17.625;
+const DEW_B = 243.04;
+function dewPointC(tempC: number | null, rhPct: number | null): number | null {
+  if (
+    tempC == null ||
+    rhPct == null ||
+    !Number.isFinite(tempC) ||
+    !Number.isFinite(rhPct)
+  )
+    return null;
+  const rh = Math.max(1, Math.min(100, rhPct));
+  const gamma = Math.log(rh / 100) + (DEW_A * tempC) / (DEW_B + tempC);
+  return Math.round(((DEW_B * gamma) / (DEW_A - gamma)) * 100) / 100;
+}
+
 interface WeatherData {
   id: number;
   timestamp: string;
@@ -69,13 +85,16 @@ const TempuratureHumidtyChart = ({
         const tempEntry = temperatureData.find(
           (t) => t.timestamp === h.timestamp
         );
+        const humidity = calibrateChartValue('humidity_weather', h.value);
+        const temperature =
+          tempEntry != null && tempEntry.value != null
+            ? calibrateChartValue('temperature_weather', tempEntry.value)
+            : null;
         return {
           timestamp: h.timestamp,
-          humidity: calibrateChartValue('humidity_weather', h.value),
-          temperature:
-            tempEntry != null && tempEntry.value != null
-              ? calibrateChartValue('temperature_weather', tempEntry.value)
-              : null,
+          humidity,
+          temperature,
+          dew_point: dewPointC(temperature, humidity),
         };
       }),
     [humidityData, temperatureData, unitRev]
@@ -105,11 +124,12 @@ const TempuratureHumidtyChart = ({
   const [seriesVisible, setSeriesVisible] = useState({
     temperature: true,
     humidity: true,
+    dew_point: true,
   });
 
   const handleLegendClick = (e: ChartLegendPayloadEntry) => {
     const k = e.dataKey;
-    if (k !== 'temperature' && k !== 'humidity') return;
+    if (k !== 'temperature' && k !== 'humidity' && k !== 'dew_point') return;
     setSeriesVisible((p) => ({ ...p, [k]: !p[k as keyof typeof p] }));
   };
 
@@ -131,9 +151,12 @@ const TempuratureHumidtyChart = ({
   // CSV data export function
   const handleDownloadData = () => {
     const csv =
-      'timestamp,humidity,temperature\n' +
+      'timestamp,humidity,temperature,dew_point\n' +
       mergedData
-        .map((d) => `${d.timestamp},${d.humidity},${d.temperature ?? ''}`)
+        .map(
+          (d) =>
+            `${d.timestamp},${d.humidity},${d.temperature ?? ''},${d.dew_point ?? ''}`
+        )
         .join('\n');
 
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -150,7 +173,7 @@ const TempuratureHumidtyChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Air — température et humidité relative"
+          title="Air — température, humidité relative et point de rosée"
           subtitle={`Échelles lecture ${tempUnit} et ${humUnit} ; axe temps adaptatif selon la fenêtre.`}
         />
         <HStack spacing={2}>
@@ -235,6 +258,21 @@ const TempuratureHumidtyChart = ({
               dot={false}
               activeDot={activeDotForSeries('#2C7A7B')}
               hide={!seriesVisible.humidity}
+            />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey="dew_point"
+              name={`Point de rosée (${tempUnit})`}
+              stroke="#6366f1"
+              strokeWidth={2}
+              strokeDasharray="5 4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              dot={false}
+              connectNulls
+              activeDot={activeDotForSeries('#6366f1')}
+              hide={!seriesVisible.dew_point}
             />
           </LineChart>
         </ResponsiveContainer>
