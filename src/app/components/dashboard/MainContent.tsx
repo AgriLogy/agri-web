@@ -27,7 +27,13 @@ const Card = ({ children }: { children: React.ReactNode }) => (
 
 const MainContent = () => {
   return (
-    <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
+    <Box
+      px={{ base: 3, md: 4 }}
+      py={{ base: 3, md: 4 }}
+      maxW="1400px"
+      mx="auto"
+      w="100%"
+    >
       <PageInfoBar
         title="Tableau de bord"
         subtitle="Vue d'ensemble de la ferme — météo, zones, et état du réseau d'irrigation"
