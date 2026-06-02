@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.3...v1.4.4) (2026-06-02)
+
+
+### Bug Fixes
+
+* **meteo:** tidy forecast row (7 cols, short labels, no wrap) ([#93](https://github.com/AgriLogy/agrilogy-front/issues/93)) ([003658a](https://github.com/AgriLogy/agrilogy-front/commit/003658afb6d199a5ec5d51d14fdb41eedb04dd1d))
+
 ## [1.4.3](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.2...v1.4.3) (2026-06-02)
 
 
