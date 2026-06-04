@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -53,6 +54,7 @@ const SoilTemperatureChart = ({
   data: TemperaturePoint[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const unitRev = useUnitOverridesRevision();
 
@@ -158,19 +160,21 @@ const SoilTemperatureChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title={`Température du sol (${soilTempDisplayUnits})`}
-          subtitle="Profondeurs basse, moyenne et haute."
+          title={t('analytics.soilTemperature.chartTitle', {
+            unit: soilTempDisplayUnits,
+          })}
+          subtitle={t('analytics.soilTemperature.chartSubtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureAria')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportAria')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -202,7 +206,9 @@ const SoilTemperatureChart = ({
               {...yProps}
               domain={['auto', 'auto']}
               label={yAxisLabelInsideLeft(
-                `Temp. sol (${soilTempDisplayUnits})`,
+                t('analytics.soilTemperature.axisLabel', {
+                  unit: soilTempDisplayUnits,
+                }),
                 tickFill
               )}
             />
@@ -251,7 +257,7 @@ const SoilTemperatureChart = ({
             <Line
               type="monotone"
               dataKey="low"
-              name="Basse"
+              name={t('analytics.soilTemperature.seriesLow')}
               stroke="#3182CE"
               strokeWidth={2.25}
               strokeLinecap="round"
@@ -264,7 +270,7 @@ const SoilTemperatureChart = ({
             <Line
               type="monotone"
               dataKey="medium"
-              name="Moyenne"
+              name={t('analytics.soilTemperature.seriesMedium')}
               stroke="#2F855A"
               strokeWidth={2.25}
               strokeLinecap="round"
@@ -277,7 +283,7 @@ const SoilTemperatureChart = ({
             <Line
               type="monotone"
               dataKey="high"
-              name="Haute"
+              name={t('analytics.soilTemperature.seriesHigh')}
               stroke="#E53E3E"
               strokeWidth={2.25}
               strokeLinecap="round"

@@ -1,13 +1,16 @@
 'use client';
 
 import { Space, Tag } from 'antd';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import type { AdminUserDetail } from '@/app/lib/adminUserApi';
 
-const formatDate = (iso: string | null): string => {
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
+const formatDate = (iso: string | null, tag: string): string => {
   if (!iso) return '—';
   try {
-    return new Date(iso).toLocaleDateString('fr-FR');
+    return new Date(iso).toLocaleDateString(tag);
   } catch {
     return iso;
   }
@@ -15,6 +18,7 @@ const formatDate = (iso: string | null): string => {
 
 export function UserStatusLine({ user }: { user: AdminUserDetail }) {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   return (
     <Space size={8} wrap>
       {user.is_staff ? (
@@ -32,8 +36,8 @@ export function UserStatusLine({ user }: { user: AdminUserDetail }) {
       </Tag>
       <span style={{ opacity: 0.7 }}>
         {t('admin.userDetail.joinedLastLogin', {
-          joined: formatDate(user.date_joined),
-          lastLogin: formatDate(user.last_login),
+          joined: formatDate(user.date_joined, tag),
+          lastLogin: formatDate(user.last_login, tag),
         })}
       </span>
     </Space>

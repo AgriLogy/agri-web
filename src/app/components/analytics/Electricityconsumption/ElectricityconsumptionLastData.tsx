@@ -1,6 +1,6 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
 import { FaBolt } from 'react-icons/fa';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { SensorData } from '@/app/types';
 import {
   formatCalibratedReading,
@@ -10,9 +10,13 @@ import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
 const timeAgo = (
   timestamp: string,
-  t: (key: string, values?: Record<string, string | number>) => string
+  t: (key: string, values?: Record<string, string | number>) => string,
+  tag: string
 ): string => {
   const now = new Date();
   const then = new Date(timestamp);
@@ -23,11 +27,12 @@ const timeAgo = (
   if (diffMin < 1) return t('analytics.common.justNow');
   if (diffMin < 60) return t('analytics.common.minutesAgo', { count: diffMin });
   if (diffH < 24) return t('analytics.common.hoursAgo', { count: diffH });
-  return then.toLocaleDateString();
+  return then.toLocaleDateString(tag);
 };
 
 const ElectricityconsumptionLastData = ({ data }: { data: SensorData[] }) => {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   useUnitOverridesRevision();
   const latest = data[data.length - 1];
   const unit = resolveAxisUnit('electricity_consumption', latest?.default_unit);
@@ -72,7 +77,7 @@ const ElectricityconsumptionLastData = ({ data }: { data: SensorData[] }) => {
         <Text fontSize="xs" color={subColor} mt={2}>
           {latest
             ? t('analytics.common.measuredAt', {
-                time: timeAgo(latest.timestamp, t),
+                time: timeAgo(latest.timestamp, t, tag),
               })
             : ''}
         </Text>

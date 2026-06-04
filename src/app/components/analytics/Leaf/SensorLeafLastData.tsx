@@ -5,7 +5,7 @@ import {
   VStack,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { WiRaindrop, WiThermometer } from 'react-icons/wi';
 import {
   formatCalibratedReading,
@@ -15,9 +15,13 @@ import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
 const timeAgo = (
   timestamp: string,
-  t: ReturnType<typeof useTranslations>
+  t: ReturnType<typeof useTranslations>,
+  tag: string
 ): string => {
   const now = new Date();
   const then = new Date(timestamp);
@@ -29,7 +33,7 @@ const timeAgo = (
   if (diffMin < 60)
     return t('analytics.lastData.minutesAgo', { count: diffMin });
   if (diffH < 24) return t('analytics.lastData.hoursAgo', { count: diffH });
-  return then.toLocaleDateString();
+  return then.toLocaleDateString(tag);
 };
 
 const SensorLeafLastData = ({
@@ -40,6 +44,7 @@ const SensorLeafLastData = ({
   moisture?: { value: number; timestamp: string };
 }) => {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   useUnitOverridesRevision();
   const titleColor = useColorModeValue('gray.600', 'gray.300');
   const labelMuted = useColorModeValue('gray.500', 'gray.400');
@@ -92,7 +97,7 @@ const SensorLeafLastData = ({
             <Text fontSize="xs" color={subColor} mt={1}>
               {temperature
                 ? t('analytics.lastData.measuredAt', {
-                    time: timeAgo(temperature.timestamp, t),
+                    time: timeAgo(temperature.timestamp, t, tag),
                   })
                 : ''}
             </Text>
@@ -119,7 +124,7 @@ const SensorLeafLastData = ({
             <Text fontSize="xs" color={subColor} mt={1}>
               {moisture
                 ? t('analytics.lastData.measuredAt', {
-                    time: timeAgo(moisture.timestamp, t),
+                    time: timeAgo(moisture.timestamp, t, tag),
                   })
                 : ''}
             </Text>

@@ -2,17 +2,21 @@
 
 import { App, Space, Switch, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AdminConfirmDelete } from '@/app/components/admin/_shared/AdminConfirmDelete';
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
 import { adminAlertApi, type AdminAlertRow } from '@/app/lib/adminAlertApi';
 
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
 export type AlertsNotifsTabProps = { username: string };
 
 export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   const { message } = App.useApp();
   const [alerts, setAlerts] = useState<AdminAlertRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,11 +101,7 @@ export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
       dataIndex: 'last_triggered_at',
       key: 'last_triggered_at',
       render: (iso: string | null) =>
-        iso ? (
-          <Tag color="red">{new Date(iso).toLocaleString('fr-FR')}</Tag>
-        ) : (
-          '—'
-        ),
+        iso ? <Tag color="red">{new Date(iso).toLocaleString(tag)}</Tag> : '—',
     },
     {
       title: t('admin.alertsTab.colActions'),

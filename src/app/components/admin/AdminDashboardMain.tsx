@@ -12,7 +12,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Box } from '@chakra-ui/react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
@@ -26,10 +26,13 @@ type Overview = {
   alerts_24h: number;
 };
 
-const formatDate = (iso: string | null): string => {
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
+const formatDate = (iso: string | null, tag: string): string => {
   if (!iso) return '—';
   try {
-    return new Date(iso).toLocaleDateString('fr-FR');
+    return new Date(iso).toLocaleDateString(tag);
   } catch {
     return iso;
   }
@@ -37,6 +40,7 @@ const formatDate = (iso: string | null): string => {
 
 const AdminDashboardMain = () => {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   const { message } = App.useApp();
   const router = useRouter();
   const [overview, setOverview] = useState<Overview | null>(null);
@@ -78,7 +82,7 @@ const AdminDashboardMain = () => {
       title: t('admin.dashboard.col.joinedAt'),
       dataIndex: 'date_joined',
       key: 'date_joined',
-      render: formatDate,
+      render: (iso: string | null) => formatDate(iso, tag),
     },
     {
       title: '',

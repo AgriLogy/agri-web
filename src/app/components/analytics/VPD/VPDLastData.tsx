@@ -1,23 +1,29 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import LastDataPanel from '../../common/LastDataPanel';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import { resolveAxisUnit } from '@/app/utils/unitOverrides';
 import { formatNumber } from '@/app/utils/formatNumber';
 import type { VPDDataPoint } from './VPDChart';
 
-const timeAgo = (timestamp: string): string => {
+const timeAgo = (
+  timestamp: string,
+  t: ReturnType<typeof useTranslations>
+): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
-  if (diffMin < 1) return "À l'instant";
-  if (diffMin < 60) return `${diffMin} min`;
-  if (diffH < 24) return `${diffH} h`;
+  if (diffMin < 1) return t('analytics.lastData.justNow');
+  if (diffMin < 60)
+    return t('analytics.lastData.minutesAgo', { count: diffMin });
+  if (diffH < 24) return t('analytics.lastData.hoursAgo', { count: diffH });
   return then.toLocaleDateString();
 };
 
 const VPDLastData = ({ data }: { data: VPDDataPoint[] }) => {
+  const t = useTranslations();
   useUnitOverridesRevision();
   const vpdUnit = resolveAxisUnit('vpd');
   const latest = data[data.length - 1];
@@ -49,7 +55,7 @@ const VPDLastData = ({ data }: { data: VPDDataPoint[] }) => {
           textTransform="uppercase"
           color={textColor}
         >
-          Déficit de pression de vapeur (DPV)
+          {t('analytics.vpd.title')}
         </Text>
         <Text fontSize="2xl" fontWeight="semibold" color={valueColor} mt={2}>
           {latest
@@ -57,7 +63,11 @@ const VPDLastData = ({ data }: { data: VPDDataPoint[] }) => {
             : '—'}
         </Text>
         <Text fontSize="xs" color={timeColor} mt={2}>
-          {latest ? `Mesure : ${timeAgo(latest.timestamp)}` : ''}
+          {latest
+            ? t('analytics.lastData.measuredAt', {
+                time: timeAgo(latest.timestamp, t),
+              })
+            : ''}
         </Text>
       </LastDataPanel>
     </Box>

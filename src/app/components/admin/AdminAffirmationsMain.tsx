@@ -5,7 +5,7 @@ import { App, Button, Input, Modal, Space, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useEffect, useState } from 'react';
 import { Box } from '@chakra-ui/react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
@@ -27,10 +27,13 @@ const ACTION_I18N_KEY: Record<string, string> = {
   user_reactivate: 'admin.affirmations.action.user_reactivate',
 };
 
-const formatDate = (iso: string | null): string => {
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
+const formatDate = (iso: string | null, tag: string): string => {
   if (!iso) return '—';
   try {
-    return new Date(iso).toLocaleString('fr-FR');
+    return new Date(iso).toLocaleString(tag);
   } catch {
     return iso;
   }
@@ -38,6 +41,7 @@ const formatDate = (iso: string | null): string => {
 
 const AdminAffirmationsMain = () => {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   const { message } = App.useApp();
   const actionLabel = (action: string) =>
     ACTION_I18N_KEY[action] ? t(ACTION_I18N_KEY[action]) : action;
@@ -145,13 +149,13 @@ const AdminAffirmationsMain = () => {
       title: t('admin.affirmations.col.createdAt'),
       dataIndex: 'created_at',
       key: 'created_at',
-      render: formatDate,
+      render: (iso: string | null) => formatDate(iso, tag),
     },
     {
       title: t('admin.affirmations.col.decidedAt'),
       dataIndex: 'decided_at',
       key: 'decided_at',
-      render: formatDate,
+      render: (iso: string | null) => formatDate(iso, tag),
     },
     {
       title: t('admin.affirmations.col.decidedBy'),

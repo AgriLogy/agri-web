@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   Box,
   Text,
@@ -29,7 +29,14 @@ type TimeAgoTranslator = (
   values?: Record<string, string | number>
 ) => string;
 
-const timeAgo = (timestamp: string, t: TimeAgoTranslator): string => {
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
+const timeAgo = (
+  timestamp: string,
+  t: TimeAgoTranslator,
+  tag: string
+): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
@@ -40,7 +47,7 @@ const timeAgo = (timestamp: string, t: TimeAgoTranslator): string => {
   if (diffMin < 60)
     return t('analytics.et0LastData.minutesAgo', { count: diffMin });
   if (diffH < 24) return t('analytics.et0LastData.hoursAgo', { count: diffH });
-  return then.toLocaleDateString();
+  return then.toLocaleDateString(tag);
 };
 
 const ET0LastData = ({
@@ -51,6 +58,7 @@ const ET0LastData = ({
   calculatedData: ET0Data[];
 }) => {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   useUnitOverridesRevision();
   const latestWeather = weatherData[weatherData.length - 1];
   const latestCalculated = calculatedData[calculatedData.length - 1];
@@ -180,7 +188,9 @@ const ET0LastData = ({
 
         {newestTs && (
           <Text fontSize="xs" color={subColor} mt={3}>
-            {t('analytics.et0LastData.measured', { ago: timeAgo(newestTs, t) })}
+            {t('analytics.et0LastData.measured', {
+              ago: timeAgo(newestTs, t, tag),
+            })}
           </Text>
         )}
         <LastDataAddAlertButton sensorKey="et0" />

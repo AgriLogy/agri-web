@@ -1,4 +1,7 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   Box,
   VStack,
@@ -43,7 +46,12 @@ interface WeatherData {
   };
 }
 
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
 const WeatherDashboard = () => {
+  const t = useTranslations();
+  const locale = useLocale();
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [useImperial, setUseImperial] = useState(false);
@@ -93,14 +101,14 @@ const WeatherDashboard = () => {
   };
 
   const formatTime = (time: string) =>
-    new Date(time).toLocaleTimeString('en-US', {
+    new Date(time).toLocaleTimeString(localeTag(locale), {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
     });
 
   const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString('fr-FR', { weekday: 'short' });
+    new Date(date).toLocaleDateString(localeTag(locale), { weekday: 'short' });
 
   if (loading) {
     return <Loading />;
@@ -115,7 +123,7 @@ const WeatherDashboard = () => {
       {/* Unit Toggle */}
       <HStack justify="space-between" mb={4}>
         <Text color="app.text" fontSize="lg" fontWeight="bold" mb={4}>
-          Météo
+          {t('shell.weather.title')}
         </Text>
         <HStack spacing={2}>
           <Text
@@ -153,7 +161,7 @@ const WeatherDashboard = () => {
           </Text>
         </HStack>
         <Text fontSize="xs" color={secondaryText}>
-          Température ressentie{' '}
+          {t('shell.weather.feelsLike')}{' '}
           {useImperial
             ? Math.round(toFahrenheit(current.apparent_temperature))
             : Math.round(current.apparent_temperature)}
@@ -245,7 +253,7 @@ const WeatherDashboard = () => {
               noOfLines={1}
               textTransform="capitalize"
             >
-              {index === 0 ? 'Auj.' : formatDate(date)}
+              {index === 0 ? t('shell.weather.today') : formatDate(date)}
             </Text>
             <Flex justify="center" mb={1}>
               {getWeatherIcon(daily.weather_code[index])}

@@ -3,6 +3,7 @@
 import { MoonOutlined, SunOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Flex } from 'antd';
 import { useColorMode } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -12,6 +13,7 @@ import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import logo from '../../public/logo.png';
 
 const AdminBigMenu = () => {
+  const t = useTranslations();
   const { colorMode, toggleColorMode } = useColorMode();
   const { bg } = useColorModeStyles();
   const [username, setUsername] = useState('User');
@@ -37,8 +39,13 @@ const AdminBigMenu = () => {
         padding: '0 16px',
       }}
     >
-      <Link href="/" aria-label="Accueil">
-        <Image height={32} src={logo} alt="Logo" priority />
+      <Link href="/" aria-label={t('nav.home')}>
+        <Image
+          height={32}
+          src={logo}
+          alt={t('shell.adminMenu.logoAlt')}
+          priority
+        />
       </Link>
 
       <Flex align="center" gap={8}>
@@ -48,17 +55,21 @@ const AdminBigMenu = () => {
             items: [
               {
                 key: 'hi',
-                label: `Bonjour ${username}`,
+                label: t('shell.mobileMenu.greeting', { name: username }),
                 disabled: true,
               },
             ],
           }}
         >
-          <Button type="text" icon={<UserOutlined />} aria-label="Profil" />
+          <Button
+            type="text"
+            icon={<UserOutlined />}
+            aria-label={t('nav.profile')}
+          />
         </Dropdown>
         <Button
           type="text"
-          aria-label="Basculer le mode sombre"
+          aria-label={t('shell.adminMenu.toggleDarkAria')}
           icon={colorMode === 'light' ? <MoonOutlined /> : <SunOutlined />}
           onClick={toggleColorMode}
         />

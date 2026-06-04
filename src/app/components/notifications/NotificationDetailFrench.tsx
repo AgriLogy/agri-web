@@ -13,7 +13,7 @@ import {
   FaTint,
   FaThermometerHalf,
 } from 'react-icons/fa';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import api from '@/app/lib/api';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import {
@@ -30,11 +30,14 @@ import {
 } from '@/app/lib/zoneNotificationConfigStorage';
 import type { NotificationPayload } from '@/app/components/notifications/Notification';
 
-function formatDateShortFr(iso: string): string {
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
+function formatDateShort(iso: string, tag: string): string {
   try {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return '—';
-    return d.toLocaleDateString('fr-FR', {
+    return d.toLocaleDateString(tag, {
       day: '2-digit',
       month: '2-digit',
       year: '2-digit',
@@ -44,11 +47,11 @@ function formatDateShortFr(iso: string): string {
   }
 }
 
-function formatDateTimeFr(iso: string): string {
+function formatDateTime(iso: string, tag: string): string {
   try {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return '—';
-    return d.toLocaleString('fr-FR', {
+    return d.toLocaleString(tag, {
       dateStyle: 'short',
       timeStyle: 'short',
     });
@@ -134,6 +137,7 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
   rawNested,
 }) => {
   const t = useTranslations();
+  const dateTag = localeTag(useLocale());
   const decisionShortFr = (d: NotificationDecisionLevel) => {
     if (d === 'critical') return t('notifications.detail.decisionCritical');
     if (d === 'advisory') return t('notifications.detail.decisionAdvisory');
@@ -250,11 +254,11 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
         start && end && start !== '—' && end !== '—'
           ? ` / ${start} – ${end}`
           : '';
-      return `${t('notifications.detail.lastIrrigationOn', { date: formatDateShortFr(date) })} : ${water} L${dur}`;
+      return `${t('notifications.detail.lastIrrigationOn', { date: formatDateShort(date, dateTag) })} : ${water} L${dur}`;
     }
     if (date && date !== '—') {
       return t('notifications.detail.lastIrrigationOn', {
-        date: formatDateShortFr(date),
+        date: formatDateShort(date, dateTag),
       });
     }
     return '—';
@@ -293,7 +297,7 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
             <Icon as={FaCalendarAlt} color="gray.500" />
             <Text fontSize="sm" fontWeight="semibold" color={textColor}>
               {t('notifications.detail.dateLabel')}{' '}
-              {formatDateShortFr(notification.notification_date)}
+              {formatDateShort(notification.notification_date, dateTag)}
             </Text>
           </HStack>
         </Box>
@@ -320,10 +324,10 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
     <VStack align="stretch" spacing={0}>
       <Box pb={4}>
         <Text fontSize="lg" fontWeight="bold" color={textColor}>
-          Bonjour {userSalutation}
+          {t('notifications.detail.greeting', { name: userSalutation })}
         </Text>
         <Text fontSize="sm" color={mutedTextColor} mt={1}>
-          Informations concernant votre parcelle agricole.
+          {t('notifications.detail.parcelInfo')}
         </Text>
         <HStack mt={4} spacing={2} align="flex-start">
           <Icon as={FaLightbulb} color="yellow.500" boxSize={5} mt={0.5} />
@@ -335,10 +339,10 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
           <Icon as={FaCalendarAlt} color="gray.500" />
           <Text fontSize="sm" fontWeight="semibold" color={textColor}>
             {t('notifications.detail.dateLabel')}{' '}
-            {formatDateShortFr(notification.notification_date)}
+            {formatDateShort(notification.notification_date, dateTag)}
           </Text>
           <Text fontSize="xs" color={mutedTextColor}>
-            ({formatDateTimeFr(notification.notification_date)})
+            ({formatDateTime(notification.notification_date, dateTag)})
           </Text>
         </HStack>
       </Box>

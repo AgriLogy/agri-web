@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   VStack,
   Box,
@@ -13,6 +14,7 @@ import Loading from '../common/Loading';
 import DashboardCard from './DashboardCard';
 
 const ElectrovannesList = () => {
+  const t = useTranslations();
   const [vannes, setVannes] = useState<Electrovanne[]>([]);
   const tableBg = useColorModeValue('white', 'gray.800');
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,10 @@ const ElectrovannesList = () => {
       p={p}
       overflowX="auto"
     >
-      <DashboardCard title="Electrovannes disponibles" content={content} />
+      <DashboardCard
+        title={t('shell.dashboard.electrovannesAvailable')}
+        content={content}
+      />
     </Box>
   );
 };

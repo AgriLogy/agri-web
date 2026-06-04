@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, KeyboardEvent } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Box, Flex, Textarea, Text, useColorModeValue } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 import { AgrilogyMessageBubble } from './MessageBubble';
@@ -210,6 +210,8 @@ export const AgrilogyChatBot = ({
   pageContext = 'general',
 }: AgrilogyChatBotProps) => {
   const t = useTranslations();
+  const locale = useLocale();
+  const timeTag = locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
 
   // ── Localized strings ──────────────────────────────────────────────────────
   const WELCOME_MESSAGE = t('misc.chatbot.welcome');
@@ -584,7 +586,7 @@ export const AgrilogyChatBot = ({
                   px="4px"
                   mt="3px"
                 >
-                  {msg.timestamp.toLocaleTimeString([], {
+                  {msg.timestamp.toLocaleTimeString(timeTag, {
                     hour: '2-digit',
                     minute: '2-digit',
                   })}

@@ -1,13 +1,18 @@
 'use client';
 
 import { ConfigProvider, DatePicker } from 'antd';
+import arEG from 'antd/locale/ar_EG';
+import enGB from 'antd/locale/en_GB';
 import frFR from 'antd/locale/fr_FR';
 import dayjs, { type Dayjs } from 'dayjs';
-import 'dayjs/locale/fr';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 
-dayjs.locale('fr');
+const antdLocaleFor = (locale: string) =>
+  locale === 'ar' ? arEG : locale === 'en' ? enGB : frFR;
+
+// dayjs is globally localized in app/providers.tsx from the active locale;
+// do NOT pin it to 'fr' here.
 
 const { RangePicker } = DatePicker;
 
@@ -87,6 +92,7 @@ export function ChartDateRangeControl({
   className,
 }: ChartDateRangeControlProps) {
   const t = useTranslations();
+  const locale = useLocale();
   const disabledDate = (current: Dayjs) =>
     disableFuture && current && current.isAfter(dayjs().endOf('day'));
 
@@ -100,7 +106,7 @@ export function ChartDateRangeControl({
   );
 
   return (
-    <ConfigProvider locale={frFR}>
+    <ConfigProvider locale={antdLocaleFor(locale)}>
       <RangePicker
         className={className}
         value={[toDayjs(value.startDate), toDayjs(value.endDate)]}

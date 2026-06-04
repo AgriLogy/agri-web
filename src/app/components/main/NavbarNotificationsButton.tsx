@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -154,8 +154,12 @@ function cacheRowToNotificationProps(row: unknown): {
   };
 }
 
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
 const NavbarNotificationsButton: React.FC = () => {
   const t = useTranslations();
+  const locale = useLocale();
   const router = useRouter();
   const toast = useToast();
   const deleteCancelRef = useRef<HTMLButtonElement>(null);
@@ -332,10 +336,13 @@ const NavbarNotificationsButton: React.FC = () => {
                     const n = (row.notification ?? {}) as PopupNotificationBody;
                     const template = n.template_summary;
                     const when = n.notification_date
-                      ? new Date(n.notification_date).toLocaleString('fr-FR', {
-                          dateStyle: 'short',
-                          timeStyle: 'short',
-                        })
+                      ? new Date(n.notification_date).toLocaleString(
+                          localeTag(locale),
+                          {
+                            dateStyle: 'short',
+                            timeStyle: 'short',
+                          }
+                        )
                       : '—';
                     const zone = row.zone_name ?? n.zone_name ?? '';
                     const cfgId = resolveStoredNotificationConfigId(

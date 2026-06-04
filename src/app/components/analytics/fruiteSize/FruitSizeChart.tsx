@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import { Box, Flex, Button, HStack } from '@chakra-ui/react';
 import { FaDownload, FaCamera } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import html2canvas from 'html2canvas';
 import { SensorData } from '@/app/types';
 import ChartPanelHeading from '../../common/ChartPanelHeading';
@@ -47,6 +48,7 @@ const FruitSizeChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showBar, setShowBar] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -111,19 +113,19 @@ const FruitSizeChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Calibre des fruits"
-          subtitle="Suivi dimensionnel des fruits sur la campagne."
+          title={t('analytics.fruitSize.chartTitle')}
+          subtitle={t('analytics.fruitSize.chartSubtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChartAria')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsvAria')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -154,7 +156,10 @@ const FruitSizeChart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`Calibre (${fruitUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.fruitSize.yAxisLabel', { unit: fruitUnit }),
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -168,7 +173,7 @@ const FruitSizeChart = ({
             />
             <Bar
               dataKey="fruit_size"
-              name={`Taille des fruits (${fruitUnit})`}
+              name={t('analytics.fruitSize.seriesName', { unit: fruitUnit })}
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               hide={!showBar}

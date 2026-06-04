@@ -12,6 +12,9 @@ import arEG from 'antd/locale/ar_EG';
 import enUS from 'antd/locale/en_US';
 import frFR from 'antd/locale/fr_FR';
 import type { Locale as AntdLocale } from 'antd/es/locale';
+import dayjs from 'dayjs';
+import 'dayjs/locale/fr';
+import 'dayjs/locale/ar';
 import { EmotionCacheProvider } from './EmotionCache';
 import { theme } from './theme';
 import { antdTheme } from './styles/antdTheme';
@@ -22,6 +25,13 @@ const antdLocales: Record<Locale, AntdLocale> = {
   fr: frFR,
   en: enUS,
   ar: arEG,
+};
+
+/** Active UI locale → dayjs locale tag (en is dayjs's built-in default). */
+const dayjsLocales: Record<Locale, string> = {
+  fr: 'fr',
+  en: 'en',
+  ar: 'ar',
 };
 
 /**
@@ -82,6 +92,12 @@ export function Providers({
 }) {
   const dir = dirFor(locale);
   const chakraTheme = useMemo(() => ({ ...theme, direction: dir }), [dir]);
+
+  // Globally localize dayjs so every `dayjs().format(...)` (incl. Arabic month
+  // names) follows the active locale with no change to call sites. Set during
+  // render so the value is correct for the current pass; the call sites read
+  // the global dayjs locale at format time.
+  dayjs.locale(dayjsLocales[locale]);
 
   return (
     <EmotionCacheProvider>

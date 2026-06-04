@@ -44,18 +44,31 @@ import {
 } from '@/app/utils/sensorInstanceOverrides';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 
-const PLACEMENT_OPTIONS = [
-  'Sol',
-  'Eau',
-  'Météo',
-  'Serre',
-  'Feuille / fruit',
-  'Électricité',
-  'Autre',
-];
+const PLACEMENT_OPTION_KEYS = [
+  'soil',
+  'water',
+  'weather',
+  'greenhouse',
+  'leafFruit',
+  'electricity',
+  'other',
+] as const;
 
 const SensorDirectorySettings = () => {
   const t = useTranslations();
+  // Built-in sensors resolve their reading/type label from the catalog so they
+  // follow the active locale; custom (user-added) sensors keep their stored label.
+  const readingFor = (it: { key: string; readingLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.reading`)
+      ? t(`sensorCatalog.${it.key}.reading`)
+      : it.readingLabel;
+  const typeFor = (it: { key: string; typeLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.type`)
+      ? t(`sensorCatalog.${it.key}.type`)
+      : it.typeLabel;
+  const placementOptions = PLACEMENT_OPTION_KEYS.map((k) =>
+    t(`settings.directory.placementOptions.${k}`)
+  );
   const { mutedTextColor } = useColorModeStyles();
   const toast = useToast();
   const [query, setQuery] = useState('');
@@ -201,11 +214,11 @@ const SensorDirectorySettings = () => {
         <Tbody>
           {rows.map((row) => (
             <Tr key={row.key}>
-              <Td>{row.displayName ?? row.readingLabel}</Td>
+              <Td>{row.displayName ?? readingFor(row)}</Td>
               <Td>
                 {row.placementType
-                  ? `${row.typeLabel} — ${row.placementType}`
-                  : row.typeLabel}
+                  ? `${typeFor(row)} — ${row.placementType}`
+                  : typeFor(row)}
               </Td>
               <Td>{row.key}</Td>
               <Td>{row.defaultUnit}</Td>
@@ -315,7 +328,7 @@ const SensorDirectorySettings = () => {
                 placeholder={t('settings.directory.placementPlaceholder')}
               />
               <datalist id="placement-suggestions">
-                {PLACEMENT_OPTIONS.map((p) => (
+                {placementOptions.map((p) => (
                   <option key={p} value={p} />
                 ))}
               </datalist>

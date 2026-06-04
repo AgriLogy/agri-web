@@ -1,5 +1,5 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   formatCalibratedReading,
   resolveAxisUnit,
@@ -10,9 +10,13 @@ import { SensorData } from '@/app/types';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
 const timeAgo = (
   timestamp: string,
-  t: ReturnType<typeof useTranslations>
+  t: ReturnType<typeof useTranslations>,
+  locale: string
 ): string => {
   const now = new Date();
   const then = new Date(timestamp);
@@ -25,11 +29,12 @@ const timeAgo = (
     return t('analytics.lastData.minutesAgo', { count: diffMin });
   if (diffH < 24)
     return t('analytics.lastData.hoursAgoShort', { count: diffH });
-  return then.toLocaleDateString();
+  return then.toLocaleDateString(localeTag(locale));
 };
 
 const FruiteSizeLastData = ({ data }: { data: SensorData[] }) => {
   const t = useTranslations();
+  const locale = useLocale();
   const latest = data[data.length - 1];
   useUnitOverridesRevision();
 
@@ -73,7 +78,7 @@ const FruiteSizeLastData = ({ data }: { data: SensorData[] }) => {
         <Text fontSize="xs" color={subColor} mt={2}>
           {latest
             ? t('analytics.lastData.measuredAt', {
-                time: timeAgo(latest.timestamp, t),
+                time: timeAgo(latest.timestamp, t, locale),
               })
             : ''}
         </Text>

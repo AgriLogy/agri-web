@@ -1,6 +1,7 @@
 'use client';
 import { Box } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useCalibratedStationChartRows } from '@/app/hooks/useCalibratedStationChartRows';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import { resolveAxisUnit } from '@/app/utils/unitOverrides';
@@ -40,6 +41,7 @@ const WIND_SPEED_FIELDS = [
 ] as const;
 
 const WindSpeedGraph = ({ data }: { data: any }) => {
+  const t = useTranslations();
   const { bg, textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
   useUnitOverridesRevision();
@@ -84,7 +86,7 @@ const WindSpeedGraph = ({ data }: { data: any }) => {
     >
       <Box mb={4}>
         <ChartPanelHeading
-          title="Vent — vitesse horaire"
+          title={t('station.windSpeed.title')}
           subtitle={data?.sensor_names?.wind_speed}
           color={textColor}
         />
@@ -108,7 +110,10 @@ const WindSpeedGraph = ({ data }: { data: any }) => {
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`Vitesse (${windUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('station.windSpeed.axis', { unit: windUnit }),
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -124,7 +129,7 @@ const WindSpeedGraph = ({ data }: { data: any }) => {
               type="monotone"
               dataKey="wind_speed"
               stroke={data.sensor_colors?.wind_speed_color}
-              name={`Wind speed (${windUnit})`}
+              name={t('station.windSpeed.series', { unit: windUnit })}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"

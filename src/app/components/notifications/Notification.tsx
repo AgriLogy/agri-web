@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Badge, Box, Button, Divider, HStack, Text } from '@chakra-ui/react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import {
   evaluateV1NotificationDecision,
@@ -55,6 +55,9 @@ interface NotificationProps {
   onDeleteZone?: () => void;
 }
 
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
 const decisionBadgeColor = (d: NotificationDecisionLevel) => {
   if (d === 'critical') return 'red';
   if (d === 'advisory') return 'orange';
@@ -69,6 +72,7 @@ const Notification: React.FC<NotificationProps> = ({
   onDeleteZone,
 }) => {
   const t = useTranslations();
+  const locale = useLocale();
   const decisionLabelFr = (d: NotificationDecisionLevel) => {
     if (d === 'critical') return t('notifications.card.decisionCritical');
     if (d === 'advisory') return t('notifications.card.decisionAdvisory');
@@ -76,7 +80,7 @@ const Notification: React.FC<NotificationProps> = ({
   };
   const { bg, textColor, hoverColor } = useColorModeStyles();
   const notificationDate = new Date(notification.notification_date);
-  const formattedDate = notificationDate.toLocaleString('fr-FR');
+  const formattedDate = notificationDate.toLocaleString(localeTag(locale));
   const [engineResult, setEngineResult] = useState<DecisionEngineResult | null>(
     null
   );

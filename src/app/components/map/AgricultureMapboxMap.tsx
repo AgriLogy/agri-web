@@ -588,7 +588,7 @@ export default function AgricultureMapboxMap({
       const typeKey = props?.sensorType ?? '';
       const typeLabel = typeKey
         ? t(`sensors.${sensorTypeI18nKey(typeKey)}`)
-        : getSensorTypeMeta(typeKey).label;
+        : t('misc.map.sensor');
       const zoneName = props?.zoneName;
       const zoneLine =
         zoneName && zoneName.length > 0
@@ -630,11 +630,10 @@ export default function AgricultureMapboxMap({
       );
       const typeId = placingSensorTypeRef.current;
       if (!typeId) return;
-      const meta = getSensorTypeMeta(typeId);
       sensorInstanceCounterRef.current += 1;
       const typeName = typeId
         ? t(`sensors.${sensorTypeI18nKey(typeId)}`)
-        : meta.label;
+        : t('misc.map.sensor');
       const name = `${typeName} ${sensorInstanceCounterRef.current}`;
       const sid = `sensor-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
       const props: FarmSensorProperties = {

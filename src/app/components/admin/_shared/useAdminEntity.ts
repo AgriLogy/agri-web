@@ -1,6 +1,7 @@
 'use client';
 
 import { App } from 'antd';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
 type FetcherResult<T> = T | T[] | null | undefined;
@@ -26,7 +27,9 @@ export function useAdminEntity<T>(
   fetcher: () => Promise<FetcherResult<T>>,
   options: { onErrorLabel?: string; immediate?: boolean } = {}
 ): UseAdminEntityState<T> {
-  const { onErrorLabel = 'Chargement impossible.', immediate = true } = options;
+  const t = useTranslations();
+  const { onErrorLabel = t('admin.common.loadError'), immediate = true } =
+    options;
   const { message } = App.useApp();
   const [data, setData] = useState<T | null>(null);
   const [list, setList] = useState<T[]>([]);
@@ -50,13 +53,14 @@ export function useAdminEntity<T>(
       }
     } catch (err) {
       const detail =
-        (err as { message?: string })?.message ?? 'Erreur inconnue.';
+        (err as { message?: string })?.message ??
+        t('admin.common.unknownError');
       setError(detail);
       message.error(onErrorLabel);
     } finally {
       setLoading(false);
     }
-  }, [fetcher, message, onErrorLabel]);
+  }, [fetcher, message, onErrorLabel, t]);
 
   useEffect(() => {
     if (immediate) {

@@ -31,6 +31,10 @@ import {
 
 const SensorGroupsSettings = () => {
   const t = useTranslations();
+  const readingFor = (it: { key: string; readingLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.reading`)
+      ? t(`sensorCatalog.${it.key}.reading`)
+      : it.readingLabel;
   const toast = useToast();
   const { textColor, bgColor, borderColor, mutedTextColor } =
     useColorModeStyles();
@@ -201,7 +205,7 @@ const SensorGroupsSettings = () => {
               <option value="">{t('settings.groups.addSensorOption')}</option>
               {catalog.map((c: SensorCatalogItem) => (
                 <option key={c.key} value={c.key}>
-                  {c.readingLabel} ({c.key})
+                  {readingFor(c)} ({c.key})
                 </option>
               ))}
             </chakra.select>

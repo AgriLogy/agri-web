@@ -12,17 +12,20 @@ import type { ColumnsType } from 'antd/es/table';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
 import { adminUserApi, type AdminUserRow } from '@/app/lib/adminUserApi';
 import UserCreateDrawer from './UserCreateDrawer';
 
-const formatDate = (iso: string | null): string => {
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
+const formatDate = (iso: string | null, tag: string): string => {
   if (!iso) return '—';
   try {
-    return new Date(iso).toLocaleDateString('fr-FR', {
+    return new Date(iso).toLocaleDateString(tag, {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -34,6 +37,7 @@ const formatDate = (iso: string | null): string => {
 
 const AdminUserListMain = () => {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   const { message, modal } = App.useApp();
   const router = useRouter();
   const [data, setData] = useState<AdminUserRow[]>([]);
@@ -203,13 +207,13 @@ const AdminUserListMain = () => {
         dataIndex: 'date_joined',
         key: 'date_joined',
         sorter: (a, b) => a.date_joined.localeCompare(b.date_joined),
-        render: formatDate,
+        render: (iso: string | null) => formatDate(iso, tag),
       },
       {
         title: t('admin.userList.col.lastLogin'),
         dataIndex: 'last_login',
         key: 'last_login',
-        render: formatDate,
+        render: (iso: string | null) => formatDate(iso, tag),
       },
       {
         title: t('admin.userList.col.actions'),
@@ -258,7 +262,7 @@ const AdminUserListMain = () => {
         ),
       },
     ],
-    [handleResetPassword, handleToggle, router, t]
+    [handleResetPassword, handleToggle, router, t, tag]
   );
 
   return (

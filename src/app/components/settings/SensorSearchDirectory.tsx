@@ -40,6 +40,14 @@ const SensorSearchDirectory = ({
   allowAdd?: boolean;
 }) => {
   const t = useTranslations();
+  const readingFor = (it: { key: string; readingLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.reading`)
+      ? t(`sensorCatalog.${it.key}.reading`)
+      : it.readingLabel;
+  const typeFor = (it: { key: string; typeLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.type`)
+      ? t(`sensorCatalog.${it.key}.type`)
+      : it.typeLabel;
   const { mutedTextColor } = useColorModeStyles();
   const toast = useToast();
   const [query, setQuery] = useState('');
@@ -150,8 +158,8 @@ const SensorSearchDirectory = ({
         <Tbody>
           {rows.map((row) => (
             <Tr key={row.key}>
-              <Td>{row.readingLabel}</Td>
-              <Td>{row.typeLabel}</Td>
+              <Td>{readingFor(row)}</Td>
+              <Td>{typeFor(row)}</Td>
               <Td>{row.key}</Td>
               <Td>{row.defaultUnit}</Td>
             </Tr>

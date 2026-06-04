@@ -384,9 +384,13 @@ const WindRadarChart = ({
     if (isDataEmpty) return;
 
     const headers = [
-      'Direction',
-      ...speedBins.map((b) => `${b.label} (%)`),
-      ...speedBins.map((b) => `${b.label} (Count)`),
+      t('analytics.windRadar.direction'),
+      ...speedBins.map(
+        (b) => `${b.label} (${t('analytics.windRadar.csvPercentHeader')})`
+      ),
+      ...speedBins.map(
+        (b) => `${b.label} (${t('analytics.windRadar.csvCountHeader')})`
+      ),
     ];
     const rows = LABELS_16_POINT.map((dir) => {
       const pctData = speedBins.map(
