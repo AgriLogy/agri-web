@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, SimpleGrid } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import ElectrovannesList from './ElectrovannesDashboardCard';
@@ -26,11 +27,12 @@ const Card = ({ children }: { children: React.ReactNode }) => (
 );
 
 const MainContent = () => {
+  const t = useTranslations();
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Tableau de bord"
-        subtitle="Vue d'ensemble de la ferme — météo, zones, et état du réseau d'irrigation"
+        title={t('shell.dashboard.title')}
+        subtitle={t('shell.dashboard.subtitle')}
       />
       <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 3, md: 4 }}>
         <Card>

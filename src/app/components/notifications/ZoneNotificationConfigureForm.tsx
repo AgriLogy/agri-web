@@ -61,6 +61,7 @@ import {
   FaWater,
   FaWhatsapp,
 } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import api from '@/app/lib/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
@@ -263,6 +264,7 @@ const ZoneNotificationConfigureForm: React.FC<
   onClose,
   onSaved,
 }) => {
+  const t = useTranslations();
   const { bg, textColor, mutedTextColor } = useColorModeStyles();
   const toast = useToast();
   const {
@@ -293,9 +295,10 @@ const ZoneNotificationConfigureForm: React.FC<
               } else if (list.length > 1) {
                 cfgId = list[0].configId;
                 toast({
-                  title: 'Plusieurs secteurs pour cette zone',
-                  description:
-                    'Ouvrez la modification depuis la carte de notification concernée pour cibler le bon secteur.',
+                  title: t('notifications.configForm.multiSectorTitle'),
+                  description: t(
+                    'notifications.configForm.multiSectorDescription'
+                  ),
                   status: 'info',
                   duration: 5000,
                 });
@@ -340,9 +343,10 @@ const ZoneNotificationConfigureForm: React.FC<
             if (initialId !== undefined) {
               setZoneId(initialId);
               toast({
-                title: 'Configuration introuvable',
-                description:
-                  'Aucune notification enregistrée pour cette zone. Fermez ce panneau et utilisez « Ajouter une notification de zone ».',
+                title: t('notifications.configForm.configNotFoundTitle'),
+                description: t(
+                  'notifications.configForm.configNotFoundDescription'
+                ),
                 status: 'warning',
               });
               setForm(mergeZoneConfig(initialId, undefined));
@@ -351,7 +355,10 @@ const ZoneNotificationConfigureForm: React.FC<
         }
       } catch (k) {
         logOptionalApiFailure('ZoneNotificationConfigure: zones', k);
-        toast({ title: 'Impossible de charger les zones', status: 'error' });
+        toast({
+          title: t('notifications.configForm.zonesLoadError'),
+          status: 'error',
+        });
       }
     };
     void load();
@@ -366,24 +373,33 @@ const ZoneNotificationConfigureForm: React.FC<
 
   const apply = async () => {
     if (!form) {
-      toast({ title: 'Chargement…', status: 'warning' });
+      toast({
+        title: t('notifications.configForm.loading'),
+        status: 'warning',
+      });
       return;
     }
     if (!zones.length) {
-      toast({ title: 'Aucune zone disponible', status: 'error' });
+      toast({
+        title: t('notifications.configForm.noZoneAvailable'),
+        status: 'error',
+      });
       return;
     }
     const resolvedZoneId = zones.some((z) => z.id === zoneId)
       ? zoneId
       : form.zoneId;
     if (!zones.some((z) => z.id === resolvedZoneId)) {
-      toast({ title: 'Veuillez sélectionner une zone', status: 'warning' });
+      toast({
+        title: t('notifications.configForm.selectZone'),
+        status: 'warning',
+      });
       return;
     }
     const cfgId = form.configId?.trim();
     if (!cfgId) {
       toast({
-        title: 'Identifiant de configuration manquant',
+        title: t('notifications.configForm.missingConfigId'),
         status: 'error',
       });
       return;
@@ -397,7 +413,7 @@ const ZoneNotificationConfigureForm: React.FC<
 
     const zoneLabel =
       zones.find((z) => z.id === toSave.zoneId)?.name ??
-      `Zone ${toSave.zoneId}`;
+      t('notifications.configForm.zoneNumber', { id: toSave.zoneId });
     if (!hadConfigBefore) {
       prependNotificationsToCache([
         buildLocalZoneConfirmationNotification({
@@ -424,9 +440,10 @@ const ZoneNotificationConfigureForm: React.FC<
     if (toSave.notifyEmail || toSave.notifySms || toSave.notifyWhatsapp) {
       await dispatchZoneNotificationOutbound({
         zoneId: toSave.zoneId,
-        subject: `Agrilogy — configuration notification ${toSave.notificationName || zoneLabel}`,
-        message:
-          'La configuration des seuils de notification de zone a été enregistrée. Les canaux acceptés seront utilisés côté serveur lorsque disponibles.',
+        subject: t('notifications.configForm.outboundSubject', {
+          name: toSave.notificationName || zoneLabel,
+        }),
+        message: t('notifications.configForm.outboundMessage'),
         channels: {
           email: toSave.notifyEmail,
           sms: toSave.notifySms,
@@ -442,8 +459,8 @@ const ZoneNotificationConfigureForm: React.FC<
     toast({
       title:
         intent === 'edit'
-          ? 'Modifications enregistrées'
-          : 'Configuration enregistrée',
+          ? t('notifications.configForm.savedChanges')
+          : t('notifications.configForm.savedConfig'),
       status: 'success',
     });
     onSaved?.();
@@ -454,11 +471,10 @@ const ZoneNotificationConfigureForm: React.FC<
     return (
       <Box p={6} color={textColor}>
         <Text fontWeight="medium">
-          Aucune zone n&apos;est disponible pour ce compte.
+          {t('notifications.configForm.noZoneForAccount')}
         </Text>
         <Text fontSize="sm" mt={2} color={mutedTextColor}>
-          Créez ou assignez d&apos;abord une parcelle / zone côté Agrilogy, puis
-          revenez configurer une notification.
+          {t('notifications.configForm.noZoneHint')}
         </Text>
       </Box>
     );
@@ -467,7 +483,7 @@ const ZoneNotificationConfigureForm: React.FC<
   if (!form) {
     return (
       <Box p={6} color={textColor}>
-        <Text>Chargement…</Text>
+        <Text>{t('notifications.configForm.loading')}</Text>
       </Box>
     );
   }
@@ -502,26 +518,22 @@ const ZoneNotificationConfigureForm: React.FC<
           <Box bg={bg} p={5} borderRadius="xl" borderWidth="1px" boxShadow="sm">
             <PanelTitle
               icon={FaSeedling}
-              title="Paramètres zone"
+              title={t('notifications.configForm.zoneParamsTitle')}
               titleColor={textColor}
             />
             {intent === 'edit' ? (
               <Text fontSize="sm" color={mutedTextColor} mb={3}>
-                Enregistrer met à jour cette notification (secteur, seuils et
-                canaux) pour la zone sélectionnée.
+                {t('notifications.configForm.editHint')}
               </Text>
             ) : (
               <Text fontSize="sm" color={mutedTextColor} mb={3}>
-                Une même zone peut regrouper plusieurs secteurs : créez une
-                notification par secteur pour des seuils et un suivi distincts.
-                Un court message de confirmation est ajouté à la liste la
-                première fois que vous enregistrez cette configuration.
+                {t('notifications.configForm.createHint')}
               </Text>
             )}
             <VStack align="stretch" spacing={4}>
               <FormControl>
                 <LabelWithIcon icon={FaMapMarkedAlt} labelColor={textColor}>
-                  Zone
+                  {t('notifications.configForm.zoneLabel')}
                 </LabelWithIcon>
                 <Select
                   value={zoneId}
@@ -545,33 +557,34 @@ const ZoneNotificationConfigureForm: React.FC<
 
               <FormControl>
                 <LabelWithIcon icon={FaSitemap} labelColor={textColor}>
-                  Secteur (dans la zone)
+                  {t('notifications.configForm.sectorLabel')}
                 </LabelWithIcon>
                 <Input
                   value={form.secteurLabel}
                   onChange={(e) => update('secteurLabel', e.target.value)}
-                  placeholder="Ex. Secteur nord, Parcelle B, Bloc 2…"
+                  placeholder={t('notifications.configForm.sectorPlaceholder')}
                 />
                 <Text fontSize="xs" color={mutedTextColor} mt={1}>
-                  Identifie la portion de la zone couverte par cette
-                  notification.
+                  {t('notifications.configForm.sectorHint')}
                 </Text>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaPen} labelColor={textColor}>
-                  Nom de la notification
+                  {t('notifications.configForm.notificationNameLabel')}
                 </LabelWithIcon>
                 <Input
                   value={form.notificationName}
                   onChange={(e) => update('notificationName', e.target.value)}
-                  placeholder="Ex. Zone 1 pommes de terre"
+                  placeholder={t(
+                    'notifications.configForm.notificationNamePlaceholder'
+                  )}
                 />
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaFilter} labelColor={textColor}>
-                  Type de sol
+                  {t('notifications.configForm.soilTypeLabel')}
                 </LabelWithIcon>
                 <RadioGroup
                   value={form.soilType}
@@ -580,16 +593,22 @@ const ZoneNotificationConfigureForm: React.FC<
                   }
                 >
                   <HStack spacing={4}>
-                    <Radio value="light">Léger</Radio>
-                    <Radio value="medium">Moyen</Radio>
-                    <Radio value="heavy">Lourd</Radio>
+                    <Radio value="light">
+                      {t('notifications.configForm.soilLight')}
+                    </Radio>
+                    <Radio value="medium">
+                      {t('notifications.configForm.soilMedium')}
+                    </Radio>
+                    <Radio value="heavy">
+                      {t('notifications.configForm.soilHeavy')}
+                    </Radio>
                   </HStack>
                 </RadioGroup>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaInfoCircle} labelColor={textColor}>
-                  Caractéristique du sol
+                  {t('notifications.configForm.soilCharacteristicLabel')}
                 </LabelWithIcon>
                 <Input
                   value={form.soilCharacteristics}
@@ -601,23 +620,31 @@ const ZoneNotificationConfigureForm: React.FC<
 
               <FormControl>
                 <LabelWithIcon icon={FaTint} labelColor={textColor}>
-                  Humidité du sol (source)
+                  {t('notifications.configForm.soilMoistureSourceLabel')}
                 </LabelWithIcon>
                 <Select
                   value={form.soilMoistureSource}
                   onChange={(e) => update('soilMoistureSource', e.target.value)}
                 >
-                  <option value="avg_sensors">Capteur moyen (1+2+3)</option>
-                  <option value="sensor_1">Capteur 1</option>
-                  <option value="sensor_2">Capteur 2</option>
-                  <option value="sensor_3">Capteur 3</option>
+                  <option value="avg_sensors">
+                    {t('notifications.configForm.avgSensors')}
+                  </option>
+                  <option value="sensor_1">
+                    {t('notifications.configForm.sensor1')}
+                  </option>
+                  <option value="sensor_2">
+                    {t('notifications.configForm.sensor2')}
+                  </option>
+                  <option value="sensor_3">
+                    {t('notifications.configForm.sensor3')}
+                  </option>
                 </Select>
               </FormControl>
 
               <SimpleGrid columns={2} spacing={4}>
                 <FormControl>
                   <LabelWithIcon icon={FaChartLine} labelColor={textColor}>
-                    Coefficient Kc
+                    {t('notifications.configForm.kcCoefficient')}
                   </LabelWithIcon>
                   <Select
                     value={form.kcMode}
@@ -638,8 +665,12 @@ const ZoneNotificationConfigureForm: React.FC<
                       }
                     }}
                   >
-                    <option value="table">Table</option>
-                    <option value="manual">Manuel</option>
+                    <option value="table">
+                      {t('notifications.configForm.kcModeTable')}
+                    </option>
+                    <option value="manual">
+                      {t('notifications.configForm.kcModeManual')}
+                    </option>
                   </Select>
                   {form.kcMode === 'table' && (
                     <Button
@@ -650,13 +681,13 @@ const ZoneNotificationConfigureForm: React.FC<
                       borderRadius="full"
                       onClick={onKcTableOpen}
                     >
-                      Ouvrir la table Kc…
+                      {t('notifications.configForm.openKcTable')}
                     </Button>
                   )}
                 </FormControl>
                 <FormControl>
                   <LabelWithIcon icon={FaBolt} labelColor={textColor}>
-                    Valeur Kc
+                    {t('notifications.configForm.kcValue')}
                   </LabelWithIcon>
                   <NumberInput
                     value={
@@ -678,7 +709,7 @@ const ZoneNotificationConfigureForm: React.FC<
                   </NumberInput>
                   {form.kcMode === 'table' && (
                     <Text fontSize="xs" color={mutedTextColor} mt={1}>
-                      Moyenne pondérée (stades actifs) — éditable via la table.
+                      {t('notifications.configForm.kcWeightedHint')}
                     </Text>
                   )}
                 </FormControl>
@@ -696,7 +727,7 @@ const ZoneNotificationConfigureForm: React.FC<
                   color={textColor}
                   pt={1}
                 >
-                  Coefficient Kc
+                  {t('notifications.configForm.kcCoefficient')}
                 </Text>
                 <VStack align="stretch" spacing={2}>
                   <Checkbox
@@ -715,7 +746,7 @@ const ZoneNotificationConfigureForm: React.FC<
                       '& .chakra-checkbox__label': { color: 'green.300' },
                     }}
                   >
-                    Humidité basse (%)
+                    {t('notifications.configForm.humidityLow')}
                   </Checkbox>
                   <Checkbox
                     colorScheme="brand"
@@ -733,7 +764,7 @@ const ZoneNotificationConfigureForm: React.FC<
                       '& .chakra-checkbox__label': { color: 'green.300' },
                     }}
                   >
-                    Humidité moyenne (%)
+                    {t('notifications.configForm.humidityMid')}
                   </Checkbox>
                   <Checkbox
                     colorScheme="brand"
@@ -751,14 +782,14 @@ const ZoneNotificationConfigureForm: React.FC<
                       '& .chakra-checkbox__label': { color: 'green.300' },
                     }}
                   >
-                    Humidité haute (%)
+                    {t('notifications.configForm.humidityHigh')}
                   </Checkbox>
                 </VStack>
               </Grid>
 
               <FormControl>
                 <LabelWithIcon icon={FaSun} labelColor={textColor}>
-                  Référence ETo
+                  {t('notifications.configForm.et0ReferenceLabel')}
                 </LabelWithIcon>
                 <Select
                   value={form.et0Source}
@@ -769,27 +800,37 @@ const ZoneNotificationConfigureForm: React.FC<
                     )
                   }
                 >
-                  <option value="weather_station">Calcul station météo</option>
-                  <option value="calculated">Calcul locale</option>
+                  <option value="weather_station">
+                    {t('notifications.configForm.et0WeatherStation')}
+                  </option>
+                  <option value="calculated">
+                    {t('notifications.configForm.et0LocalCalc')}
+                  </option>
                 </Select>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaCloud} labelColor={textColor}>
-                  Précipitations
+                  {t('notifications.configForm.precipitationLabel')}
                 </LabelWithIcon>
                 <Select
                   value={form.precipSource}
                   onChange={(e) => update('precipSource', e.target.value)}
                 >
-                  <option value="sensor">Capteur de précipitation</option>
-                  <option value="station">Station</option>
+                  <option value="sensor">
+                    {t('notifications.configForm.precipSensor')}
+                  </option>
+                  <option value="station">
+                    {t('notifications.configForm.precipStation')}
+                  </option>
                 </Select>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaPercent} labelColor={textColor}>
-                  Facteur KR ({form.krFactor.toFixed(2)})
+                  {t('notifications.configForm.krFactor', {
+                    value: form.krFactor.toFixed(2),
+                  })}
                 </LabelWithIcon>
                 <Slider
                   min={0}
@@ -808,7 +849,7 @@ const ZoneNotificationConfigureForm: React.FC<
               <HStack align="flex-start">
                 <FormControl>
                   <LabelWithIcon icon={FaVectorSquare} labelColor={textColor}>
-                    Surface (ha)
+                    {t('notifications.configForm.surfaceHa')}
                   </LabelWithIcon>
                   <NumberInput
                     value={form.zoneAreaHa}
@@ -821,7 +862,7 @@ const ZoneNotificationConfigureForm: React.FC<
                 </FormControl>
                 <FormControl>
                   <LabelWithIcon icon={FaLeaf} labelColor={textColor}>
-                    Culture
+                    {t('notifications.configForm.cropLabel')}
                   </LabelWithIcon>
                   <Input
                     value={form.cropType}
@@ -832,7 +873,7 @@ const ZoneNotificationConfigureForm: React.FC<
 
               <FormControl>
                 <LabelWithIcon icon={FaWater} labelColor={textColor}>
-                  Débit (m³/h)
+                  {t('notifications.configForm.flowRate')}
                 </LabelWithIcon>
                 <NumberInput
                   value={form.flowRateM3h}
@@ -852,14 +893,14 @@ const ZoneNotificationConfigureForm: React.FC<
           <Box bg={bg} p={5} borderRadius="xl" borderWidth="1px" boxShadow="sm">
             <PanelTitle
               icon={FaShower}
-              title="Irrigation & seuils moteur v1"
+              title={t('notifications.configForm.irrigationPanelTitle')}
               accent="cyan.400"
               titleColor={textColor}
             />
             <VStack align="stretch" spacing={4}>
               <FormControl>
                 <LabelWithIcon icon={FaWater} labelColor={textColor}>
-                  Méthode d&apos;irrigation
+                  {t('notifications.configForm.irrigationMethodLabel')}
                 </LabelWithIcon>
                 <RadioGroup
                   value={form.irrigationMethod}
@@ -871,15 +912,19 @@ const ZoneNotificationConfigureForm: React.FC<
                   }
                 >
                   <Stack>
-                    <Radio value="drip_sprinkler">Goutte / aspersion</Radio>
-                    <Radio value="subsurface_drip">Goutte souterraine</Radio>
+                    <Radio value="drip_sprinkler">
+                      {t('notifications.configForm.dripSprinkler')}
+                    </Radio>
+                    <Radio value="subsurface_drip">
+                      {t('notifications.configForm.subsurfaceDrip')}
+                    </Radio>
                   </Stack>
                 </RadioGroup>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaClock} labelColor={textColor}>
-                  Fréquence & notification
+                  {t('notifications.configForm.frequencyLabel')}
                 </LabelWithIcon>
                 <InputGroup>
                   <Input
@@ -898,13 +943,17 @@ const ZoneNotificationConfigureForm: React.FC<
                       );
                     }}
                   />
-                  <InputRightAddon>minutes</InputRightAddon>
+                  <InputRightAddon>
+                    {t('notifications.configForm.minutes')}
+                  </InputRightAddon>
                 </InputGroup>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaSlidersH} labelColor={textColor}>
-                  Perméabilité ({form.soilPermeabilityPct} %)
+                  {t('notifications.configForm.permeability', {
+                    value: form.soilPermeabilityPct,
+                  })}
                 </LabelWithIcon>
                 <Slider
                   min={0}
@@ -922,7 +971,7 @@ const ZoneNotificationConfigureForm: React.FC<
 
               <FormControl>
                 <LabelWithIcon icon={FaRandom} labelColor={textColor}>
-                  Vanne
+                  {t('notifications.configForm.valveLabel')}
                 </LabelWithIcon>
                 <RadioGroup
                   value={form.valveMode}
@@ -934,15 +983,19 @@ const ZoneNotificationConfigureForm: React.FC<
                   }
                 >
                   <HStack spacing={4}>
-                    <Radio value="auto">Automatique</Radio>
-                    <Radio value="manual">Manuelle</Radio>
+                    <Radio value="auto">
+                      {t('notifications.configForm.valveAuto')}
+                    </Radio>
+                    <Radio value="manual">
+                      {t('notifications.configForm.valveManual')}
+                    </Radio>
                   </HStack>
                 </RadioGroup>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaFan} labelColor={textColor}>
-                  Seuil DPV (kPa)
+                  {t('notifications.configForm.vpdThreshold')}
                 </LabelWithIcon>
                 <NumberInput
                   value={form.vpdThresholdKpa}
@@ -957,7 +1010,7 @@ const ZoneNotificationConfigureForm: React.FC<
 
               <FormControl>
                 <LabelWithIcon icon={FaTree} labelColor={textColor}>
-                  Surveillance racine
+                  {t('notifications.configForm.rootMonitoringLabel')}
                 </LabelWithIcon>
                 <Select
                   value={form.rootMonitoring}
@@ -968,8 +1021,12 @@ const ZoneNotificationConfigureForm: React.FC<
                     )
                   }
                 >
-                  <option value="on">Activée</option>
-                  <option value="off">Désactivée</option>
+                  <option value="on">
+                    {t('notifications.configForm.enabled')}
+                  </option>
+                  <option value="off">
+                    {t('notifications.configForm.disabled')}
+                  </option>
                 </Select>
               </FormControl>
 
@@ -978,7 +1035,7 @@ const ZoneNotificationConfigureForm: React.FC<
               <HStack spacing={2}>
                 <Icon as={FaTachometerAlt} color="orange.400" boxSize={5} />
                 <Text fontWeight="semibold" color={textColor}>
-                  Seuils moteur v1 (ET0 × Kc, humidité)
+                  {t('notifications.configForm.engineThresholdsTitle')}
                 </Text>
               </HStack>
 
@@ -988,7 +1045,7 @@ const ZoneNotificationConfigureForm: React.FC<
                   labelColor={textColor}
                   iconColor="blue.400"
                 >
-                  Seuil critique humidité sol (%)
+                  {t('notifications.configForm.criticalSoilHumidityLabel')}
                 </LabelWithIcon>
                 <Slider
                   min={5}
@@ -1003,13 +1060,15 @@ const ZoneNotificationConfigureForm: React.FC<
                   <SliderThumb />
                 </Slider>
                 <Text fontSize="sm" color="gray.500">
-                  {form.criticalThresholdPct} % — en dessous = décision critique
+                  {t('notifications.configForm.criticalSoilHumidityHint', {
+                    value: form.criticalThresholdPct,
+                  })}
                 </Text>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaBolt} labelColor={textColor}>
-                  Seuil conseil ET0×Kc (mm)
+                  {t('notifications.configForm.et0KcAdvisoryLabel')}
                 </LabelWithIcon>
                 <NumberInput
                   value={form.et0KcAdvisoryMm}
@@ -1021,13 +1080,13 @@ const ZoneNotificationConfigureForm: React.FC<
                   <NumberInputField />
                 </NumberInput>
                 <Text fontSize="sm" color="gray.500">
-                  Au-dessus = décision advisory (demande en eau élevée)
+                  {t('notifications.configForm.et0KcAdvisoryHint')}
                 </Text>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaCubes} labelColor={textColor}>
-                  Volume d&apos;eau max (m³)
+                  {t('notifications.configForm.maxWaterLabel')}
                 </LabelWithIcon>
                 <NumberInput
                   value={form.maxWaterM3}
@@ -1043,11 +1102,11 @@ const ZoneNotificationConfigureForm: React.FC<
               <HStack spacing={2}>
                 <Icon as={FaBell} color="purple.400" boxSize={5} />
                 <Text fontWeight="semibold" color={textColor}>
-                  Canaux de notification
+                  {t('notifications.configForm.channelsTitle')}
                 </Text>
               </HStack>
               <Text fontSize="sm" color="gray.500" mb={1}>
-                Cochez les canaux que vous acceptez pour recevoir des alertes.
+                {t('notifications.configForm.channelsHint')}
               </Text>
 
               <VStack align="stretch" spacing={3} pl={1}>
@@ -1095,7 +1154,7 @@ const ZoneNotificationConfigureForm: React.FC<
           leftIcon={<Icon as={FaBell} />}
           onClick={() => void apply()}
         >
-          Enregistrer la notification de zone
+          {t('notifications.configForm.saveZoneNotification')}
         </Button>
       </HStack>
     </Box>

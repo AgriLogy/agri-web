@@ -1,6 +1,7 @@
 'use client';
 
 import { Select, useToken } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 export type ZoneOption = { id: number; name: string };
 
@@ -16,17 +17,14 @@ export type ZoneSelectProps = {
  * Token-driven zone picker. Replaces the raw `<select>` blocks the
  * analytics pages used to inline (each with their own colour math).
  */
-export function ZoneSelect({
-  zones,
-  value,
-  onChange,
-  label = 'Sélectionner une zone',
-}: ZoneSelectProps) {
+export function ZoneSelect({ zones, value, onChange, label }: ZoneSelectProps) {
+  const t = useTranslations();
   const [border] = useToken('colors', ['app.border']);
+  const ariaLabel = label ?? t('shell.zoneSelect.label');
 
   return (
     <Select
-      aria-label={label}
+      aria-label={ariaLabel}
       value={value ?? ''}
       onChange={(e) => onChange(Number(e.target.value))}
       width="auto"

@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -45,6 +46,7 @@ const ElectricityconsumptionChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showLine, setShowLine] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -115,19 +117,19 @@ const ElectricityconsumptionChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Consommation électrique"
-          subtitle="Profil de charge énergétique sur la période affichée."
+          title={t('sensors.electricity_consumption')}
+          subtitle={t('analytics.electricity.subtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -156,7 +158,10 @@ const ElectricityconsumptionChart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`Énergie (${elecUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                `${t('analytics.electricity.energyAxis')} (${elecUnit})`,
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -171,7 +176,7 @@ const ElectricityconsumptionChart = ({
             <Line
               type="monotone"
               dataKey="electricity_consumption"
-              name={`Consommation (${elecUnit})`}
+              name={`${t('analytics.electricity.consumptionSeries')} (${elecUnit})`}
               hide={!showLine}
               stroke="#82ca9d"
               strokeWidth={2.25}

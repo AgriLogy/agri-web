@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   /** Sorted unique timestamps (same order as slider indices) */
@@ -39,8 +40,10 @@ export default function ChartDateRangeDragger({
   startIdx,
   endIdx,
   onChange,
-  label = 'Période affichée',
+  label,
 }: Props) {
+  const t = useTranslations();
+  const effectiveLabel = label ?? t('misc.chartDateRangeDragger.label');
   const border = useColorModeValue('gray.200', 'gray.600');
   const muted = useColorModeValue('gray.600', 'gray.400');
   const trackBg = useColorModeValue('gray.100', 'gray.700');
@@ -78,7 +81,7 @@ export default function ChartDateRangeDragger({
           color={muted}
           letterSpacing="wide"
         >
-          {label}
+          {effectiveLabel}
         </Text>
         <Text
           fontSize="sm"
@@ -92,8 +95,8 @@ export default function ChartDateRangeDragger({
 
       <RangeSlider
         aria-label={[
-          'Début de la période affichée',
-          'Fin de la période affichée',
+          t('misc.chartDateRangeDragger.startAria'),
+          t('misc.chartDateRangeDragger.endAria'),
         ]}
         min={0}
         max={maxIdx}

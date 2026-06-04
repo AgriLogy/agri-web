@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { Box, Button, HStack, Flex, useColorModeValue } from '@chakra-ui/react';
 import ChartPanelHeading from '../../common/ChartPanelHeading';
 import ChartStateView from '../../common/ChartStateView';
@@ -244,6 +245,7 @@ const WindRadarChart = ({
   windDirectionData: WindData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const unitRev = useUnitOverridesRevision();
   const speedBins = useMemo(() => {
@@ -358,7 +360,7 @@ const WindRadarChart = ({
 
             if (realValue === 0) return undefined;
 
-            return ` ${dataset.label}: ${realValue.toFixed(1)}% (${countValue} mesures)`;
+            return ` ${dataset.label}: ${realValue.toFixed(1)}% (${t('analytics.windRadar.measurements', { count: countValue })})`;
           },
         },
       },
@@ -411,19 +413,19 @@ const WindRadarChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Vent — rose des directions"
-          subtitle="Répartition par secteur et classes de vitesse sur la période."
+          title={t('analytics.windRadar.title')}
+          subtitle={t('analytics.windRadar.subtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture"
+            aria-label={t('analytics.common.captureAria')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Export"
+            aria-label={t('analytics.common.exportAria')}
             variant="ghost"
             onClick={handleDownloadData}
             isDisabled={isDataEmpty}
@@ -436,7 +438,7 @@ const WindRadarChart = ({
       <ChartStateView
         loading={loading}
         empty={isDataEmpty}
-        emptyText="Aucune donnée disponible"
+        emptyText={t('analytics.common.noDataAvailable')}
         chartRef={chartRef}
         height={CHART_PLOT_HEIGHT_TALL_PX}
       >

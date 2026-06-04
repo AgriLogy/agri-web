@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -45,6 +46,7 @@ const LargeFruitDiameterChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showLine, setShowLine] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -115,19 +117,19 @@ const LargeFruitDiameterChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Diamètre des gros fruits"
-          subtitle="Croissance calibrée des fruits les plus développés."
+          title={t('sensors.large_fruit_diameter')}
+          subtitle={t('analytics.largeFruitDiameter.subtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -156,7 +158,10 @@ const LargeFruitDiameterChart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`Diamètre (${diamUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.largeFruitDiameter.axisLabel', { unit: diamUnit }),
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -171,7 +176,9 @@ const LargeFruitDiameterChart = ({
             <Line
               type="monotone"
               dataKey="large_fruit_diameter"
-              name={`Diamètre (${diamUnit})`}
+              name={t('analytics.largeFruitDiameter.legendName', {
+                unit: diamUnit,
+              })}
               hide={!showLine}
               stroke="#82ca9d"
               strokeWidth={2.25}

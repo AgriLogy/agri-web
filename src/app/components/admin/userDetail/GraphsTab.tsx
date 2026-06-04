@@ -1,6 +1,7 @@
 'use client';
 
 import { App, Card, Empty, Select, Space, Switch } from 'antd';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
 import {
@@ -9,9 +10,16 @@ import {
   type AdminZone,
 } from '@/app/lib/adminZoneApi';
 
-const FIELD_GROUPS: Array<{ title: string; keys: string[] }> = [
+const FIELD_GROUPS: Array<{
+  id: string;
+  emoji: string;
+  titleKey: string;
+  keys: string[];
+}> = [
   {
-    title: '🌱 Sol',
+    id: 'soil',
+    emoji: '🌱',
+    titleKey: 'admin.graphsTab.groupSoil',
     keys: [
       'soil_irrigation_status',
       'soil_ph_status',
@@ -21,7 +29,9 @@ const FIELD_GROUPS: Array<{ title: string; keys: string[] }> = [
     ],
   },
   {
-    title: '☁️ Météo',
+    id: 'weather',
+    emoji: '☁️',
+    titleKey: 'admin.graphsTab.groupWeather',
     keys: [
       'et0_status',
       'wind_speed_status',
@@ -38,7 +48,9 @@ const FIELD_GROUPS: Array<{ title: string; keys: string[] }> = [
     ],
   },
   {
-    title: '💧 Eau',
+    id: 'water',
+    emoji: '💧',
+    titleKey: 'admin.graphsTab.groupWater',
     keys: [
       'water_flow_status',
       'water_pressure_status',
@@ -47,7 +59,9 @@ const FIELD_GROUPS: Array<{ title: string; keys: string[] }> = [
     ],
   },
   {
-    title: '🌿 Plante',
+    id: 'plant',
+    emoji: '🌿',
+    titleKey: 'admin.graphsTab.groupPlant',
     keys: [
       'leaf_sensor_status',
       'fruit_size_status',
@@ -55,21 +69,23 @@ const FIELD_GROUPS: Array<{ title: string; keys: string[] }> = [
     ],
   },
   {
-    title: '🌾 Engrais/Nutriments',
+    id: 'fertilizer',
+    emoji: '🌾',
+    titleKey: 'admin.graphsTab.groupFertilizer',
     keys: ['npk_status'],
   },
   {
-    title: '⚡ Autres',
+    id: 'other',
+    emoji: '⚡',
+    titleKey: 'admin.graphsTab.groupOther',
     keys: ['electricity_consumption_status'],
   },
 ];
 
-const humanize = (key: string): string =>
-  key.replace(/_status$/, '').replace(/_/g, ' ');
-
 export type GraphsTabProps = { username: string };
 
 export function GraphsTab({ username }: GraphsTabProps) {
+  const t = useTranslations();
   const { message } = App.useApp();
   const [zones, setZones] = useState<AdminZone[]>([]);
   const [zoneId, setZoneId] = useState<number | null>(null);
@@ -84,11 +100,11 @@ export function GraphsTab({ username }: GraphsTabProps) {
       setZones(rows);
       if (rows.length > 0) setZoneId(rows[0].id);
     } catch {
-      message.error('Liste des zones indisponible.');
+      message.error(t('admin.graphsTab.listError'));
     } finally {
       setLoading(false);
     }
-  }, [message, username]);
+  }, [message, username, t]);
 
   useEffect(() => {
     void loadZones();
@@ -101,11 +117,11 @@ export function GraphsTab({ username }: GraphsTabProps) {
         const data = await adminZoneApi.activeGraph.get(username, zoneId);
         setStatus(data);
       } catch {
-        message.error('Lecture des graphiques impossible.');
+        message.error(t('admin.graphsTab.readError'));
       }
     };
     void loadStatus();
-  }, [message, username, zoneId]);
+  }, [message, username, zoneId, t]);
 
   const handleToggle = async (key: string, value: boolean) => {
     if (zoneId === null) return;
@@ -119,7 +135,7 @@ export function GraphsTab({ username }: GraphsTabProps) {
       setStatus((prev) => ({ ...prev, ...updated }));
     } catch {
       setStatus(status); // rollback
-      message.error('Échec de la mise à jour.');
+      message.error(t('admin.graphsTab.updateError'));
     } finally {
       setSavingKey(null);
     }
@@ -127,13 +143,13 @@ export function GraphsTab({ username }: GraphsTabProps) {
 
   if (loading) return null;
   if (zones.length === 0) {
-    return <Empty description="Aucune zone configurée" />;
+    return <Empty description={t('admin.graphsTab.noZones')} />;
   }
 
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
       <Space>
-        <span>Zone :</span>
+        <span>{t('admin.graphsTab.zoneLabel')}</span>
         <Select<number>
           value={zoneId ?? undefined}
           onChange={setZoneId}
@@ -143,7 +159,11 @@ export function GraphsTab({ username }: GraphsTabProps) {
       </Space>
 
       {FIELD_GROUPS.map((group) => (
-        <Card key={group.title} title={group.title} size="small">
+        <Card
+          key={group.id}
+          title={`${group.emoji} ${t(group.titleKey)}`}
+          size="small"
+        >
           <Space wrap size="middle">
             {group.keys.map((key) => (
               <Space key={key} size="small">
@@ -153,7 +173,7 @@ export function GraphsTab({ username }: GraphsTabProps) {
                   onChange={(v) => handleToggle(key, v)}
                   size="small"
                 />
-                <span>{humanize(key)}</span>
+                <span>{t(`admin.graphsTab.fields.${key}`)}</span>
               </Space>
             ))}
           </Space>

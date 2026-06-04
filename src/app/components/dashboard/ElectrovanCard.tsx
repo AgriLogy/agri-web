@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Text, Tag, Badge } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 
 export type Electrovanne = {
@@ -17,6 +18,7 @@ interface Props {
 
 const ElectrovanCard = ({ electrovanne, onClick }: Props) => {
   const { bg, hoverColor, textColor } = useColorModeStyles();
+  const t = useTranslations();
 
   return (
     <Box
@@ -33,25 +35,29 @@ const ElectrovanCard = ({ electrovanne, onClick }: Props) => {
       </Text>
 
       <Text color={textColor} fontSize="sm">
-        🔌 DevEUI: <Badge>{electrovanne.devEUI}</Badge>
+        🔌 {t('shell.electrovanCard.devEui')}:{' '}
+        <Badge>{electrovanne.devEUI}</Badge>
       </Text>
 
       <Text color={textColor} fontSize="sm" mt={2}>
-        ⚙️ Mode:{' '}
+        ⚙️ {t('shell.electrovanCard.mode')}:{' '}
         <Tag
           colorScheme={
             electrovanne.statusMode === 'manual' ? 'yellow' : 'brand'
           }
-          textTransform="capitalize"
         >
-          {electrovanne.statusMode}
+          {electrovanne.statusMode === 'manual'
+            ? t('shell.electrovanCard.modeManual')
+            : t('shell.electrovanCard.modeAuto')}
         </Tag>
       </Text>
 
       <Text color={textColor} fontSize="sm" mt={2}>
-        💡 Status:{' '}
+        💡 {t('shell.electrovanCard.status')}:{' '}
         <Tag colorScheme={electrovanne.isActivated ? 'green' : 'red'}>
-          {electrovanne.isActivated ? 'Activé' : 'Déactivé'}
+          {electrovanne.isActivated
+            ? t('shell.electrovanCard.activated')
+            : t('shell.electrovanCard.deactivated')}
         </Tag>
       </Text>
     </Box>

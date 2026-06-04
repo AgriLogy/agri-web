@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Stack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import ZoneNotificationBell from '@/app/components/common/ZoneNotificationBell';
 import { ChartDateRangeControl } from '@/app/components/layout/ChartDateRangeControl';
@@ -20,6 +21,7 @@ import WindRadarMain from '../analytics/Wind/WindRadarMain';
 import WindSpeedMain from '../analytics/WindSpeed/WindSpeedMain';
 
 const StationMain = () => {
+  const t = useTranslations();
   const {
     zones,
     selectedZone,
@@ -34,7 +36,7 @@ const StationMain = () => {
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Station météo"
+        title={t('shell.station.title')}
         subtitle={pageSubtitle({
           zoneName,
           startDate: range.startDate,
@@ -52,7 +54,7 @@ const StationMain = () => {
           selectedZone != null ? (
             <ZoneNotificationBell
               zoneId={selectedZone}
-              zoneName={zoneName ?? 'Zone'}
+              zoneName={zoneName ?? t('shell.common.zoneFallback')}
             />
           ) : null
         }

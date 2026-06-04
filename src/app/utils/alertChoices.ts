@@ -1,20 +1,45 @@
+/**
+ * i18n: `value` stays the stable backend value (sent to / received from the
+ * API). `label` is the French fallback. For UI, translate via the shared
+ * catalog using `i18nKey`: `t('conditions.' + i18nKey)`.
+ */
 export const CONDITION_CHOICES = [
-  { value: '>', label: 'Supérieur à' },
-  { value: '<', label: 'Inférieur à' },
-  { value: '=', label: 'Égal à' },
+  { value: '>', label: 'Supérieur à', i18nKey: 'gt' },
+  { value: '<', label: 'Inférieur à', i18nKey: 'lt' },
+  { value: '=', label: 'Égal à', i18nKey: 'eq' },
 ];
 
+/**
+ * i18n: `value` is the stable backend alert type. `label` is the French
+ * fallback. For UI, translate via `t('alertTypes.' + i18nKey)`.
+ */
 export const ALERT_CHOICES = [
-  { value: 'Pressure', label: 'Pression' },
-  { value: 'Flow', label: 'Débit' },
-  { value: 'Weather Temperature', label: "Température de l'air" },
-  { value: 'Wind Speed', label: 'Vitesse du vent' },
-  { value: 'Rain Fall', label: 'Pluie' },
-  { value: 'Periodic maintenance', label: 'Maintenance périodique' },
-  { value: 'EC (Electrical Conductivity)', label: 'Conductivité électrique' },
-  { value: 'pH Level', label: 'Niveau de pH' },
-  { value: 'Humidity', label: 'Humidité' },
-  { value: 'Soil Temperature', label: 'Température du sol' },
+  { value: 'Pressure', label: 'Pression', i18nKey: 'pressure' },
+  { value: 'Flow', label: 'Débit', i18nKey: 'flow' },
+  {
+    value: 'Weather Temperature',
+    label: "Température de l'air",
+    i18nKey: 'weatherTemperature',
+  },
+  { value: 'Wind Speed', label: 'Vitesse du vent', i18nKey: 'windSpeed' },
+  { value: 'Rain Fall', label: 'Pluie', i18nKey: 'rainFall' },
+  {
+    value: 'Periodic maintenance',
+    label: 'Maintenance périodique',
+    i18nKey: 'periodicMaintenance',
+  },
+  {
+    value: 'EC (Electrical Conductivity)',
+    label: 'Conductivité électrique',
+    i18nKey: 'ec',
+  },
+  { value: 'pH Level', label: 'Niveau de pH', i18nKey: 'ph' },
+  { value: 'Humidity', label: 'Humidité', i18nKey: 'humidity' },
+  {
+    value: 'Soil Temperature',
+    label: 'Température du sol',
+    i18nKey: 'soilTemperature',
+  },
 ];
 
 export interface SensorKeyOption {
@@ -26,6 +51,9 @@ export interface SensorKeyOption {
 // Mirror of analytics.alerts.SENSOR_KEY_REGISTRY on the backend. Used as
 // the fallback before /sensors resolves so the form
 // never renders an empty Select on first paint.
+//
+// i18n: each `key` doubles as the shared sensor translation key — render the
+// name with `t('sensors.' + opt.key)`. `label` stays the French fallback.
 export const DEFAULT_SENSOR_KEYS: SensorKeyOption[] = [
   { key: 'temperature_weather', label: "Température de l'air", unit: '°C' },
   { key: 'humidity_weather', label: "Humidité de l'air", unit: '%' },

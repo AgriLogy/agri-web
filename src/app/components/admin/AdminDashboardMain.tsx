@@ -12,6 +12,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Box } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
@@ -35,6 +36,7 @@ const formatDate = (iso: string | null): string => {
 };
 
 const AdminDashboardMain = () => {
+  const t = useTranslations();
   const { message } = App.useApp();
   const router = useRouter();
   const [overview, setOverview] = useState<Overview | null>(null);
@@ -51,11 +53,11 @@ const AdminDashboardMain = () => {
       setOverview(ov);
       setRecent(users.slice(0, 5));
     } catch {
-      message.error('Tableau de bord indisponible.');
+      message.error(t('admin.dashboard.loadError'));
     } finally {
       setLoading(false);
     }
-  }, [message]);
+  }, [message, t]);
 
   useEffect(() => {
     void refresh();
@@ -63,17 +65,17 @@ const AdminDashboardMain = () => {
 
   const columns: ColumnsType<AdminUserRow> = [
     {
-      title: 'Utilisateur',
+      title: t('admin.dashboard.col.user'),
       dataIndex: 'username',
       key: 'username',
     },
     {
-      title: 'Email',
+      title: t('admin.dashboard.col.email'),
       dataIndex: 'email',
       key: 'email',
     },
     {
-      title: 'Inscrit le',
+      title: t('admin.dashboard.col.joinedAt'),
       dataIndex: 'date_joined',
       key: 'date_joined',
       render: formatDate,
@@ -90,7 +92,7 @@ const AdminDashboardMain = () => {
             router.push(`/admin/users/${encodeURIComponent(row.username)}`)
           }
         >
-          Ouvrir
+          {t('admin.dashboard.open')}
         </Button>
       ),
     },
@@ -99,22 +101,22 @@ const AdminDashboardMain = () => {
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Tableau de bord administrateur"
-        subtitle="KPIs globaux et accès rapide aux derniers utilisateurs."
+        title={t('admin.dashboard.title')}
+        subtitle={t('admin.dashboard.subtitle')}
         actions={
           <Space>
             <Button
               icon={<TeamOutlined />}
               onClick={() => router.push('/admin/users')}
             >
-              Tous les utilisateurs
+              {t('admin.dashboard.allUsers')}
             </Button>
             <Button
               type="primary"
               icon={<UserAddOutlined />}
               onClick={() => router.push('/admin/users/new')}
             >
-              Nouvel utilisateur
+              {t('admin.dashboard.newUser')}
             </Button>
           </Space>
         }
@@ -127,7 +129,7 @@ const AdminDashboardMain = () => {
               <Skeleton.Input active size="small" block />
             ) : (
               <Statistic
-                title="Utilisateurs"
+                title={t('admin.dashboard.stat.users')}
                 value={overview.users_total}
                 prefix={<TeamOutlined />}
               />
@@ -140,7 +142,7 @@ const AdminDashboardMain = () => {
               <Skeleton.Input active size="small" block />
             ) : (
               <Statistic
-                title="Utilisateurs actifs"
+                title={t('admin.dashboard.stat.activeUsers')}
                 value={overview.users_active}
               />
             )}
@@ -151,7 +153,10 @@ const AdminDashboardMain = () => {
             {loading || !overview ? (
               <Skeleton.Input active size="small" block />
             ) : (
-              <Statistic title="Administrateurs" value={overview.staff_total} />
+              <Statistic
+                title={t('admin.dashboard.stat.admins')}
+                value={overview.staff_total}
+              />
             )}
           </Card>
         </Col>
@@ -161,7 +166,7 @@ const AdminDashboardMain = () => {
               <Skeleton.Input active size="small" block />
             ) : (
               <Statistic
-                title="Zones"
+                title={t('admin.dashboard.stat.zones')}
                 value={overview.zones_total}
                 prefix={<EnvironmentOutlined />}
               />
@@ -174,7 +179,7 @@ const AdminDashboardMain = () => {
               <Skeleton.Input active size="small" block />
             ) : (
               <Statistic
-                title="Alertes 24 h"
+                title={t('admin.dashboard.stat.alerts24h')}
                 value={overview.alerts_24h}
                 prefix={<AlertOutlined />}
               />
@@ -192,14 +197,14 @@ const AdminDashboardMain = () => {
           px={{ base: 3, md: 4 }}
           py={{ base: 3, md: 4 }}
         >
-          <h3 style={{ marginTop: 0 }}>Derniers utilisateurs</h3>
+          <h3 style={{ marginTop: 0 }}>{t('admin.dashboard.recentUsers')}</h3>
           <AdminCrudTable<AdminUserRow>
             rowKey="id"
             columns={columns}
             data={recent}
             loading={loading}
             pagination={false}
-            emptyDescription="Aucun utilisateur"
+            emptyDescription={t('admin.dashboard.emptyUsers')}
           />
         </Box>
       </Box>

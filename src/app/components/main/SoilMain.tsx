@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Stack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import ZoneNotificationBell from '@/app/components/common/ZoneNotificationBell';
 import { ChartDateRangeControl } from '@/app/components/layout/ChartDateRangeControl';
@@ -18,6 +19,7 @@ import SoilTemperatureMain from '../analytics/SoilTemperature/SoilTemperatureMai
 import WaterSoilMain from '../analytics/SoilWater/WaterSoilMain';
 
 const SoilMain = () => {
+  const t = useTranslations();
   const {
     zones,
     selectedZone,
@@ -32,7 +34,7 @@ const SoilMain = () => {
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Données sur le sol"
+        title={t('shell.soil.title')}
         subtitle={pageSubtitle({
           zoneName,
           startDate: range.startDate,
@@ -50,7 +52,7 @@ const SoilMain = () => {
           selectedZone != null ? (
             <ZoneNotificationBell
               zoneId={selectedZone}
-              zoneName={zoneName ?? 'Zone'}
+              zoneName={zoneName ?? t('shell.common.zoneFallback')}
             />
           ) : null
         }

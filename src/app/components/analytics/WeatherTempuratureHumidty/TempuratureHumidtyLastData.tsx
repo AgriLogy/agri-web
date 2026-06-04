@@ -1,4 +1,5 @@
 import { Box, Text, VStack, useColorModeValue } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { WiHumidity, WiThermometer } from 'react-icons/wi';
 import {
   formatCalibratedReading,
@@ -14,16 +15,20 @@ interface WeatherData {
   default_unit: string;
 }
 
-const timeAgo = (timestamp: string): string => {
+const timeAgo = (
+  timestamp: string,
+  t: ReturnType<typeof useTranslations>
+): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min.`;
-  if (diffH < 24) return `${diffH} heures`;
+  if (diffMin < 1) return t('analytics.lastData.justNow');
+  if (diffMin < 60)
+    return t('analytics.lastData.minutesAgo', { count: diffMin });
+  if (diffH < 24) return t('analytics.lastData.hoursAgoLong', { count: diffH });
   return then.toLocaleDateString();
 };
 
@@ -34,6 +39,7 @@ const TempuratureHumidtyLastData = ({
   humidityData: WeatherData[];
   temperatureData: WeatherData[];
 }) => {
+  const t = useTranslations();
   useUnitOverridesRevision();
   const latestHumidity = humidityData[humidityData.length - 1];
   const latestTemperature = temperatureData[temperatureData.length - 1];
@@ -75,7 +81,10 @@ const TempuratureHumidtyLastData = ({
           color={muted}
           mb={3}
         >
-          {`Air — ${temperatureUnit} · ${humidityUnit}`}
+          {t('analytics.weatherTempHumidity.lastTitle', {
+            tempUnit: temperatureUnit,
+            humUnit: humidityUnit,
+          })}
         </Text>
 
         <VStack spacing={4}>
@@ -86,14 +95,16 @@ const TempuratureHumidtyLastData = ({
                 style={{ display: 'inline', color: '#dd6b20' }}
               />
               <Text fontSize="xs" color={muted} mt={1}>
-                Température
+                {t('analytics.weatherTempHumidity.temperatureLabel')}
               </Text>
               <Text fontSize="xl" fontWeight="semibold" color={textColor}>
                 {`${formatCalibratedReading('temperature_weather', latestTemperature.value)} ${temperatureUnit}`}
               </Text>
             </Box>
           ) : (
-            <Text color={muted}>Température : —</Text>
+            <Text color={muted}>
+              {t('analytics.weatherTempHumidity.temperatureEmpty')}
+            </Text>
           )}
 
           {latestHumidity ? (
@@ -103,19 +114,23 @@ const TempuratureHumidtyLastData = ({
                 style={{ display: 'inline', color: '#1f7740' }}
               />
               <Text fontSize="xs" color={muted} mt={1}>
-                Humidité relative
+                {t('analytics.weatherTempHumidity.humidityLabel')}
               </Text>
               <Text fontSize="xl" fontWeight="semibold" color={textColor}>
                 {`${formatCalibratedReading('humidity_weather', latestHumidity.value)} ${humidityUnit}`}
               </Text>
             </Box>
           ) : (
-            <Text color={muted}>Humidité : —</Text>
+            <Text color={muted}>
+              {t('analytics.weatherTempHumidity.humidityEmpty')}
+            </Text>
           )}
 
           {latestTemperature && (
             <Text fontSize="xs" color={timeColor}>
-              Mesure : {timeAgo(latestTemperature.timestamp)}
+              {t('analytics.lastData.measuredAt', {
+                time: timeAgo(latestTemperature.timestamp, t),
+              })}
             </Text>
           )}
         </VStack>

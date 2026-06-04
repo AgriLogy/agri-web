@@ -1,4 +1,5 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import {
   formatCalibratedReading,
   resolveAxisUnit,
@@ -9,20 +10,26 @@ import { SensorData } from '@/app/types';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
-const timeAgo = (timestamp: string): string => {
+const timeAgo = (
+  timestamp: string,
+  t: ReturnType<typeof useTranslations>
+): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min.`;
-  if (diffH < 24) return `${diffH} h`;
+  if (diffMin < 1) return t('analytics.lastData.justNow');
+  if (diffMin < 60)
+    return t('analytics.lastData.minutesAgo', { count: diffMin });
+  if (diffH < 24)
+    return t('analytics.lastData.hoursAgoShort', { count: diffH });
   return then.toLocaleDateString();
 };
 
 const FruiteSizeLastData = ({ data }: { data: SensorData[] }) => {
+  const t = useTranslations();
   const latest = data[data.length - 1];
   useUnitOverridesRevision();
 
@@ -56,7 +63,7 @@ const FruiteSizeLastData = ({ data }: { data: SensorData[] }) => {
           mt={3}
           color={textColor}
         >
-          Calibre des fruits
+          {t('sensors.fruit_size')}
         </Text>
         <Text fontSize="2xl" fontWeight="semibold" color={valueColor} mt={1}>
           {latest
@@ -64,7 +71,11 @@ const FruiteSizeLastData = ({ data }: { data: SensorData[] }) => {
             : '—'}
         </Text>
         <Text fontSize="xs" color={subColor} mt={2}>
-          {latest ? `Mesure : ${timeAgo(latest.timestamp)}` : ''}
+          {latest
+            ? t('analytics.lastData.measuredAt', {
+                time: timeAgo(latest.timestamp, t),
+              })
+            : ''}
         </Text>
         <LastDataAddAlertButton sensorKey="fruit_size" />
       </LastDataPanel>

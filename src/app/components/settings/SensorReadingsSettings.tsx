@@ -28,6 +28,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaCheck, FaPen, FaTimes } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import {
   getAllSensorsCatalog,
   getReadingLabelOptions,
@@ -130,6 +131,7 @@ function loadRows(): UnitSettingRow[] {
 }
 
 const SensorReadingsSettings = () => {
+  const t = useTranslations();
   const toast = useToast();
   const [rows, setRows] = useState<UnitSettingRow[]>(() => getDefaultRows());
   const [search, setSearch] = useState('');
@@ -268,8 +270,8 @@ const SensorReadingsSettings = () => {
     });
     setEditingKey(null);
     toast({
-      title: 'Modification enregistrée',
-      description: 'La ligne a été sauvegardée localement.',
+      title: t('settings.readings.rowSavedTitle'),
+      description: t('settings.readings.rowSavedDesc'),
       status: 'success',
       duration: 1800,
       isClosable: true,
@@ -339,8 +341,8 @@ const SensorReadingsSettings = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     notifyUnitOverridesChanged();
     toast({
-      title: 'Unites enregistrees',
-      description: 'Modifications appliquees en frontend uniquement.',
+      title: t('settings.readings.unitsSavedTitle'),
+      description: t('settings.readings.unitsSavedDesc'),
       status: 'success',
       duration: 2500,
       isClosable: true,
@@ -353,8 +355,8 @@ const SensorReadingsSettings = () => {
     setRows(getMountedRows());
     void refreshLastValues();
     toast({
-      title: 'Reinitialise',
-      description: 'Les unites par defaut ont ete restaurees.',
+      title: t('settings.readings.resetTitle'),
+      description: t('settings.readings.resetDesc'),
       status: 'info',
       duration: 2200,
       isClosable: true,
@@ -378,7 +380,7 @@ const SensorReadingsSettings = () => {
         borderBottomWidth="1px"
       >
         <Input
-          placeholder="Rechercher un capteur (libellé, type, clé)…"
+          placeholder={t('settings.readings.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           maxW="360px"
@@ -386,7 +388,7 @@ const SensorReadingsSettings = () => {
         />
         <Flex align="center" gap={2}>
           <Text fontSize="sm" whiteSpace="nowrap">
-            Zone
+            {t('settings.readings.zoneLabel')}
           </Text>
           <chakra.select
             {...toolbarSelectProps}
@@ -409,19 +411,19 @@ const SensorReadingsSettings = () => {
           onClick={() => void refreshLastValues()}
           isLoading={loadingLast}
         >
-          Actualiser les dernières valeurs
+          {t('settings.readings.refreshButton')}
         </Button>
       </Flex>
       <Table size="md" variant="simple">
         <Thead>
           <Tr bg={theadBg} borderBottomWidth="1px" borderColor={panelBorder}>
-            <Th>Libellé de la lecture</Th>
-            <Th>Type</Th>
-            <Th>Unité</Th>
-            <Th>Facteur d&apos;échelle (a)</Th>
-            <Th>Décalage (b)</Th>
-            <Th>Dernière valeur</Th>
-            <Th>Actions</Th>
+            <Th>{t('settings.readings.colReadingLabel')}</Th>
+            <Th>{t('settings.readings.colType')}</Th>
+            <Th>{t('settings.readings.colUnit')}</Th>
+            <Th>{t('settings.readings.colScale')}</Th>
+            <Th>{t('settings.readings.colOffset')}</Th>
+            <Th>{t('settings.readings.colLastValue')}</Th>
+            <Th>{t('settings.readings.colActions')}</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -435,7 +437,7 @@ const SensorReadingsSettings = () => {
               <Td>{row.lastValue}</Td>
               <Td>
                 <IconButton
-                  aria-label="Edit row"
+                  aria-label={t('settings.readings.editRowAria')}
                   size="sm"
                   icon={<FaPen />}
                   variant="ghost"
@@ -450,28 +452,28 @@ const SensorReadingsSettings = () => {
 
       <Flex justify="flex-end" gap={2} mt={4} p={3}>
         <Button size="sm" variant="outline" onClick={handleReset}>
-          Reinitialiser
+          {t('settings.readings.resetButton')}
         </Button>
         <Button size="sm" colorScheme="brand" onClick={handleSave}>
-          Enregistrer
+          {t('settings.readings.saveButton')}
         </Button>
       </Flex>
 
       {hasChanges && (
         <Text mt={1} mb={3} ml={3} fontSize="xs" color="orange.500">
-          Des unites ont ete modifiees localement.
+          {t('settings.readings.localChangesNotice')}
         </Text>
       )}
 
       <Modal isOpen={editingRow != null} onClose={cancelEdit} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modifier la lecture</ModalHeader>
+          <ModalHeader>{t('settings.readings.editModalTitle')}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Flex direction="column" gap={3}>
               <FormControl>
-                <FormLabel>Libellé de la lecture</FormLabel>
+                <FormLabel>{t('settings.readings.colReadingLabel')}</FormLabel>
                 <chakra.select
                   {...modalSelectProps}
                   value={draft.readingLabel}
@@ -490,7 +492,7 @@ const SensorReadingsSettings = () => {
                 </chakra.select>
               </FormControl>
               <FormControl>
-                <FormLabel>Type</FormLabel>
+                <FormLabel>{t('settings.readings.colType')}</FormLabel>
                 <chakra.select
                   {...modalSelectProps}
                   value={draft.typeLabel}
@@ -509,7 +511,7 @@ const SensorReadingsSettings = () => {
                 </chakra.select>
               </FormControl>
               <FormControl>
-                <FormLabel>Unité</FormLabel>
+                <FormLabel>{t('settings.readings.colUnit')}</FormLabel>
                 <chakra.select
                   {...modalSelectProps}
                   value={draft.unit}
@@ -541,7 +543,7 @@ const SensorReadingsSettings = () => {
                 </chakra.select>
               </FormControl>
               <FormControl>
-                <FormLabel>Facteur d&apos;échelle (a)</FormLabel>
+                <FormLabel>{t('settings.readings.colScale')}</FormLabel>
                 <Input
                   type="number"
                   step="0.01"
@@ -555,7 +557,7 @@ const SensorReadingsSettings = () => {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>Décalage (b)</FormLabel>
+                <FormLabel>{t('settings.readings.colOffset')}</FormLabel>
                 <Input
                   type="number"
                   step="0.01"
@@ -569,12 +571,11 @@ const SensorReadingsSettings = () => {
                 />
               </FormControl>
               <Text fontSize="xs" color={mutedTextColor}>
-                Conformément au PDF « change.the.unite.of.sensors…1.3.pdf » :
-                valeur réelle = valeur brute × a + b. Le changement d&apos;unité
-                recalcule a et b via `sensorUnitConversion` (équations du PDF).
-                Rayonnement MJ/m² : le facteur 0,0036 correspond à une
-                intégration sur 1 h (voir PDF). Défauts a,b :{' '}
-                `sensorCalibrationDefaults`.
+                {t('settings.readings.calibrationNote', {
+                  pdf: 'change.the.unite.of.sensors…1.3.pdf',
+                  conversionModule: 'sensorUnitConversion',
+                  defaultsModule: 'sensorCalibrationDefaults',
+                })}
               </Text>
             </Flex>
           </ModalBody>
@@ -585,7 +586,7 @@ const SensorReadingsSettings = () => {
               colorScheme="red"
               onClick={cancelEdit}
             >
-              Annuler
+              {t('settings.readings.cancel')}
             </Button>
             <Button
               leftIcon={<FaCheck />}
@@ -594,7 +595,7 @@ const SensorReadingsSettings = () => {
                 if (editingRow) applyEdit(editingRow.key);
               }}
             >
-              Enregistrer
+              {t('settings.readings.save')}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -14,6 +14,7 @@ import {
   useToast,
   Image as ChakraImage,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import api from '@/app/lib/api';
 import type { ZoneType, ZoneWrapper } from '@/app/types';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
@@ -23,6 +24,7 @@ import {
 } from '@/app/utils/farmImageStorage';
 
 const FarmSettingsSection = () => {
+  const t = useTranslations();
   const toast = useToast();
   const { textColor, bg, bgColor, borderColor, mutedTextColor } =
     useColorModeStyles();
@@ -56,8 +58,8 @@ const FarmSettingsSection = () => {
       })
       .catch(() => {
         toast({
-          title: 'Erreur',
-          description: 'Chargement des fermes impossible.',
+          title: t('settings.farms.errorTitle'),
+          description: t('settings.farms.loadFarmsError'),
           status: 'error',
           duration: 3000,
           isClosable: true,
@@ -70,7 +72,7 @@ const FarmSettingsSection = () => {
     const name = names[zone.id]?.trim();
     if (!name) {
       toast({
-        title: 'Nom requis',
+        title: t('settings.farms.nameRequired'),
         status: 'warning',
         duration: 2000,
         isClosable: true,
@@ -85,10 +87,14 @@ const FarmSettingsSection = () => {
           zw.zone.id === zone.id ? { ...zw, zone: { ...zw.zone, name } } : zw
         )
       );
-      toast({ title: 'Ferme mise à jour', status: 'success', duration: 2000 });
+      toast({
+        title: t('settings.farms.farmUpdated'),
+        status: 'success',
+        duration: 2000,
+      });
     } catch {
       toast({
-        title: 'Échec de la sauvegarde',
+        title: t('settings.farms.saveFailed'),
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -103,8 +109,8 @@ const FarmSettingsSection = () => {
       const dataUrl = typeof reader.result === 'string' ? reader.result : '';
       if (dataUrl.length > 2_500_000) {
         toast({
-          title: 'Image trop lourde',
-          description: 'Choisissez une image plus petite (stockage local).',
+          title: t('settings.farms.imageTooLargeTitle'),
+          description: t('settings.farms.imageTooLargeDesc'),
           status: 'warning',
           duration: 4000,
           isClosable: true,
@@ -114,9 +120,8 @@ const FarmSettingsSection = () => {
       setFarmImageDataUrl(zoneId, dataUrl);
       bump((x) => x + 1);
       toast({
-        title: 'Image enregistrée localement',
-        description:
-          'Affichage sur cet appareil. Pour un stockage serveur, une API dédiée sera nécessaire.',
+        title: t('settings.farms.imageSavedTitle'),
+        description: t('settings.farms.imageSavedDesc'),
         status: 'success',
         duration: 3500,
         isClosable: true,
@@ -128,7 +133,7 @@ const FarmSettingsSection = () => {
   if (loading && !zones.length) {
     return (
       <Text color={textColor} fontSize="sm">
-        Chargement des fermes…
+        {t('settings.farms.loading')}
       </Text>
     );
   }
@@ -136,12 +141,10 @@ const FarmSettingsSection = () => {
   return (
     <VStack align="stretch" spacing={4}>
       <Text fontSize="sm" color={mutedTextColor}>
-        Les fermes correspondent aux zones renvoyées par l&apos;API. Le nom est
-        enregistré sur le serveur ; l&apos;image est stockée localement dans le
-        navigateur (aperçu par poste).
+        {t('settings.farms.intro')}
       </Text>
       {zones.length === 0 && (
-        <Text color={textColor}>Aucune ferme / zone pour ce compte.</Text>
+        <Text color={textColor}>{t('settings.farms.empty')}</Text>
       )}
       {zones.map((zw) => {
         const zone = zw.zone;
@@ -156,7 +159,7 @@ const FarmSettingsSection = () => {
             bg={bg}
           >
             <Heading size="sm" mb={3} color={textColor}>
-              Ferme — zone #{zone.id}
+              {t('settings.farms.farmZoneHeading', { id: zone.id })}
             </Heading>
             <Flex
               direction={{ base: 'column', md: 'row' }}
@@ -203,13 +206,13 @@ const FarmSettingsSection = () => {
                       bump((x) => x + 1);
                     }}
                   >
-                    Retirer l&apos;image
+                    {t('settings.farms.removeImage')}
                   </Button>
                 )}
               </Box>
               <VStack align="stretch" flex={1} spacing={3}>
                 <FormControl>
-                  <FormLabel>Nom de la ferme</FormLabel>
+                  <FormLabel>{t('settings.farms.farmNameLabel')}</FormLabel>
                   <Input
                     value={names[zone.id] ?? ''}
                     onChange={(e) =>
@@ -226,7 +229,7 @@ const FarmSettingsSection = () => {
                   alignSelf="flex-start"
                   onClick={() => void saveZone(zone)}
                 >
-                  Enregistrer le nom
+                  {t('settings.farms.saveNameButton')}
                 </Button>
               </VStack>
             </Flex>

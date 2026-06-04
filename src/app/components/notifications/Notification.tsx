@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Badge, Box, Button, Divider, HStack, Text } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import {
   evaluateV1NotificationDecision,
@@ -60,12 +61,6 @@ const decisionBadgeColor = (d: NotificationDecisionLevel) => {
   return 'green';
 };
 
-const decisionLabelFr = (d: NotificationDecisionLevel) => {
-  if (d === 'critical') return 'Critique — action irrigation';
-  if (d === 'advisory') return 'Conseil — forte demande ETo×Kc';
-  return 'OK — dans les seuils';
-};
-
 const Notification: React.FC<NotificationProps> = ({
   id,
   notification,
@@ -73,6 +68,12 @@ const Notification: React.FC<NotificationProps> = ({
   onEditZone,
   onDeleteZone,
 }) => {
+  const t = useTranslations();
+  const decisionLabelFr = (d: NotificationDecisionLevel) => {
+    if (d === 'critical') return t('notifications.card.decisionCritical');
+    if (d === 'advisory') return t('notifications.card.decisionAdvisory');
+    return t('notifications.card.decisionOk');
+  };
   const { bg, textColor, hoverColor } = useColorModeStyles();
   const notificationDate = new Date(notification.notification_date);
   const formattedDate = notificationDate.toLocaleString('fr-FR');
@@ -113,13 +114,15 @@ const Notification: React.FC<NotificationProps> = ({
         ? `${configName} — ${secteur}`
         : configName
       : zoneId != null
-        ? '— (nom non renseigné — modifiez la configuration)'
+        ? t('notifications.card.unnamedConfig')
         : '—';
   const notificationTitle =
     configName.length > 0
       ? configName
       : notification.zone_name?.trim() ||
-        (zoneId != null ? `Zone #${zoneId}` : 'Notification');
+        (zoneId != null
+          ? t('notifications.card.zoneNumber', { id: zoneId })
+          : t('notifications.card.notificationFallback'));
 
   const showLocationSub =
     Boolean(notification.zone_name?.trim()) &&
@@ -169,7 +172,7 @@ const Notification: React.FC<NotificationProps> = ({
             color="gray.600"
             _dark={{ color: 'gray.400' }}
           >
-            Nom de la notification :{' '}
+            {t('notifications.card.nameLabel')}{' '}
           </Text>
           <Text as="span" fontWeight="bold" fontSize="md">
             {zoneNotifName}
@@ -200,7 +203,7 @@ const Notification: React.FC<NotificationProps> = ({
           borderColor="blue.100"
         >
           <Badge colorScheme="brand" mb={2}>
-            Confirmation zone
+            {t('notifications.card.zoneConfirmation')}
           </Badge>
           <Text fontSize="sm">{notification.template_summary}</Text>
         </Box>
@@ -209,35 +212,45 @@ const Notification: React.FC<NotificationProps> = ({
       {engineResult && (
         <Box mt={3}>
           <Badge colorScheme={decisionBadgeColor(engineResult.decision)} mr={2}>
-            Moteur v1 — {engineResult.decision.toUpperCase()}
+            {t('notifications.card.engineV1')} —{' '}
+            {engineResult.decision.toUpperCase()}
           </Badge>
           <Text fontSize="sm" mt={2}>
             {decisionLabelFr(engineResult.decision)} — ETo×Kc ={' '}
             {Number.isFinite(engineResult.et0TimesKc)
               ? engineResult.et0TimesKc.toFixed(3)
               : '—'}{' '}
-            mm (Kc utilisé : {config?.kc ?? 1})
+            mm ({t('notifications.card.kcUsed', { kc: config?.kc ?? 1 })})
           </Text>
           <Text fontSize="xs" color="gray.500" mt={1}>
-            Règles : {engineResult.rulesFired.join(', ')}
+            {t('notifications.card.rulesLabel')}{' '}
+            {engineResult.rulesFired.join(', ')}
           </Text>
         </Box>
       )}
 
       <Box mt={4}>
         <Text fontWeight="bold" fontSize="md">
-          🌡️ Température
+          🌡️ {t('notifications.card.temperature')}
         </Text>
-        <Text>• Hier : {notification.yesterday_temperature} °C</Text>
-        <Text>• Aujourd’hui : {notification.today_temperature} °C</Text>
+        <Text>
+          • {t('time.yesterday')} : {notification.yesterday_temperature} °C
+        </Text>
+        <Text>
+          • {t('time.today')} : {notification.today_temperature} °C
+        </Text>
       </Box>
 
       <Box mt={3}>
         <Text fontWeight="bold" fontSize="md">
-          💧 Humidité
+          💧 {t('notifications.card.humidity')}
         </Text>
-        <Text>• Hier : {notification.yesterday_humidity} %</Text>
-        <Text>• Aujourd’hui : {notification.today_humidity} %</Text>
+        <Text>
+          • {t('time.yesterday')} : {notification.yesterday_humidity} %
+        </Text>
+        <Text>
+          • {t('time.today')} : {notification.today_humidity} %
+        </Text>
       </Box>
 
       <Box mt={3}>
@@ -249,20 +262,37 @@ const Notification: React.FC<NotificationProps> = ({
 
       <Box mt={3}>
         <Text fontWeight="bold" fontSize="md">
-          🌱 Sol
+          🌱 {t('notifications.card.soil')}
         </Text>
-        <Text>• Humidité : {notification.soil_humidity} %</Text>
-        <Text>• Température : {notification.soil_temperature} °C</Text>
-        <Text>• pH : {notification.soil_ph}</Text>
+        <Text>
+          • {t('notifications.card.humidityLabel')} :{' '}
+          {notification.soil_humidity} %
+        </Text>
+        <Text>
+          • {t('notifications.card.temperatureLabel')} :{' '}
+          {notification.soil_temperature} °C
+        </Text>
+        <Text>
+          • {t('units.ph')} : {notification.soil_ph}
+        </Text>
       </Box>
 
       <Box mt={3}>
         <Text fontWeight="bold" fontSize="md">
-          🚰 Irrigation
+          🚰 {t('notifications.card.irrigation')}
         </Text>
-        <Text>• Période idéale : {notification.perfect_irrigation_period}</Text>
-        <Text>• Dernière date : {notification.last_irrigation_date}</Text>
-        <Text>• Eau utilisée : {notification.used_water_irrigation} L</Text>
+        <Text>
+          • {t('notifications.card.idealPeriod')} :{' '}
+          {notification.perfect_irrigation_period}
+        </Text>
+        <Text>
+          • {t('notifications.card.lastDate')} :{' '}
+          {notification.last_irrigation_date}
+        </Text>
+        <Text>
+          • {t('notifications.card.usedWater')} :{' '}
+          {notification.used_water_irrigation} L
+        </Text>
       </Box>
 
       {zoneId != null && (onEditZone || onDeleteZone) && (
@@ -281,7 +311,7 @@ const Notification: React.FC<NotificationProps> = ({
                 borderRadius="lg"
                 onClick={() => onEditZone()}
               >
-                Modifier la notification
+                {t('notifications.card.editNotification')}
               </Button>
             )}
             {onDeleteZone && (
@@ -292,7 +322,7 @@ const Notification: React.FC<NotificationProps> = ({
                 borderRadius="lg"
                 onClick={() => onDeleteZone()}
               >
-                Supprimer la notification
+                {t('notifications.card.deleteNotification')}
               </Button>
             )}
           </HStack>

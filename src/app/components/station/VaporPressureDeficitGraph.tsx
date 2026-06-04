@@ -1,5 +1,6 @@
 'use client';
 import { Box, useColorMode } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { useCalibratedStationChartRows } from '@/app/hooks/useCalibratedStationChartRows';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -40,6 +41,7 @@ const VPD_FIELDS = [
 ] as const;
 
 const VaporPressureDeficitGraph = ({ data }: { data: any }) => {
+  const t = useTranslations();
   const { colorMode } = useColorMode();
   const { textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
@@ -86,7 +88,7 @@ const VaporPressureDeficitGraph = ({ data }: { data: any }) => {
     >
       <Box mb={4}>
         <ChartPanelHeading
-          title="Atmosphère — déficit de pression de vapeur (DPV)"
+          title={t('station.vpd.title')}
           subtitle={data?.sensor_names?.pressure_weather}
           color={textColor}
         />
@@ -110,7 +112,10 @@ const VaporPressureDeficitGraph = ({ data }: { data: any }) => {
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`DPV (${pressUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                `${t('station.vpd.vpdAxis')} (${pressUnit})`,
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -126,7 +131,7 @@ const VaporPressureDeficitGraph = ({ data }: { data: any }) => {
               type="monotone"
               dataKey="pressure_weather"
               stroke={data.sensor_colors?.pressure_weather_color}
-              name={`Pressure (${pressUnit})`}
+              name={`${t('sensors.pressure_weather')} (${pressUnit})`}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"

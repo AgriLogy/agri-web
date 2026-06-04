@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -45,6 +46,7 @@ const PhWaterChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showLine, setShowLine] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -109,19 +111,19 @@ const PhWaterChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="pH de l’eau d’irrigation"
-          subtitle="Qualité acido-basique de l’eau distribuée."
+          title={t('analytics.waterPh.chartTitle')}
+          subtitle={t('analytics.waterPh.chartSubtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.actions.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.actions.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -150,7 +152,10 @@ const PhWaterChart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`pH (${phUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                `${t('units.ph')} (${phUnit})`,
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -165,7 +170,7 @@ const PhWaterChart = ({
             <Line
               type="monotone"
               dataKey="water_ph"
-              name={`pH (${phUnit})`}
+              name={`${t('units.ph')} (${phUnit})`}
               hide={!showLine}
               stroke="#82ca9d"
               strokeWidth={2.25}

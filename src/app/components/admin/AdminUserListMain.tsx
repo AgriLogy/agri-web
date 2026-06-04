@@ -12,6 +12,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
@@ -32,6 +33,7 @@ const formatDate = (iso: string | null): string => {
 };
 
 const AdminUserListMain = () => {
+  const t = useTranslations();
   const { message, modal } = App.useApp();
   const router = useRouter();
   const [data, setData] = useState<AdminUserRow[]>([]);
@@ -44,11 +46,11 @@ const AdminUserListMain = () => {
       const rows = await adminUserApi.list();
       setData(rows);
     } catch {
-      message.error('Liste utilisateurs indisponible.');
+      message.error(t('admin.userList.loadError'));
     } finally {
       setLoading(false);
     }
-  }, [message]);
+  }, [message, t]);
 
   useEffect(() => {
     void refresh();
@@ -66,31 +68,34 @@ const AdminUserListMain = () => {
           )
         );
         message.success(
-          updated.is_active ? 'Utilisateur réactivé.' : 'Utilisateur désactivé.'
+          updated.is_active
+            ? t('admin.userList.reactivated')
+            : t('admin.userList.deactivated')
         );
       } catch {
-        message.error('Action impossible.');
+        message.error(t('admin.userList.actionError'));
       }
     },
-    [message]
+    [message, t]
   );
 
   const handleResetPassword = useCallback(
     (row: AdminUserRow) => {
       modal.confirm({
-        title: `Réinitialiser le mot de passe de ${row.username} ?`,
-        content:
-          'Un mot de passe aléatoire sera généré et affiché une seule fois.',
-        okText: 'Réinitialiser',
-        cancelText: 'Annuler',
+        title: t('admin.userList.resetConfirmTitle', {
+          username: row.username,
+        }),
+        content: t('admin.userList.resetConfirmContent'),
+        okText: t('admin.userList.reset'),
+        cancelText: t('admin.userList.cancel'),
         onOk: async () => {
           try {
             const { password } = await adminUserApi.resetPassword(row.username);
             modal.info({
-              title: 'Nouveau mot de passe',
+              title: t('admin.userList.newPasswordTitle'),
               content: (
                 <Space direction="vertical">
-                  <span>Communiquez ce mot de passe à l’utilisateur :</span>
+                  <span>{t('admin.userList.newPasswordHint')}</span>
                   <code
                     style={{
                       background: 'rgba(0,0,0,0.06)',
@@ -103,21 +108,21 @@ const AdminUserListMain = () => {
                   </code>
                 </Space>
               ),
-              okText: 'Fermer',
+              okText: t('admin.userList.close'),
             });
           } catch {
-            message.error('Échec de la réinitialisation.');
+            message.error(t('admin.userList.resetError'));
           }
         },
       });
     },
-    [message, modal]
+    [message, modal, t]
   );
 
   const columns = useMemo<ColumnsType<AdminUserRow>>(
     () => [
       {
-        title: 'Utilisateur',
+        title: t('admin.userList.col.user'),
         dataIndex: 'username',
         key: 'username',
         sorter: (a, b) => a.username.localeCompare(b.username),
@@ -131,74 +136,88 @@ const AdminUserListMain = () => {
         ),
       },
       {
-        title: 'Email',
+        title: t('admin.userList.col.email'),
         dataIndex: 'email',
         key: 'email',
         sorter: (a, b) => a.email.localeCompare(b.email),
       },
       {
-        title: 'Rôle',
+        title: t('admin.userList.col.role'),
         dataIndex: 'is_staff',
         key: 'is_staff',
         filters: [
-          { text: 'Admin', value: true },
-          { text: 'Utilisateur', value: false },
+          { text: t('admin.userList.role.admin'), value: true },
+          { text: t('admin.userList.role.user'), value: false },
         ],
         onFilter: (val, row) => row.is_staff === val,
         render: (isStaff: boolean) =>
-          isStaff ? <Tag color="brand">Admin</Tag> : <Tag>Utilisateur</Tag>,
+          isStaff ? (
+            <Tag color="brand">{t('admin.userList.role.admin')}</Tag>
+          ) : (
+            <Tag>{t('admin.userList.role.user')}</Tag>
+          ),
       },
       {
-        title: 'Statut',
+        title: t('admin.userList.col.status'),
         dataIndex: 'is_active',
         key: 'is_active',
         filters: [
-          { text: 'Actif', value: true },
-          { text: 'Inactif', value: false },
+          { text: t('admin.userList.status.active'), value: true },
+          { text: t('admin.userList.status.inactive'), value: false },
         ],
         onFilter: (val, row) => row.is_active === val,
         render: (active: boolean) => (
           <Badge
             status={active ? 'success' : 'error'}
-            text={active ? 'Actif' : 'Inactif'}
+            text={
+              active
+                ? t('admin.userList.status.active')
+                : t('admin.userList.status.inactive')
+            }
           />
         ),
       },
       {
-        title: 'Paiement',
+        title: t('admin.userList.col.payment'),
         dataIndex: 'payement_status',
         key: 'payement_status',
         render: (value: string) => (
-          <Tag color={value === 'actif' ? 'green' : 'orange'}>{value}</Tag>
+          <Tag color={value === 'actif' ? 'green' : 'orange'}>
+            {value === 'actif'
+              ? t('admin.userList.payment.active')
+              : value === 'suspended'
+                ? t('admin.userList.payment.suspended')
+                : value}
+          </Tag>
         ),
       },
       {
-        title: 'Zones',
+        title: t('admin.userList.col.zones'),
         dataIndex: 'zones_count',
         key: 'zones_count',
         sorter: (a, b) => (a.zones_count ?? 0) - (b.zones_count ?? 0),
         align: 'right',
       },
       {
-        title: 'Inscrit le',
+        title: t('admin.userList.col.joinedAt'),
         dataIndex: 'date_joined',
         key: 'date_joined',
         sorter: (a, b) => a.date_joined.localeCompare(b.date_joined),
         render: formatDate,
       },
       {
-        title: 'Dernière connexion',
+        title: t('admin.userList.col.lastLogin'),
         dataIndex: 'last_login',
         key: 'last_login',
         render: formatDate,
       },
       {
-        title: 'Actions',
+        title: t('admin.userList.col.actions'),
         key: 'actions',
         align: 'right',
         render: (_value, row) => (
           <Space>
-            <Tooltip title="Ouvrir le détail">
+            <Tooltip title={t('admin.userList.action.openDetail')}>
               <Button
                 icon={<EditOutlined />}
                 onClick={() =>
@@ -206,35 +225,47 @@ const AdminUserListMain = () => {
                     `/admin/users/${encodeURIComponent(row.username)}`
                   )
                 }
-                aria-label={`Ouvrir ${row.username}`}
+                aria-label={t('admin.userList.action.openAria', {
+                  username: row.username,
+                })}
               />
             </Tooltip>
-            <Tooltip title={row.is_active ? 'Désactiver' : 'Réactiver'}>
+            <Tooltip
+              title={
+                row.is_active
+                  ? t('admin.userList.action.deactivate')
+                  : t('admin.userList.action.reactivate')
+              }
+            >
               <Button
                 icon={row.is_active ? <StopOutlined /> : <UserSwitchOutlined />}
                 onClick={() => handleToggle(row)}
-                aria-label={`Basculer ${row.username}`}
+                aria-label={t('admin.userList.action.toggleAria', {
+                  username: row.username,
+                })}
               />
             </Tooltip>
-            <Tooltip title="Réinitialiser le mot de passe">
+            <Tooltip title={t('admin.userList.action.resetPassword')}>
               <Button
                 icon={<UnlockOutlined />}
                 onClick={() => handleResetPassword(row)}
-                aria-label={`Réinitialiser le mot de passe de ${row.username}`}
+                aria-label={t('admin.userList.action.resetAria', {
+                  username: row.username,
+                })}
               />
             </Tooltip>
           </Space>
         ),
       },
     ],
-    [handleResetPassword, handleToggle, router]
+    [handleResetPassword, handleToggle, router, t]
   );
 
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Utilisateurs"
-        subtitle="Gérez les comptes, leurs zones et leur observabilité."
+        title={t('admin.userList.title')}
+        subtitle={t('admin.userList.subtitle')}
         actions={
           <Button
             type="primary"
@@ -242,7 +273,7 @@ const AdminUserListMain = () => {
             onClick={() => setDrawerOpen(true)}
             data-testid="admin-user-create"
           >
-            Nouvel utilisateur
+            {t('admin.userList.newUser')}
           </Button>
         }
       />
@@ -263,8 +294,8 @@ const AdminUserListMain = () => {
           loading={loading}
           searchable
           searchKeys={['username', 'email', 'firstname', 'lastname']}
-          searchPlaceholder="Rechercher (nom, email)…"
-          emptyDescription="Aucun utilisateur"
+          searchPlaceholder={t('admin.userList.searchPlaceholder')}
+          emptyDescription={t('admin.userList.empty')}
         />
       </Box>
 

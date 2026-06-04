@@ -5,6 +5,7 @@ import { App, Button, Input, Modal, Space, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useCallback, useEffect, useState } from 'react';
 import { Box } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
@@ -20,10 +21,10 @@ const STATUS_COLOR: Record<AffirmationStatus, string> = {
   rejected: 'red',
 };
 
-const ACTION_LABEL: Record<string, string> = {
-  zone_params_change: 'Modification de paramètres',
-  kc_periods_change: 'Modification des périodes Kc',
-  user_reactivate: 'Réactivation utilisateur',
+const ACTION_I18N_KEY: Record<string, string> = {
+  zone_params_change: 'admin.affirmations.action.zone_params_change',
+  kc_periods_change: 'admin.affirmations.action.kc_periods_change',
+  user_reactivate: 'admin.affirmations.action.user_reactivate',
 };
 
 const formatDate = (iso: string | null): string => {
@@ -36,7 +37,10 @@ const formatDate = (iso: string | null): string => {
 };
 
 const AdminAffirmationsMain = () => {
+  const t = useTranslations();
   const { message } = App.useApp();
+  const actionLabel = (action: string) =>
+    ACTION_I18N_KEY[action] ? t(ACTION_I18N_KEY[action]) : action;
   const [filter, setFilter] = useState<AffirmationStatus | 'all'>('pending');
   const [rows, setRows] = useState<Affirmation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,11 +54,11 @@ const AdminAffirmationsMain = () => {
       );
       setRows(data);
     } catch {
-      message.error('Liste des affirmations indisponible.');
+      message.error(t('admin.affirmations.loadError'));
     } finally {
       setLoading(false);
     }
-  }, [filter, message]);
+  }, [filter, message, t]);
 
   useEffect(() => {
     void refresh();
@@ -65,23 +69,26 @@ const AdminAffirmationsMain = () => {
     Modal.confirm({
       title:
         decision === 'approve'
-          ? `Approuver la demande #${row.id} ?`
-          : `Rejeter la demande #${row.id} ?`,
+          ? t('admin.affirmations.approveConfirmTitle', { id: row.id })
+          : t('admin.affirmations.rejectConfirmTitle', { id: row.id }),
       content: (
         <Space direction="vertical" style={{ width: '100%' }}>
-          <span>{ACTION_LABEL[row.action] ?? row.action}</span>
+          <span>{actionLabel(row.action)}</span>
           <Input.TextArea
             rows={2}
-            placeholder="Note de décision (optionnel)"
+            placeholder={t('admin.affirmations.notePlaceholder')}
             onChange={(e) => {
               note = e.target.value;
             }}
           />
         </Space>
       ),
-      okText: decision === 'approve' ? 'Approuver' : 'Rejeter',
+      okText:
+        decision === 'approve'
+          ? t('admin.affirmations.approve')
+          : t('admin.affirmations.reject'),
       okType: decision === 'approve' ? 'primary' : 'danger',
-      cancelText: 'Annuler',
+      cancelText: t('admin.affirmations.cancel'),
       onOk: async () => {
         setBusy(row.id);
         try {
@@ -94,10 +101,12 @@ const AdminAffirmationsMain = () => {
             prev.map((r) => (r.id === updated.id ? updated : r))
           );
           message.success(
-            decision === 'approve' ? 'Demande approuvée.' : 'Demande rejetée.'
+            decision === 'approve'
+              ? t('admin.affirmations.approveSuccess')
+              : t('admin.affirmations.rejectSuccess')
           );
         } catch {
-          message.error('Action impossible.');
+          message.error(t('admin.affirmations.actionError'));
         } finally {
           setBusy(null);
         }
@@ -107,49 +116,51 @@ const AdminAffirmationsMain = () => {
 
   const columns: ColumnsType<Affirmation> = [
     {
-      title: 'Demande',
+      title: t('admin.affirmations.col.request'),
       dataIndex: 'id',
       key: 'id',
       render: (id: number, row) => (
         <Space direction="vertical" size={0}>
           <strong>#{id}</strong>
           <span style={{ fontSize: 12, opacity: 0.7 }}>
-            {ACTION_LABEL[row.action] ?? row.action}
+            {actionLabel(row.action)}
           </span>
         </Space>
       ),
     },
     {
-      title: 'Demandeur',
+      title: t('admin.affirmations.col.requester'),
       dataIndex: 'requested_by_username',
       key: 'requested_by_username',
     },
     {
-      title: 'Statut',
+      title: t('admin.affirmations.col.status'),
       dataIndex: 'status',
       key: 'status',
-      render: (s: AffirmationStatus) => <Tag color={STATUS_COLOR[s]}>{s}</Tag>,
+      render: (s: AffirmationStatus) => (
+        <Tag color={STATUS_COLOR[s]}>{t(`admin.affirmations.status.${s}`)}</Tag>
+      ),
     },
     {
-      title: 'Créée le',
+      title: t('admin.affirmations.col.createdAt'),
       dataIndex: 'created_at',
       key: 'created_at',
       render: formatDate,
     },
     {
-      title: 'Décidée le',
+      title: t('admin.affirmations.col.decidedAt'),
       dataIndex: 'decided_at',
       key: 'decided_at',
       render: formatDate,
     },
     {
-      title: 'Décideur',
+      title: t('admin.affirmations.col.decidedBy'),
       dataIndex: 'decided_by_username',
       key: 'decided_by_username',
       render: (v: string | null) => v ?? '—',
     },
     {
-      title: 'Actions',
+      title: t('admin.affirmations.col.actions'),
       key: 'actions',
       align: 'right',
       render: (_v, row) =>
@@ -161,7 +172,7 @@ const AdminAffirmationsMain = () => {
               loading={busy === row.id}
               onClick={() => decide(row, 'approve')}
             >
-              Approuver
+              {t('admin.affirmations.approve')}
             </Button>
             <Button
               danger
@@ -169,7 +180,7 @@ const AdminAffirmationsMain = () => {
               loading={busy === row.id}
               onClick={() => decide(row, 'reject')}
             >
-              Rejeter
+              {t('admin.affirmations.reject')}
             </Button>
           </Space>
         ) : null,
@@ -179,8 +190,8 @@ const AdminAffirmationsMain = () => {
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Affirmations manager"
-        subtitle="Approuver ou rejeter les demandes des utilisateurs."
+        title={t('admin.affirmations.title')}
+        subtitle={t('admin.affirmations.subtitle')}
         actions={
           <Space>
             {(['pending', 'approved', 'rejected', 'all'] as const).map(
@@ -191,7 +202,9 @@ const AdminAffirmationsMain = () => {
                   type={filter === key ? 'primary' : 'default'}
                   onClick={() => setFilter(key)}
                 >
-                  {key === 'all' ? 'Toutes' : key}
+                  {key === 'all'
+                    ? t('admin.affirmations.filter.all')
+                    : t(`admin.affirmations.status.${key}`)}
                 </Button>
               )
             )}
@@ -213,7 +226,7 @@ const AdminAffirmationsMain = () => {
           columns={columns}
           data={rows}
           loading={loading}
-          emptyDescription="Aucune affirmation"
+          emptyDescription={t('admin.affirmations.empty')}
         />
       </Box>
     </Box>

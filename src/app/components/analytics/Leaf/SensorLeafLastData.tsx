@@ -5,6 +5,7 @@ import {
   VStack,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { WiRaindrop, WiThermometer } from 'react-icons/wi';
 import {
   formatCalibratedReading,
@@ -14,16 +15,20 @@ import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
-const timeAgo = (timestamp: string): string => {
+const timeAgo = (
+  timestamp: string,
+  t: ReturnType<typeof useTranslations>
+): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min.`;
-  if (diffH < 24) return `${diffH} h`;
+  if (diffMin < 1) return t('analytics.lastData.justNow');
+  if (diffMin < 60)
+    return t('analytics.lastData.minutesAgo', { count: diffMin });
+  if (diffH < 24) return t('analytics.lastData.hoursAgo', { count: diffH });
   return then.toLocaleDateString();
 };
 
@@ -34,6 +39,7 @@ const SensorLeafLastData = ({
   temperature?: { value: number; timestamp: string };
   moisture?: { value: number; timestamp: string };
 }) => {
+  const t = useTranslations();
   useUnitOverridesRevision();
   const titleColor = useColorModeValue('gray.600', 'gray.300');
   const labelMuted = useColorModeValue('gray.500', 'gray.400');
@@ -61,7 +67,7 @@ const SensorLeafLastData = ({
           textAlign="center"
           mb={2}
         >
-          Capteur foliaire
+          {t('analytics.leaf.lastDataTitle')}
         </Text>
         <VStack spacing={0} align="stretch" w="100%" divider={<Divider />}>
           <Box textAlign="center" py={2}>
@@ -76,7 +82,7 @@ const SensorLeafLastData = ({
               textTransform="uppercase"
               letterSpacing="0.06em"
             >
-              Température foliaire
+              {t('sensors.leaf_temperature')}
             </Text>
             <Text fontSize="xl" fontWeight="semibold" color={valueTemp} mt={1}>
               {temperature
@@ -84,7 +90,11 @@ const SensorLeafLastData = ({
                 : '—'}
             </Text>
             <Text fontSize="xs" color={subColor} mt={1}>
-              {temperature ? `Mesure : ${timeAgo(temperature.timestamp)}` : ''}
+              {temperature
+                ? t('analytics.lastData.measuredAt', {
+                    time: timeAgo(temperature.timestamp, t),
+                  })
+                : ''}
             </Text>
           </Box>
           <Box textAlign="center" py={2}>
@@ -99,7 +109,7 @@ const SensorLeafLastData = ({
               textTransform="uppercase"
               letterSpacing="0.06em"
             >
-              Humidité foliaire
+              {t('sensors.leaf_moisture')}
             </Text>
             <Text fontSize="xl" fontWeight="semibold" color={valueMoist} mt={1}>
               {moisture
@@ -107,7 +117,11 @@ const SensorLeafLastData = ({
                 : '—'}
             </Text>
             <Text fontSize="xs" color={subColor} mt={1}>
-              {moisture ? `Mesure : ${timeAgo(moisture.timestamp)}` : ''}
+              {moisture
+                ? t('analytics.lastData.measuredAt', {
+                    time: timeAgo(moisture.timestamp, t),
+                  })
+                : ''}
             </Text>
           </Box>
         </VStack>

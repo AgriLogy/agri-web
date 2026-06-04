@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useId, useState } from 'react';
 import NextLink from 'next/link';
+import { useTranslations } from 'next-intl';
 import {
   Badge,
   Box,
@@ -210,6 +211,7 @@ function SchemaSection({
 }
 
 const VannesPompesSchemaMain = () => {
+  const t = useTranslations();
   const pageBg = useColorModeValue('gray.50', 'gray.900');
   const titleColor = useColorModeValue('gray.900', 'white');
   const mutedColor = useColorModeValue('gray.600', 'gray.400');
@@ -300,7 +302,7 @@ const VannesPompesSchemaMain = () => {
                 fontSize="10px"
                 letterSpacing="wider"
               >
-                Synoptique
+                {t('misc.vannesPompesSchema.synoptic')}
               </Badge>
             </HStack>
             <Heading
@@ -310,7 +312,7 @@ const VannesPompesSchemaMain = () => {
               letterSpacing="-0.03em"
               lineHeight="shorter"
             >
-              Schéma vannes &amp; pompes
+              {t('misc.vannesPompesSchema.pageTitle')}
             </Heading>
             <Text
               fontSize="md"
@@ -318,8 +320,7 @@ const VannesPompesSchemaMain = () => {
               maxW="lg"
               fontWeight="medium"
             >
-              Vue d&apos;ensemble du réseau : états synchronisés avec la page
-              Gestion.
+              {t('misc.vannesPompesSchema.pageSubtitle')}
             </Text>
             <Button
               as={NextLink}
@@ -330,7 +331,7 @@ const VannesPompesSchemaMain = () => {
               alignSelf={{ base: 'stretch', md: 'flex-start' }}
               borderRadius="lg"
             >
-              Retour à la gestion
+              {t('misc.vannesPompesSchema.backToManagement')}
             </Button>
           </VStack>
         </Flex>
@@ -358,11 +359,10 @@ const VannesPompesSchemaMain = () => {
                 </Text>
               </Circle>
               <Heading size="md" color={titleColor} mb={2}>
-                Aucun équipement configuré
+                {t('misc.vannesPompesSchema.emptyTitle')}
               </Heading>
               <Text color={mutedColor} maxW="md" mb={8} lineHeight="tall">
-                Ajoutez des vannes et des pompes depuis la gestion pour afficher
-                le schéma interactif.
+                {t('misc.vannesPompesSchema.emptyDescription')}
               </Text>
               <Button
                 as={NextLink}
@@ -372,16 +372,16 @@ const VannesPompesSchemaMain = () => {
                 borderRadius="xl"
                 px={8}
               >
-                Configurer le réseau
+                {t('misc.vannesPompesSchema.configureNetwork')}
               </Button>
             </Flex>
           ) : (
             <VStack spacing={8} align="stretch">
               {vanes.length > 0 && (
                 <SchemaSection
-                  eyebrow="Distribution"
-                  title="Collecteur vannes"
-                  description="Connexion au bus principal : chaque station affiche la consigne courante et la cible."
+                  eyebrow={t('misc.vannesPompesSchema.valvesEyebrow')}
+                  title={t('misc.vannesPompesSchema.valvesTitle')}
+                  description={t('misc.vannesPompesSchema.valvesDescription')}
                 >
                   <HStack
                     justify="center"
@@ -444,7 +444,9 @@ const VannesPompesSchemaMain = () => {
                               fontSize="9px"
                               px={1.5}
                             >
-                              {vane.active ? 'Ouverte' : 'Fermée'}
+                              {vane.active
+                                ? t('misc.vannesPompesSchema.valveOpen')
+                                : t('misc.vannesPompesSchema.valveClosed')}
                             </Badge>
                             <Text
                               fontSize="10px"
@@ -482,7 +484,9 @@ const VannesPompesSchemaMain = () => {
                               color={mutedColor}
                               sx={{ fontVariantNumeric: 'tabular-nums' }}
                             >
-                              cible 4.0
+                              {t('misc.vannesPompesSchema.target', {
+                                value: '4.0',
+                              })}
                             </Text>
                           </VStack>
                           <Text
@@ -506,9 +510,11 @@ const VannesPompesSchemaMain = () => {
                 <>
                   {vanes.length > 0 && <Divider borderColor={dividerColor} />}
                   <SchemaSection
-                    eyebrow="Transport"
-                    title="Ligne principale"
-                    description="Pompe centrale sur le collecteur : l’état vert indique une pompe en marche."
+                    eyebrow={t('misc.vannesPompesSchema.mainlineEyebrow')}
+                    title={t('misc.vannesPompesSchema.mainlineTitle')}
+                    description={t(
+                      'misc.vannesPompesSchema.mainlineDescription'
+                    )}
                   >
                     <Flex
                       align="center"
@@ -553,7 +559,9 @@ const VannesPompesSchemaMain = () => {
                           color={mutedColor}
                           fontWeight="medium"
                         >
-                          {mainlinePump.running ? 'En marche' : 'Arrêtée'}
+                          {mainlinePump.running
+                            ? t('misc.vannesPompesSchema.pumpRunning')
+                            : t('misc.vannesPompesSchema.pumpStopped')}
                         </Text>
                       </HStack>
                     )}
@@ -565,9 +573,9 @@ const VannesPompesSchemaMain = () => {
                 <>
                   <Divider borderColor={dividerColor} />
                   <SchemaSection
-                    eyebrow="Injection"
-                    title="Pompes de dosage"
-                    description="Unités périphériques raccordées au réseau : numérotation à partir de la seconde pompe."
+                    eyebrow={t('misc.vannesPompesSchema.dosingEyebrow')}
+                    title={t('misc.vannesPompesSchema.dosingTitle')}
+                    description={t('misc.vannesPompesSchema.dosingDescription')}
                   >
                     <Flex
                       justify="center"
@@ -596,7 +604,9 @@ const VannesPompesSchemaMain = () => {
                             borderRadius="md"
                             fontSize="9px"
                           >
-                            {pump.running ? 'Marche' : 'Arrêt'}
+                            {pump.running
+                              ? t('misc.vannesPompesSchema.pumpOn')
+                              : t('misc.vannesPompesSchema.pumpOff')}
                           </Badge>
                           <Text
                             fontSize="xs"
@@ -627,10 +637,12 @@ const VannesPompesSchemaMain = () => {
         >
           <Text fontSize="xs" color={mutedColor} lineHeight="tall">
             <Text as="span" fontWeight="bold" color={footerLegendAccent}>
-              Légende :{' '}
+              {t('misc.vannesPompesSchema.legendLabel')}{' '}
             </Text>
-            vert = vanne ouverte / pompe active ; tons bleu = conduites ;
-            données de débit affichées à titre indicatif (0.0 / 4.0).
+            {t('misc.vannesPompesSchema.legendBody', {
+              current: '0.0',
+              target: '4.0',
+            })}
           </Text>
         </Box>
       </Box>

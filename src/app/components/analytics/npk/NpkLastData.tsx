@@ -1,4 +1,5 @@
 import { Box, Text, VStack, useColorModeValue } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { GiChemicalDrop } from 'react-icons/gi';
 import { NpkSensorData } from '@/app/types';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -11,20 +12,27 @@ import { getCatalogDefaultUnit } from '@/app/utils/sensorCatalog';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
-const timeAgo = (timestamp: string): string => {
+type TimeAgoTranslator = (
+  key: string,
+  values?: Record<string, string | number>
+) => string;
+
+const timeAgo = (timestamp: string, t: TimeAgoTranslator): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min.`;
-  if (diffH < 24) return `${diffH} heures`;
+  if (diffMin < 1) return t('analytics.npkLastData.justNow');
+  if (diffMin < 60)
+    return t('analytics.npkLastData.minutesAgo', { count: diffMin });
+  if (diffH < 24) return t('analytics.npkLastData.hoursAgo', { count: diffH });
   return then.toLocaleDateString();
 };
 
 const NpkLastData = ({ data }: { data: NpkSensorData[] }) => {
+  const t = useTranslations();
   const latest = data[data.length - 1];
   useUnitOverridesRevision();
 
@@ -67,7 +75,7 @@ const NpkLastData = ({ data }: { data: NpkSensorData[] }) => {
           mt={3}
           color={textColor}
         >
-          {`Nutrition N-P-K (${npkHeadingUnits})`}
+          {t('analytics.npkLastData.heading', { units: npkHeadingUnits })}
         </Text>
 
         {latest ? (
@@ -105,7 +113,9 @@ const NpkLastData = ({ data }: { data: NpkSensorData[] }) => {
 
         {latest && (
           <Text fontSize="xs" color={timeColor} mt={3}>
-            Mesure : {timeAgo(latest.timestamp)}
+            {t('analytics.npkLastData.measured', {
+              ago: timeAgo(latest.timestamp, t),
+            })}
           </Text>
         )}
         <LastDataAddAlertButton />

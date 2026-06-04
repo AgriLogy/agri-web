@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, KeyboardEvent } from 'react';
+import { useTranslations } from 'next-intl';
 import { Box, Flex, Textarea, Text, useColorModeValue } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 import { AgrilogyMessageBubble } from './MessageBubble';
@@ -53,67 +54,15 @@ const panelIn = keyframes`
   to   { opacity: 1; transform: scale(1) translateY(0); }
 `;
 
-// ── Constants ──────────────────────────────────────────────────────────────
-const WELCOME_MESSAGE =
-  'Bonjour ! Je suis votre assistant Agrilogy. Posez-moi vos questions sur vos champs, capteurs, santé des cultures ou performance de votre exploitation. Tapez /help pour voir les pages disponibles.';
-
-const SYSTEM_PROMPT = `Tu es l'assistant intégré d'Agrilogy, une plateforme d'intelligence agricole.
-Ta seule mission est d'aider les utilisateurs à naviguer et comprendre les données disponibles dans l'application Agrilogy : tableau de bord, données sol, station météo, suivi des plantes, données eau, et gestion des alertes.
-
-RÈGLE ABSOLUE : Si la question ne concerne pas directement l'application Agrilogy ou l'agriculture en lien avec les données de la plateforme, tu DOIS refuser. Réponds uniquement : "Je suis uniquement disponible pour répondre aux questions liées à l'application Agrilogy. Tapez /help pour voir les pages disponibles." Ne donne aucune information hors sujet, même partielle. Ne t'excuse pas longuement, ne propose pas d'alternatives hors-sujet.
-
-Réponds toujours en français. Sois concis et pratique.`;
-
-const ERROR_MESSAGES: Record<ChatErrorCode, string> = {
-  timeout: 'La requête a expiré. Veuillez réessayer.',
-  overloaded: 'Le serveur est occupé. Veuillez réessayer dans un moment.',
-  rate_limit: 'Trop de requêtes. Veuillez ralentir.',
-  internal: "Une erreur s'est produite. Veuillez réessayer.",
-  network: 'Erreur réseau. Vérifiez votre connexion et réessayez.',
-};
-
 // ── App routes for /help ───────────────────────────────────────────────────
+/** Stable route metadata; user-facing label/description resolved via i18n keys. */
 const APP_ROUTES = [
-  {
-    path: '/',
-    label: 'Tableau de bord',
-    description: "Vue d'ensemble de votre exploitation",
-    icon: '🏠',
-  },
-  {
-    path: '/soil',
-    label: 'Données sur le sol',
-    description:
-      'Eau disponible, Température (°C), pH, Salinité & conductivité, NPK',
-    icon: '🌱',
-  },
-  {
-    path: '/station',
-    label: 'Station météo',
-    description:
-      'Température & Humidité, ET0, Vitesse & direction du vent, Rayonnement, Précipitations',
-    icon: '🌤️',
-  },
-  {
-    path: '/plant',
-    label: 'Suivi des plantes',
-    description:
-      'Taille des fruits, Diamètre des gros fruits, Humidité & température des feuilles',
-    icon: '🌿',
-  },
-  {
-    path: '/water',
-    label: "Données sur l'eau",
-    description: 'Débit, Pression, pH, Conductivité, Cumul de précipitations',
-    icon: '💧',
-  },
-  {
-    path: '/alerts',
-    label: 'Gestion des alertes',
-    description:
-      'Consultation et gestion de toutes les alertes de votre exploitation',
-    icon: '🔔',
-  },
+  { path: '/', key: 'dashboard', icon: '🏠' },
+  { path: '/soil', key: 'soil', icon: '🌱' },
+  { path: '/station', key: 'station', icon: '🌤️' },
+  { path: '/plant', key: 'plant', icon: '🌿' },
+  { path: '/water', key: 'water', icon: '💧' },
+  { path: '/alerts', key: 'alerts', icon: '🔔' },
 ];
 
 // ── Help card component ────────────────────────────────────────────────────
@@ -131,49 +80,52 @@ const HelpCard = ({
   cardBg,
   cardBorder,
   descColor,
-}: HelpCardProps) => (
-  <Box display="flex" flexDirection="column" gap="6px">
-    <Text fontSize="13px" fontWeight={600} mb="4px">
-      📋 Pages disponibles sur Agrilogy :
-    </Text>
-    {APP_ROUTES.map((route) => (
-      <Box
-        key={route.path}
-        as="a"
-        href={route.path}
-        display="block"
-        px="10px"
-        py="7px"
-        bg={cardBg}
-        border="1px solid"
-        borderColor={cardBorder}
-        borderRadius="8px"
-        textDecoration="none"
-        transition="all 0.15s"
-        _hover={{ borderColor: linkHoverColor, transform: 'translateX(2px)' }}
-        role="link"
-      >
-        <Flex align="center" gap="6px" mb="1px">
-          <Text fontSize="13px">{route.icon}</Text>
-          <Text
-            fontSize="12.5px"
-            fontWeight={600}
-            color={linkColor}
-            fontFamily="mono"
-          >
-            {route.path}
+}: HelpCardProps) => {
+  const t = useTranslations();
+  return (
+    <Box display="flex" flexDirection="column" gap="6px">
+      <Text fontSize="13px" fontWeight={600} mb="4px">
+        {t('misc.chatbot.availablePagesTitle')}
+      </Text>
+      {APP_ROUTES.map((route) => (
+        <Box
+          key={route.path}
+          as="a"
+          href={route.path}
+          display="block"
+          px="10px"
+          py="7px"
+          bg={cardBg}
+          border="1px solid"
+          borderColor={cardBorder}
+          borderRadius="8px"
+          textDecoration="none"
+          transition="all 0.15s"
+          _hover={{ borderColor: linkHoverColor, transform: 'translateX(2px)' }}
+          role="link"
+        >
+          <Flex align="center" gap="6px" mb="1px">
+            <Text fontSize="13px">{route.icon}</Text>
+            <Text
+              fontSize="12.5px"
+              fontWeight={600}
+              color={linkColor}
+              fontFamily="mono"
+            >
+              {route.path}
+            </Text>
+            <Text fontSize="12px" fontWeight={500} color={linkColor}>
+              — {t(`misc.chatbot.route.${route.key}.label`)}
+            </Text>
+          </Flex>
+          <Text fontSize="11px" color={descColor} pl="20px">
+            {t(`misc.chatbot.route.${route.key}.description`)}
           </Text>
-          <Text fontSize="12px" fontWeight={500} color={linkColor}>
-            — {route.label}
-          </Text>
-        </Flex>
-        <Text fontSize="11px" color={descColor} pl="20px">
-          {route.description}
-        </Text>
-      </Box>
-    ))}
-  </Box>
-);
+        </Box>
+      ))}
+    </Box>
+  );
+};
 
 // ── Props ──────────────────────────────────────────────────────────────────
 interface AgrilogyChatBotProps {
@@ -257,6 +209,19 @@ export const AgrilogyChatBot = ({
   onClose,
   pageContext = 'general',
 }: AgrilogyChatBotProps) => {
+  const t = useTranslations();
+
+  // ── Localized strings ──────────────────────────────────────────────────────
+  const WELCOME_MESSAGE = t('misc.chatbot.welcome');
+  const SYSTEM_PROMPT = t('misc.chatbot.systemPrompt');
+  const ERROR_MESSAGES: Record<ChatErrorCode, string> = {
+    timeout: t('misc.chatbot.error.timeout'),
+    overloaded: t('misc.chatbot.error.overloaded'),
+    rate_limit: t('misc.chatbot.error.rateLimit'),
+    internal: t('misc.chatbot.error.internal'),
+    network: t('misc.chatbot.error.network'),
+  };
+
   // ── State ────────────────────────────────────────────────────────────────
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -399,7 +364,7 @@ export const AgrilogyChatBot = ({
     try {
       await sendToAnthropic(
         [...historySnapshot, { role: 'user', content: text }],
-        `${SYSTEM_PROMPT}\nContexte de la page actuelle : ${pageContext}`,
+        `${SYSTEM_PROMPT}\n${t('misc.chatbot.pageContext', { context: pageContext })}`,
         updateLastAssistant,
         controller.signal
       );
@@ -466,7 +431,7 @@ export const AgrilogyChatBot = ({
         open ? `${panelIn} 0.25s cubic-bezier(0.34,1.4,0.64,1)` : undefined
       }
       role="dialog"
-      aria-label="Agrilogy assistant"
+      aria-label={t('misc.chatbot.assistantName')}
     >
       {/* Header */}
       <Flex
@@ -499,7 +464,7 @@ export const AgrilogyChatBot = ({
             color={headerName}
             letterSpacing="0.01em"
           >
-            Assistant Agrilogy
+            {t('misc.chatbot.assistantName')}
           </Text>
           <Flex align="center" gap="4px">
             <Box
@@ -510,7 +475,9 @@ export const AgrilogyChatBot = ({
               flexShrink={0}
             />
             <Text fontSize="11px" color={headerStatus}>
-              {streaming ? 'En cours...' : 'Prêt'}
+              {streaming
+                ? t('misc.chatbot.statusStreaming')
+                : t('misc.chatbot.statusReady')}
             </Text>
           </Flex>
         </Box>
@@ -530,7 +497,7 @@ export const AgrilogyChatBot = ({
           transition="background 0.15s, color 0.15s"
           _hover={{ bg: closeHoverBg, color: headerName }}
           onClick={onClose}
-          aria-label="Fermer"
+          aria-label={t('misc.chatbot.close')}
           type="button"
         >
           <CloseIcon size={14} />
@@ -673,7 +640,7 @@ export const AgrilogyChatBot = ({
             minH="38px"
             rows={1}
             lineHeight="1.45"
-            placeholder="Posez votre question ou tapez /help..."
+            placeholder={t('misc.chatbot.inputPlaceholder')}
             _placeholder={{ color: placeholderColor }}
             _focus={{ borderColor: inputFocus, boxShadow: 'none' }}
             _disabled={{ opacity: 0.5, cursor: 'not-allowed' }}
@@ -701,7 +668,7 @@ export const AgrilogyChatBot = ({
             }
             _active={canSend ? { transform: 'scale(0.95)' } : {}}
             disabled={!canSend}
-            aria-label="Envoyer"
+            aria-label={t('misc.chatbot.send')}
           >
             <SendIcon />
           </Box>
@@ -723,11 +690,11 @@ export const AgrilogyChatBot = ({
               transition="color 0.15s"
               _hover={{ color: abortHoverColor }}
             >
-              Arrêter la génération ×
+              {t('misc.chatbot.stopGeneration')}
             </Box>
           ) : (
             <Text fontSize="10px" color={hintColor} fontFamily="mono" ml="auto">
-              Entrée pour envoyer, Maj+Entrée pour nouvelle ligne
+              {t('misc.chatbot.inputHint')}
             </Text>
           )}
         </Flex>

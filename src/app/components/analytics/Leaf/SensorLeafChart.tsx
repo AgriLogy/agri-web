@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -50,6 +51,7 @@ const SensorLeafChart = ({
   moistureData: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const { textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
@@ -138,19 +140,19 @@ const SensorLeafChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Feuille — humidité et température"
-          subtitle="Microclimat foliaire sur la fenêtre d’analyse."
+          title={t('analytics.leaf.chartTitle')}
+          subtitle={t('analytics.leaf.chartSubtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.actions.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.actions.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -180,14 +182,17 @@ const SensorLeafChart = ({
             <YAxis
               yAxisId="left"
               {...yTemp}
-              label={yAxisLabelInsideLeft(`T feuille (${tempUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.leaf.axisTemp', { unit: tempUnit }),
+                tickFill
+              )}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
               {...yMoist}
               label={yAxisLabelInsideRight(
-                `H feuille (${moistureUnit})`,
+                t('analytics.leaf.axisMoisture', { unit: moistureUnit }),
                 tickFill
               )}
             />
@@ -205,7 +210,7 @@ const SensorLeafChart = ({
               yAxisId="left"
               type="monotone"
               dataKey="leaf_temperature"
-              name={`Température feuille (${tempUnit})`}
+              name={`${t('sensors.leaf_temperature')} (${tempUnit})`}
               hide={!activeLines.leaf_temperature}
               stroke="#ff7300"
               strokeWidth={2.25}
@@ -218,7 +223,7 @@ const SensorLeafChart = ({
               yAxisId="right"
               type="monotone"
               dataKey="leaf_moisture"
-              name={`Humidité feuille (${moistureUnit})`}
+              name={`${t('sensors.leaf_moisture')} (${moistureUnit})`}
               hide={!activeLines.leaf_moisture}
               stroke="#007aff"
               strokeWidth={2.25}

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Box,
   Text,
@@ -23,16 +24,22 @@ interface ET0Data {
   default_unit: string;
 }
 
-const timeAgo = (timestamp: string): string => {
+type TimeAgoTranslator = (
+  key: string,
+  values?: Record<string, string | number>
+) => string;
+
+const timeAgo = (timestamp: string, t: TimeAgoTranslator): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min.`;
-  if (diffH < 24) return `${diffH} h`;
+  if (diffMin < 1) return t('analytics.et0LastData.justNow');
+  if (diffMin < 60)
+    return t('analytics.et0LastData.minutesAgo', { count: diffMin });
+  if (diffH < 24) return t('analytics.et0LastData.hoursAgo', { count: diffH });
   return then.toLocaleDateString();
 };
 
@@ -43,6 +50,7 @@ const ET0LastData = ({
   weatherData: ET0Data[];
   calculatedData: ET0Data[];
 }) => {
+  const t = useTranslations();
   useUnitOverridesRevision();
   const latestWeather = weatherData[weatherData.length - 1];
   const latestCalculated = calculatedData[calculatedData.length - 1];
@@ -95,14 +103,14 @@ const ET0LastData = ({
           mt={3}
           color={titleColor}
         >
-          Évapotranspiration de référence (ET₀)
+          {t('analytics.et0LastData.heading')}
         </Text>
 
         {latestWeather || latestCalculated ? (
           <VStack spacing={3} mt={4} align="stretch" w="100%">
             <Box>
               <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
-                Capteur météo
+                {t('analytics.et0LastData.weatherSensor')}
               </Text>
               <Text fontSize="lg" fontWeight="semibold" color={valueMeteo}>
                 {latestWeather
@@ -112,7 +120,7 @@ const ET0LastData = ({
             </Box>
             <Box>
               <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
-                Modèle calculé
+                {t('analytics.et0LastData.calculatedModel')}
               </Text>
               <Text fontSize="lg" fontWeight="semibold" color={valueCalc}>
                 {latestCalculated
@@ -123,7 +131,7 @@ const ET0LastData = ({
           </VStack>
         ) : (
           <Text mt={4} fontSize="sm" color={subColor}>
-            Aucune donnée récente
+            {t('analytics.et0LastData.noRecentData')}
           </Text>
         )}
 
@@ -133,28 +141,34 @@ const ET0LastData = ({
             <VStack spacing={3} align="stretch" w="100%">
               <Box>
                 <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
-                  ET₀ du jour ({daily.latestDay})
+                  {t('analytics.et0LastData.todayEt0', {
+                    day: daily.latestDay,
+                  })}
                 </Text>
                 <Text fontSize="lg" fontWeight="bold" color={valueDaily}>
                   {daily.latestTotal.toFixed(2)} mm/j
                 </Text>
               </Box>
-              {daily.prevTotal != null && (
+              {daily.prevDay != null && daily.prevTotal != null && (
                 <Box>
                   <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
-                    ET₀ de la veille ({daily.prevDay})
+                    {t('analytics.et0LastData.yesterdayEt0', {
+                      day: daily.prevDay,
+                    })}
                   </Text>
                   <Text fontSize="lg" fontWeight="semibold" color={valueDaily}>
                     {daily.prevTotal.toFixed(2)} mm/j
                   </Text>
                   <Text fontSize="xs" color={subColor}>
-                    utilisée pour l’irrigation du jour
+                    {t('analytics.et0LastData.usedForIrrigation')}
                   </Text>
                 </Box>
               )}
               <Box>
                 <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
-                  Cumul ({daily.dayCount} j)
+                  {t('analytics.et0LastData.cumulative', {
+                    count: daily.dayCount,
+                  })}
                 </Text>
                 <Text fontSize="md" fontWeight="semibold" color={valueDaily}>
                   {daily.cumulative.toFixed(2)} mm
@@ -166,7 +180,7 @@ const ET0LastData = ({
 
         {newestTs && (
           <Text fontSize="xs" color={subColor} mt={3}>
-            Mesure : {timeAgo(newestTs)}
+            {t('analytics.et0LastData.measured', { ago: timeAgo(newestTs, t) })}
           </Text>
         )}
         <LastDataAddAlertButton sensorKey="et0" />

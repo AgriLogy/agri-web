@@ -1,5 +1,6 @@
 'use client';
 import { Box, Text, HStack, useColorMode } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { useCalibratedStationChartRows } from '@/app/hooks/useCalibratedStationChartRows';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -42,6 +43,7 @@ const SOLAR_FIELDS = [
 ] as const;
 
 const SolarRadiationGraph = ({ data }: { data: any }) => {
+  const t = useTranslations();
   const { colorMode } = useColorMode();
   const { textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
@@ -112,10 +114,10 @@ const SolarRadiationGraph = ({ data }: { data: any }) => {
     >
       <Box mb={2}>
         <ChartPanelHeading
-          title="Rayonnement solaire — puissance surfacique"
+          title={t('station.solarRadiation.title')}
           subtitle={
             [
-              "Bandes 0–90 % et 90–100 % de l'échelle affichée",
+              t('station.solarRadiation.bandsCaption'),
               data?.sensor_names?.solar_radiation,
             ]
               .filter(Boolean)
@@ -263,7 +265,7 @@ const SolarRadiationGraph = ({ data }: { data: any }) => {
               dataKey="solar_radiation"
               stroke={data.sensor_colors?.solar_radiation_color ?? '#ca8a04'}
               fill="url(#stationSolarMountain)"
-              name={`Rayonnement (${solarUnit})`}
+              name={`${t('sensors.solar_radiation')} (${solarUnit})`}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"

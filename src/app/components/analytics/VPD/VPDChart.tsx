@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -44,8 +45,6 @@ export interface VPDDataPoint {
   vpd: number;
 }
 
-const LEGEND_NAME = 'Déficit de pression de vapeur';
-
 const VPDChart = ({
   data,
   loading,
@@ -53,10 +52,12 @@ const VPDChart = ({
   data: VPDDataPoint[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const { textColor } = useColorModeStyles();
   useUnitOverridesRevision();
   const vpdUnit = resolveAxisUnit('vpd');
+  const legendName = t('analytics.vpd.legendName');
 
   const chartData = useMemo(
     () => addTimeMsToChartRows(data, 'timestamp'),
@@ -105,11 +106,11 @@ const VPDChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Déficit de pression de vapeur (DPV)"
+          title={t('analytics.vpd.title')}
           subtitle={
             vpdUnit
-              ? `Indicateur pour le couvert végétal — échelle ${vpdUnit}.`
-              : 'Indicateur de sécheresse atmosphérique pour le couvert végétal.'
+              ? t('analytics.vpd.subtitleWithUnit', { unit: vpdUnit })
+              : t('analytics.vpd.subtitle')
           }
           startAdornment={
             <Icon as={FaLeaf} color="green.500" boxSize={5} aria-hidden />
@@ -117,14 +118,14 @@ const VPDChart = ({
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -153,7 +154,10 @@ const VPDChart = ({
             <YAxis
               {...yAxisProps}
               domain={[0, 'auto']}
-              label={yAxisLabelInsideLeft(`DPV (${vpdUnit})`.trim(), tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.vpd.axisLabel', { unit: vpdUnit }).trim(),
+                tickFill
+              )}
             />
             <Tooltip
               cursor={defaultTooltipCursor}
@@ -180,7 +184,11 @@ const VPDChart = ({
             />
             <Line
               dataKey="vpd"
-              name={vpdUnit ? `${LEGEND_NAME} (${vpdUnit})` : LEGEND_NAME}
+              name={
+                vpdUnit
+                  ? t('analytics.vpd.legendNameWithUnit', { unit: vpdUnit })
+                  : legendName
+              }
               stroke="#3182ce"
               {...defaultLineProps}
               hide={!showVpd}

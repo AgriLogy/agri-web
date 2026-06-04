@@ -24,6 +24,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { MdPowerSettingsNew } from 'react-icons/md';
+import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import { ChartSection } from '@/app/components/layout/ChartSection';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
@@ -47,6 +48,7 @@ function newId(prefix: string) {
 }
 
 const VannesPompesMain = () => {
+  const t = useTranslations();
   const { bg, textColor, borderColor } = useColorModeStyles();
   const [vanes, setVanes] = useState<Vane[]>([]);
   const [pumps, setPumps] = useState<Pump[]>([]);
@@ -116,12 +118,12 @@ const VannesPompesMain = () => {
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }} color={textColor}>
       <PageInfoBar
-        title="Vannes et pompes"
-        subtitle={`${vanes.length} vanne${vanes.length === 1 ? '' : 's'} · ${pumps.length} pompe${pumps.length === 1 ? '' : 's'}`}
+        title={t('shell.vannesPompes.title')}
+        subtitle={`${t('shell.vannesPompes.vaneCount', { count: vanes.length })} · ${t('shell.vannesPompes.pumpCount', { count: pumps.length })}`}
         actions={
           <HStack flexWrap="wrap" gap={2}>
             <Button colorScheme="brand" size="sm" onClick={addVaneModal.onOpen}>
-              Ajouter une vanne
+              {t('shell.vannesPompes.addVane')}
             </Button>
             <Button
               colorScheme="brand"
@@ -129,7 +131,7 @@ const VannesPompesMain = () => {
               size="sm"
               onClick={addPumpModal.onOpen}
             >
-              Ajouter une pompe
+              {t('shell.vannesPompes.addPump')}
             </Button>
             <Button
               as={NextLink}
@@ -137,7 +139,7 @@ const VannesPompesMain = () => {
               variant="outline"
               size="sm"
             >
-              Vue schéma réseau
+              {t('shell.vannesPompes.schemaView')}
             </Button>
           </HStack>
         }
@@ -152,11 +154,11 @@ const VannesPompesMain = () => {
             fontWeight="semibold"
             lineHeight="short"
           >
-            Vannes
+            {t('shell.vannesPompes.vanesHeading')}
           </Heading>
           {vanes.length === 0 ? (
             <Text color="app.text.muted">
-              Aucune vanne. Cliquez sur « Ajouter une vanne » pour en créer une.
+              {t('shell.vannesPompes.emptyVanes')}
             </Text>
           ) : (
             <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={6}>
@@ -182,11 +184,11 @@ const VannesPompesMain = () => {
             fontWeight="semibold"
             lineHeight="short"
           >
-            Pompes
+            {t('shell.vannesPompes.pumpsHeading')}
           </Heading>
           {pumps.length === 0 ? (
             <Text color="app.text.muted">
-              Aucune pompe. Utilisez « Ajouter une pompe » pour en créer une.
+              {t('shell.vannesPompes.emptyPumps')}
             </Text>
           ) : (
             <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={6}>
@@ -207,20 +209,22 @@ const VannesPompesMain = () => {
       <Modal isOpen={addVaneModal.isOpen} onClose={addVaneModal.onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Nouvelle vanne</ModalHeader>
+          <ModalHeader>{t('shell.vannesPompes.newVaneTitle')}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack spacing={4}>
               <FormControl isRequired>
-                <FormLabel>Nom</FormLabel>
+                <FormLabel>{t('shell.vannesPompes.nameLabel')}</FormLabel>
                 <Input
                   value={newVaneName}
                   onChange={(e) => setNewVaneName(e.target.value)}
-                  placeholder="ex. Vanne 1"
+                  placeholder={t('shell.vannesPompes.vaneNamePlaceholder')}
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>DevEUI (optionnel)</FormLabel>
+                <FormLabel>
+                  {t('shell.vannesPompes.devEuiOptionalLabel')}
+                </FormLabel>
                 <Input
                   value={newVaneDevEui}
                   onChange={(e) => setNewVaneDevEui(e.target.value)}
@@ -233,10 +237,10 @@ const VannesPompesMain = () => {
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={addVaneModal.onClose}>
-              Annuler
+              {t('shell.vannesPompes.cancel')}
             </Button>
             <Button colorScheme="brand" onClick={submitVane}>
-              Créer
+              {t('shell.vannesPompes.create')}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -245,24 +249,24 @@ const VannesPompesMain = () => {
       <Modal isOpen={addPumpModal.isOpen} onClose={addPumpModal.onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Nouvelle pompe</ModalHeader>
+          <ModalHeader>{t('shell.vannesPompes.newPumpTitle')}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl isRequired>
-              <FormLabel>Nom</FormLabel>
+              <FormLabel>{t('shell.vannesPompes.nameLabel')}</FormLabel>
               <Input
                 value={newPumpName}
                 onChange={(e) => setNewPumpName(e.target.value)}
-                placeholder="ex. Pompe ligne principale"
+                placeholder={t('shell.vannesPompes.pumpNamePlaceholder')}
               />
             </FormControl>
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={addPumpModal.onClose}>
-              Annuler
+              {t('shell.vannesPompes.cancel')}
             </Button>
             <Button colorScheme="brand" onClick={submitPump}>
-              Créer
+              {t('shell.vannesPompes.create')}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -284,6 +288,7 @@ function VaneCard({
   bg: string;
   borderColor: string;
 }) {
+  const t = useTranslations();
   const accent = vane.active ? 'green.400' : 'red.500';
 
   return (
@@ -307,11 +312,11 @@ function VaneCard({
               {vane.name}
             </Text>
             <Badge colorScheme="gray" variant="subtle">
-              Manuel
+              {t('shell.vannesPompes.manual')}
             </Badge>
           </HStack>
           <Text fontSize="sm" opacity={0.85} fontFamily="mono">
-            DevEUI: {vane.devEui}
+            {t('shell.electrovanCard.devEui')}: {vane.devEui}
           </Text>
           <HStack>
             <Box
@@ -321,7 +326,9 @@ function VaneCard({
               bg={vane.active ? 'green.400' : 'gray.400'}
             />
             <Text fontSize="sm">
-              {vane.active ? 'Ouverte (active)' : 'Fermée (inactive)'}
+              {vane.active
+                ? t('shell.vannesPompes.vaneOpen')
+                : t('shell.vannesPompes.vaneClosed')}
             </Text>
           </HStack>
         </VStack>
@@ -334,7 +341,9 @@ function VaneCard({
         variant={vane.active ? 'solid' : 'solid'}
         onClick={onToggle}
       >
-        {vane.active ? 'DÉSACTIVER' : 'ACTIVER'}
+        {vane.active
+          ? t('shell.vannesPompes.deactivate')
+          : t('shell.vannesPompes.activate')}
       </Button>
     </Box>
   );
@@ -351,6 +360,7 @@ function PumpCard({
   bg: string;
   borderColor: string;
 }) {
+  const t = useTranslations();
   const accent = pump.running ? 'green.400' : 'gray.500';
 
   return (
@@ -379,7 +389,11 @@ function PumpCard({
               borderRadius="full"
               bg={pump.running ? 'green.400' : 'gray.400'}
             />
-            <Text fontSize="sm">{pump.running ? 'En marche' : 'Arrêtée'}</Text>
+            <Text fontSize="sm">
+              {pump.running
+                ? t('shell.vannesPompes.pumpRunning')
+                : t('shell.vannesPompes.pumpStopped')}
+            </Text>
           </HStack>
         </VStack>
       </HStack>
@@ -390,7 +404,9 @@ function PumpCard({
         colorScheme={pump.running ? 'orange' : 'green'}
         onClick={onToggle}
       >
-        {pump.running ? 'ARRÊTER' : 'DÉMARRER'}
+        {pump.running
+          ? t('shell.vannesPompes.stop')
+          : t('shell.vannesPompes.start')}
       </Button>
     </Box>
   );

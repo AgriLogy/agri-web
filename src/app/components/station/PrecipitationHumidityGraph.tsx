@@ -1,5 +1,6 @@
 'use client';
 import { Box, useColorMode } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { useCalibratedStationChartRows } from '@/app/hooks/useCalibratedStationChartRows';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -43,6 +44,7 @@ const PRECIP_HUM_FIELDS = [
 ] as const;
 
 const PrecipitationHumidityGraph = ({ data }: { data: any }) => {
+  const t = useTranslations();
   const { colorMode } = useColorMode();
   const { textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
@@ -99,7 +101,7 @@ const PrecipitationHumidityGraph = ({ data }: { data: any }) => {
     >
       <Box mb={4}>
         <ChartPanelHeading
-          title="Précipitations et humidité de l’air"
+          title={t('station.precipitationHumidity.title')}
           subtitle={data?.sensor_names?.precipitation_humidity_rate}
           color={textColor}
         />
@@ -124,13 +126,19 @@ const PrecipitationHumidityGraph = ({ data }: { data: any }) => {
             <YAxis
               yAxisId="left"
               {...yPrecip}
-              label={yAxisLabelInsideLeft(`Précip. (${precipUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                `${t('station.precipitationHumidity.precipAxis')} (${precipUnit})`,
+                tickFill
+              )}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
               {...yHum}
-              label={yAxisLabelInsideRight(`HR (${humUnit})`, tickFill)}
+              label={yAxisLabelInsideRight(
+                `${t('station.precipitationHumidity.humidityAxis')} (${humUnit})`,
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -147,7 +155,7 @@ const PrecipitationHumidityGraph = ({ data }: { data: any }) => {
               type="monotone"
               dataKey="precipitation_rate"
               stroke={data.sensor_colors?.precipitation_rate_color}
-              name={`Precipitation (${precipUnit})`}
+              name={`${t('sensors.precipitation_rate')} (${precipUnit})`}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -162,7 +170,7 @@ const PrecipitationHumidityGraph = ({ data }: { data: any }) => {
               type="monotone"
               dataKey="humidity_weather"
               stroke={data.sensor_colors?.humidity_weather_color}
-              name={`Humidity (${humUnit})`}
+              name={`${t('sensors.humidity_weather')} (${humUnit})`}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"

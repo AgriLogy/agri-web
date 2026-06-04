@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Text, useBreakpointValue } from '@chakra-ui/react';
 import { CircularProgress } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 
 interface StatusIndicatorsProps {
@@ -21,6 +22,7 @@ const StatusIndicators: React.FC<StatusIndicatorsProps> = ({
     solarRadiationColors,
     solarPanelVoltageColors,
   } = useColorModeStyles();
+  const t = useTranslations();
   const p = useBreakpointValue({ base: 2, md: 4 });
 
   const getHumidityColor = (value: number) => {
@@ -48,9 +50,9 @@ const StatusIndicators: React.FC<StatusIndicatorsProps> = ({
       getSolarPanelVoltageColor(solarPanelVoltage) ===
         solarPanelVoltageColors.red
     ) {
-      return 'Statut du système : Non sain';
+      return t('shell.statusIndicators.systemUnhealthy');
     }
-    return 'Statut du système : Sain';
+    return t('shell.statusIndicators.systemHealthy');
   };
 
   return (
@@ -64,7 +66,7 @@ const StatusIndicators: React.FC<StatusIndicatorsProps> = ({
       overflowX="auto"
     >
       <Text color={textColor} fontSize="lg" fontWeight="bold" mb={4}>
-        Indicateurs d&apos;état du système
+        {t('shell.statusIndicators.title')}
       </Text>
       <Box
         display="flex"
@@ -74,7 +76,7 @@ const StatusIndicators: React.FC<StatusIndicatorsProps> = ({
         mb={4}
       >
         <Box textAlign="center" mx={2} mb={4}>
-          <Text color={textColor}>Humidité (%)</Text>
+          <Text color={textColor}>{t('sensors.humidity_air')} (%)</Text>
           <CircularProgress
             value={humidity}
             color={getHumidityColor(humidity)}
@@ -86,7 +88,7 @@ const StatusIndicators: React.FC<StatusIndicatorsProps> = ({
           </Text>
         </Box>
         <Box textAlign="center" mx={2} mb={4}>
-          <Text color={textColor}>Rayonnement solaire (W/m²)</Text>
+          <Text color={textColor}>{t('sensors.solar_radiation')} (W/m²)</Text>
           <CircularProgress
             value={solarRadiation}
             color={getSolarRadiationColor(solarRadiation)}
@@ -98,7 +100,9 @@ const StatusIndicators: React.FC<StatusIndicatorsProps> = ({
           </Text>
         </Box>
         <Box textAlign="center" mx={2} mb={4}>
-          <Text color={textColor}>Tension du panneau (V)</Text>
+          <Text color={textColor}>
+            {t('shell.statusIndicators.panelVoltage')} (V)
+          </Text>
           <CircularProgress
             value={solarPanelVoltage}
             color={getSolarPanelVoltageColor(solarPanelVoltage)}

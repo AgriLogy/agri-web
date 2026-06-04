@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Box, Button, HStack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
@@ -13,24 +14,32 @@ import SuperAdminUsersSettings from '@/app/components/settings/SuperAdminUsersSe
 
 type SettingsTab = 'farms' | 'users' | 'sensors' | 'readings' | 'groups';
 
-const TABS: Array<{ key: SettingsTab; label: string }> = [
-  { key: 'farms', label: 'Fermes' },
-  { key: 'users', label: 'Utilisateurs' },
-  { key: 'sensors', label: 'Capteurs' },
-  { key: 'readings', label: 'Lectures' },
-  { key: 'groups', label: 'Groupes de capteurs' },
+const TAB_KEYS: SettingsTab[] = [
+  'farms',
+  'users',
+  'sensors',
+  'readings',
+  'groups',
 ];
 
+const TAB_LABEL_KEY: Record<SettingsTab, string> = {
+  farms: 'settings.main.tabFarms',
+  users: 'settings.main.tabUsers',
+  sensors: 'settings.main.tabSensors',
+  readings: 'settings.main.tabReadings',
+  groups: 'settings.main.tabGroups',
+};
+
 const SettingsMain = () => {
+  const t = useTranslations();
   const { tabAccent, iconColor } = useColorModeStyles();
   const [activeTab, setActiveTab] = React.useState<SettingsTab>('readings');
-  const activeLabel =
-    TABS.find((t) => t.key === activeTab)?.label ?? 'Lectures';
+  const activeLabel = t(TAB_LABEL_KEY[activeTab]);
 
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Paramètres"
+        title={t('settings.main.title')}
         subtitle={activeLabel}
         actions={
           <HStack
@@ -38,12 +47,12 @@ const SettingsMain = () => {
             overflowX="auto"
             whiteSpace="nowrap"
           >
-            {TABS.map((tab) => {
-              const isActive = tab.key === activeTab;
+            {TAB_KEYS.map((tabKey) => {
+              const isActive = tabKey === activeTab;
               return (
                 <Button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
+                  key={tabKey}
+                  onClick={() => setActiveTab(tabKey)}
                   variant="ghost"
                   size="sm"
                   color={isActive ? tabAccent : iconColor}
@@ -56,7 +65,7 @@ const SettingsMain = () => {
                   letterSpacing="0.3px"
                   _hover={{ color: tabAccent }}
                 >
-                  {tab.label}
+                  {t(TAB_LABEL_KEY[tabKey])}
                 </Button>
               );
             })}

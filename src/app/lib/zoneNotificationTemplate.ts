@@ -1,8 +1,16 @@
 import type { ZoneNotificationConfig } from '@/app/lib/zoneNotificationConfigStorage';
 
 /**
+ * Minimal translator shape compatible with next-intl's root translator
+ * (`useTranslations()` / `getTranslations()`). Pass `t` to localize the copy;
+ * when omitted, the French fallback strings below are used (non-React contexts).
+ */
+type Translator = (key: string, values?: Record<string, unknown>) => string;
+
+/**
  * Confirmation copy pushed to the notification cache when a zone notification is saved.
  * Replace the string below when the final template is ready.
+ * French fallback for `data.zoneNotification.confirmation` (used when no translator is provided).
  */
 export const ZONE_NOTIFICATION_CONFIRMATION_TEMPLATE =
   'Votre notification de zone a été enregistrée. Les alertes utiliseront les seuils et canaux définis. (Modèle provisoire — à remplacer.)';
@@ -37,17 +45,29 @@ export type LocalZoneConfirmationRow = {
   };
 };
 
-export function buildLocalZoneConfirmationNotification(params: {
-  configId: string;
-  zoneId: number;
-  zoneName: string;
-  notificationName: string;
-  secteurLabel?: string;
-}): LocalZoneConfirmationRow {
+export function buildLocalZoneConfirmationNotification(
+  params: {
+    configId: string;
+    zoneId: number;
+    zoneName: string;
+    notificationName: string;
+    secteurLabel?: string;
+  },
+  t?: Translator
+): LocalZoneConfirmationRow {
   const id = -(Date.now() * 1000 + Math.floor(Math.random() * 1000));
   const secteur = params.secteurLabel?.trim();
   const label = params.notificationName?.trim() || params.zoneName;
   const title = secteur ? `${label} — ${secteur}` : label;
+  const confirmation = t
+    ? t('data.zoneNotification.confirmation')
+    : ZONE_NOTIFICATION_CONFIRMATION_TEMPLATE;
+  const summary = t
+    ? t('data.zoneNotification.confirmationSummary', {
+        confirmation,
+        title,
+      })
+    : `${confirmation} — ${title}`;
   return {
     id,
     is_read: false,
@@ -57,7 +77,7 @@ export function buildLocalZoneConfirmationNotification(params: {
     _source: 'local_zone_template',
     notification: {
       notification_date: new Date().toISOString(),
-      template_summary: `${ZONE_NOTIFICATION_CONFIRMATION_TEMPLATE} — ${title}`,
+      template_summary: summary,
       yesterday_temperature: '—',
       today_temperature: '—',
       yesterday_humidity: '—',
@@ -78,10 +98,21 @@ export function buildLocalZoneConfirmationNotification(params: {
 
 /** Recurring reminder pushed on the interval configured as Fréquence & notification (minutes). */
 export function buildPeriodicZoneReminderNotification(
-  config: ZoneNotificationConfig
+  config: ZoneNotificationConfig,
+  t?: Translator
 ): LocalZoneConfirmationRow {
   const id = -(Date.now() * 1000 + Math.floor(Math.random() * 1000));
-  const label = config.notificationName?.trim() || `Zone ${config.zoneId}`;
+  const label =
+    config.notificationName?.trim() ||
+    (t
+      ? t('data.zoneNotification.zoneFallbackName', { id: config.zoneId })
+      : `Zone ${config.zoneId}`);
+  const summary = t
+    ? t('data.zoneNotification.periodicReminder', {
+        minutes: config.intervalMinutes,
+        label,
+      })
+    : `Rappel planifié (toutes les ${config.intervalMinutes} min) — ${label}. Vérifiez humidité, ETo×Kc et seuils.`;
   return {
     id,
     is_read: false,
@@ -91,7 +122,7 @@ export function buildPeriodicZoneReminderNotification(
     _source: 'local_periodic',
     notification: {
       notification_date: new Date().toISOString(),
-      template_summary: `Rappel planifié (toutes les ${config.intervalMinutes} min) — ${label}. Vérifiez humidité, ETo×Kc et seuils.`,
+      template_summary: summary,
       yesterday_temperature: '—',
       today_temperature: '—',
       yesterday_humidity: '—',

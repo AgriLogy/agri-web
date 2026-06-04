@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -45,6 +46,7 @@ const WaterPressureChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showLine, setShowLine] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -110,19 +112,19 @@ const WaterPressureChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Pression de l’eau"
-          subtitle="Réseau d’irrigation ou de distribution — suivi dynamique."
+          title={t('analytics.waterPressure.title')}
+          subtitle={t('analytics.waterPressure.subtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -152,7 +154,7 @@ const WaterPressureChart = ({
             <YAxis
               {...yProps}
               label={yAxisLabelInsideLeft(
-                `Pression (${pressureUnit})`,
+                `${t('analytics.waterPressure.pressureAxis')} (${pressureUnit})`,
                 tickFill
               )}
             />
@@ -169,7 +171,7 @@ const WaterPressureChart = ({
             <Line
               type="monotone"
               dataKey="water_pressure"
-              name={`Pression (${pressureUnit})`}
+              name={`${t('analytics.waterPressure.pressureAxis')} (${pressureUnit})`}
               hide={!showLine}
               stroke="#82ca9d"
               strokeWidth={2.25}

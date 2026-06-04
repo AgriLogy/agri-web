@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -45,6 +46,7 @@ const WaterFlowChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showLine, setShowLine] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -109,19 +111,19 @@ const WaterFlowChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Débit d’irrigation"
-          subtitle="Volume par unité de temps sur la fenêtre sélectionnée."
+          title={t('analytics.waterFlow.chartTitle')}
+          subtitle={t('analytics.waterFlow.chartSubtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.actions.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.actions.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -150,7 +152,10 @@ const WaterFlowChart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`Débit (${flowUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.waterFlow.axisFlow', { unit: flowUnit }),
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -165,7 +170,7 @@ const WaterFlowChart = ({
             <Line
               type="monotone"
               dataKey="water_flow"
-              name={`Flux d'eau (${flowUnit})`}
+              name={`${t('sensors.water_flow')} (${flowUnit})`}
               hide={!showLine}
               stroke="#82ca9d"
               strokeWidth={2.25}

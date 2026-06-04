@@ -1,5 +1,6 @@
 import { Box, Text, VStack, HStack, useColorModeValue } from '@chakra-ui/react';
 import { FaThermometerHalf } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import { SensorData } from '@/app/types';
 import {
   compactResolvedAxisUnits,
@@ -11,16 +12,22 @@ import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
-const timeAgo = (timestamp: string): string => {
+type Translate = (
+  key: string,
+  values?: Record<string, string | number>
+) => string;
+
+const timeAgo = (timestamp: string, t: Translate): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min`;
-  if (diffH < 24) return `${diffH} h`;
+  if (diffMin < 1) return t('analytics.common.justNow');
+  if (diffMin < 60)
+    return t('analytics.common.minutesAgoShort', { count: diffMin });
+  if (diffH < 24) return t('analytics.common.hoursAgo', { count: diffH });
   return then.toLocaleDateString();
 };
 
@@ -29,11 +36,13 @@ const Row = ({
   entry,
   color,
   sensorKey,
+  t,
 }: {
   label: string;
   entry?: SensorData;
   color: string;
   sensorKey: string;
+  t: Translate;
 }) => {
   const metaColor = useColorModeValue('gray.500', 'gray.400');
 
@@ -51,7 +60,11 @@ const Row = ({
           </Text>
         </HStack>
         <Text fontSize="xs" color={metaColor}>
-          {entry ? `Mesure : ${timeAgo(entry.timestamp)}` : ''}
+          {entry
+            ? t('analytics.common.measuredAt', {
+                time: timeAgo(entry.timestamp, t),
+              })
+            : ''}
         </Text>
       </VStack>
     </Box>
@@ -67,6 +80,7 @@ const SoilTemperatureLastData = ({
   lastMedium?: SensorData;
   lastHigh?: SensorData;
 }) => {
+  const t = useTranslations();
   useUnitOverridesRevision();
   const soilTempFallback = getCatalogDefaultUnit('soil_temp_low') || '°C';
   const soilHeadingUnits = compactResolvedAxisUnits(
@@ -103,26 +117,29 @@ const SoilTemperatureLastData = ({
           textAlign="center"
           mb={4}
         >
-          {`Température du sol (${soilHeadingUnits})`}
+          {`${t('sensors.soil_temperature')} (${soilHeadingUnits})`}
         </Text>
         <VStack spacing={4} align="stretch" w="100%">
           <Row
-            label="Sonde basse"
+            label={t('analytics.common.lowProbe')}
             entry={lastLow}
             color={lowColor}
             sensorKey="soil_temp_low"
+            t={t}
           />
           <Row
-            label="Sonde moyenne"
+            label={t('analytics.common.mediumProbe')}
             entry={lastMedium}
             color={medColor}
             sensorKey="soil_temp_medium"
+            t={t}
           />
           <Row
-            label="Sonde haute"
+            label={t('analytics.common.highProbe')}
             entry={lastHigh}
             color={highColor}
             sensorKey="soil_temp_high"
+            t={t}
           />
         </VStack>
         <LastDataAddAlertButton sensorKey="soil_temperature_medium" />

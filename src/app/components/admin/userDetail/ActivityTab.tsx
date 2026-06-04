@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import { App, Empty, Skeleton, Timeline } from 'antd';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { adminUserApi, type ActivityEvent } from '@/app/lib/adminUserApi';
 
@@ -32,6 +33,7 @@ const formatDate = (iso: string | null): string => {
 export type ActivityTabProps = { username: string };
 
 export function ActivityTab({ username }: ActivityTabProps) {
+  const t = useTranslations();
   const { message } = App.useApp();
   const [events, setEvents] = useState<ActivityEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,17 +45,17 @@ export function ActivityTab({ username }: ActivityTabProps) {
         const rows = await adminUserApi.activity(username);
         setEvents(rows);
       } catch {
-        message.error('Activité indisponible.');
+        message.error(t('admin.activity.loadError'));
       } finally {
         setLoading(false);
       }
     };
     void run();
-  }, [message, username]);
+  }, [message, t, username]);
 
   if (loading) return <Skeleton active paragraph={{ rows: 5 }} />;
   if (events.length === 0) {
-    return <Empty description="Aucune activité enregistrée" />;
+    return <Empty description={t('admin.activity.empty')} />;
   }
 
   return (

@@ -21,6 +21,7 @@ import {
   Badge,
   SimpleGrid,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import api from '@/app/lib/api';
 import { getAllSensorsCatalog } from '@/app/utils/sensorCatalog';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
@@ -39,6 +40,7 @@ type ListedUser = {
 };
 
 const SuperAdminUsersSettings = () => {
+  const t = useTranslations();
   const toast = useToast();
   const { textColor, bgColor, borderColor, mutedTextColor } =
     useColorModeStyles();
@@ -59,8 +61,8 @@ const SuperAdminUsersSettings = () => {
       .then((r) => setUsers(r.data ?? []))
       .catch(() =>
         toast({
-          title: 'Liste utilisateurs',
-          description: 'Accès refusé ou API indisponible.',
+          title: t('settings.users.listToastTitle'),
+          description: t('settings.users.listToastDesc'),
           status: 'error',
           duration: 4000,
           isClosable: true,
@@ -92,8 +94,8 @@ const SuperAdminUsersSettings = () => {
     const p = password;
     if (!u || !p) {
       toast({
-        title: 'Champs requis',
-        description: 'Nom d’utilisateur et mot de passe.',
+        title: t('settings.users.requiredFieldsTitle'),
+        description: t('settings.users.requiredFieldsDesc'),
         status: 'warning',
         duration: 3000,
         isClosable: true,
@@ -103,8 +105,8 @@ const SuperAdminUsersSettings = () => {
     const keys = [...selectedKeys];
     if (keys.length === 0) {
       toast({
-        title: 'Capteurs',
-        description: 'Sélectionnez au moins une lecture visible.',
+        title: t('settings.users.sensorsTitle'),
+        description: t('settings.users.selectAtLeastOne'),
         status: 'warning',
         duration: 3000,
         isClosable: true,
@@ -130,9 +132,8 @@ const SuperAdminUsersSettings = () => {
         role,
       } as UserSensorAccess);
       toast({
-        title: 'Utilisateur créé',
-        description:
-          'Les droits capteurs sont aussi enregistrés localement pour le filtrage du tableau de bord.',
+        title: t('settings.users.createdTitle'),
+        description: t('settings.users.createdDesc'),
         status: 'success',
         duration: 4500,
         isClosable: true,
@@ -147,9 +148,8 @@ const SuperAdminUsersSettings = () => {
         role,
       } as UserSensorAccess);
       toast({
-        title: 'Création API',
-        description:
-          'Si le serveur a refusé la requête, les droits capteurs ont quand même été enregistrés localement.',
+        title: t('settings.users.createApiTitle'),
+        description: t('settings.users.createApiDesc'),
         status: 'warning',
         duration: 5000,
         isClosable: true,
@@ -160,16 +160,13 @@ const SuperAdminUsersSettings = () => {
   const accessMap = useMemo(() => loadUserSensorAccessMap(), [users]);
 
   if (loading) {
-    return <Text color={textColor}>Chargement des utilisateurs…</Text>;
+    return <Text color={textColor}>{t('settings.users.loading')}</Text>;
   }
 
   return (
     <Box>
       <Text fontSize="sm" color={mutedTextColor} mb={3}>
-        Super-admin : créez des comptes avec rôle utilisateur ou administrateur,
-        et choisissez quelles lectures (capteurs) ils peuvent voir. Les
-        préférences capteurs sont stockées localement ; l’API peut ignorer des
-        champs supplémentaires jusqu’à adaptation backend.
+        {t('settings.users.intro')}
       </Text>
 
       <Box
@@ -183,11 +180,13 @@ const SuperAdminUsersSettings = () => {
         mb={6}
       >
         <Text fontWeight="bold" mb={3} color={textColor}>
-          Nouvel utilisateur
+          {t('settings.users.newUserHeading')}
         </Text>
         <Flex gap={3} flexWrap="wrap" mb={3}>
           <FormControl maxW="220px">
-            <FormLabel fontSize="sm">Nom d&apos;utilisateur</FormLabel>
+            <FormLabel fontSize="sm">
+              {t('settings.users.usernameLabel')}
+            </FormLabel>
             <Input
               size="sm"
               value={username}
@@ -196,7 +195,9 @@ const SuperAdminUsersSettings = () => {
             />
           </FormControl>
           <FormControl maxW="220px">
-            <FormLabel fontSize="sm">Mot de passe</FormLabel>
+            <FormLabel fontSize="sm">
+              {t('settings.users.passwordLabel')}
+            </FormLabel>
             <Input
               size="sm"
               type="password"
@@ -206,7 +207,7 @@ const SuperAdminUsersSettings = () => {
             />
           </FormControl>
           <FormControl maxW="200px">
-            <FormLabel fontSize="sm">Rôle</FormLabel>
+            <FormLabel fontSize="sm">{t('settings.users.roleLabel')}</FormLabel>
             <chakra.select
               rounded="md"
               borderWidth="1px"
@@ -218,14 +219,14 @@ const SuperAdminUsersSettings = () => {
                 setRole(e.target.value as 'user' | 'admin')
               }
             >
-              <option value="user">Utilisateur</option>
-              <option value="admin">Administrateur</option>
+              <option value="user">{t('settings.users.roleUser')}</option>
+              <option value="admin">{t('settings.users.roleAdmin')}</option>
             </chakra.select>
           </FormControl>
         </Flex>
 
         <Text fontSize="sm" fontWeight="semibold" mb={2} color={textColor}>
-          Lectures visibles sur le tableau de bord
+          {t('settings.users.visibleReadingsHeading')}
         </Text>
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={2} mb={4}>
           {catalog.map((c) => (
@@ -246,20 +247,20 @@ const SuperAdminUsersSettings = () => {
         </SimpleGrid>
 
         <Button type="submit" size="sm" colorScheme="brand">
-          Créer l&apos;utilisateur
+          {t('settings.users.createButton')}
         </Button>
       </Box>
 
       <Text fontWeight="bold" mb={2} color={textColor}>
-        Utilisateurs existants
+        {t('settings.users.existingHeading')}
       </Text>
       <Table size="sm" variant="simple">
         <Thead>
           <Tr>
-            <Th>Utilisateur</Th>
-            <Th>Email</Th>
-            <Th>Rôle API</Th>
-            <Th>Capteurs (local)</Th>
+            <Th>{t('settings.users.colUser')}</Th>
+            <Th>{t('settings.users.colEmail')}</Th>
+            <Th>{t('settings.users.colApiRole')}</Th>
+            <Th>{t('settings.users.colSensorsLocal')}</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -271,14 +272,19 @@ const SuperAdminUsersSettings = () => {
                 <Td fontSize="xs">{u.email}</Td>
                 <Td>
                   {u.is_staff ? (
-                    <Badge colorScheme="brand">Admin</Badge>
+                    <Badge colorScheme="brand">
+                      {t('settings.users.badgeAdmin')}
+                    </Badge>
                   ) : (
-                    <Badge>User</Badge>
+                    <Badge>{t('settings.users.badgeUser')}</Badge>
                   )}
                 </Td>
                 <Td fontSize="xs">
                   {local
-                    ? `${local.sensorKeys.length} lecture(s) — ${local.role}`
+                    ? t('settings.users.localSensorsCell', {
+                        count: local.sensorKeys.length,
+                        role: local.role,
+                      })
                     : '—'}
                 </Td>
               </Tr>

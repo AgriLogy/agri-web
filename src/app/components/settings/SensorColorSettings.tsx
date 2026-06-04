@@ -13,11 +13,13 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import api from '@/app/lib/api';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import EmptyBox from '../common/EmptyBox';
 
 const SensorColorSettings = () => {
+  const t = useTranslations();
   const { textColor } = useColorModeStyles();
 
   const [sensorColors, setSensorColors] = useState<Record<
@@ -34,8 +36,8 @@ const SensorColorSettings = () => {
         setSensorColors(response.data);
       } catch {
         toast({
-          title: 'Error',
-          description: 'Failed to fetch sensor colors',
+          title: t('settings.sensorColor.errorTitle'),
+          description: t('settings.sensorColor.fetchError'),
           status: 'error',
           duration: 3000,
           isClosable: true,
@@ -45,7 +47,7 @@ const SensorColorSettings = () => {
       }
     };
     fetchColors();
-  }, [toast]);
+  }, [toast, t]);
 
   const handleColorChange = (key: string, value: string) => {
     setSensorColors((prev) => (prev ? { ...prev, [key]: value } : null));
@@ -55,16 +57,16 @@ const SensorColorSettings = () => {
     try {
       await api.put('/api/sensor-color/', { [key]: value });
       toast({
-        title: 'Success',
-        description: 'Color updated successfully',
+        title: t('settings.sensorColor.successTitle'),
+        description: t('settings.sensorColor.successDescription'),
         status: 'success',
         duration: 2000,
         isClosable: true,
       });
     } catch {
       toast({
-        title: 'Error',
-        description: 'Failed to update color',
+        title: t('settings.sensorColor.errorTitle'),
+        description: t('settings.sensorColor.errorDescription'),
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -76,12 +78,12 @@ const SensorColorSettings = () => {
 
   return (
     <Box overflowX="auto">
-      <Text color={textColor}>Paramètres des couleurs des courbes</Text>
+      <Text color={textColor}>{t('settings.sensorColor.title')}</Text>
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th>Name</Th>
-            <Th>Color</Th>
+            <Th>{t('settings.sensorColor.colName')}</Th>
+            <Th>{t('settings.sensorColor.colColor')}</Th>
           </Tr>
         </Thead>
         <Tbody>

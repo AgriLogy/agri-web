@@ -2,6 +2,7 @@
 
 import { App, Button, Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 export type AdminConfirmDeleteProps = {
@@ -24,23 +25,31 @@ export type AdminConfirmDeleteProps = {
  */
 export function AdminConfirmDelete({
   onConfirm,
-  title = 'Confirmer la suppression ?',
-  okText = 'Supprimer',
-  cancelText = 'Annuler',
-  successMessage = 'Suppression réussie.',
-  errorMessage = 'Échec de la suppression.',
+  title,
+  okText,
+  cancelText,
+  successMessage,
+  errorMessage,
   trigger,
 }: AdminConfirmDeleteProps) {
+  const t = useTranslations();
   const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
+
+  const resolvedTitle = title ?? t('admin.confirmDelete.title');
+  const resolvedOkText = okText ?? t('admin.confirmDelete.ok');
+  const resolvedCancelText = cancelText ?? t('admin.confirmDelete.cancel');
+  const resolvedSuccessMessage =
+    successMessage ?? t('admin.confirmDelete.success');
+  const resolvedErrorMessage = errorMessage ?? t('admin.confirmDelete.error');
 
   const handle = async () => {
     setLoading(true);
     try {
       await onConfirm();
-      message.success(successMessage);
+      message.success(resolvedSuccessMessage);
     } catch {
-      message.error(errorMessage);
+      message.error(resolvedErrorMessage);
     } finally {
       setLoading(false);
     }
@@ -48,17 +57,17 @@ export function AdminConfirmDelete({
 
   return (
     <Popconfirm
-      title={title}
-      okText={okText}
+      title={resolvedTitle}
+      okText={resolvedOkText}
       okButtonProps={{ danger: true, loading }}
-      cancelText={cancelText}
+      cancelText={resolvedCancelText}
       onConfirm={handle}
     >
       {trigger ? (
         trigger(loading)
       ) : (
         <Button danger icon={<DeleteOutlined />} loading={loading}>
-          Supprimer
+          {t('admin.confirmDelete.button')}
         </Button>
       )}
     </Popconfirm>

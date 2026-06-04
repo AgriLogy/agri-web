@@ -3,6 +3,7 @@
 import { Empty, Input, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { SearchOutlined } from '@ant-design/icons';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 export type AdminCrudTableProps<T> = {
@@ -40,12 +41,17 @@ export function AdminCrudTable<T extends Record<string, unknown>>({
   data,
   loading = false,
   searchable = false,
-  searchPlaceholder = 'Rechercher…',
+  searchPlaceholder,
   searchKeys,
-  emptyDescription = 'Aucune donnée',
+  emptyDescription,
   toolbar,
   pagination = { pageSize: 20 },
 }: AdminCrudTableProps<T>) {
+  const t = useTranslations();
+  const resolvedSearchPlaceholder =
+    searchPlaceholder ?? t('admin.crudTable.searchPlaceholder');
+  const resolvedEmptyDescription =
+    emptyDescription ?? t('admin.crudTable.empty');
   const [query, setQuery] = useState('');
   const filtered = useMemo(() => {
     if (!searchable || !query.trim()) return data;
@@ -77,7 +83,7 @@ export function AdminCrudTable<T extends Record<string, unknown>>({
           {searchable ? (
             <Input
               prefix={<SearchOutlined />}
-              placeholder={searchPlaceholder}
+              placeholder={resolvedSearchPlaceholder}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               allowClear
@@ -99,7 +105,7 @@ export function AdminCrudTable<T extends Record<string, unknown>>({
           emptyText: (
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description={emptyDescription}
+              description={resolvedEmptyDescription}
             />
           ),
         }}

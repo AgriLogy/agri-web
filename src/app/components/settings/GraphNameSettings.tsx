@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import {
   Table,
@@ -12,6 +14,7 @@ import {
   Button,
   Flex,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import api from '@/app/lib/api';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import EmptyBox from '../common/EmptyBox';
@@ -22,6 +25,7 @@ interface SensorSetting {
 }
 
 const GraphNameSettings = () => {
+  const t = useTranslations();
   const [settings, setSettings] = useState<SensorSetting[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const toast = useToast();
@@ -70,8 +74,8 @@ const GraphNameSettings = () => {
       await api.put(`/api/graph-name/`, graphUpdate);
 
       toast({
-        title: 'Success',
-        description: 'Color updated successfully',
+        title: t('settings.graphName.successTitle'),
+        description: t('settings.graphName.successDescription'),
         status: 'success',
         duration: 2000,
         isClosable: true,
@@ -79,8 +83,8 @@ const GraphNameSettings = () => {
     } catch (error) {
       console.error('Error updating settings', error);
       toast({
-        title: 'Error',
-        description: 'Failed to update color',
+        title: t('settings.graphName.errorTitle'),
+        description: t('settings.graphName.errorDescription'),
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -93,13 +97,13 @@ const GraphNameSettings = () => {
         <EmptyBox variant="loading" />
       ) : (
         <>
-          <Text color={textColor}>Paramètres du nom du graphique</Text>
+          <Text color={textColor}>{t('settings.graphName.title')}</Text>
 
           <Table>
             <Thead>
               <Tr>
-                <Th>Name</Th>
-                <Th>Custom Name</Th>
+                <Th>{t('settings.graphName.colName')}</Th>
+                <Th>{t('settings.graphName.colCustomName')}</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -119,7 +123,7 @@ const GraphNameSettings = () => {
 
           <Flex justifyContent="center" mt={4}>
             <Button colorScheme="brand" size="lg" onClick={handleSave}>
-              Mettre à jour
+              {t('settings.graphName.save')}
             </Button>
           </Flex>
         </>

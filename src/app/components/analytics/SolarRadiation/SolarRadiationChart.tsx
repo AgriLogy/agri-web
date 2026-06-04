@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   AreaChart,
   Area,
@@ -45,6 +46,7 @@ const SolarRadiationChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showArea, setShowArea] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -111,19 +113,19 @@ const SolarRadiationChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Rayonnement solaire global"
-          subtitle="Flux au plan horizontal ; échelle temps adaptative."
+          title={t('analytics.solarRadiation.title')}
+          subtitle={t('analytics.solarRadiation.subtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -167,7 +169,7 @@ const SolarRadiationChart = ({
             <Area
               type="monotone"
               dataKey="solar_radiation"
-              name={`Radiation solaire (${solarUnit})`}
+              name={`${t('sensors.solar_radiation')} (${solarUnit})`}
               hide={!showArea}
               stroke="#f6c90e"
               fill="#f6c90e"

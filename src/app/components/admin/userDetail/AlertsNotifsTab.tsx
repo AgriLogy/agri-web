@@ -2,6 +2,7 @@
 
 import { App, Space, Switch, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AdminConfirmDelete } from '@/app/components/admin/_shared/AdminConfirmDelete';
@@ -11,6 +12,7 @@ import { adminAlertApi, type AdminAlertRow } from '@/app/lib/adminAlertApi';
 export type AlertsNotifsTabProps = { username: string };
 
 export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
+  const t = useTranslations();
   const { message } = App.useApp();
   const [alerts, setAlerts] = useState<AdminAlertRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +24,7 @@ export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
       const rows = await adminAlertApi.listForUser(username);
       setAlerts(rows);
     } catch {
-      message.error('Impossible de charger les alertes.');
+      message.error(t('admin.alertsTab.loadError'));
     } finally {
       setLoading(false);
     }
@@ -42,7 +44,7 @@ export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
         )
       );
     } catch {
-      message.error('Action impossible.');
+      message.error(t('admin.alertsTab.actionError'));
     } finally {
       setBusy(null);
     }
@@ -55,7 +57,7 @@ export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
 
   const columns: ColumnsType<AdminAlertRow> = [
     {
-      title: 'Nom',
+      title: t('admin.alertsTab.colName'),
       dataIndex: 'name',
       key: 'name',
       render: (text: string, row) => (
@@ -68,7 +70,7 @@ export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
       ),
     },
     {
-      title: 'Condition',
+      title: t('admin.alertsTab.colCondition'),
       key: 'condition',
       render: (_v, row) => (
         <span>
@@ -77,7 +79,7 @@ export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
       ),
     },
     {
-      title: 'Active',
+      title: t('admin.alertsTab.colActive'),
       dataIndex: 'is_active',
       key: 'is_active',
       align: 'center',
@@ -91,7 +93,7 @@ export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
       ),
     },
     {
-      title: 'Dernier déclenchement',
+      title: t('admin.alertsTab.colLastTriggered'),
       dataIndex: 'last_triggered_at',
       key: 'last_triggered_at',
       render: (iso: string | null) =>
@@ -102,13 +104,13 @@ export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
         ),
     },
     {
-      title: 'Actions',
+      title: t('admin.alertsTab.colActions'),
       key: 'actions',
       align: 'right',
       render: (_v, row) => (
         <AdminConfirmDelete
-          title={`Supprimer l’alerte « ${row.name} » ?`}
-          successMessage="Alerte supprimée."
+          title={t('admin.alertsTab.deleteConfirm', { name: row.name })}
+          successMessage={t('admin.alertsTab.deleteSuccess')}
           onConfirm={() => handleDelete(row.id)}
         />
       ),
@@ -121,7 +123,7 @@ export function AlertsNotifsTab({ username }: AlertsNotifsTabProps) {
       columns={columns}
       data={alerts}
       loading={loading}
-      emptyDescription="Aucune alerte configurée pour cet utilisateur"
+      emptyDescription={t('admin.alertsTab.empty')}
     />
   );
 }

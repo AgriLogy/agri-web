@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Text, Badge } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { ALERT_CHOICES } from '@/app/utils/alertChoices';
 import useColorModeStyles from '@/app/utils/useColorModeStyles'; // import the custom hook
 import '../../styles/style.module.css';
@@ -23,8 +24,10 @@ const Alert: React.FC<AlertProps> = ({
   condition_nbr,
   onClick,
 }) => {
+  const t = useTranslations();
   const { textColor, bg } = useColorModeStyles(); // Use the custom hook for theme-based styles
-  const typeLabels = ALERT_CHOICES.find((alert) => alert.value === type)?.label;
+  const alertChoice = ALERT_CHOICES.find((alert) => alert.value === type);
+  const typeLabels = alertChoice ? t(`alertTypes.${alertChoice.i18nKey}`) : '';
 
   return (
     <Box
@@ -59,23 +62,23 @@ const Alert: React.FC<AlertProps> = ({
       {/* Condition Box */}
       <Box mt={4} p={3} bg="gray.50" borderRadius="md">
         <Text fontSize="lg" fontWeight="bold" color="gray.700">
-          ⚡ Condition
+          ⚡ {t('notifications.alert.conditionTitle')}
         </Text>
         <Text color="gray.600">
-          <strong>Condition:</strong>{' '}
+          <strong>{t('notifications.alert.conditionLabel')}</strong>{' '}
           {condition === '>'
-            ? 'Supérieur'
+            ? t('conditions.gt')
             : condition === '<'
-              ? 'Inférieur'
-              : 'Égal'}{' '}
-          à {condition_nbr}
+              ? t('conditions.lt')
+              : t('conditions.eq')}{' '}
+          {condition_nbr}
         </Text>
       </Box>
 
       {/* Description Box */}
       <Box mt={4} p={3} bg="gray.50" borderRadius="md">
         <Text fontSize="lg" fontWeight="bold" color="gray.700">
-          📜 Description
+          📜 {t('notifications.alert.descriptionTitle')}
         </Text>
         <Text color="gray.600">{description}</Text>
       </Box>

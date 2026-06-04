@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -45,6 +46,7 @@ const PhSoilChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showLine, setShowLine] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -109,19 +111,19 @@ const PhSoilChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="pH du sol"
-          subtitle="Évolution de l’équilibre acido-basique du milieu."
+          title={t('sensors.soil_ph')}
+          subtitle={t('analytics.phSoil.subtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChartAria')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsvAria')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -150,7 +152,10 @@ const PhSoilChart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`pH sol (${phUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.phSoil.axisLabel', { unit: phUnit }),
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -165,7 +170,7 @@ const PhSoilChart = ({
             <Line
               type="monotone"
               dataKey="soil_ph"
-              name={`pH sol (${phUnit})`}
+              name={t('analytics.phSoil.seriesName', { unit: phUnit })}
               hide={!showLine}
               stroke="#82ca9d"
               strokeWidth={2.25}

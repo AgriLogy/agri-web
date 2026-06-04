@@ -7,12 +7,14 @@ import {
   TeamOutlined,
 } from '@ant-design/icons';
 import { App, Menu, Tooltip } from 'antd';
+import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 
 const AdminSidebar = () => {
+  const t = useTranslations();
   const { bg } = useColorModeStyles();
   const router = useRouter();
   const pathname = usePathname() ?? '/admin';
@@ -26,11 +28,11 @@ const AdminSidebar = () => {
 
   const handleLogout = () => {
     modal.confirm({
-      title: 'Confirmer la déconnexion',
-      content: 'Êtes-vous sûr de vouloir vous déconnecter ?',
-      okText: 'Se déconnecter',
+      title: t('shell.admin.logoutConfirmTitle'),
+      content: t('shell.admin.logoutConfirmBody'),
+      okText: t('shell.admin.logoutConfirmOk'),
       okType: 'danger',
-      cancelText: 'Annuler',
+      cancelText: t('shell.admin.cancel'),
       onOk: () => {
         localStorage.clear();
         router.push('/login');
@@ -57,7 +59,7 @@ const AdminSidebar = () => {
           {
             key: 'dashboard',
             icon: (
-              <Tooltip title="Tableau de bord" placement="right">
+              <Tooltip title={t('shell.admin.dashboard')} placement="right">
                 <DashboardOutlined />
               </Tooltip>
             ),
@@ -66,7 +68,7 @@ const AdminSidebar = () => {
           {
             key: 'users',
             icon: (
-              <Tooltip title="Utilisateurs" placement="right">
+              <Tooltip title={t('shell.admin.users')} placement="right">
                 <TeamOutlined />
               </Tooltip>
             ),
@@ -75,7 +77,7 @@ const AdminSidebar = () => {
           {
             key: 'affirmations',
             icon: (
-              <Tooltip title="Affirmations manager" placement="right">
+              <Tooltip title={t('shell.admin.affirmations')} placement="right">
                 <AuditOutlined />
               </Tooltip>
             ),
@@ -93,7 +95,7 @@ const AdminSidebar = () => {
             key: 'logout',
             danger: true,
             icon: (
-              <Tooltip title="Déconnexion" placement="right">
+              <Tooltip title={t('shell.admin.logout')} placement="right">
                 <LogoutOutlined />
               </Tooltip>
             ),

@@ -16,9 +16,11 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import axios from 'axios';
 
 const RainFallForm: React.FC = () => {
+  const t = useTranslations();
   const [formData, setFormData] = useState({
     alertName: '',
     alertType: 'Rain Fall',
@@ -50,8 +52,8 @@ const RainFallForm: React.FC = () => {
     try {
       await axios.post('/api/alerts/windspeed', formData);
       toast({
-        title: 'Alert Created',
-        description: 'Wind speed alert successfully added.',
+        title: t('alertsPage.windForm.successTitle'),
+        description: t('alertsPage.windForm.successDescription'),
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -64,8 +66,8 @@ const RainFallForm: React.FC = () => {
       });
     } catch {
       toast({
-        title: 'Error',
-        description: 'Failed to create wind speed alert.',
+        title: t('alertsPage.windForm.errorTitle'),
+        description: t('alertsPage.windForm.errorWindSpeed'),
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -78,10 +80,10 @@ const RainFallForm: React.FC = () => {
       <VStack spacing={4} align="stretch">
         {/* Alert Name */}
         <FormControl isRequired>
-          <FormLabel>Alert Name</FormLabel>
+          <FormLabel>{t('alertsPage.windForm.nameLabel')}</FormLabel>
           <Input
             name="alertName"
-            placeholder="Enter alert name"
+            placeholder={t('alertsPage.windForm.namePlaceholder')}
             value={formData.alertName}
             onChange={handleChange}
           />
@@ -89,13 +91,13 @@ const RainFallForm: React.FC = () => {
 
         {/* Alert Type */}
         <FormControl isReadOnly>
-          <FormLabel>Alert Type</FormLabel>
+          <FormLabel>{t('alertsPage.windForm.typeLabel')}</FormLabel>
           <Input name="alertType" value={formData.alertType} isReadOnly />
         </FormControl>
 
         {/* Percentage */}
         <FormControl isRequired>
-          <FormLabel>Percentage [mm/h]</FormLabel>
+          <FormLabel>{t('alertsPage.windForm.percentageLabel')}</FormLabel>
           <NumberInput
             defaultValue={1}
             min={1}
@@ -115,10 +117,10 @@ const RainFallForm: React.FC = () => {
 
         {/* Description */}
         <FormControl>
-          <FormLabel>Description</FormLabel>
+          <FormLabel>{t('alertsPage.windForm.descriptionLabel')}</FormLabel>
           <Textarea
             name="description"
-            placeholder="Enter description"
+            placeholder={t('alertsPage.windForm.descriptionPlaceholder')}
             value={formData.description}
             onChange={handleChange}
           />
@@ -126,7 +128,7 @@ const RainFallForm: React.FC = () => {
 
         {/* Submit Button */}
         <Button colorScheme="brand" onClick={handleSubmit} w="full">
-          Submit
+          {t('alertsPage.windForm.submit')}
         </Button>
       </VStack>
     </Box>
