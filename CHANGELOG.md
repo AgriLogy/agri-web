@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.5.0...v1.6.0) (2026-06-04)
+
+
+### Features
+
+* **i18n:** translate the full dashboard (charts, sensors, data) into ar/fr/en ([#101](https://github.com/AgriLogy/agrilogy-front/issues/101)) ([3671e46](https://github.com/AgriLogy/agrilogy-front/commit/3671e4639db83c2f956f616682cf22d6b17682e9))
+
 # [1.5.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.5...v1.5.0) (2026-06-04)
 
 
