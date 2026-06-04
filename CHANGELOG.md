@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.5...v1.5.0) (2026-06-04)
+
+
+### Features
+
+* **i18n:** add Arabic, French & English localization ([#99](https://github.com/AgriLogy/agrilogy-front/issues/99)) ([b2f5ba3](https://github.com/AgriLogy/agrilogy-front/commit/b2f5ba34f43eb19887cf7f7d1139087327c6c308))
+
 ## [1.4.5](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.4...v1.4.5) (2026-06-02)
 
 
