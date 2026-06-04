@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.6.0...v1.6.1) (2026-06-04)
+
+
+### Bug Fixes
+
+* **i18n:** translate data-driven labels and localize dates (ar/fr/en) ([#103](https://github.com/AgriLogy/agrilogy-front/issues/103)) ([e5d4227](https://github.com/AgriLogy/agrilogy-front/commit/e5d4227982738c0b061aa40aae14fddadb2bbea6))
+
 # [1.6.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.5.0...v1.6.0) (2026-06-04)
 
 
