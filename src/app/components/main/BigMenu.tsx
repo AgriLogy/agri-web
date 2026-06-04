@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
   Flex,
   IconButton,
@@ -27,6 +28,7 @@ import api from '@/app/lib/api';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import logo from '../../public/logo.png';
 import NavbarNotificationsButton from '@/app/components/main/NavbarNotificationsButton';
+import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 
 const HEADER_H = '64px';
 
@@ -35,6 +37,7 @@ const BigMenu = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { hoverColor, headerBarBg, headerBarBorder, textColor } =
     useColorModeStyles();
+  const t = useTranslations();
   const [username, setUsername] = useState('');
 
   useEffect(() => {
@@ -83,6 +86,8 @@ const BigMenu = () => {
         minW={0}
         flexShrink={1}
       >
+        <LanguageSwitcher />
+
         <NavbarNotificationsButton />
 
         <Divider orientation="vertical" h={6} borderColor={headerBarBorder} />
@@ -100,7 +105,7 @@ const BigMenu = () => {
             <HStack spacing={3}>
               <Avatar
                 size="sm"
-                name={username || 'Utilisateur'}
+                name={username || t('nav.account')}
                 bg="primary.500"
               />
               <Box display={{ base: 'none', lg: 'block' }} textAlign="left">
@@ -111,14 +116,14 @@ const BigMenu = () => {
                   noOfLines={1}
                   maxW="160px"
                 >
-                  {username || 'Utilisateur'}
+                  {username || t('nav.account')}
                 </Text>
                 <Text
                   fontSize="xs"
                   color="gray.500"
                   _dark={{ color: 'gray.400' }}
                 >
-                  Compte
+                  {t('nav.account')}
                 </Text>
               </Box>
             </HStack>
@@ -137,7 +142,8 @@ const BigMenu = () => {
               opacity={0.9}
               _hover={{ bg: 'transparent' }}
             >
-              Bonjour{username ? `, ${username}` : ''}
+              {t('nav.greeting')}
+              {username ? `, ${username}` : ''}
             </MenuItem>
             <MenuItem
               as={Link}
@@ -146,7 +152,7 @@ const BigMenu = () => {
               borderRadius="md"
               mx={1}
             >
-              Paramètres
+              {t('nav.settings')}
             </MenuItem>
             <MenuDivider />
             <MenuItem
@@ -156,13 +162,15 @@ const BigMenu = () => {
               borderRadius="md"
               mx={1}
             >
-              Se déconnecter
+              {t('logout.signOut')}
             </MenuItem>
           </MenuList>
         </Menu>
 
         <Tooltip
-          label={colorMode === 'light' ? 'Mode sombre' : 'Mode clair'}
+          label={
+            colorMode === 'light' ? t('common.darkMode') : t('common.lightMode')
+          }
           hasArrow
           openDelay={300}
         >
@@ -170,8 +178,8 @@ const BigMenu = () => {
             icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             aria-label={
               colorMode === 'light'
-                ? 'Activer le mode sombre'
-                : 'Activer le mode clair'
+                ? t('common.darkMode')
+                : t('common.lightMode')
             }
             variant="ghost"
             size="md"

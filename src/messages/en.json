@@ -1,0 +1,57 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "loading": "Loading…",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "language": "Language",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode"
+  },
+  "nav": {
+    "home": "Home",
+    "soilData": "Soil data",
+    "station": "Weather station",
+    "plantData": "Plant data",
+    "waterStation": "Water station",
+    "valvesPumps": "Valves & pumps",
+    "alerts": "Alerts",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "admin": "Admin",
+    "logout": "Log out",
+    "account": "Account",
+    "greeting": "Hello",
+    "profile": "Profile",
+    "navigation": "Navigation",
+    "accountMenu": "Account menu",
+    "openMenu": "Open menu"
+  },
+  "logout": {
+    "signOut": "Sign out",
+    "confirmTitle": "Confirm sign out",
+    "confirmBody": "Are you sure you want to sign out?"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "title": "Sign in",
+    "subtitle": "Access your Agrilogy dashboard",
+    "username": "Username",
+    "password": "Password",
+    "usernamePlaceholder": "Your username",
+    "passwordPlaceholder": "Your password",
+    "usernameRequired": "Please enter your username.",
+    "passwordRequired": "Please enter your password.",
+    "submit": "Sign in",
+    "invalidCredentials": "Incorrect username or password."
+  }
+}

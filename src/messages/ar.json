@@ -1,0 +1,57 @@
+{
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "search": "بحث",
+    "loading": "جارٍ التحميل…",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "close": "إغلاق",
+    "yes": "نعم",
+    "no": "لا",
+    "language": "اللغة",
+    "darkMode": "الوضع الداكن",
+    "lightMode": "الوضع الفاتح"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "soilData": "بيانات التربة",
+    "station": "محطة الطقس",
+    "plantData": "بيانات النباتات",
+    "waterStation": "محطة المياه",
+    "valvesPumps": "الصمامات والمضخات",
+    "alerts": "التنبيهات",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات",
+    "admin": "الإدارة",
+    "logout": "تسجيل الخروج",
+    "account": "الحساب",
+    "greeting": "مرحبًا",
+    "profile": "الملف الشخصي",
+    "navigation": "التنقل",
+    "accountMenu": "قائمة الحساب",
+    "openMenu": "فتح القائمة"
+  },
+  "logout": {
+    "signOut": "تسجيل الخروج",
+    "confirmTitle": "تأكيد تسجيل الخروج",
+    "confirmBody": "هل أنت متأكد أنك تريد تسجيل الخروج؟"
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "title": "تسجيل الدخول",
+    "subtitle": "ادخل إلى لوحة تحكم Agrilogy الخاصة بك",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "usernamePlaceholder": "اسم المستخدم الخاص بك",
+    "passwordPlaceholder": "كلمة المرور الخاصة بك",
+    "usernameRequired": "يُرجى إدخال اسم المستخدم.",
+    "passwordRequired": "يُرجى إدخال كلمة المرور.",
+    "submit": "تسجيل الدخول",
+    "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة."
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "loading": "Chargement…",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "close": "Fermer",
+    "yes": "Oui",
+    "no": "Non",
+    "language": "Langue",
+    "darkMode": "Mode sombre",
+    "lightMode": "Mode clair"
+  },
+  "nav": {
+    "home": "Accueil",
+    "soilData": "Données du sol",
+    "station": "Station météo",
+    "plantData": "Données des plantes",
+    "waterStation": "Station d'eau",
+    "valvesPumps": "Vannes et pompes",
+    "alerts": "Alertes",
+    "notifications": "Notifications",
+    "settings": "Paramètres",
+    "admin": "Administration",
+    "logout": "Déconnexion",
+    "account": "Compte",
+    "greeting": "Bonjour",
+    "profile": "Profil",
+    "navigation": "Navigation",
+    "accountMenu": "Menu compte",
+    "openMenu": "Ouvrir le menu"
+  },
+  "logout": {
+    "signOut": "Se déconnecter",
+    "confirmTitle": "Confirmer la déconnexion",
+    "confirmBody": "Êtes-vous sûr de vouloir vous déconnecter ?"
+  },
+  "auth": {
+    "signIn": "Connexion",
+    "title": "Se connecter",
+    "subtitle": "Accédez à votre tableau de bord Agrilogy",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "usernamePlaceholder": "Votre nom d'utilisateur",
+    "passwordPlaceholder": "Votre mot de passe",
+    "usernameRequired": "Veuillez saisir votre nom d'utilisateur.",
+    "passwordRequired": "Veuillez saisir votre mot de passe.",
+    "submit": "Se connecter",
+    "invalidCredentials": "Nom d'utilisateur ou mot de passe incorrect."
+  }
+}

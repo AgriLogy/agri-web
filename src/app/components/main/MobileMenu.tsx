@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
   Flex,
   IconButton,
@@ -45,6 +46,7 @@ import { FaBell, FaSeedling, FaWater } from 'react-icons/fa';
 import { WiDaySunny } from 'react-icons/wi';
 import { GiGrapes, GiValve } from 'react-icons/gi';
 import NavbarNotificationsButton from '@/app/components/main/NavbarNotificationsButton';
+import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 
 const HEADER_H = '64px';
 
@@ -66,6 +68,7 @@ const MobileMenu = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -94,15 +97,19 @@ const MobileMenu = () => {
       : pathname;
 
   const navItems: NavItem[] = [
-    { href: '/', label: 'Accueil', icon: <FaHome /> },
-    { href: '/soil', label: 'Données du sol', icon: <FaSeedling /> },
-    { href: '/station', label: 'Station météo', icon: <WiDaySunny /> },
-    { href: '/plant', label: 'Données des plantes', icon: <GiGrapes /> },
-    { href: '/water', label: "Station d'eau", icon: <FaWater /> },
-    { href: '/vannes-pompes', label: 'Vannes et pompes', icon: <GiValve /> },
-    { href: '/alerts', label: 'Alertes', icon: <FaBell /> },
-    { href: '/notifications', label: 'Notifications', icon: <BellIcon /> },
-    { href: '/settings', label: 'Paramètres', icon: <FaCog /> },
+    { href: '/', label: t('nav.home'), icon: <FaHome /> },
+    { href: '/soil', label: t('nav.soilData'), icon: <FaSeedling /> },
+    { href: '/station', label: t('nav.station'), icon: <WiDaySunny /> },
+    { href: '/plant', label: t('nav.plantData'), icon: <GiGrapes /> },
+    { href: '/water', label: t('nav.waterStation'), icon: <FaWater /> },
+    { href: '/vannes-pompes', label: t('nav.valvesPumps'), icon: <GiValve /> },
+    { href: '/alerts', label: t('nav.alerts'), icon: <FaBell /> },
+    {
+      href: '/notifications',
+      label: t('nav.notifications'),
+      icon: <BellIcon />,
+    },
+    { href: '/settings', label: t('nav.settings'), icon: <FaCog /> },
   ];
 
   const NavRow = ({ item }: { item: NavItem }) => {
@@ -178,6 +185,7 @@ const MobileMenu = () => {
       </Link>
 
       <HStack spacing={1}>
+        <LanguageSwitcher />
         <NavbarNotificationsButton />
         <Menu placement="bottom-end">
           <MenuButton
@@ -185,11 +193,11 @@ const MobileMenu = () => {
             icon={
               <Avatar
                 size="sm"
-                name={username || 'Utilisateur'}
+                name={username || t('nav.account')}
                 bg="primary.500"
               />
             }
-            aria-label="Menu compte"
+            aria-label={t('nav.accountMenu')}
             variant="ghost"
             borderRadius="full"
             _hover={{ bg: 'blackAlpha.50' }}
@@ -204,27 +212,28 @@ const MobileMenu = () => {
             boxShadow="lg"
           >
             <MenuItem isDisabled fontSize="sm">
-              Bonjour{username ? `, ${username}` : ''}
+              {t('nav.greeting')}
+              {username ? `, ${username}` : ''}
             </MenuItem>
             <MenuItem as={Link} href="/profile" icon={<FaUser />}>
-              Profil
+              {t('nav.profile')}
             </MenuItem>
             <MenuItem as={Link} href="/notifications" icon={<BellIcon />}>
-              Notifications
+              {t('nav.notifications')}
             </MenuItem>
             <MenuItem
               onClick={onOpen}
               icon={<IoLogOut style={{ transform: 'scaleX(-1)' }} />}
               color="red.500"
             >
-              Se déconnecter
+              {t('logout.signOut')}
             </MenuItem>
           </MenuList>
         </Menu>
 
         <IconButton
           icon={<HamburgerIcon boxSize={6} />}
-          aria-label="Ouvrir le menu"
+          aria-label={t('nav.openMenu')}
           variant="ghost"
           size="md"
           borderRadius="xl"
@@ -255,7 +264,7 @@ const MobileMenu = () => {
             borderColor={headerBarBorder}
           >
             <Text fontSize="sm" fontWeight="normal" color="gray.500" mb={1}>
-              Navigation
+              {t('nav.navigation')}
             </Text>
             <Text fontSize="xl" fontWeight="bold">
               Agrilogy
@@ -278,7 +287,9 @@ const MobileMenu = () => {
                 borderRadius="xl"
                 py={6}
               >
-                {colorMode === 'light' ? 'Mode sombre' : 'Mode clair'}
+                {colorMode === 'light'
+                  ? t('common.darkMode')
+                  : t('common.lightMode')}
               </Button>
 
               <Button
@@ -291,7 +302,7 @@ const MobileMenu = () => {
                 borderRadius="xl"
                 py={6}
               >
-                Se déconnecter
+                {t('logout.signOut')}
               </Button>
             </VStack>
           </DrawerBody>
@@ -307,17 +318,17 @@ const MobileMenu = () => {
         <AlertDialogOverlay bg="blackAlpha.400" backdropFilter="blur(4px)">
           <AlertDialogContent borderRadius="xl" mx={4}>
             <AlertDialogHeader fontSize="lg" fontWeight="bold" pb={2}>
-              Confirmer la déconnexion
+              {t('logout.confirmTitle')}
             </AlertDialogHeader>
             <AlertDialogBody color="gray.600" _dark={{ color: 'gray.300' }}>
-              Êtes-vous sûr de vouloir vous déconnecter ?
+              {t('logout.confirmBody')}
             </AlertDialogBody>
             <AlertDialogFooter gap={2}>
               <Button ref={cancelRef} variant="ghost" onClick={onClose}>
-                Annuler
+                {t('common.cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleLogout}>
-                Se déconnecter
+                {t('logout.signOut')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
