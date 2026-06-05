@@ -8,12 +8,13 @@
  * value" cards (inline, never navigates) and by the /alerts page
  * (Nouvelle alerte / Modifier).
  *
- * When `sensorKey` is provided the drawer hits /api/alerts/suggest/ on
+ * When `sensorKey` is provided the drawer hits /alerts/suggest on
  * open and prefills the form with mean-based defaults so the user only
  * has to nudge the threshold.
  */
 
 import React, { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { App, Button, Drawer, Form, Space } from 'antd';
 import {
   alertApi,
@@ -31,7 +32,7 @@ export interface AlertCreateDrawerProps {
   open: boolean;
   onClose: () => void;
   /** Pre-select a sensor (and optionally a zone) and prefill the form
-   *  from /api/alerts/suggest/. Ignored when `editing` is set. */
+   *  from /alerts/suggest. Ignored when `editing` is set. */
   sensorKey?: string;
   zoneId?: number;
   /** When set, the drawer becomes an "edit" drawer for that alert. */
@@ -49,6 +50,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
   editing = null,
   onSaved,
 }) => {
+  const t = useTranslations();
   const { message, modal } = App.useApp();
   const [form] = Form.useForm<AlertFormValues>();
   const [submitting, setSubmitting] = useState(false);
@@ -72,7 +74,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
         /* fall back to defaults */
       });
     void api
-      .get<{ id: number; name: string }[]>('/api/zones-names-per-user/')
+      .get<{ id: number; name: string }[]>('/zones')
       .then((r) => {
         if (Array.isArray(r.data)) setZones(r.data);
       })
@@ -106,9 +108,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
           ...(zoneId ? { zone: zoneId } : {}),
         });
         if (suggestion.sample_size === 0) {
-          message.info(
-            'Aucune lecture récente pour ce capteur — ajustez le seuil manuellement.'
-          );
+          message.info(t('alertsPage.createDrawer.noRecentReadings'));
         }
       })
       .catch(() => {
@@ -124,9 +124,9 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
     if (submitting) return;
     if (!editing && form.isFieldsTouched()) {
       modal.confirm({
-        title: 'Abandonner les modifications ?',
-        okText: 'Abandonner',
-        cancelText: 'Continuer',
+        title: t('alertsPage.createDrawer.discardTitle'),
+        okText: t('alertsPage.createDrawer.discardOk'),
+        cancelText: t('alertsPage.createDrawer.discardCancel'),
         onOk: () => {
           form.resetFields();
           onClose();
@@ -143,10 +143,10 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
     try {
       if (editing) {
         await alertApi.update(editing.id, payload);
-        message.success('Alerte mise à jour.');
+        message.success(t('alertsPage.createDrawer.updateSuccess'));
       } else {
         await alertApi.create(payload);
-        message.success('Alerte créée.');
+        message.success(t('alertsPage.createDrawer.createSuccess'));
       }
       form.resetFields();
       onClose();
@@ -162,7 +162,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
           typeof data === 'object' &&
           Object.values(data).flat().filter(Boolean).map(String).join(' · ')) ||
         e?.message ||
-        "Échec de l'enregistrement.";
+        t('alertsPage.createDrawer.saveError');
       message.error(detail);
       console.error('alert save failed', err);
     } finally {
@@ -172,7 +172,11 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
 
   return (
     <Drawer
-      title={editing ? "Modifier l'alerte" : 'Nouvelle alerte'}
+      title={
+        editing
+          ? t('alertsPage.createDrawer.editTitle')
+          : t('alertsPage.createDrawer.newTitle')
+      }
       size="default"
       open={open}
       onClose={close}
@@ -180,7 +184,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
       footer={
         <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button onClick={close} disabled={submitting}>
-            Annuler
+            {t('alertsPage.createDrawer.cancel')}
           </Button>
           <Button
             type="primary"
@@ -188,7 +192,9 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
             onClick={() => form.submit()}
             data-testid="alert-submit-button"
           >
-            {editing ? 'Mettre à jour' : 'Créer'}
+            {editing
+              ? t('alertsPage.createDrawer.update')
+              : t('alertsPage.createDrawer.create')}
           </Button>
         </Space>
       }

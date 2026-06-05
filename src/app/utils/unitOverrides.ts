@@ -19,6 +19,11 @@ export type UnitOverrideValue =
 
 export type UnitOverrideMap = Record<string, UnitOverrideValue>;
 
+/**
+ * Alias → canonical sensor key. The resolved value is a shared sensor
+ * translation key: once a chart resolves a sensor key here, render its name
+ * with `t('sensors.' + resolvedKey)`. Units stay numeric/universal strings.
+ */
 const DATA_KEY_TO_SENSOR_KEY: Record<string, string> = {
   wind_speed: 'wind_speed',
   wind_direction: 'wind_direction',

@@ -1,5 +1,5 @@
 /**
- * Thin axios wrapper around /api/alert/ + /api/alerts/ endpoints.
+ * Thin axios wrapper around /alerts/ + /api/alerts/ endpoints.
  *
  * Centralises the alert payload contract so the alert page, the chart
  * overlay, and the unit tests all agree on field names. Keep this file
@@ -54,33 +54,30 @@ export interface AlertWritePayload {
 
 export const alertApi = {
   list: (params?: { sensor_key?: string; zone_id?: number }) =>
-    api.get<AlertRecord[]>('/api/alert/', { params }).then((r) => r.data),
+    api.get<AlertRecord[]>('/alerts', { params }).then((r) => r.data),
 
   create: (payload: AlertWritePayload) =>
-    api.post<AlertRecord>('/api/alert/', payload).then((r) => r.data),
+    api.post<AlertRecord>('/alerts', payload).then((r) => r.data),
 
   update: (id: number, payload: Partial<AlertWritePayload>) =>
-    api.patch<AlertRecord>(`/api/alert/${id}/`, payload).then((r) => r.data),
+    api.patch<AlertRecord>(`/alerts/${id}`, payload).then((r) => r.data),
 
-  remove: (id: number) =>
-    api.delete<void>(`/api/alert/${id}/`).then((r) => r.data),
+  remove: (id: number) => api.delete<void>(`/alerts/${id}`).then((r) => r.data),
 
   forGraph: (params: { sensor_key: string; zone_id?: number }) =>
     api
-      .get<{ alerts: GraphAlert[] }>('/api/alerts/for-graph/', { params })
+      .get<{ alerts: GraphAlert[] }>('/alerts/for-graph', { params })
       .then((r) => r.data.alerts),
 
   sensorKeys: () =>
     api
       .get<{
         keys: { key: string; label: string; unit: string }[];
-      }>('/api/alerts/sensor-keys/')
+      }>('/sensors')
       .then((r) => r.data.keys),
 
   suggest: (params: { sensor_key: string; zone_id?: number }) =>
-    api
-      .get<AlertSuggestion>('/api/alerts/suggest/', { params })
-      .then((r) => r.data),
+    api.get<AlertSuggestion>('/alerts/suggest', { params }).then((r) => r.data),
 };
 
 export interface AlertSuggestion {

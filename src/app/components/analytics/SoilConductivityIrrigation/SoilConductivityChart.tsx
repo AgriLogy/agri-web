@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { Box, Flex, Button, HStack } from '@chakra-ui/react';
 import { FaCamera, FaDownload } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import html2canvas from 'html2canvas';
 import { SensorData } from '@/app/types';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
@@ -57,6 +58,7 @@ const SoilConductivityChart = ({
   flowData: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const [activeLines, setActiveLines] = useState({
     ec_low: true,
     ec_high: true,
@@ -153,8 +155,8 @@ const SoilConductivityChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Conductivité du sol et irrigation"
-          subtitle="CE (faible / forte) et débit d’apport d’eau synchronisés dans le temps."
+          title={t('analytics.soilConductivity.title')}
+          subtitle={t('analytics.soilConductivity.subtitle')}
         />
         <HStack spacing={2}>
           <Button onClick={handleScreenshot}>
@@ -188,13 +190,19 @@ const SoilConductivityChart = ({
             <YAxis
               yAxisId="left"
               {...yEc}
-              label={yAxisLabelInsideLeft(`CE (${ecUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                `${t('analytics.soilConductivity.ecAxis')} (${ecUnit})`,
+                tickFill
+              )}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
               {...yFlow}
-              label={yAxisLabelInsideRight(`Débit (${flowUnit})`, tickFill)}
+              label={yAxisLabelInsideRight(
+                `${t('analytics.soilConductivity.flowAxis')} (${flowUnit})`,
+                tickFill
+              )}
             />
             <Tooltip
               content={
@@ -249,7 +257,7 @@ const SoilConductivityChart = ({
               yAxisId="left"
               type="monotone"
               dataKey="ec_low"
-              name={`Conductivité basse (${ecUnit})`}
+              name={`${t('analytics.soilConductivity.lowProbe')} (${ecUnit})`}
               hide={!activeLines.ec_low}
               stroke="#1E88E5"
               strokeWidth={2.25}
@@ -263,7 +271,7 @@ const SoilConductivityChart = ({
               yAxisId="left"
               type="monotone"
               dataKey="ec_high"
-              name={`Conductivité haute (${ecUnit})`}
+              name={`${t('analytics.soilConductivity.highProbe')} (${ecUnit})`}
               hide={!activeLines.ec_high}
               stroke="#2BB673"
               strokeWidth={2.25}
@@ -276,7 +284,7 @@ const SoilConductivityChart = ({
             <Bar
               yAxisId="right"
               dataKey="water_flow"
-              name={`Irrigation (${flowUnit})`}
+              name={`${t('analytics.soilConductivity.irrigation')} (${flowUnit})`}
               {...defaultBarProps}
               hide={!activeLines.water_flow}
               fill="#00B0FF"

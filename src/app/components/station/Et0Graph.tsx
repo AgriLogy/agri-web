@@ -1,5 +1,6 @@
 'use client';
 import { Box } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { useCalibratedStationChartRows } from '@/app/hooks/useCalibratedStationChartRows';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -38,6 +39,7 @@ import {
 const ET0_FIELDS = [{ dataKey: 'et0', sensorKey: 'et0' }] as const;
 
 const Et0Graph = ({ data }: { data: any }) => {
+  const t = useTranslations();
   const { bg, textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
   useUnitOverridesRevision();
@@ -82,7 +84,7 @@ const Et0Graph = ({ data }: { data: any }) => {
     >
       <Box mb={4}>
         <ChartPanelHeading
-          title="ET₀ — évapotranspiration de référence"
+          title={t('station.et0.title')}
           subtitle={data?.sensor_names?.et0}
           color={textColor}
         />
@@ -106,7 +108,10 @@ const Et0Graph = ({ data }: { data: any }) => {
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`ET₀ (${et0Unit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                `${t('sensors.et0')} (${et0Unit})`,
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -122,7 +127,7 @@ const Et0Graph = ({ data }: { data: any }) => {
               type="monotone"
               dataKey="et0"
               stroke={data.sensor_colors?.et0_color}
-              name={`ET₀ (${et0Unit})`}
+              name={`${t('sensors.et0')} (${et0Unit})`}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"

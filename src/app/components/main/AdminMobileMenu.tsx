@@ -12,6 +12,7 @@ import {
 } from '@ant-design/icons';
 import { App, Button, Drawer, Dropdown, Flex, Menu } from 'antd';
 import { useColorMode } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -22,6 +23,7 @@ import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import logo from '../../public/logo.png';
 
 const AdminMobileMenu = () => {
+  const t = useTranslations();
   const { colorMode, toggleColorMode } = useColorMode();
   const { bg } = useColorModeStyles();
   const { modal } = App.useApp();
@@ -31,7 +33,7 @@ const AdminMobileMenu = () => {
 
   useEffect(() => {
     api
-      .get('/api/header/')
+      .get('/users/me')
       .then((res) => {
         if (res.data?.username) setUsername(res.data.username);
       })
@@ -43,11 +45,11 @@ const AdminMobileMenu = () => {
   const askLogout = () => {
     setOpen(false);
     modal.confirm({
-      title: 'Confirmer la déconnexion',
-      content: 'Êtes-vous sûr de vouloir vous déconnecter ?',
-      okText: 'Se déconnecter',
+      title: t('shell.admin.logoutConfirmTitle'),
+      content: t('shell.admin.logoutConfirmBody'),
+      okText: t('shell.admin.logoutConfirmOk'),
       okType: 'danger',
-      cancelText: 'Annuler',
+      cancelText: t('shell.admin.cancel'),
       onOk: () => {
         localStorage.clear();
         router.push('/login');
@@ -61,7 +63,7 @@ const AdminMobileMenu = () => {
       justify="space-between"
       style={{ background: bg, height: '100%', padding: '0 12px' }}
     >
-      <Link href="/" aria-label="Accueil">
+      <Link href="/" aria-label={t('shell.mobileMenu.home')}>
         <Image height={32} src={logo} alt="Logo" priority />
       </Link>
 
@@ -70,11 +72,15 @@ const AdminMobileMenu = () => {
           trigger={['click']}
           menu={{
             items: [
-              { key: 'hi', label: `Bonjour ${username}`, disabled: true },
+              {
+                key: 'hi',
+                label: t('shell.mobileMenu.greeting', { name: username }),
+                disabled: true,
+              },
               { type: 'divider' },
               {
                 key: 'logout',
-                label: 'Déconnexion',
+                label: t('shell.admin.logout'),
                 icon: <LogoutOutlined />,
                 danger: true,
                 onClick: askLogout,
@@ -82,18 +88,22 @@ const AdminMobileMenu = () => {
             ],
           }}
         >
-          <Button type="text" icon={<UserOutlined />} aria-label="Profil" />
+          <Button
+            type="text"
+            icon={<UserOutlined />}
+            aria-label={t('shell.mobileMenu.profile')}
+          />
         </Dropdown>
         <Button
           type="text"
-          aria-label="Ouvrir le menu"
+          aria-label={t('shell.mobileMenu.openMenu')}
           icon={<MenuOutlined />}
           onClick={() => setOpen(true)}
         />
       </Flex>
 
       <Drawer
-        title="Menu"
+        title={t('shell.mobileMenu.menu')}
         placement="right"
         open={open}
         onClose={() => setOpen(false)}
@@ -106,7 +116,7 @@ const AdminMobileMenu = () => {
             {
               key: 'dashboard',
               icon: <DashboardOutlined />,
-              label: 'Tableau de bord',
+              label: t('shell.admin.dashboard'),
               onClick: () => {
                 router.push('/admin');
                 setOpen(false);
@@ -115,7 +125,7 @@ const AdminMobileMenu = () => {
             {
               key: 'users',
               icon: <TeamOutlined />,
-              label: 'Utilisateurs',
+              label: t('shell.admin.users'),
               onClick: () => {
                 router.push('/admin/users');
                 setOpen(false);
@@ -124,7 +134,7 @@ const AdminMobileMenu = () => {
             {
               key: 'affirmations',
               icon: <AuditOutlined />,
-              label: 'Affirmations manager',
+              label: t('shell.admin.affirmations'),
               onClick: () => {
                 router.push('/admin/affirmations');
                 setOpen(false);
@@ -134,7 +144,10 @@ const AdminMobileMenu = () => {
             {
               key: 'theme',
               icon: colorMode === 'light' ? <MoonOutlined /> : <SunOutlined />,
-              label: colorMode === 'light' ? 'Mode sombre' : 'Mode clair',
+              label:
+                colorMode === 'light'
+                  ? t('shell.mobileMenu.darkMode')
+                  : t('shell.mobileMenu.lightMode'),
               onClick: () => {
                 toggleColorMode();
                 setOpen(false);
@@ -144,7 +157,7 @@ const AdminMobileMenu = () => {
               key: 'logout',
               icon: <LogoutOutlined />,
               danger: true,
-              label: 'Déconnexion',
+              label: t('shell.admin.logout'),
               onClick: askLogout,
             },
           ]}

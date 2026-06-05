@@ -27,6 +27,7 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { FaPen } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import {
   SENSOR_CATALOG,
   getAllSensorsCatalog,
@@ -43,17 +44,31 @@ import {
 } from '@/app/utils/sensorInstanceOverrides';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 
-const PLACEMENT_OPTIONS = [
-  'Sol',
-  'Eau',
-  'Météo',
-  'Serre',
-  'Feuille / fruit',
-  'Électricité',
-  'Autre',
-];
+const PLACEMENT_OPTION_KEYS = [
+  'soil',
+  'water',
+  'weather',
+  'greenhouse',
+  'leafFruit',
+  'electricity',
+  'other',
+] as const;
 
 const SensorDirectorySettings = () => {
+  const t = useTranslations();
+  // Built-in sensors resolve their reading/type label from the catalog so they
+  // follow the active locale; custom (user-added) sensors keep their stored label.
+  const readingFor = (it: { key: string; readingLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.reading`)
+      ? t(`sensorCatalog.${it.key}.reading`)
+      : it.readingLabel;
+  const typeFor = (it: { key: string; typeLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.type`)
+      ? t(`sensorCatalog.${it.key}.type`)
+      : it.typeLabel;
+  const placementOptions = PLACEMENT_OPTION_KEYS.map((k) =>
+    t(`settings.directory.placementOptions.${k}`)
+  );
   const { mutedTextColor } = useColorModeStyles();
   const toast = useToast();
   const [query, setQuery] = useState('');
@@ -111,7 +126,11 @@ const SensorDirectorySettings = () => {
     setOverrides(next);
     saveSensorInstanceOverrides(next);
     setEditKey(null);
-    toast({ title: 'Capteur mis à jour', status: 'success', duration: 2000 });
+    toast({
+      title: t('settings.directory.toastUpdated'),
+      status: 'success',
+      duration: 2000,
+    });
   };
 
   const addSensor = () => {
@@ -122,8 +141,8 @@ const SensorDirectorySettings = () => {
 
     if (!key || !readingLabel || !typeLabel || !defaultUnit) {
       toast({
-        title: 'Champs requis',
-        description: 'Veuillez remplir tous les champs.',
+        title: t('settings.directory.requiredFieldsTitle'),
+        description: t('settings.directory.requiredFieldsDesc'),
         status: 'warning',
         duration: 2500,
         isClosable: true,
@@ -133,8 +152,8 @@ const SensorDirectorySettings = () => {
 
     if (catalog.some((item) => item.key === key)) {
       toast({
-        title: 'Clé déjà utilisée',
-        description: 'Cette clé capteur existe déjà.',
+        title: t('settings.directory.keyUsedTitle'),
+        description: t('settings.directory.keyUsedDesc'),
         status: 'error',
         duration: 2500,
         isClosable: true,
@@ -156,7 +175,7 @@ const SensorDirectorySettings = () => {
     setOpenAdd(false);
     setForm({ readingLabel: '', typeLabel: '', key: '', defaultUnit: '' });
     toast({
-      title: 'Capteur ajouté',
+      title: t('settings.directory.toastAdded'),
       status: 'success',
       duration: 2200,
       isClosable: true,
@@ -169,44 +188,48 @@ const SensorDirectorySettings = () => {
     <Box>
       <Flex gap={2} mb={3} align="center" flexWrap="wrap">
         <Input
-          placeholder="Rechercher un capteur (nom, type, emplacement, clé)…"
+          placeholder={t('settings.directory.searchPlaceholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           maxW="480px"
         />
         <Button size="sm" colorScheme="brand" onClick={() => setOpenAdd(true)}>
-          Ajouter capteur
+          {t('settings.directory.addSensorButton')}
         </Button>
       </Flex>
       <Text fontSize="sm" color={mutedTextColor} mb={2}>
-        {rows.length} capteur(s) affiché(s)
+        {t('settings.directory.countShown', { count: rows.length })}
       </Text>
       <Table size="sm" variant="simple">
         <Thead>
           <Tr>
-            <Th>Nom affiché</Th>
-            <Th>Type / emplacement</Th>
-            <Th>Clé</Th>
-            <Th>Unité</Th>
-            <Th>Visible</Th>
+            <Th>{t('settings.directory.colDisplayName')}</Th>
+            <Th>{t('settings.directory.colTypePlacement')}</Th>
+            <Th>{t('settings.directory.colKey')}</Th>
+            <Th>{t('settings.directory.colUnit')}</Th>
+            <Th>{t('settings.directory.colVisible')}</Th>
             <Th />
           </Tr>
         </Thead>
         <Tbody>
           {rows.map((row) => (
             <Tr key={row.key}>
-              <Td>{row.displayName ?? row.readingLabel}</Td>
+              <Td>{row.displayName ?? readingFor(row)}</Td>
               <Td>
                 {row.placementType
-                  ? `${row.typeLabel} — ${row.placementType}`
-                  : row.typeLabel}
+                  ? `${typeFor(row)} — ${row.placementType}`
+                  : typeFor(row)}
               </Td>
               <Td>{row.key}</Td>
               <Td>{row.defaultUnit}</Td>
-              <Td>{row.visible === false ? 'Non' : 'Oui'}</Td>
+              <Td>
+                {row.visible === false
+                  ? t('settings.directory.no')
+                  : t('settings.directory.yes')}
+              </Td>
               <Td>
                 <IconButton
-                  aria-label="Modifier"
+                  aria-label={t('settings.directory.editAria')}
                   size="sm"
                   icon={<FaPen />}
                   variant="ghost"
@@ -221,11 +244,11 @@ const SensorDirectorySettings = () => {
       <Modal isOpen={openAdd} onClose={() => setOpenAdd(false)} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Ajouter un capteur</ModalHeader>
+          <ModalHeader>{t('settings.directory.addModalTitle')}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl mb={3}>
-              <FormLabel>Libellé</FormLabel>
+              <FormLabel>{t('settings.directory.fieldLabel')}</FormLabel>
               <Input
                 value={form.readingLabel}
                 onChange={(e) =>
@@ -234,7 +257,7 @@ const SensorDirectorySettings = () => {
               />
             </FormControl>
             <FormControl mb={3}>
-              <FormLabel>Type</FormLabel>
+              <FormLabel>{t('settings.directory.fieldType')}</FormLabel>
               <Input
                 value={form.typeLabel}
                 onChange={(e) =>
@@ -243,7 +266,7 @@ const SensorDirectorySettings = () => {
               />
             </FormControl>
             <FormControl mb={3}>
-              <FormLabel>Clé (unique)</FormLabel>
+              <FormLabel>{t('settings.directory.fieldKeyUnique')}</FormLabel>
               <Input
                 value={form.key}
                 onChange={(e) =>
@@ -252,7 +275,7 @@ const SensorDirectorySettings = () => {
               />
             </FormControl>
             <FormControl>
-              <FormLabel>Unité</FormLabel>
+              <FormLabel>{t('settings.directory.fieldUnit')}</FormLabel>
               <Input
                 value={form.defaultUnit}
                 onChange={(e) =>
@@ -263,10 +286,10 @@ const SensorDirectorySettings = () => {
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" mr={2} onClick={() => setOpenAdd(false)}>
-              Annuler
+              {t('settings.directory.cancel')}
             </Button>
             <Button colorScheme="brand" onClick={addSensor}>
-              Ajouter
+              {t('settings.directory.add')}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -279,31 +302,33 @@ const SensorDirectorySettings = () => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modifier le capteur</ModalHeader>
+          <ModalHeader>{t('settings.directory.editModalTitle')}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl mb={3}>
-              <FormLabel>Nom affiché</FormLabel>
+              <FormLabel>{t('settings.directory.fieldDisplayName')}</FormLabel>
               <Input
                 value={editDraft.displayName ?? ''}
                 onChange={(e) =>
                   setEditDraft((d) => ({ ...d, displayName: e.target.value }))
                 }
-                placeholder="Nom personnalisé"
+                placeholder={t('settings.directory.displayNamePlaceholder')}
               />
             </FormControl>
             <FormControl mb={3}>
-              <FormLabel>Type d&apos;emplacement</FormLabel>
+              <FormLabel>
+                {t('settings.directory.fieldPlacementType')}
+              </FormLabel>
               <Input
                 list="placement-suggestions"
                 value={editDraft.placementType ?? ''}
                 onChange={(e) =>
                   setEditDraft((d) => ({ ...d, placementType: e.target.value }))
                 }
-                placeholder="Ex. Sol, Serre…"
+                placeholder={t('settings.directory.placementPlaceholder')}
               />
               <datalist id="placement-suggestions">
-                {PLACEMENT_OPTIONS.map((p) => (
+                {placementOptions.map((p) => (
                   <option key={p} value={p} />
                 ))}
               </datalist>
@@ -314,21 +339,20 @@ const SensorDirectorySettings = () => {
                 setEditDraft((d) => ({ ...d, visible: e.target.checked }))
               }
             >
-              Visible dans les listes
+              {t('settings.directory.visibleInLists')}
             </Checkbox>
             {editKey && isBuiltIn(editKey) && (
               <Text fontSize="xs" color={mutedTextColor} mt={3}>
-                Capteur catalogue : les métadonnées sont surchargées localement
-                uniquement.
+                {t('settings.directory.catalogNote')}
               </Text>
             )}
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" mr={2} onClick={() => setEditKey(null)}>
-              Annuler
+              {t('settings.directory.cancel')}
             </Button>
             <Button colorScheme="brand" onClick={saveEdit}>
-              Enregistrer
+              {t('settings.directory.save')}
             </Button>
           </ModalFooter>
         </ModalContent>

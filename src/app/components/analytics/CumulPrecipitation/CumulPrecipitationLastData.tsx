@@ -1,4 +1,5 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
+import { useLocale, useTranslations } from 'next-intl';
 import { FaCloudRain } from 'react-icons/fa';
 import { SensorData } from '@/app/types';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -9,25 +10,34 @@ import {
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
-const timeAgo = (timestamp: string): string => {
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
+const timeAgo = (
+  timestamp: string,
+  t: (key: string, values?: Record<string, string | number>) => string,
+  tag: string
+): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min`;
-  if (diffH < 24) return `${diffH} h`;
-  return then.toLocaleDateString();
+  if (diffMin < 1) return t('analytics.common.justNow');
+  if (diffMin < 60) return t('analytics.common.minutesAgo', { count: diffMin });
+  if (diffH < 24) return t('analytics.common.hoursAgo', { count: diffH });
+  return then.toLocaleDateString(tag);
 };
 
 const CumulPrecipitationLastData = ({ data }: { data: SensorData[] }) => {
+  const t = useTranslations();
+  const tag = localeTag(useLocale());
   const latest = data[data.length - 1];
   useUnitOverridesRevision();
   const unit = resolveAxisUnit('precipitation_rate', latest?.default_unit);
 
-  const valueColor = useColorModeValue('blue.700', 'blue.200');
+  const valueColor = useColorModeValue('brand.700', 'brand.200');
   const textColor = useColorModeValue('gray.600', 'gray.300');
   const subColor = useColorModeValue('gray.500', 'gray.400');
 
@@ -57,7 +67,7 @@ const CumulPrecipitationLastData = ({ data }: { data: SensorData[] }) => {
           mt={3}
           color={textColor}
         >
-          Cumul pluviométrique
+          {t('analytics.cumulPrecipitation.lastDataLabel')}
         </Text>
         <Text fontSize="2xl" fontWeight="semibold" color={valueColor} mt={1}>
           {latest
@@ -65,7 +75,11 @@ const CumulPrecipitationLastData = ({ data }: { data: SensorData[] }) => {
             : '—'}
         </Text>
         <Text fontSize="xs" color={subColor} mt={2}>
-          {latest ? `Mesure : ${timeAgo(latest.timestamp)}` : ''}
+          {latest
+            ? t('analytics.common.measuredAt', {
+                time: timeAgo(latest.timestamp, t, tag),
+              })
+            : ''}
         </Text>
         <LastDataAddAlertButton sensorKey="precipitation_rate" />
       </LastDataPanel>

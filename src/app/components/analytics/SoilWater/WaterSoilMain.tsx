@@ -50,10 +50,10 @@ const WaterSoilMain = ({
       });
 
     Promise.all([
-      fetchSensor('/api/sensors/soilmoisturelow'),
-      fetchSensor('/api/sensors/soilmoisturemedium'),
-      fetchSensor('/api/sensors/soilmoisturehigh'),
-      fetchSensor('/api/sensors/waterflow'),
+      fetchSensor('/sensors/soilmoisturelow'),
+      fetchSensor('/sensors/soilmoisturemedium'),
+      fetchSensor('/sensors/soilmoisturehigh'),
+      fetchSensor('/sensors/waterflow'),
     ])
       .then(([lowRes, medRes, highRes, waterRes]) => {
         const map = new Map<string, WaterSoilData>();

@@ -7,7 +7,7 @@
  *
  *   <ChartAlertOverlay sensorKey="temperature_weather" yAxisId="temp" />
  *
- * It fetches /api/alerts/for-graph/?sensor_key=... once, then renders one
+ * It fetches /alerts/for-graph?sensor_key=... once, then renders one
  * <ReferenceLine> per active alert (color-coded by triggered state). The
  * recharts API requires children to be top-level inside the chart root,
  * so this component returns an array of ReferenceLines wrapped in a

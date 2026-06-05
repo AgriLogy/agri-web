@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Box,
   Table,
@@ -25,6 +26,7 @@ interface SensorDataTableProps {
 }
 
 const SensorDataTable: React.FC<SensorDataTableProps> = ({ data }) => {
+  const t = useTranslations();
   const { bg, textColor, navBgColor } = useColorModeStyles();
   const fontSize = useBreakpointValue({ base: 'sm', md: 'md' });
   const p = useBreakpointValue({ base: 2, md: 4 });
@@ -48,8 +50,8 @@ const SensorDataTable: React.FC<SensorDataTableProps> = ({ data }) => {
     >
       <Box mb={4}>
         <ChartPanelHeading
-          title="Capteurs — aperçu tabulaire"
-          subtitle="Dernières lignes enregistrées"
+          title={t('misc.sensorDataTable.title')}
+          subtitle={t('misc.sensorDataTable.subtitle')}
           color={textColor}
         />
       </Box>
@@ -57,17 +59,62 @@ const SensorDataTable: React.FC<SensorDataTableProps> = ({ data }) => {
         <Table variant="striped" size="sm" width="100%">
           <Thead>
             <Tr color={navBgColor}>
-              <Th fontSize={fontSize}>Timestamp</Th>
-              <Th fontSize={fontSize}>Temp. Air (°C)</Th>
-              <Th fontSize={fontSize}>Humidity Weather (%)</Th>
-              <Th fontSize={fontSize}>Solar Radiation (W/m²)</Th>
-              <Th fontSize={fontSize}>Wind Speed (m/s)</Th>
-              <Th fontSize={fontSize}>Precipitation Rate (mm/h)</Th>
-              <Th fontSize={fontSize}>Soil EC Medium (dS/m)</Th>
-              <Th fontSize={fontSize}>Soil Moisture Medium (%)</Th>
-              <Th fontSize={fontSize}>Soil Temperature Medium (°C)</Th>
-              <Th fontSize={fontSize}>Soil pH</Th>
-              <Th fontSize={fontSize}>Wind Direction (°)</Th>
+              <Th fontSize={fontSize}>{t('misc.sensorDataTable.timestamp')}</Th>
+              <Th fontSize={fontSize}>
+                {t('misc.sensorDataTable.headerWithUnit', {
+                  name: t('sensors.air_temperature'),
+                  unit: '°C',
+                })}
+              </Th>
+              <Th fontSize={fontSize}>
+                {t('misc.sensorDataTable.headerWithUnit', {
+                  name: t('sensors.humidity_weather'),
+                  unit: '%',
+                })}
+              </Th>
+              <Th fontSize={fontSize}>
+                {t('misc.sensorDataTable.headerWithUnit', {
+                  name: t('sensors.solar_radiation'),
+                  unit: 'W/m²',
+                })}
+              </Th>
+              <Th fontSize={fontSize}>
+                {t('misc.sensorDataTable.headerWithUnit', {
+                  name: t('sensors.wind_speed'),
+                  unit: 'm/s',
+                })}
+              </Th>
+              <Th fontSize={fontSize}>
+                {t('misc.sensorDataTable.headerWithUnit', {
+                  name: t('sensors.precipitation_rate'),
+                  unit: 'mm/h',
+                })}
+              </Th>
+              <Th fontSize={fontSize}>
+                {t('misc.sensorDataTable.headerWithUnit', {
+                  name: t('sensors.ec_soil'),
+                  unit: 'dS/m',
+                })}
+              </Th>
+              <Th fontSize={fontSize}>
+                {t('misc.sensorDataTable.headerWithUnit', {
+                  name: t('sensors.soil_moisture_medium'),
+                  unit: '%',
+                })}
+              </Th>
+              <Th fontSize={fontSize}>
+                {t('misc.sensorDataTable.headerWithUnit', {
+                  name: t('sensors.soil_temperature_medium'),
+                  unit: '°C',
+                })}
+              </Th>
+              <Th fontSize={fontSize}>{t('sensors.soil_ph')}</Th>
+              <Th fontSize={fontSize}>
+                {t('misc.sensorDataTable.headerWithUnit', {
+                  name: t('sensors.wind_direction'),
+                  unit: '°',
+                })}
+              </Th>
             </Tr>
           </Thead>
           <Tbody>

@@ -6,9 +6,12 @@ import {
   useBreakpointValue,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 export type EmptyBoxVariant = 'empty' | 'loading';
 
+/** Non-React French fallbacks (kept for typing / non-hook callers). The
+ *  rendered default text is resolved via i18n inside the component. */
 const DEFAULT_EMPTY_TEXT = 'Pas de données';
 const DEFAULT_LOADING_TEXT = 'Chargement...';
 
@@ -20,12 +23,16 @@ interface EmptyBoxProps {
 }
 
 const EmptyBox = ({ text, variant = 'empty' }: EmptyBoxProps) => {
+  const t = useTranslations();
   const chartBg = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.700', 'gray.300');
   const p = useBreakpointValue({ base: 2, md: 4 });
 
   const displayText =
-    text ?? (variant === 'loading' ? DEFAULT_LOADING_TEXT : DEFAULT_EMPTY_TEXT);
+    text ??
+    (variant === 'loading'
+      ? t('misc.emptyBox.loading')
+      : t('misc.emptyBox.empty'));
 
   return (
     <Box

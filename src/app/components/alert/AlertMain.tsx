@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslations } from 'next-intl';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { alertApi, type AlertRecord } from '@/app/lib/alertApi';
 import {
@@ -27,14 +28,19 @@ import styles from './AlertMain.module.scss';
 
 const ALERT_LIMIT = 10;
 
-const conditionLabel = (c: string) =>
-  CONDITION_CHOICES.find((cc) => cc.value === c)?.label ?? c;
-
-const typeLabel = (t: string) =>
-  ALERT_CHOICES.find((c) => c.value === t)?.label ?? t;
-
 const AlertMain: React.FC = () => {
+  const t = useTranslations();
   const { message } = App.useApp();
+
+  const conditionLabel = (c: string) => {
+    const choice = CONDITION_CHOICES.find((cc) => cc.value === c);
+    return choice ? t(`conditions.${choice.i18nKey}`) : c;
+  };
+
+  const typeLabel = (type: string) => {
+    const choice = ALERT_CHOICES.find((c) => c.value === type);
+    return choice ? t(`alertTypes.${choice.i18nKey}`) : type;
+  };
   const [alerts, setAlerts] = useState<AlertRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [sensorKeys, setSensorKeys] =
@@ -48,11 +54,11 @@ const AlertMain: React.FC = () => {
       const data = await alertApi.list();
       setAlerts(data);
     } catch {
-      message.error('Impossible de charger les alertes.');
+      message.error(t('alertsPage.main.loadError'));
     } finally {
       setLoading(false);
     }
-  }, [message]);
+  }, [message, t]);
 
   useEffect(() => {
     void fetchAlerts();
@@ -75,9 +81,7 @@ const AlertMain: React.FC = () => {
 
   const openCreate = () => {
     if (alerts.length >= ALERT_LIMIT) {
-      message.warning(
-        `Limite atteinte : supprimez une alerte pour en créer une autre (max ${ALERT_LIMIT}).`
-      );
+      message.warning(t('alertsPage.main.limitReached', { max: ALERT_LIMIT }));
       return;
     }
     setEditing(null);
@@ -97,10 +101,10 @@ const AlertMain: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       await alertApi.remove(id);
-      message.success('Alerte supprimée.');
+      message.success(t('alertsPage.main.deleteSuccess'));
       setAlerts((prev) => prev.filter((a) => a.id !== id));
     } catch {
-      message.error('Échec de la suppression.');
+      message.error(t('alertsPage.main.deleteError'));
     }
   };
 
@@ -111,14 +115,14 @@ const AlertMain: React.FC = () => {
       });
       setAlerts((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
     } catch {
-      message.error('Impossible de changer le statut.');
+      message.error(t('alertsPage.main.toggleError'));
     }
   };
 
   const columns: ColumnsType<AlertRecord> = useMemo(
     () => [
       {
-        title: 'Nom',
+        title: t('alertsPage.main.columnName'),
         dataIndex: 'name',
         key: 'name',
         render: (text: string, row) => (
@@ -126,27 +130,29 @@ const AlertMain: React.FC = () => {
             <strong>{text}</strong>
             {row.last_triggered_at && (
               <Tag color="red" className={styles.triggeredTag}>
-                Récemment déclenchée
+                {t('alertsPage.main.recentlyTriggered')}
               </Tag>
             )}
           </Space>
         ),
       },
       {
-        title: 'Capteur',
+        title: t('alertsPage.main.columnSensor'),
         dataIndex: 'sensor_key',
         key: 'sensor_key',
         render: (key: string) =>
-          sensorKeys.find((s) => s.key === key)?.label ?? key ?? '—',
+          key && t.has(`sensors.${key}`)
+            ? t(`sensors.${key}`)
+            : (sensorKeys.find((s) => s.key === key)?.label ?? key ?? '—'),
       },
       {
-        title: 'Catégorie',
+        title: t('alertsPage.main.columnCategory'),
         dataIndex: 'type',
         key: 'type',
-        render: (t: string) => <Tag>{typeLabel(t)}</Tag>,
+        render: (type: string) => <Tag>{typeLabel(type)}</Tag>,
       },
       {
-        title: 'Condition',
+        title: t('alertsPage.main.columnCondition'),
         key: 'condition',
         render: (_, row) => (
           <span>
@@ -159,23 +165,29 @@ const AlertMain: React.FC = () => {
         ),
       },
       {
-        title: 'Active',
+        title: t('alertsPage.main.columnActive'),
         dataIndex: 'is_active',
         key: 'is_active',
         render: (on: boolean, row) => (
-          <Tooltip title={on ? 'Désactiver' : 'Activer'}>
+          <Tooltip
+            title={
+              on
+                ? t('alertsPage.main.deactivate')
+                : t('alertsPage.main.activate')
+            }
+          >
             <Tag
               color={on ? 'green' : 'default'}
               onClick={() => handleToggleActive(row)}
               style={{ cursor: 'pointer' }}
             >
-              {on ? 'oui' : 'non'}
+              {on ? t('alertsPage.main.yes') : t('alertsPage.main.no')}
             </Tag>
           </Tooltip>
         ),
       },
       {
-        title: 'Actions',
+        title: t('alertsPage.main.columnActions'),
         key: 'actions',
         align: 'right',
         render: (_, row) => (
@@ -183,22 +195,22 @@ const AlertMain: React.FC = () => {
             <Button
               icon={<EditOutlined />}
               onClick={() => openEdit(row)}
-              aria-label={`Modifier ${row.name}`}
+              aria-label={t('alertsPage.main.editAria', { name: row.name })}
             >
-              Modifier
+              {t('alertsPage.main.edit')}
             </Button>
             <Popconfirm
-              title="Supprimer cette alerte ?"
-              okText="Supprimer"
-              cancelText="Annuler"
+              title={t('alertsPage.main.deleteConfirm')}
+              okText={t('alertsPage.main.delete')}
+              cancelText={t('alertsPage.main.cancel')}
               onConfirm={() => handleDelete(row.id)}
             >
               <Button
                 danger
                 icon={<DeleteOutlined />}
-                aria-label={`Supprimer ${row.name}`}
+                aria-label={t('alertsPage.main.deleteAria', { name: row.name })}
               >
-                Supprimer
+                {t('alertsPage.main.delete')}
               </Button>
             </Popconfirm>
           </Space>
@@ -206,7 +218,7 @@ const AlertMain: React.FC = () => {
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sensorKeys]
+    [sensorKeys, t]
   );
 
   return (
@@ -216,8 +228,8 @@ const AlertMain: React.FC = () => {
       data-testid="alert-main"
     >
       <PageInfoBar
-        title="Gestion des alertes"
-        subtitle="Configurez des seuils par capteur. Chaque alerte se trace automatiquement sur le graphique correspondant."
+        title={t('alertsPage.main.pageTitle')}
+        subtitle={t('alertsPage.main.pageSubtitle')}
         actions={
           <Button
             type="primary"
@@ -225,7 +237,7 @@ const AlertMain: React.FC = () => {
             onClick={openCreate}
             data-testid="alert-create-button"
           >
-            Nouvelle alerte
+            {t('alertsPage.main.newAlert')}
           </Button>
         }
       />
@@ -249,7 +261,7 @@ const AlertMain: React.FC = () => {
             emptyText: (
               <Empty
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description="Aucune alerte configurée"
+                description={t('alertsPage.main.emptyText')}
               />
             ),
           }}

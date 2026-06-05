@@ -1,6 +1,7 @@
 'use client';
 import { Box } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useCalibratedStationChartRows } from '@/app/hooks/useCalibratedStationChartRows';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import { resolveAxisUnit } from '@/app/utils/unitOverrides';
@@ -41,6 +42,7 @@ const WIND_DIR_FIELDS = [
 ] as const;
 
 const WindDirectionGraph = ({ data }: { data: any }) => {
+  const t = useTranslations();
   const { bg, textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
   useUnitOverridesRevision();
@@ -85,7 +87,7 @@ const WindDirectionGraph = ({ data }: { data: any }) => {
     >
       <Box mb={4}>
         <ChartPanelHeading
-          title="Vent — direction"
+          title={t('station.windDirection.title')}
           subtitle={data?.sensor_names?.wind_direction}
           color={textColor}
         />
@@ -110,7 +112,10 @@ const WindDirectionGraph = ({ data }: { data: any }) => {
             <YAxis
               {...yProps}
               domain={[0, 360]}
-              label={yAxisLabelInsideLeft(`Direction (${dirUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('station.windDirection.axis', { unit: dirUnit }),
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -147,7 +152,7 @@ const WindDirectionGraph = ({ data }: { data: any }) => {
               type="monotone"
               dataKey="wind_direction"
               stroke={data.sensor_colors?.wind_direction_color}
-              name={`Wind direction (${dirUnit})`}
+              name={t('station.windDirection.series', { unit: dirUnit })}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"

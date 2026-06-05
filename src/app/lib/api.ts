@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://agrilogy-pi.com/';
+  process.env.NEXT_PUBLIC_API_URL || 'https://back.agrogo-datafarm.com';
 //  "http://localhost:8000";
 
 if (process.env.NODE_ENV === 'development') {
@@ -32,7 +32,8 @@ api.interceptors.response.use(
   (error) => {
     const requestUrl = error.config?.url ?? '';
     const isAuthEndpoint =
-      requestUrl.includes('/auth/signin') || requestUrl.includes('/auth/token');
+      requestUrl.includes('/auth/sessions') ||
+      requestUrl.includes('/auth/token');
 
     if (error.response && error.response.status === 401 && !isAuthEndpoint) {
       localStorage.removeItem('accessToken');

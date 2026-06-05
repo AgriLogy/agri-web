@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -153,7 +154,12 @@ function cacheRowToNotificationProps(row: unknown): {
   };
 }
 
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
 const NavbarNotificationsButton: React.FC = () => {
+  const t = useTranslations();
+  const locale = useLocale();
   const router = useRouter();
   const toast = useToast();
   const deleteCancelRef = useRef<HTMLButtonElement>(null);
@@ -219,9 +225,8 @@ const NavbarNotificationsButton: React.FC = () => {
     closeDetail();
     void refresh();
     toast({
-      title: 'Notification supprimée',
-      description:
-        'Configuration effacée et entrées locales retirées de la liste sur cet appareil.',
+      title: t('shell.notifications.deletedToastTitle'),
+      description: t('shell.notifications.deletedToastBody'),
       status: 'success',
       duration: 4000,
       isClosable: true,
@@ -241,7 +246,7 @@ const NavbarNotificationsButton: React.FC = () => {
     setLoading(true);
     try {
       const res = await api.get<{ notifications?: PopupNotification[] }>(
-        '/api/notifications-and-alerts/'
+        '/notifications'
       );
       const apiRows = normalizeApiNotificationsList(res.data?.notifications);
       const merged = mergeNotificationsForStorage(apiRows);
@@ -286,8 +291,8 @@ const NavbarNotificationsButton: React.FC = () => {
         <PopoverTrigger>
           <IconButton
             icon={<BellIcon boxSize={5} />}
-            aria-label="Ouvrir les notifications"
-            title="Notifications"
+            aria-label={t('shell.notifications.openAria')}
+            title={t('shell.notifications.title')}
             variant="ghost"
             size="md"
             borderRadius="xl"
@@ -311,19 +316,19 @@ const NavbarNotificationsButton: React.FC = () => {
               fontSize="sm"
               py={3}
             >
-              Notifications
+              {t('shell.notifications.title')}
             </PopoverHeader>
             <PopoverBody p={0} maxH="min(60vh, 360px)" overflowY="auto">
               {loading ? (
                 <Box py={8} textAlign="center">
                   <Spinner size="sm" mr={2} />
                   <Text as="span" fontSize="sm" color="gray.500">
-                    Chargement…
+                    {t('shell.notifications.loading')}
                   </Text>
                 </Box>
               ) : items.length === 0 ? (
                 <Text fontSize="sm" color="gray.500" py={6} px={4}>
-                  Aucune notification pour le moment.
+                  {t('shell.notifications.empty')}
                 </Text>
               ) : (
                 <VStack spacing={0} align="stretch">
@@ -331,10 +336,13 @@ const NavbarNotificationsButton: React.FC = () => {
                     const n = (row.notification ?? {}) as PopupNotificationBody;
                     const template = n.template_summary;
                     const when = n.notification_date
-                      ? new Date(n.notification_date).toLocaleString('fr-FR', {
-                          dateStyle: 'short',
-                          timeStyle: 'short',
-                        })
+                      ? new Date(n.notification_date).toLocaleString(
+                          localeTag(locale),
+                          {
+                            dateStyle: 'short',
+                            timeStyle: 'short',
+                          }
+                        )
                       : '—';
                     const zone = row.zone_name ?? n.zone_name ?? '';
                     const cfgId = resolveStoredNotificationConfigId(
@@ -345,7 +353,9 @@ const NavbarNotificationsButton: React.FC = () => {
                       : undefined;
                     const cfgName = cfg?.notificationName?.trim() ?? '';
                     const rowTitle =
-                      cfgName.length > 0 ? cfgName : zone || 'Notification';
+                      cfgName.length > 0
+                        ? cfgName
+                        : zone || t('shell.notifications.title');
                     return (
                       <Box
                         key={row.id}
@@ -382,8 +392,11 @@ const NavbarNotificationsButton: React.FC = () => {
                           </Text>
                         ) : (
                           <Text fontSize="xs" mt={2} noOfLines={2}>
-                            T {n.today_temperature ?? '—'}°C · sol{' '}
-                            {n.soil_humidity ?? '—'}% · ET0 {n.ET0 ?? '—'}
+                            {t('shell.notifications.compactSummary', {
+                              temperature: n.today_temperature ?? '—',
+                              soilHumidity: n.soil_humidity ?? '—',
+                              et0: n.ET0 ?? '—',
+                            })}
                           </Text>
                         )}
                       </Box>
@@ -408,7 +421,7 @@ const NavbarNotificationsButton: React.FC = () => {
                 width="full"
                 borderRadius="lg"
               >
-                Voir tout
+                {t('shell.notifications.seeAll')}
               </Button>
             </PopoverFooter>
           </PopoverContent>
@@ -435,7 +448,7 @@ const NavbarNotificationsButton: React.FC = () => {
             gap={2}
           >
             <BellIcon color="primary.400" />
-            Détail de la notification
+            {t('shell.notifications.detailTitle')}
           </ModalHeader>
           <ModalCloseButton borderRadius="full" />
           <ModalBody pb={4}>
@@ -462,7 +475,7 @@ const NavbarNotificationsButton: React.FC = () => {
                 onClick={goModifyZoneNotification}
                 w={{ base: 'full', sm: 'auto' }}
               >
-                Modifier la notification
+                {t('shell.notifications.modify')}
               </Button>
               {detailConfigId ? (
                 <Button
@@ -473,7 +486,7 @@ const NavbarNotificationsButton: React.FC = () => {
                   onClick={() => setDeleteTargetConfigId(detailConfigId)}
                   w={{ base: 'full', sm: 'auto' }}
                 >
-                  Supprimer la notification
+                  {t('shell.notifications.delete')}
                 </Button>
               ) : null}
             </ModalFooter>
@@ -489,27 +502,24 @@ const NavbarNotificationsButton: React.FC = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Supprimer cette notification de zone ?
+              {t('shell.notifications.deleteConfirmTitle')}
             </AlertDialogHeader>
             <AlertDialogBody>
-              La configuration de ce secteur (seuils, fréquence, canaux) sera
-              effacée de cet appareil et les lignes locales liées retirées de la
-              liste. Les autres notifications de la même zone ne sont pas
-              modifiées.
+              {t('shell.notifications.deleteConfirmBody')}
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button
                 ref={deleteCancelRef}
                 onClick={() => setDeleteTargetConfigId(null)}
               >
-                Annuler
+                {t('shell.admin.cancel')}
               </Button>
               <Button
                 colorScheme="red"
                 onClick={confirmDeleteZoneNotification}
                 ml={3}
               >
-                Supprimer
+                {t('shell.notifications.deleteConfirmOk')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

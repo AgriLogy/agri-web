@@ -1,5 +1,6 @@
 'use client';
 import { Box } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { useCalibratedStationChartRows } from '@/app/hooks/useCalibratedStationChartRows';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -43,6 +44,7 @@ const TEMP_HUM_FIELDS = [
 ] as const;
 
 const TempHumidityGraph = ({ data }: { data: any }) => {
+  const t = useTranslations();
   const { bg, textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
   useUnitOverridesRevision();
@@ -97,7 +99,7 @@ const TempHumidityGraph = ({ data }: { data: any }) => {
     >
       <Box mb={4}>
         <ChartPanelHeading
-          title="Air — température et humidité relative"
+          title={t('station.tempHumidity.title')}
           subtitle={data?.sensor_names?.temperature_humidity_weather}
           color={textColor}
         />
@@ -122,13 +124,19 @@ const TempHumidityGraph = ({ data }: { data: any }) => {
             <YAxis
               yAxisId="left"
               {...yTemp}
-              label={yAxisLabelInsideLeft(`Temp. (${tempUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                `${t('station.tempHumidity.tempAxis')} (${tempUnit})`,
+                tickFill
+              )}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
               {...yHum}
-              label={yAxisLabelInsideRight(`HR (${humUnit})`, tickFill)}
+              label={yAxisLabelInsideRight(
+                `${t('station.tempHumidity.humidityAxis')} (${humUnit})`,
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -145,7 +153,7 @@ const TempHumidityGraph = ({ data }: { data: any }) => {
               type="monotone"
               dataKey="temperature_weather"
               stroke={data.sensor_colors?.temperature_weather_color}
-              name={`Temperature (${tempUnit})`}
+              name={`${t('sensors.temperature_weather')} (${tempUnit})`}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -160,7 +168,7 @@ const TempHumidityGraph = ({ data }: { data: any }) => {
               type="monotone"
               dataKey="humidity_weather"
               stroke={data.sensor_colors?.humidity_weather_color}
-              name={`Humidity (${humUnit})`}
+              name={`${t('sensors.humidity_weather')} (${humUnit})`}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"

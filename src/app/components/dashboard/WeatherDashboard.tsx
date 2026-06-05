@@ -1,4 +1,7 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   Box,
   VStack,
@@ -7,6 +10,7 @@ import {
   useBreakpointValue,
   Switch,
   Grid,
+  SimpleGrid,
   HStack,
   Icon,
   Flex,
@@ -42,7 +46,12 @@ interface WeatherData {
   };
 }
 
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
 const WeatherDashboard = () => {
+  const t = useTranslations();
+  const locale = useLocale();
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [useImperial, setUseImperial] = useState(false);
@@ -92,14 +101,14 @@ const WeatherDashboard = () => {
   };
 
   const formatTime = (time: string) =>
-    new Date(time).toLocaleTimeString('en-US', {
+    new Date(time).toLocaleTimeString(localeTag(locale), {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
     });
 
   const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString('fr-FR', { weekday: 'long' });
+    new Date(date).toLocaleDateString(localeTag(locale), { weekday: 'short' });
 
   if (loading) {
     return <Loading />;
@@ -114,7 +123,7 @@ const WeatherDashboard = () => {
       {/* Unit Toggle */}
       <HStack justify="space-between" mb={4}>
         <Text color="app.text" fontSize="lg" fontWeight="bold" mb={4}>
-          Météo
+          {t('shell.weather.title')}
         </Text>
         <HStack spacing={2}>
           <Text
@@ -152,7 +161,7 @@ const WeatherDashboard = () => {
           </Text>
         </HStack>
         <Text fontSize="xs" color={secondaryText}>
-          Température ressentie{' '}
+          {t('shell.weather.feelsLike')}{' '}
           {useImperial
             ? Math.round(toFahrenheit(current.apparent_temperature))
             : Math.round(current.apparent_temperature)}
@@ -224,28 +233,27 @@ const WeatherDashboard = () => {
       </Grid>
 
       {/* Forecast */}
-      <HStack
-        spacing={4}
-        overflowX="auto"
-        justify={{ base: 'flex-start', lg: 'center' }}
-        align="center"
-      >
+      <SimpleGrid columns={{ base: 4, sm: 7 }} spacing={2}>
         {daily.time.slice(0, 7).map((date, index) => (
           <Box
             _hover={{ cursor: 'pointer', borderColor: hoverColor }}
             key={date}
             bg={bgColor}
-            p={4}
-            minW="90px"
-            w="fit-content"
+            p={2}
             textAlign="center"
             boxShadow="md"
             borderWidth="1px"
             borderRadius="xl"
             mb={1}
           >
-            <Text fontSize="xs" color={secondaryText} mb={1}>
-              {index === 0 ? "aujourd'hui" : formatDate(date)}
+            <Text
+              fontSize="xs"
+              color={secondaryText}
+              mb={1}
+              noOfLines={1}
+              textTransform="capitalize"
+            >
+              {index === 0 ? t('shell.weather.today') : formatDate(date)}
             </Text>
             <Flex justify="center" mb={1}>
               {getWeatherIcon(daily.weather_code[index])}
@@ -264,7 +272,7 @@ const WeatherDashboard = () => {
             </Text>
           </Box>
         ))}
-      </HStack>
+      </SimpleGrid>
     </Box>
   );
 };

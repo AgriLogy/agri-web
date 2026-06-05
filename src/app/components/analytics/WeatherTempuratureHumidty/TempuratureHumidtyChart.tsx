@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -39,6 +40,22 @@ import {
   yAxisLabelInsideRight,
 } from '@/app/utils/chartAxisConfig';
 
+// Point de rosée (Magnus/Tetens) — "Les modifications" #15. RH clamped 1–100%.
+const DEW_A = 17.625;
+const DEW_B = 243.04;
+function dewPointC(tempC: number | null, rhPct: number | null): number | null {
+  if (
+    tempC == null ||
+    rhPct == null ||
+    !Number.isFinite(tempC) ||
+    !Number.isFinite(rhPct)
+  )
+    return null;
+  const rh = Math.max(1, Math.min(100, rhPct));
+  const gamma = Math.log(rh / 100) + (DEW_A * tempC) / (DEW_B + tempC);
+  return Math.round(((DEW_B * gamma) / (DEW_A - gamma)) * 100) / 100;
+}
+
 interface WeatherData {
   id: number;
   timestamp: string;
@@ -58,6 +75,7 @@ const TempuratureHumidtyChart = ({
   temperatureData: WeatherData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const { textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
@@ -69,13 +87,16 @@ const TempuratureHumidtyChart = ({
         const tempEntry = temperatureData.find(
           (t) => t.timestamp === h.timestamp
         );
+        const humidity = calibrateChartValue('humidity_weather', h.value);
+        const temperature =
+          tempEntry != null && tempEntry.value != null
+            ? calibrateChartValue('temperature_weather', tempEntry.value)
+            : null;
         return {
           timestamp: h.timestamp,
-          humidity: calibrateChartValue('humidity_weather', h.value),
-          temperature:
-            tempEntry != null && tempEntry.value != null
-              ? calibrateChartValue('temperature_weather', tempEntry.value)
-              : null,
+          humidity,
+          temperature,
+          dew_point: dewPointC(temperature, humidity),
         };
       }),
     [humidityData, temperatureData, unitRev]
@@ -105,11 +126,12 @@ const TempuratureHumidtyChart = ({
   const [seriesVisible, setSeriesVisible] = useState({
     temperature: true,
     humidity: true,
+    dew_point: true,
   });
 
   const handleLegendClick = (e: ChartLegendPayloadEntry) => {
     const k = e.dataKey;
-    if (k !== 'temperature' && k !== 'humidity') return;
+    if (k !== 'temperature' && k !== 'humidity' && k !== 'dew_point') return;
     setSeriesVisible((p) => ({ ...p, [k]: !p[k as keyof typeof p] }));
   };
 
@@ -131,9 +153,12 @@ const TempuratureHumidtyChart = ({
   // CSV data export function
   const handleDownloadData = () => {
     const csv =
-      'timestamp,humidity,temperature\n' +
+      'timestamp,humidity,temperature,dew_point\n' +
       mergedData
-        .map((d) => `${d.timestamp},${d.humidity},${d.temperature ?? ''}`)
+        .map(
+          (d) =>
+            `${d.timestamp},${d.humidity},${d.temperature ?? ''},${d.dew_point ?? ''}`
+        )
         .join('\n');
 
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -150,19 +175,22 @@ const TempuratureHumidtyChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Air — température et humidité relative"
-          subtitle={`Échelles lecture ${tempUnit} et ${humUnit} ; axe temps adaptatif selon la fenêtre.`}
+          title={t('analytics.weatherTempHumidity.title')}
+          subtitle={t('analytics.weatherTempHumidity.subtitle', {
+            tempUnit,
+            humUnit,
+          })}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChartAria')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsvAria')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -173,7 +201,7 @@ const TempuratureHumidtyChart = ({
       <ChartStateView
         loading={loading}
         empty={mergedData.length === 0}
-        emptyText="Pas de données disponibles"
+        emptyText={t('analytics.common.noDataAvailable')}
         chartRef={chartRef}
         height={CHART_PLOT_HEIGHT_PX}
       >
@@ -192,13 +220,21 @@ const TempuratureHumidtyChart = ({
             <YAxis
               yAxisId="left"
               {...yTemp}
-              label={yAxisLabelInsideLeft(`Temp. (${tempUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.weatherTempHumidity.tempAxis', { unit: tempUnit }),
+                tickFill
+              )}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
               {...yHum}
-              label={yAxisLabelInsideRight(`HR (${humUnit})`, tickFill)}
+              label={yAxisLabelInsideRight(
+                t('analytics.weatherTempHumidity.humidityAxis', {
+                  unit: humUnit,
+                }),
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -214,7 +250,9 @@ const TempuratureHumidtyChart = ({
               yAxisId="left"
               type="monotone"
               dataKey="temperature"
-              name={`Température (${tempUnit})`}
+              name={t('analytics.weatherTempHumidity.temperatureSeries', {
+                unit: tempUnit,
+              })}
               stroke="#D69E2E"
               strokeWidth={2.25}
               strokeLinecap="round"
@@ -227,7 +265,9 @@ const TempuratureHumidtyChart = ({
               yAxisId="right"
               type="monotone"
               dataKey="humidity"
-              name={`Humidité (${humUnit})`}
+              name={t('analytics.weatherTempHumidity.humiditySeries', {
+                unit: humUnit,
+              })}
               stroke="#2C7A7B"
               strokeWidth={2.25}
               strokeLinecap="round"
@@ -235,6 +275,23 @@ const TempuratureHumidtyChart = ({
               dot={false}
               activeDot={activeDotForSeries('#2C7A7B')}
               hide={!seriesVisible.humidity}
+            />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey="dew_point"
+              name={t('analytics.weatherTempHumidity.dewPointSeries', {
+                unit: tempUnit,
+              })}
+              stroke="#6366f1"
+              strokeWidth={2}
+              strokeDasharray="5 4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              dot={false}
+              connectNulls
+              activeDot={activeDotForSeries('#6366f1')}
+              hide={!seriesVisible.dew_point}
             />
           </LineChart>
         </ResponsiveContainer>

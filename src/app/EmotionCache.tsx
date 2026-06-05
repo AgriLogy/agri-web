@@ -8,6 +8,9 @@ import { useServerInsertedHTML } from 'next/navigation';
 /**
  * Next.js App Router + Emotion: collects injected CSS during SSR so the first
  * client render matches the server (avoids Chakra / styled div vs style-tag drift).
+ *
+ * RTL (Arabic) is handled by Chakra's `theme.direction` + the `dir` attribute
+ * on <html>, so no stylis RTL transform is needed here.
  */
 export function EmotionCacheProvider({
   children,

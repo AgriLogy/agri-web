@@ -42,7 +42,7 @@ export function useNotificationBellCounts(pollMs?: number) {
   const refresh = useCallback(async () => {
     try {
       const res = await api.get<{ notifications?: NotificationApiRow[] }>(
-        '/api/notifications-and-alerts/'
+        '/notifications'
       );
       const apiRows = normalizeApiNotificationsList(res.data?.notifications);
       const merged = mergeNotificationsForStorage(apiRows);

@@ -42,10 +42,10 @@ const ET0Main = ({
       zone: selectedZone ?? undefined,
     };
 
-    const fetchWeather = api.get<ET0Data[]>('/api/sensors/et0weather/', {
+    const fetchWeather = api.get<ET0Data[]>('/sensors/et0weather', {
       params,
     });
-    const fetchCalculated = api.get<ET0Data[]>('/api/sensors/et0calculated/', {
+    const fetchCalculated = api.get<ET0Data[]>('/sensors/et0calculated', {
       params,
     });
 

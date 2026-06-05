@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Form,
   Input,
@@ -71,6 +72,7 @@ const AlertForm: React.FC<AlertFormProps> = ({
   zones = [],
   onSubmit,
 }) => {
+  const t = useTranslations();
   useEffect(() => {
     if (initial) {
       form.setFieldsValue(toFormValues(initial));
@@ -81,11 +83,14 @@ const AlertForm: React.FC<AlertFormProps> = ({
 
   const sensorOptions = useMemo(() => {
     const list = sensorKeys.length > 0 ? sensorKeys : DEFAULT_SENSOR_KEYS;
-    return list.map((s) => ({
-      value: s.key,
-      label: `${s.label} (${s.unit})`,
-    }));
-  }, [sensorKeys]);
+    return list.map((s) => {
+      const name = t.has(`sensors.${s.key}`) ? t(`sensors.${s.key}`) : s.label;
+      return {
+        value: s.key,
+        label: `${name} (${s.unit})`,
+      };
+    });
+  }, [sensorKeys, t]);
 
   const handleFinish = (values: AlertFormValues) => {
     const payload: AlertWritePayload = {
@@ -112,34 +117,42 @@ const AlertForm: React.FC<AlertFormProps> = ({
     >
       <Form.Item
         name="name"
-        label={<span className={styles.label}>Nom</span>}
-        rules={[{ required: true, message: "Le nom de l'alerte est requis." }]}
+        label={
+          <span className={styles.label}>{t('alertsPage.form.name')}</span>
+        }
+        rules={[{ required: true, message: t('alertsPage.form.nameRequired') }]}
       >
         <Input
           className={styles.input}
-          placeholder="Ex. Surchauffe parcelle nord"
+          placeholder={t('alertsPage.form.namePlaceholder')}
           maxLength={200}
         />
       </Form.Item>
 
       <Form.Item
         name="type"
-        label={<span className={styles.label}>Catégorie</span>}
+        label={
+          <span className={styles.label}>{t('alertsPage.form.category')}</span>
+        }
         rules={[{ required: true }]}
       >
         <Select
           options={ALERT_CHOICES.map((c) => ({
             value: c.value,
-            label: c.label,
+            label: t(`alertTypes.${c.i18nKey}`),
           }))}
         />
       </Form.Item>
 
       <Form.Item
         name="sensor_key"
-        label={<span className={styles.label}>Capteur</span>}
-        tooltip="Détermine le graphique sur lequel l'alerte sera tracée."
-        rules={[{ required: true, message: 'Sélectionnez un capteur.' }]}
+        label={
+          <span className={styles.label}>{t('alertsPage.form.sensor')}</span>
+        }
+        tooltip={t('alertsPage.form.sensorTooltip')}
+        rules={[
+          { required: true, message: t('alertsPage.form.sensorRequired') },
+        ]}
       >
         <Select options={sensorOptions} showSearch optionFilterProp="label" />
       </Form.Item>
@@ -147,18 +160,22 @@ const AlertForm: React.FC<AlertFormProps> = ({
       {zones.length > 0 && (
         <Form.Item
           name="zone"
-          label={<span className={styles.label}>Zone</span>}
+          label={
+            <span className={styles.label}>{t('alertsPage.form.zone')}</span>
+          }
         >
           <Select
             allowClear
-            placeholder="Toutes mes zones"
+            placeholder={t('alertsPage.form.zonePlaceholder')}
             options={zones.map((z) => ({ value: z.id, label: z.name }))}
           />
         </Form.Item>
       )}
 
       <Form.Item
-        label={<span className={styles.label}>Condition</span>}
+        label={
+          <span className={styles.label}>{t('alertsPage.form.condition')}</span>
+        }
         required
       >
         <Space.Compact block>
@@ -167,7 +184,7 @@ const AlertForm: React.FC<AlertFormProps> = ({
               style={{ width: 140 }}
               options={CONDITION_CHOICES.map((c) => ({
                 value: c.value,
-                label: c.label,
+                label: t(`conditions.${c.i18nKey}`),
               }))}
             />
           </Form.Item>
@@ -177,7 +194,7 @@ const AlertForm: React.FC<AlertFormProps> = ({
             rules={[
               {
                 required: true,
-                message: 'Seuil requis.',
+                message: t('alertsPage.form.thresholdRequired'),
                 type: 'number',
               },
             ]}
@@ -186,19 +203,22 @@ const AlertForm: React.FC<AlertFormProps> = ({
               className={styles.input}
               style={{ width: 140 }}
               step={0.1}
-              placeholder="Seuil"
+              placeholder={t('alertsPage.form.thresholdPlaceholder')}
             />
           </Form.Item>
         </Space.Compact>
         <div className={styles.thresholdHint}>
-          L&apos;alerte se déclenche dès que la valeur du capteur satisfait la
-          condition choisie.
+          {t('alertsPage.form.thresholdHint')}
         </div>
       </Form.Item>
 
       <Form.Item
         name="description"
-        label={<span className={styles.label}>Description</span>}
+        label={
+          <span className={styles.label}>
+            {t('alertsPage.form.description')}
+          </span>
+        }
       >
         <Input.TextArea
           className={styles.input}
@@ -210,7 +230,9 @@ const AlertForm: React.FC<AlertFormProps> = ({
 
       <Form.Item
         name="is_active"
-        label={<span className={styles.label}>Active</span>}
+        label={
+          <span className={styles.label}>{t('alertsPage.form.active')}</span>
+        }
         valuePropName="checked"
       >
         <Switch />

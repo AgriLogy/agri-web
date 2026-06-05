@@ -16,7 +16,7 @@
 set -euo pipefail
 
 # --- Profile configuration --------------------------------------------------
-REMOTE_URL="git@github-personal:mks-zakaria/agrilogy-front.git"
+REMOTE_URL="git@github-personal:mks-zakaria/agri-front.git"
 GIT_USER_NAME="mks-zakaria"
 GIT_USER_EMAIL="jcaladic@gmail.com"
 

@@ -2,6 +2,7 @@
 
 import { App, Button, Empty, Form, InputNumber, Select, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   adminZoneApi,
@@ -25,37 +26,37 @@ type ParamsFormValues = {
 
 const SENSOR_UNIT_FAMILIES: Array<{
   sensor_key: string;
-  label: string;
+  i18nKey: string;
   options: string[];
 }> = [
   {
     sensor_key: 'temperature_weather',
-    label: 'Température (air)',
+    i18nKey: 'sensors.temperature_weather',
     options: ['°C', '°F'],
   },
   {
     sensor_key: 'soil_temperature',
-    label: 'Température (sol)',
+    i18nKey: 'sensors.soil_temperature',
     options: ['°C', '°F'],
   },
   {
     sensor_key: 'wind_speed',
-    label: 'Vitesse du vent',
+    i18nKey: 'sensors.wind_speed',
     options: ['m/s', 'km/h', 'mph'],
   },
   {
     sensor_key: 'precipitation_rate',
-    label: 'Précipitations',
+    i18nKey: 'sensors.precipitation_rate',
     options: ['mm/h', 'mm/jour'],
   },
   {
     sensor_key: 'soil_moisture_medium',
-    label: 'Humidité du sol',
+    i18nKey: 'sensors.soil_moisture_medium',
     options: ['%', 'm³/m³'],
   },
   {
     sensor_key: 'water_flow',
-    label: 'Débit d’eau',
+    i18nKey: 'sensors.water_flow',
     options: ['L/s', 'L/min', 'm³/h'],
   },
 ];
@@ -63,6 +64,7 @@ const SENSOR_UNIT_FAMILIES: Array<{
 export type ParamsTabProps = { username: string };
 
 export function ParamsTab({ username }: ParamsTabProps) {
+  const t = useTranslations();
   const { message } = App.useApp();
   const [zones, setZones] = useState<AdminZone[]>([]);
   const [zoneId, setZoneId] = useState<number | null>(null);
@@ -88,11 +90,11 @@ export function ParamsTab({ username }: ParamsTabProps) {
         setZoneId(zoneList[0].id);
       }
     } catch {
-      message.error('Chargement des paramètres impossible.');
+      message.error(t('admin.params.loadError'));
     } finally {
       setLoading(false);
     }
-  }, [message, username]);
+  }, [message, t, username]);
 
   useEffect(() => {
     void loadZones();
@@ -114,11 +116,11 @@ export function ParamsTab({ username }: ParamsTabProps) {
           irrigation_water_quantity: data.irrigation_water_quantity,
         });
       } catch {
-        message.error('Lecture des paramètres impossible.');
+        message.error(t('admin.params.readError'));
       }
     };
     void loadParams();
-  }, [form, message, username, zoneId]);
+  }, [form, message, t, username, zoneId]);
 
   const handleSaveParams = async (values: ParamsFormValues) => {
     if (zoneId === null) return;
@@ -130,7 +132,7 @@ export function ParamsTab({ username }: ParamsTabProps) {
         values
       );
       setParams(updated);
-      message.success('Paramètres enregistrés.');
+      message.success(t('admin.params.saveSuccess'));
     } catch (err: unknown) {
       const detail = (err as { response?: { data?: Record<string, unknown> } })
         ?.response?.data;
@@ -138,7 +140,7 @@ export function ParamsTab({ username }: ParamsTabProps) {
         ? Object.entries(detail)
             .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(' · ') : v}`)
             .join(' · ')
-        : 'Échec de la sauvegarde.';
+        : t('admin.params.saveError');
       message.error(text);
     } finally {
       setSavingParams(false);
@@ -154,10 +156,10 @@ export function ParamsTab({ username }: ParamsTabProps) {
         [sensorKey]: unit,
       });
       setUnits((prev) => ({ ...prev, ...updated }));
-      message.success('Unité enregistrée.');
+      message.success(t('admin.params.unitSaveSuccess'));
     } catch {
       setUnits(units); // rollback
-      message.error('Échec de la sauvegarde de l’unité.');
+      message.error(t('admin.params.unitSaveError'));
     } finally {
       setSavingUnits(false);
     }
@@ -165,13 +167,13 @@ export function ParamsTab({ username }: ParamsTabProps) {
 
   if (loading) return null;
   if (zones.length === 0) {
-    return <Empty description="Aucune zone à paramétrer" />;
+    return <Empty description={t('admin.params.noZones')} />;
   }
 
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
       <Space>
-        <span>Zone :</span>
+        <span>{t('admin.params.zoneLabel')}</span>
         <Select<number>
           value={zoneId ?? undefined}
           onChange={setZoneId}
@@ -181,7 +183,9 @@ export function ParamsTab({ username }: ParamsTabProps) {
       </Space>
 
       <section>
-        <h3 style={{ margin: '0 0 8px' }}>Paramètres du sol & irrigation</h3>
+        <h3 style={{ margin: '0 0 8px' }}>
+          {t('admin.params.soilIrrigationTitle')}
+        </h3>
         <Form<ParamsFormValues>
           form={form}
           layout="vertical"
@@ -204,7 +208,7 @@ export function ParamsTab({ username }: ParamsTabProps) {
           <Space.Compact block>
             <Form.Item
               name="soil_param_TAW"
-              label="TAW (mm)"
+              label={t('admin.params.field.taw')}
               style={{ flex: 1 }}
               rules={[{ required: true }]}
             >
@@ -212,7 +216,7 @@ export function ParamsTab({ username }: ParamsTabProps) {
             </Form.Item>
             <Form.Item
               name="soil_param_RAW"
-              label="RAW (mm)"
+              label={t('admin.params.field.raw')}
               style={{ flex: 1 }}
               rules={[{ required: true }]}
             >
@@ -222,7 +226,7 @@ export function ParamsTab({ username }: ParamsTabProps) {
           <Space.Compact block>
             <Form.Item
               name="soil_param_FC"
-              label="FC (%)"
+              label={t('admin.params.field.fc')}
               style={{ flex: 1 }}
               rules={[{ required: true }]}
             >
@@ -230,7 +234,7 @@ export function ParamsTab({ username }: ParamsTabProps) {
             </Form.Item>
             <Form.Item
               name="soil_param_WP"
-              label="WP (%)"
+              label={t('admin.params.field.wp')}
               style={{ flex: 1 }}
               rules={[{ required: true }]}
             >
@@ -239,35 +243,37 @@ export function ParamsTab({ username }: ParamsTabProps) {
           </Space.Compact>
           <Form.Item
             name="critical_moisture_threshold"
-            label="Seuil critique d’humidité (%)"
+            label={t('admin.params.field.criticalMoisture')}
             rules={[{ required: true }, { type: 'number', min: 0, max: 100 }]}
           >
             <InputNumber min={0} max={100} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
             name="pomp_flow_rate"
-            label="Débit de pompe (L/s)"
+            label={t('admin.params.field.pompFlowRate')}
             rules={[{ required: true }, { type: 'number', min: 0 }]}
           >
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
             name="irrigation_water_quantity"
-            label="Quantité d’eau d’irrigation (L)"
+            label={t('admin.params.field.irrigationWaterQuantity')}
             rules={[{ type: 'number', min: 0 }]}
           >
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={savingParams}>
-              Enregistrer
+              {t('admin.params.save')}
             </Button>
           </Form.Item>
         </Form>
       </section>
 
       <section>
-        <h3 style={{ margin: '0 0 8px' }}>Unités préférées par capteur</h3>
+        <h3 style={{ margin: '0 0 8px' }}>
+          {t('admin.params.preferredUnitsTitle')}
+        </h3>
         <Space direction="vertical" size="small" style={{ width: '100%' }}>
           {SENSOR_UNIT_FAMILIES.map((family) => (
             <Space
@@ -278,7 +284,7 @@ export function ParamsTab({ username }: ParamsTabProps) {
                 width: '100%',
               }}
             >
-              <span>{family.label}</span>
+              <span>{t(family.i18nKey)}</span>
               <Select
                 disabled={savingUnits}
                 value={units[family.sensor_key] ?? family.options[0]}

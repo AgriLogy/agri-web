@@ -1,7 +1,7 @@
 # Backoffice CRUD & Observability — Plan
 
 > Status: **DRAFT — awaiting validation**
-> Scope: `agrilogy-front /admin/*` + matching `agrilogy-back` endpoints
+> Scope: `agri-front /admin/*` + matching `agri-api` endpoints
 > Author session: 2026-05-13
 
 ---
@@ -348,7 +348,7 @@ Live under `src/app/components/admin/_shared/`:
 
 ---
 
-## 6. Backend work (agrilogy-back)
+## 6. Backend work (agri-api)
 
 The frontend today calls several endpoints **that don't exist** in
 the Django URL conf. Confirmed missing (or stale):

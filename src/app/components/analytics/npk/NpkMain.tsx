@@ -25,7 +25,7 @@ const NpkMain = ({
 
   useEffect(() => {
     api
-      .get<NpkSensorData[]>('/api/sensors/npk/', {
+      .get<NpkSensorData[]>('/sensors/npk', {
         params: {
           start_date: startDate,
           end_date: endDate,

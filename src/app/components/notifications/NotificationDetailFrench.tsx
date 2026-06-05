@@ -13,6 +13,7 @@ import {
   FaTint,
   FaThermometerHalf,
 } from 'react-icons/fa';
+import { useLocale, useTranslations } from 'next-intl';
 import api from '@/app/lib/api';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import {
@@ -29,11 +30,14 @@ import {
 } from '@/app/lib/zoneNotificationConfigStorage';
 import type { NotificationPayload } from '@/app/components/notifications/Notification';
 
-function formatDateShortFr(iso: string): string {
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
+function formatDateShort(iso: string, tag: string): string {
   try {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return '—';
-    return d.toLocaleDateString('fr-FR', {
+    return d.toLocaleDateString(tag, {
       day: '2-digit',
       month: '2-digit',
       year: '2-digit',
@@ -43,11 +47,11 @@ function formatDateShortFr(iso: string): string {
   }
 }
 
-function formatDateTimeFr(iso: string): string {
+function formatDateTime(iso: string, tag: string): string {
   try {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return '—';
-    return d.toLocaleString('fr-FR', {
+    return d.toLocaleString(tag, {
       dateStyle: 'short',
       timeStyle: 'short',
     });
@@ -72,12 +76,6 @@ const decisionBadgeColor = (d: NotificationDecisionLevel) => {
   if (d === 'critical') return 'red.500';
   if (d === 'advisory') return 'orange.400';
   return 'green.500';
-};
-
-const decisionShortFr = (d: NotificationDecisionLevel) => {
-  if (d === 'critical') return 'Action irrigation recommandée (seuil critique)';
-  if (d === 'advisory') return 'Surveillance renforcée (ETo×Kc élevé)';
-  return 'Aucune action urgente (dans les seuils)';
 };
 
 function Row({
@@ -138,6 +136,13 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
   notification,
   rawNested,
 }) => {
+  const t = useTranslations();
+  const dateTag = localeTag(useLocale());
+  const decisionShortFr = (d: NotificationDecisionLevel) => {
+    if (d === 'critical') return t('notifications.detail.decisionCritical');
+    if (d === 'advisory') return t('notifications.detail.decisionAdvisory');
+    return t('notifications.detail.decisionOk');
+  };
   const { textColor, mutedTextColor } = useColorModeStyles();
   const [userSalutation, setUserSalutation] = useState<string>('');
 
@@ -171,7 +176,9 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
     configName.length > 0
       ? configName
       : notification.zone_name?.trim() ||
-        (zoneId != null ? `Zone ${zoneId}` : 'Notification');
+        (zoneId != null
+          ? t('notifications.detail.zoneNumber', { id: zoneId })
+          : t('notifications.detail.notificationFallback'));
 
   const [engineResult, setEngineResult] = useState<DecisionEngineResult | null>(
     null
@@ -179,13 +186,15 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
 
   useEffect(() => {
     api
-      .get<{ username?: string; first_name?: string }>('/api/header/')
+      .get<{ username?: string; first_name?: string }>('/users/me')
       .then((res) => {
         const first = res.data?.first_name?.trim();
         const user = res.data?.username?.trim();
-        setUserSalutation(first || user || 'Utilisateur');
+        setUserSalutation(
+          first || user || t('notifications.detail.userFallback')
+        );
       })
-      .catch(() => setUserSalutation('Utilisateur'));
+      .catch(() => setUserSalutation(t('notifications.detail.userFallback')));
   }, []);
 
   useEffect(() => {
@@ -245,10 +254,12 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
         start && end && start !== '—' && end !== '—'
           ? ` / ${start} – ${end}`
           : '';
-      return `Dernière irrigation le ${formatDateShortFr(date)} : ${water} L${dur}`;
+      return `${t('notifications.detail.lastIrrigationOn', { date: formatDateShort(date, dateTag) })} : ${water} L${dur}`;
     }
     if (date && date !== '—') {
-      return `Dernière irrigation le ${formatDateShortFr(date)}`;
+      return t('notifications.detail.lastIrrigationOn', {
+        date: formatDateShort(date, dateTag),
+      });
     }
     return '—';
   })();
@@ -271,21 +282,22 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
       <VStack align="stretch" spacing={4}>
         <Box>
           <Text fontSize="lg" fontWeight="bold" color={textColor}>
-            Bonjour {userSalutation}
+            {t('notifications.detail.greeting', { name: userSalutation })}
           </Text>
           <Text fontSize="sm" color={mutedTextColor} mt={1}>
-            Informations concernant votre parcelle agricole.
+            {t('notifications.detail.parcelInfo')}
           </Text>
           <HStack mt={3} spacing={2} align="center">
             <Icon as={FaLightbulb} color="yellow.500" boxSize={5} />
             <Text fontWeight="bold" fontSize="md" color={textColor}>
-              Alerte d’irrigation quotidienne — {zoneLabel}
+              {t('notifications.detail.dailyAlert', { zone: zoneLabel })}
             </Text>
           </HStack>
           <HStack mt={2} spacing={2}>
             <Icon as={FaCalendarAlt} color="gray.500" />
             <Text fontSize="sm" fontWeight="semibold" color={textColor}>
-              Date : {formatDateShortFr(notification.notification_date)}
+              {t('notifications.detail.dateLabel')}{' '}
+              {formatDateShort(notification.notification_date, dateTag)}
             </Text>
           </HStack>
         </Box>
@@ -298,7 +310,7 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
           _dark={{ bg: 'whiteAlpha.100' }}
         >
           <Text fontWeight="bold" mb={2} color={textColor}>
-            Message
+            {t('notifications.detail.message')}
           </Text>
           <Text fontSize="sm" color={textColor}>
             {notification.template_summary}
@@ -312,24 +324,25 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
     <VStack align="stretch" spacing={0}>
       <Box pb={4}>
         <Text fontSize="lg" fontWeight="bold" color={textColor}>
-          Bonjour {userSalutation}
+          {t('notifications.detail.greeting', { name: userSalutation })}
         </Text>
         <Text fontSize="sm" color={mutedTextColor} mt={1}>
-          Informations concernant votre parcelle agricole.
+          {t('notifications.detail.parcelInfo')}
         </Text>
         <HStack mt={4} spacing={2} align="flex-start">
           <Icon as={FaLightbulb} color="yellow.500" boxSize={5} mt={0.5} />
           <Text fontWeight="bold" fontSize="md" color={textColor}>
-            Alerte d’irrigation quotidienne — {zoneLabel}
+            {t('notifications.detail.dailyAlert', { zone: zoneLabel })}
           </Text>
         </HStack>
         <HStack mt={2} spacing={2}>
           <Icon as={FaCalendarAlt} color="gray.500" />
           <Text fontSize="sm" fontWeight="semibold" color={textColor}>
-            Date : {formatDateShortFr(notification.notification_date)}
+            {t('notifications.detail.dateLabel')}{' '}
+            {formatDateShort(notification.notification_date, dateTag)}
           </Text>
           <Text fontSize="xs" color={mutedTextColor}>
-            ({formatDateTimeFr(notification.notification_date)})
+            ({formatDateTime(notification.notification_date, dateTag)})
           </Text>
         </HStack>
       </Box>
@@ -338,25 +351,25 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
 
       <Box py={4}>
         <SectionTitle textColor={textColor}>
-          Météo des 2 derniers jours
+          {t('notifications.detail.weatherLast2Days')}
         </SectionTitle>
         <Row
           icon={FaThermometerHalf}
-          label="Température moyenne de l’air hier :"
+          label={t('notifications.detail.avgAirTempYesterday')}
           value={`${notification.yesterday_temperature} °C`}
           boldValue
           textColor={textColor}
         />
         <Row
           icon={FaTint}
-          label="Humidité moyenne de l’air hier :"
+          label={t('notifications.detail.avgAirHumidityYesterday')}
           value={`${notification.yesterday_humidity} %`}
           boldValue
           textColor={textColor}
         />
         <Row
           icon={FaSun}
-          label="Quantité d’eau évaporée hier (ET0) :"
+          label={t('notifications.detail.evaporatedWaterYesterday')}
           value={`${notification.ET0} mm`}
           boldValue
           textColor={textColor}
@@ -368,7 +381,7 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
           mb={1}
           color={textColor}
         >
-          Dernière opération d’irrigation
+          {t('notifications.detail.lastIrrigationOperation')}
         </Text>
         <Row
           icon={FaFaucet}
@@ -383,39 +396,39 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
 
       <Box py={4}>
         <SectionTitle textColor={textColor}>
-          Informations d’aujourd’hui
+          {t('notifications.detail.todayInfo')}
         </SectionTitle>
         <Row
           icon={FaSeedling}
-          label="Humidité actuelle du sol :"
+          label={t('notifications.detail.currentSoilHumidity')}
           value={`${notification.soil_humidity} %`}
           boldValue
           textColor={textColor}
         />
         <Row
           icon={FaThermometerHalf}
-          label="Température actuelle du sol :"
+          label={t('notifications.detail.currentSoilTemp')}
           value={`${notification.soil_temperature} °C`}
           boldValue
           textColor={textColor}
         />
         <Row
           icon={FaBolt}
-          label="Conductivité électrique du sol (CE) :"
+          label={t('notifications.detail.soilEc')}
           value={ecVal === '—' ? '— dS/m' : `${ecVal} dS/m`}
           boldValue
           textColor={textColor}
         />
         <Row
           icon={FaLeaf}
-          label="Quantité d’engrais N.P.K :"
+          label={t('notifications.detail.npkAmount')}
           value={npkVal === '—' ? '— mg/kg' : `${npkVal} mg/kg`}
           boldValue
           textColor={textColor}
         />
         <Row
           icon={FaTint}
-          label="Salinité du sol (CE / salinité) :"
+          label={t('notifications.detail.soilSalinity')}
           value={
             salinityVal === '—' ? '— dS/m · mg/L' : `${salinityVal} dS/m · mg/L`
           }
@@ -424,7 +437,7 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
         />
         {engineResult && (
           <Text fontSize="xs" color={mutedTextColor} mt={2}>
-            Aide décision :{' '}
+            {t('notifications.detail.decisionHelp')}{' '}
             <Text as="span" color={decisionBadgeColor(engineResult.decision)}>
               {engineResult.decision.toUpperCase()}
             </Text>{' '}
@@ -436,7 +449,7 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
           <Icon as={FaTint} color="primary.400" boxSize={5} mt={0.5} />
           <Box>
             <Text fontWeight="bold" fontSize="sm" color={textColor}>
-              Décision d’irrigation aujourd’hui
+              {t('notifications.detail.irrigationDecisionToday')}
             </Text>
             <Text
               fontSize="sm"

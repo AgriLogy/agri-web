@@ -3,6 +3,7 @@
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { App, Button, Space, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { AdminConfirmDelete } from '@/app/components/admin/_shared/AdminConfirmDelete';
@@ -15,6 +16,7 @@ export type ZonesTabProps = {
 };
 
 export function ZonesTab({ username }: ZonesTabProps) {
+  const t = useTranslations();
   const { message } = App.useApp();
   const [zones, setZones] = useState<AdminZone[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ export function ZonesTab({ username }: ZonesTabProps) {
       const rows = await adminZoneApi.list(username);
       setZones(rows);
     } catch {
-      message.error('Liste des zones indisponible.');
+      message.error(t('admin.zonesTab.listError'));
     } finally {
       setLoading(false);
     }
@@ -45,55 +47,55 @@ export function ZonesTab({ username }: ZonesTabProps) {
   const columns = useMemo<ColumnsType<AdminZone>>(
     () => [
       {
-        title: 'Nom',
+        title: t('admin.zonesTab.colName'),
         dataIndex: 'name',
         key: 'name',
         sorter: (a, b) => a.name.localeCompare(b.name),
       },
       {
-        title: 'Surface (m²)',
+        title: t('admin.zonesTab.colSurface'),
         dataIndex: 'space',
         key: 'space',
         sorter: (a, b) => a.space - b.space,
         align: 'right',
       },
       {
-        title: 'Seuil humidité (%)',
+        title: t('admin.zonesTab.colMoistureThreshold'),
         dataIndex: 'critical_moisture_threshold',
         key: 'critical_moisture_threshold',
         align: 'right',
       },
       {
-        title: 'Débit pompe (L/s)',
+        title: t('admin.zonesTab.colPumpFlow'),
         dataIndex: 'pomp_flow_rate',
         key: 'pomp_flow_rate',
         align: 'right',
       },
       {
-        title: 'TAW (mm)',
+        title: t('admin.zonesTab.colTAW'),
         dataIndex: 'soil_param_TAW',
         key: 'soil_param_TAW',
         align: 'right',
       },
       {
-        title: 'Actions',
+        title: t('admin.zonesTab.colActions'),
         key: 'actions',
         align: 'right',
         render: (_v, row) => (
           <Space>
-            <Tooltip title="Modifier">
+            <Tooltip title={t('admin.zonesTab.edit')}>
               <Button
                 icon={<EditOutlined />}
                 onClick={() => {
                   setEditing(row);
                   setDrawerOpen(true);
                 }}
-                aria-label={`Modifier ${row.name}`}
+                aria-label={t('admin.zonesTab.editAria', { name: row.name })}
               />
             </Tooltip>
             <AdminConfirmDelete
-              title={`Supprimer la zone « ${row.name} » ?`}
-              successMessage="Zone supprimée."
+              title={t('admin.zonesTab.deleteConfirm', { name: row.name })}
+              successMessage={t('admin.zonesTab.deleteSuccess')}
               onConfirm={() => handleDelete(row.id)}
             />
           </Space>
@@ -101,7 +103,7 @@ export function ZonesTab({ username }: ZonesTabProps) {
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [username]
+    [username, t]
   );
 
   return (
@@ -111,7 +113,7 @@ export function ZonesTab({ username }: ZonesTabProps) {
         columns={columns}
         data={zones}
         loading={loading}
-        emptyDescription="Aucune zone"
+        emptyDescription={t('admin.zonesTab.empty')}
         toolbar={
           <Button
             type="primary"
@@ -121,7 +123,7 @@ export function ZonesTab({ username }: ZonesTabProps) {
               setDrawerOpen(true);
             }}
           >
-            Nouvelle zone
+            {t('admin.zonesTab.newZone')}
           </Button>
         }
       />

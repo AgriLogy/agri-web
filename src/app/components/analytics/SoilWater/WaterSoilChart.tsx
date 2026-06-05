@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { Box, Button, Flex, HStack } from '@chakra-ui/react';
 import { useRef, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import { calibrateChartValue } from '@/app/utils/chartSeriesCalibration';
 import { calibratedValueInAxisUnit } from '@/app/utils/calibratedValueInAxisUnit';
@@ -62,6 +63,7 @@ const WaterSoilChart = ({
   waterFlowDefaultUnit?: string;
   loading?: boolean;
 }) => {
+  const t = useTranslations();
   const unitRev = useUnitOverridesRevision();
 
   const displayData = useMemo(
@@ -206,19 +208,22 @@ const WaterSoilChart = ({
       <Flex justify="space-between" align="center" mb={2}>
         <ChartPanelHeading
           color={textColor}
-          title="Humidité du sol, disponibilité en eau et débit"
-          subtitle={`Humidité en ${humidityAxisUnits} ; débit en ${flowUnit}.`}
+          title={t('analytics.soilWater.chartTitle')}
+          subtitle={t('analytics.soilWater.chartSubtitle', {
+            humidityUnit: humidityAxisUnits,
+            flowUnit,
+          })}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.actions.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.actions.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -230,7 +235,7 @@ const WaterSoilChart = ({
       <ChartStateView
         loading={loading}
         empty={!displayData?.length}
-        emptyText="Aucune donnée à afficher."
+        emptyText={t('analytics.common.noData')}
         chartRef={chartRef}
         height={CHART_PLOT_HEIGHT_PX}
       >
@@ -252,7 +257,9 @@ const WaterSoilChart = ({
               domain={['auto', 'auto']}
               {...yAxisMoist}
               label={yAxisLabelInsideLeft(
-                `Humidité (${humidityAxisUnits})`,
+                t('analytics.soilWater.axisHumidity', {
+                  unit: humidityAxisUnits,
+                }),
                 tickFill
               )}
             />
@@ -261,7 +268,10 @@ const WaterSoilChart = ({
               orientation="right"
               domain={[0, 'auto']}
               {...yAxisFlow}
-              label={yAxisLabelInsideRight(`Débit (${flowUnit})`, tickFill)}
+              label={yAxisLabelInsideRight(
+                t('analytics.soilWater.axisFlow', { unit: flowUnit }),
+                tickFill
+              )}
             />
 
             <Tooltip
@@ -327,7 +337,7 @@ const WaterSoilChart = ({
               yAxisId="right"
               type="monotone"
               dataKey="waterFlow"
-              name={`Débit (${flowUnit})`}
+              name={`${t('sensors.water_flow')} (${flowUnit})`}
               stroke={WATER_FLOW_BLUE}
               strokeWidth={2.5}
               strokeOpacity={1}
@@ -345,7 +355,7 @@ const WaterSoilChart = ({
               yAxisId="left"
               type="monotone"
               dataKey="soilLow"
-              name={`Humidité basse (${humLowUnit})`}
+              name={t('analytics.soilWater.seriesLow', { unit: humLowUnit })}
               stroke="#ea580c"
               strokeWidth={2.5}
               strokeLinecap="round"
@@ -358,7 +368,7 @@ const WaterSoilChart = ({
               yAxisId="left"
               type="monotone"
               dataKey="soilMedium"
-              name={`Humidité moyenne (${humMedUnit})`}
+              name={t('analytics.soilWater.seriesMedium', { unit: humMedUnit })}
               stroke="#82ca9d"
               strokeWidth={2.25}
               strokeLinecap="round"
@@ -371,7 +381,7 @@ const WaterSoilChart = ({
               yAxisId="left"
               type="monotone"
               dataKey="soilHigh"
-              name={`Humidité haute (${humHighUnit})`}
+              name={t('analytics.soilWater.seriesHigh', { unit: humHighUnit })}
               stroke="#ffc658"
               strokeWidth={2.25}
               strokeLinecap="round"

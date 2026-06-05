@@ -5,6 +5,7 @@ import {
   Divider,
   VStack,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { GiWaterDrop, GiWaterTank, GiGroundbreaker } from 'react-icons/gi';
 import { FaTachometerAlt } from 'react-icons/fa';
 import { SensorData } from '@/app/types';
@@ -17,16 +18,20 @@ import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
-const timeAgo = (timestamp: string): string => {
+const timeAgo = (
+  timestamp: string,
+  t: ReturnType<typeof useTranslations>
+): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min.`;
-  if (diffH < 24) return `${diffH} h`;
+  if (diffMin < 1) return t('analytics.lastData.justNow');
+  if (diffMin < 60)
+    return t('analytics.lastData.minutesAgo', { count: diffMin });
+  if (diffH < 24) return t('analytics.lastData.hoursAgo', { count: diffH });
   return then.toLocaleDateString();
 };
 
@@ -41,7 +46,8 @@ const SensorRow = ({
   data?: SensorData;
   sensorKey: string;
 }) => {
-  const valueColor = useColorModeValue('blue.700', 'blue.200');
+  const t = useTranslations();
+  const valueColor = useColorModeValue('brand.700', 'brand.200');
   const textColor = useColorModeValue('gray.600', 'gray.400');
   const timeColor = useColorModeValue('gray.500', 'gray.500');
 
@@ -66,7 +72,11 @@ const SensorRow = ({
           : '—'}
       </Text>
       <Text fontSize="xs" color={timeColor} mt={1}>
-        {data ? `Mesure : ${timeAgo(data.timestamp)}` : ''}
+        {data
+          ? t('analytics.lastData.measuredAt', {
+              time: timeAgo(data.timestamp, t),
+            })
+          : ''}
       </Text>
     </Box>
   );
@@ -83,6 +93,7 @@ const WaterSoilLastData = ({
   soilHigh?: SensorData;
   waterFlow?: SensorData;
 }) => {
+  const t = useTranslations();
   useUnitOverridesRevision();
   const headingColor = useColorModeValue('gray.700', 'gray.200');
   const humidityHeadingUnits = compactResolvedAxisUnits(
@@ -114,13 +125,16 @@ const WaterSoilLastData = ({
           textAlign="center"
           mb={2}
         >
-          {`Humidité (${humidityHeadingUnits}) · débit (${flowHeadingUnit})`}
+          {t('analytics.soilWater.lastDataHeading', {
+            humidityUnit: humidityHeadingUnits,
+            flowUnit: flowHeadingUnit,
+          })}
         </Text>
         <VStack spacing={0} align="stretch" w="100%" divider={<Divider />}>
           {soilLow && (
             <SensorRow
               icon={<GiGroundbreaker size={36} color="#9c6644" />}
-              label="Humidité (sonde basse)"
+              label={t('analytics.soilWater.probeLow')}
               data={soilLow}
               sensorKey="soil_moisture_low"
             />
@@ -128,7 +142,7 @@ const WaterSoilLastData = ({
           {soilMedium && (
             <SensorRow
               icon={<GiWaterDrop size={36} color="#175e33" />}
-              label="Humidité (sonde moyenne)"
+              label={t('analytics.soilWater.probeMedium')}
               data={soilMedium}
               sensorKey="soil_moisture_medium"
             />
@@ -136,7 +150,7 @@ const WaterSoilLastData = ({
           {soilHigh && (
             <SensorRow
               icon={<GiWaterTank size={36} color="#38a169" />}
-              label="Humidité (sonde haute)"
+              label={t('analytics.soilWater.probeHigh')}
               data={soilHigh}
               sensorKey="soil_moisture_high"
             />
@@ -144,7 +158,7 @@ const WaterSoilLastData = ({
           {waterFlow && (
             <SensorRow
               icon={<FaTachometerAlt size={34} color="#e53e3e" />}
-              label="Débit d’irrigation"
+              label={t('analytics.soilWater.flowLabel')}
               data={waterFlow}
               sensorKey="water_flow"
             />

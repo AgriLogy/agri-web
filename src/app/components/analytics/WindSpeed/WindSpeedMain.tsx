@@ -7,11 +7,7 @@ import { sortByTimestamp } from '@/app/utils/chartDateWindow';
 import { SensorData } from '@/app/types';
 import api from '@/app/lib/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
-import {
-  fetchWindGustRows,
-  mergeGustIntoSpeedRows,
-  type WindSpeedSensorRow,
-} from '@/app/utils/windSpeedMerge';
+import { type WindSpeedSensorRow } from '@/app/utils/windSpeedMerge';
 import '@/app/styles/style.module.css';
 import WindSpeedChart from './WindSpeedChart';
 import WindSpeedLastData from './WindSpeedLastData';
@@ -41,13 +37,14 @@ const WindSpeedMain = ({
     (async () => {
       setLoading(true);
       try {
-        const [speedRes, gustRows] = await Promise.all([
-          api.get<SensorData[]>('/api/sensors/windspeed/', { params }),
-          fetchWindGustRows(params),
-        ]);
+        // wind_gust (rafale) is not yet a backend sensor (modifications #6 —
+        // needs raw high-frequency samples). Until then, fetch wind speed only;
+        // the dead /sensors/windgust calls were 404-ing on every load.
+        const speedRes = await api.get<SensorData[]>('/sensors/windspeed', {
+          params,
+        });
         if (cancelled) return;
-        const merged = mergeGustIntoSpeedRows(speedRes.data ?? [], gustRows);
-        setData(merged);
+        setData((speedRes.data ?? []).map((s) => ({ ...s })));
       } catch (error) {
         logOptionalApiFailure('WindSpeedMain: windspeed', error);
       } finally {

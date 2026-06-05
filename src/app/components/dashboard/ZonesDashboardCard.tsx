@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   VStack,
   Box,
@@ -14,6 +15,7 @@ import { ZoneType } from '@/app/types';
 import Loading from '@component/common/Loading';
 
 const ZonesDashboardCard = () => {
+  const t = useTranslations();
   const [zones, setZones] = useState<ZoneType[]>([]);
   const [loading, setLoading] = useState(true);
   const tableBg = useColorModeValue('white', 'gray.800');
@@ -59,7 +61,10 @@ const ZonesDashboardCard = () => {
       p={p}
       overflowX="auto"
     >
-      <DashboardCard title="Zones disponibles" content={content} />
+      <DashboardCard
+        title={t('shell.dashboard.zonesAvailable')}
+        content={content}
+      />
     </Box>
   );
 };

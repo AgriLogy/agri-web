@@ -1,4 +1,11 @@
-/** `mapSymbol` = marker shown on the map for this captor type. */
+/**
+ * `mapSymbol` = marker shown on the map for this captor type.
+ *
+ * i18n: `id` doubles as the shared translation key — use
+ * `t('sensors.<id>')` (root `useTranslations()`) for the user-facing name.
+ * The French `label` stays as a non-React fallback (map expressions, SSR,
+ * tests). Do NOT translate via `label`.
+ */
 export const SENSOR_TYPES = [
   {
     id: 'soil_moisture',
@@ -48,6 +55,11 @@ export const SENSOR_TYPES = [
 ] as const;
 
 export type SensorTypeId = (typeof SENSOR_TYPES)[number]['id'];
+
+/** Shared i18n key for a sensor type — pass to `t('sensors.' + sensorTypeI18nKey(id))`. */
+export function sensorTypeI18nKey(id: string): string {
+  return id;
+}
 
 export function getSensorTypeMeta(id: string) {
   return (

@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export type ChartLastDataShellProps = {
@@ -32,6 +33,7 @@ export default function ChartLastDataShell({
   minH,
   ...stackProps
 }: ChartLastDataShellProps) {
+  const t = useTranslations();
   const [chartVisible, setChartVisible] = useState(true);
 
   return (
@@ -47,15 +49,17 @@ export default function ChartLastDataShell({
       <Tooltip
         label={
           chartVisible
-            ? 'Masquer le graphique (données récentes seulement)'
-            : 'Afficher le graphique'
+            ? t('misc.chartLastDataShell.hideChartTooltip')
+            : t('misc.chartLastDataShell.showChart')
         }
         hasArrow
         placement="left"
       >
         <IconButton
           aria-label={
-            chartVisible ? 'Masquer le graphique' : 'Afficher le graphique'
+            chartVisible
+              ? t('misc.chartLastDataShell.hideChart')
+              : t('misc.chartLastDataShell.showChart')
           }
           icon={chartVisible ? <FaEyeSlash /> : <FaEye />}
           size="sm"

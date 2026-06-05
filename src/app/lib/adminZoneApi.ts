@@ -1,5 +1,5 @@
 /**
- * Typed wrapper for /api/admin/users/<u>/zones/* (CRUD + params)
+ * Typed wrapper for /users/<u>/zones* (CRUD + params)
  * and the active-graph admin endpoint.
  */
 import api from './api';
@@ -55,15 +55,13 @@ const unwrap = <T>(data: unknown): T[] => {
 
 export const adminZoneApi = {
   list: async (username: string): Promise<AdminZone[]> => {
-    const res = await api.get(
-      `/api/admin/users/${encodeURIComponent(username)}/zones/`
-    );
+    const res = await api.get(`/users/${encodeURIComponent(username)}/zones`);
     return unwrap<AdminZone>(res.data);
   },
 
   retrieve: async (username: string, zoneId: number): Promise<AdminZone> => {
     const res = await api.get<AdminZone>(
-      `/api/admin/users/${encodeURIComponent(username)}/zones/${zoneId}/`
+      `/users/${encodeURIComponent(username)}/zones${zoneId}/`
     );
     return res.data;
   },
@@ -73,7 +71,7 @@ export const adminZoneApi = {
     payload: AdminZoneCreatePayload
   ): Promise<AdminZone> => {
     const res = await api.post<AdminZone>(
-      `/api/admin/users/${encodeURIComponent(username)}/zones/`,
+      `/users/${encodeURIComponent(username)}/zones`,
       payload
     );
     return res.data;
@@ -85,24 +83,20 @@ export const adminZoneApi = {
     payload: AdminZonePatchPayload
   ): Promise<AdminZone> => {
     const res = await api.patch<AdminZone>(
-      `/api/admin/users/${encodeURIComponent(username)}/zones/${zoneId}/`,
+      `/users/${encodeURIComponent(username)}/zones${zoneId}/`,
       payload
     );
     return res.data;
   },
 
   remove: async (username: string, zoneId: number): Promise<void> => {
-    await api.delete(
-      `/api/admin/users/${encodeURIComponent(username)}/zones/${zoneId}/`
-    );
+    await api.delete(`/users/${encodeURIComponent(username)}/zones${zoneId}/`);
   },
 
   params: {
     get: async (username: string, zoneId: number): Promise<AdminZoneParams> => {
       const res = await api.get<AdminZoneParams>(
-        `/api/admin/users/${encodeURIComponent(
-          username
-        )}/zones/${zoneId}/params/`
+        `/users${encodeURIComponent(username)}/zones/${zoneId}/params/`
       );
       return res.data;
     },
@@ -112,9 +106,7 @@ export const adminZoneApi = {
       payload: Partial<Omit<AdminZoneParams, 'id'>>
     ): Promise<AdminZoneParams> => {
       const res = await api.patch<AdminZoneParams>(
-        `/api/admin/users/${encodeURIComponent(
-          username
-        )}/zones/${zoneId}/params/`,
+        `/users${encodeURIComponent(username)}/zones/${zoneId}/params/`,
         payload
       );
       return res.data;
@@ -127,9 +119,7 @@ export const adminZoneApi = {
       zoneId: number
     ): Promise<ActiveGraphRecord> => {
       const res = await api.get<ActiveGraphRecord>(
-        `/api/admin/users/${encodeURIComponent(
-          username
-        )}/zones/${zoneId}/active-graph/`
+        `/users${encodeURIComponent(username)}/zones/${zoneId}/active-graph/`
       );
       return res.data;
     },
@@ -139,9 +129,7 @@ export const adminZoneApi = {
       payload: ActiveGraphRecord
     ): Promise<ActiveGraphRecord> => {
       const res = await api.patch<ActiveGraphRecord>(
-        `/api/admin/users/${encodeURIComponent(
-          username
-        )}/zones/${zoneId}/active-graph/`,
+        `/users${encodeURIComponent(username)}/zones/${zoneId}/active-graph/`,
         payload
       );
       return res.data;

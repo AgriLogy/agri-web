@@ -1,5 +1,6 @@
 'use client';
 import React, { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Box,
   useColorModeValue,
@@ -53,6 +54,7 @@ const DASHBOARD_CHART_FIELDS = [
 ] as const;
 
 const SensorDataChart: React.FC<SensorDataChartProps> = ({ data }) => {
+  const t = useTranslations();
   const validData = Array.isArray(data) && data.length > 0 ? data : [];
   useUnitOverridesRevision();
 
@@ -136,8 +138,12 @@ const SensorDataChart: React.FC<SensorDataChartProps> = ({ data }) => {
       <Box mb={4}>
         <ChartPanelHeading
           color={colorMode === 'light' ? 'gray.700' : 'gray.200'}
-          title="Station — température, rayonnement et ET₀"
-          subtitle={`Échelles lecture : ${tempUnit} · ${solarUnit} · ${et0Unit} — fenêtre récente synchronisée.`}
+          title={t('misc.sensorDataChart.title')}
+          subtitle={t('misc.sensorDataChart.subtitle', {
+            tempUnit,
+            solarUnit,
+            et0Unit,
+          })}
         />
       </Box>
       <ResponsiveContainer width="100%" height={CHART_PLOT_HEIGHT_PX}>
@@ -156,7 +162,10 @@ const SensorDataChart: React.FC<SensorDataChartProps> = ({ data }) => {
             yAxisId="temp"
             orientation="left"
             {...yTemp}
-            label={yAxisLabelInsideLeft(`T (${tempUnit})`, tickFill)}
+            label={yAxisLabelInsideLeft(
+              t('misc.sensorDataChart.tempAxisLabel', { unit: tempUnit }),
+              tickFill
+            )}
           />
           <YAxis
             yAxisId="solar"
@@ -170,7 +179,10 @@ const SensorDataChart: React.FC<SensorDataChartProps> = ({ data }) => {
             {...yEt0}
             width={48}
             offset={56}
-            label={yAxisLabelInsideRight(`ET₀ (${et0Unit})`, tickFill)}
+            label={yAxisLabelInsideRight(
+              t('misc.sensorDataChart.et0AxisLabel', { unit: et0Unit }),
+              tickFill
+            )}
           />
           <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
           <Legend
@@ -187,7 +199,10 @@ const SensorDataChart: React.FC<SensorDataChartProps> = ({ data }) => {
             type="monotone"
             dataKey="temperature_weather"
             stroke={chartColor}
-            name={`Température de l'air (${tempUnit})`}
+            name={t('misc.sensorDataChart.seriesWithUnit', {
+              name: t('sensors.air_temperature'),
+              unit: tempUnit,
+            })}
             strokeWidth={2.25}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -200,7 +215,10 @@ const SensorDataChart: React.FC<SensorDataChartProps> = ({ data }) => {
             type="monotone"
             dataKey="solar_radiation"
             stroke="#82ca9d"
-            name={`Rayonnement solaire (${solarUnit})`}
+            name={t('misc.sensorDataChart.seriesWithUnit', {
+              name: t('sensors.solar_radiation'),
+              unit: solarUnit,
+            })}
             strokeWidth={2.25}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -213,7 +231,10 @@ const SensorDataChart: React.FC<SensorDataChartProps> = ({ data }) => {
             type="monotone"
             dataKey="et0"
             stroke="#ffc658"
-            name={`ET₀ (${et0Unit})`}
+            name={t('misc.sensorDataChart.seriesWithUnit', {
+              name: t('sensors.et0'),
+              unit: et0Unit,
+            })}
             strokeWidth={2.25}
             strokeLinecap="round"
             strokeLinejoin="round"

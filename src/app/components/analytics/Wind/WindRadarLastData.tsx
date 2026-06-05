@@ -1,4 +1,5 @@
 import { Box, Text, VStack, useColorModeValue } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { WiStrongWind } from 'react-icons/wi';
 import {
   formatCalibratedReading,
@@ -14,16 +15,21 @@ interface WindData {
   default_unit: string;
 }
 
-const timeAgo = (timestamp: string): string => {
+const timeAgo = (
+  timestamp: string,
+  t: ReturnType<typeof useTranslations>
+): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min.`;
-  if (diffH < 24) return `${diffH} h`;
+  if (diffMin < 1) return t('analytics.lastData.justNow');
+  if (diffMin < 60)
+    return t('analytics.lastData.minutesAgo', { count: diffMin });
+  if (diffH < 24)
+    return t('analytics.lastData.hoursAgoShort', { count: diffH });
   return then.toLocaleDateString();
 };
 
@@ -34,6 +40,7 @@ const WindRadarLastData = ({
   windSpeedData: WindData[];
   windDirectionData: WindData[];
 }) => {
+  const t = useTranslations();
   useUnitOverridesRevision();
   const latestSpeed = windSpeedData[windSpeedData.length - 1];
   const latestDirection = windDirectionData[windDirectionData.length - 1];
@@ -45,7 +52,7 @@ const WindRadarLastData = ({
 
   const titleColor = useColorModeValue('gray.600', 'gray.300');
   const labelMuted = useColorModeValue('gray.500', 'gray.400');
-  const valueColor = useColorModeValue('blue.700', 'blue.200');
+  const valueColor = useColorModeValue('brand.700', 'brand.200');
   const subColor = useColorModeValue('gray.500', 'gray.400');
   const iconTone = useColorModeValue('#276749', '#68d391');
 
@@ -76,14 +83,14 @@ const WindRadarLastData = ({
           mt={3}
           color={titleColor}
         >
-          Vent — vitesse et direction
+          {t('analytics.windRadar.lastTitle')}
         </Text>
 
         {latestSpeed && latestDirection ? (
           <VStack spacing={3} mt={4} align="stretch" w="100%">
             <Box>
               <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
-                Vitesse
+                {t('analytics.windRadar.speed')}
               </Text>
               <Text fontSize="lg" fontWeight="semibold" color={valueColor}>
                 {formatCalibratedReading('wind_speed', latestSpeed.value)}{' '}
@@ -92,7 +99,7 @@ const WindRadarLastData = ({
             </Box>
             <Box>
               <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
-                Direction
+                {t('analytics.windRadar.direction')}
               </Text>
               <Text fontSize="lg" fontWeight="semibold" color={valueColor}>
                 {formatCalibratedReading(
@@ -105,13 +112,15 @@ const WindRadarLastData = ({
           </VStack>
         ) : (
           <Text mt={4} fontSize="sm" color={subColor}>
-            Aucune donnée récente
+            {t('analytics.lastData.noRecentData')}
           </Text>
         )}
 
         {latestSpeed && (
           <Text fontSize="xs" color={subColor} mt={3}>
-            Mesure : {timeAgo(latestSpeed.timestamp)}
+            {t('analytics.lastData.measuredAt', {
+              time: timeAgo(latestSpeed.timestamp, t),
+            })}
           </Text>
         )}
         <LastDataAddAlertButton sensorKey="wind_speed" />

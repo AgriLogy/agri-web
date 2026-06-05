@@ -32,6 +32,7 @@ import {
   writeNotificationsToCache,
 } from '@/app/lib/notificationsCacheStorage';
 import EmptyBox from '../common/EmptyBox';
+import { useTranslations } from 'next-intl';
 import { useNotificationBellCounts } from '@/app/hooks/useNotificationBellCounts';
 import ZoneNotificationConfigureForm from '@/app/components/notifications/ZoneNotificationConfigureForm';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -43,6 +44,7 @@ import {
 } from '@/app/lib/zoneNotificationConfigStorage';
 
 const NotificationsMain: React.FC = () => {
+  const t = useTranslations();
   const toast = useToast();
   const deleteCancelRef = useRef<HTMLButtonElement>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -78,7 +80,7 @@ const NotificationsMain: React.FC = () => {
 
   const refetchNotifications = () => {
     void axiosInstance
-      .get('/api/notifications-and-alerts/')
+      .get('/notifications')
       .then((r) => {
         const apiRows = normalizeApiNotificationsList(r.data?.notifications);
         const merged = mergeNotificationsForStorage(apiRows);
@@ -97,9 +99,7 @@ const NotificationsMain: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get(
-          '/api/notifications-and-alerts/'
-        );
+        const response = await axiosInstance.get('/notifications');
         const apiRows = normalizeApiNotificationsList(
           response.data?.notifications
         );
@@ -206,9 +206,8 @@ const NotificationsMain: React.FC = () => {
     setNotifications(readNotificationsFromCache() as any[]);
     void refreshBell();
     toast({
-      title: 'Notification supprimée',
-      description:
-        'La configuration locale de ce secteur a été effacée sur cet appareil.',
+      title: t('notifications.main.deletedToastTitle'),
+      description: t('notifications.main.deletedToastDescription'),
       status: 'success',
       duration: 4000,
       isClosable: true,
@@ -220,8 +219,8 @@ const NotificationsMain: React.FC = () => {
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Notifications"
-        subtitle="Configurez les alertes email et consultez l'historique"
+        title={t('notifications.main.title')}
+        subtitle={t('notifications.main.subtitle')}
         actions={
           <Button
             colorScheme="brand"
@@ -229,7 +228,7 @@ const NotificationsMain: React.FC = () => {
             size="sm"
             onClick={openConfigure}
           >
-            Ajouter une notification de zone
+            {t('notifications.main.addZoneNotification')}
           </Button>
         }
       />
@@ -291,8 +290,8 @@ const NotificationsMain: React.FC = () => {
           >
             <BellIcon color="primary.400" />
             {configureIntent === 'edit'
-              ? 'Modifier la notification de zone'
-              : 'Nouvelle notification de zone'}
+              ? t('notifications.main.editModalTitle')
+              : t('notifications.main.newModalTitle')}
           </ModalHeader>
           <ModalCloseButton borderRadius="full" onClick={closeConfigureModal} />
           <ModalBody pb={6}>
@@ -322,26 +321,24 @@ const NotificationsMain: React.FC = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Supprimer cette notification de zone ?
+              {t('notifications.main.deleteDialogTitle')}
             </AlertDialogHeader>
             <AlertDialogBody>
-              La configuration de ce secteur est effacée sur cet appareil et les
-              lignes locales liées disparaissent de la liste. Les autres
-              notifications de la même zone ne sont pas modifiées.
+              {t('notifications.main.deleteDialogBody')}
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button
                 ref={deleteCancelRef}
                 onClick={() => setDeleteConfigId(null)}
               >
-                Annuler
+                {t('notifications.main.cancel')}
               </Button>
               <Button
                 colorScheme="red"
                 onClick={confirmDeleteNotificationConfig}
                 ml={3}
               >
-                Supprimer
+                {t('notifications.main.delete')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

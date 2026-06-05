@@ -36,7 +36,7 @@ const getActiveGraphs = async (
   zoneId: number
 ): Promise<ActiveGraphResponse | null> => {
   try {
-    const response = await api.get(`/api/active-graph/self/${zoneId}/`);
+    const response = await api.get(`/zones/${zoneId}/active-graph`);
     return response.data;
   } catch (error) {
     console.error('Error fetching active graphs:', error);

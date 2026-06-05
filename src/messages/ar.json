@@ -1,0 +1,1695 @@
+{
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "search": "بحث",
+    "loading": "جارٍ التحميل…",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "close": "إغلاق",
+    "yes": "نعم",
+    "no": "لا",
+    "language": "اللغة",
+    "darkMode": "الوضع الداكن",
+    "lightMode": "الوضع الفاتح",
+    "notAvailable": "غير متاح"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "soilData": "بيانات التربة",
+    "station": "محطة الطقس",
+    "plantData": "بيانات النباتات",
+    "waterStation": "محطة المياه",
+    "valvesPumps": "الصمامات والمضخات",
+    "alerts": "التنبيهات",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات",
+    "admin": "الإدارة",
+    "logout": "تسجيل الخروج",
+    "account": "الحساب",
+    "greeting": "مرحبًا",
+    "profile": "الملف الشخصي",
+    "navigation": "التنقل",
+    "accountMenu": "قائمة الحساب",
+    "openMenu": "فتح القائمة"
+  },
+  "logout": {
+    "signOut": "تسجيل الخروج",
+    "confirmTitle": "تأكيد تسجيل الخروج",
+    "confirmBody": "هل أنت متأكد أنك تريد تسجيل الخروج؟"
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "title": "تسجيل الدخول",
+    "subtitle": "ادخل إلى لوحة تحكم Agrilogy الخاصة بك",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "usernamePlaceholder": "اسم المستخدم الخاص بك",
+    "passwordPlaceholder": "كلمة المرور الخاصة بك",
+    "usernameRequired": "يُرجى إدخال اسم المستخدم.",
+    "passwordRequired": "يُرجى إدخال كلمة المرور.",
+    "submit": "تسجيل الدخول",
+    "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة."
+  },
+  "sensors": {
+    "soil_moisture": "رطوبة التربة",
+    "soil_temperature": "حرارة التربة",
+    "air_temperature": "حرارة الهواء",
+    "humidity_air": "رطوبة الهواء",
+    "weather_station": "محطة الطقس",
+    "water_level": "منسوب المياه",
+    "flow_meter": "عداد التدفق",
+    "pressure": "الضغط",
+    "ec_soil": "الناقلية (EC)",
+    "ph_soil": "حموضة التربة",
+    "temperature_weather": "حرارة الهواء",
+    "humidity_weather": "رطوبة الهواء",
+    "wind_speed": "سرعة الرياح",
+    "wind_gust": "سرعة الهبّات",
+    "wind_direction": "اتجاه الرياح",
+    "solar_radiation": "الإشعاع الشمسي",
+    "pressure_weather": "الضغط الجوي",
+    "precipitation_rate": "معدل التساقط",
+    "et0": "التبخر النتحي المرجعي ET₀",
+    "vpd": "عجز ضغط البخار (VPD)",
+    "water_flow": "تدفق المياه",
+    "irrigation_cumulative": "الري التراكمي",
+    "water_pressure": "ضغط المياه",
+    "water_ph": "حموضة المياه",
+    "water_ec": "ناقلية المياه",
+    "soil_moisture_low": "رطوبة التربة المنخفضة",
+    "soil_moisture_medium": "رطوبة التربة المتوسطة",
+    "soil_moisture_high": "رطوبة التربة العالية",
+    "soil_temperature_medium": "حرارة التربة",
+    "soil_temp_low": "حرارة التربة المنخفضة",
+    "soil_temp_medium": "حرارة التربة المتوسطة",
+    "soil_temp_high": "حرارة التربة العالية",
+    "soil_ph": "حموضة التربة",
+    "soil_salinity": "ملوحة التربة",
+    "soil_conductivity": "ناقلية التربة",
+    "leaf_temperature": "حرارة الورقة",
+    "leaf_moisture": "رطوبة الورقة",
+    "npk_n": "النيتروجين (N)",
+    "npk_p": "الفوسفور (P)",
+    "npk_k": "البوتاسيوم (K)",
+    "fruit_size": "حجم الثمار",
+    "large_fruit_diameter": "قطر الثمار",
+    "electricity_consumption": "استهلاك الكهرباء"
+  },
+  "conditions": {
+    "gt": "أكبر من",
+    "lt": "أصغر من",
+    "eq": "يساوي"
+  },
+  "alertTypes": {
+    "pressure": "الضغط",
+    "flow": "التدفق",
+    "weatherTemperature": "حرارة الهواء",
+    "windSpeed": "سرعة الرياح",
+    "rainFall": "المطر",
+    "periodicMaintenance": "الصيانة الدورية",
+    "ec": "الناقلية الكهربائية",
+    "ph": "مستوى الحموضة",
+    "humidity": "الرطوبة",
+    "soilTemperature": "حرارة التربة"
+  },
+  "stats": {
+    "min": "الأدنى",
+    "max": "الأقصى",
+    "average": "المتوسط",
+    "mean": "المعدل",
+    "current": "الحالي",
+    "latest": "الأحدث",
+    "total": "الإجمالي",
+    "sum": "المجموع",
+    "count": "العدد"
+  },
+  "time": {
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "day": "يوم",
+    "week": "أسبوع",
+    "month": "شهر",
+    "year": "سنة",
+    "hour": "ساعة",
+    "minute": "دقيقة",
+    "last24h": "آخر 24 ساعة",
+    "last7days": "آخر 7 أيام",
+    "last30days": "آخر 30 يومًا",
+    "custom": "مخصص",
+    "from": "من",
+    "to": "إلى",
+    "dateRange": "نطاق التاريخ"
+  },
+  "units": {
+    "ph": "pH",
+    "degree": "°"
+  },
+  "admin": {
+    "affirmations": {
+      "title": "تأكيدات المشرف",
+      "subtitle": "الموافقة على طلبات المستخدمين أو رفضها.",
+      "loadError": "قائمة التأكيدات غير متاحة.",
+      "action": {
+        "zone_params_change": "تعديل المعاملات",
+        "kc_periods_change": "تعديل فترات Kc",
+        "user_reactivate": "إعادة تفعيل المستخدم"
+      },
+      "approveConfirmTitle": "الموافقة على الطلب رقم #{id}؟",
+      "rejectConfirmTitle": "رفض الطلب رقم #{id}؟",
+      "notePlaceholder": "ملاحظة القرار (اختياري)",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "cancel": "إلغاء",
+      "approveSuccess": "تمت الموافقة على الطلب.",
+      "rejectSuccess": "تم رفض الطلب.",
+      "actionError": "تعذّر تنفيذ الإجراء.",
+      "col": {
+        "request": "الطلب",
+        "requester": "مقدّم الطلب",
+        "status": "الحالة",
+        "createdAt": "أُنشئ في",
+        "decidedAt": "تقرّر في",
+        "decidedBy": "صاحب القرار",
+        "actions": "إجراءات"
+      },
+      "status": {
+        "pending": "قيد الانتظار",
+        "approved": "تمت الموافقة",
+        "rejected": "مرفوض"
+      },
+      "filter": {
+        "all": "الكل"
+      },
+      "empty": "لا توجد تأكيدات"
+    },
+    "userCreate": {
+      "geoUnavailable": "تحديد الموقع غير متاح.",
+      "geoFilled": "تم تعبئة الموقع.",
+      "geoError": "تعذّر الحصول على الموقع.",
+      "createSuccess": "تم إنشاء المستخدم.",
+      "createError": "فشل الإنشاء.",
+      "title": "مستخدم جديد",
+      "submit": "إنشاء",
+      "field": {
+        "username": "اسم المستخدم",
+        "firstname": "الاسم الأول",
+        "lastname": "اسم العائلة",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "password": "كلمة المرور",
+        "latitude": "خط العرض",
+        "longitude": "خط الطول",
+        "paymentStatus": "حالة الدفع",
+        "adminRole": "صلاحية المشرف"
+      },
+      "validation": {
+        "required": "مطلوب.",
+        "minUsername": "ثلاثة أحرف على الأقل.",
+        "email": "صيغة البريد الإلكتروني غير صحيحة.",
+        "minPassword": "ثمانية أحرف على الأقل.",
+        "latitude": "يجب أن يكون بين -90 و90.",
+        "longitude": "يجب أن يكون بين -180 و180."
+      },
+      "passwordHint": "يجب أن تكون كلمة المرور قوية (8 أحرف على الأقل، حروف وأرقام).",
+      "fillLocation": "تعبئة الموقع تلقائياً",
+      "payment": {
+        "active": "نشط",
+        "suspended": "موقوف"
+      },
+      "role": {
+        "admin": "مشرف",
+        "user": "مستخدم"
+      }
+    },
+    "params": {
+      "loadError": "تعذّر تحميل المعاملات.",
+      "readError": "تعذّر قراءة المعاملات.",
+      "saveSuccess": "تم حفظ المعاملات.",
+      "saveError": "فشل الحفظ.",
+      "unitSaveSuccess": "تم حفظ الوحدة.",
+      "unitSaveError": "فشل حفظ الوحدة.",
+      "noZones": "لا توجد منطقة لضبطها",
+      "zoneLabel": "المنطقة:",
+      "soilIrrigationTitle": "معاملات التربة والري",
+      "preferredUnitsTitle": "الوحدات المفضّلة لكل مستشعر",
+      "save": "حفظ",
+      "field": {
+        "taw": "TAW (mm)",
+        "raw": "RAW (mm)",
+        "fc": "FC (%)",
+        "wp": "WP (%)",
+        "criticalMoisture": "عتبة الرطوبة الحرجة (%)",
+        "pompFlowRate": "تدفق المضخة (L/s)",
+        "irrigationWaterQuantity": "كمية مياه الري (L)"
+      }
+    },
+    "dashboard": {
+      "loadError": "لوحة التحكم غير متاحة.",
+      "col": {
+        "user": "المستخدم",
+        "email": "البريد الإلكتروني",
+        "joinedAt": "تاريخ التسجيل"
+      },
+      "open": "فتح",
+      "title": "لوحة تحكم المشرف",
+      "subtitle": "مؤشرات الأداء العامة ووصول سريع إلى آخر المستخدمين.",
+      "allUsers": "جميع المستخدمين",
+      "newUser": "مستخدم جديد",
+      "stat": {
+        "users": "المستخدمون",
+        "activeUsers": "المستخدمون النشطون",
+        "admins": "المشرفون",
+        "zones": "المناطق",
+        "alerts24h": "تنبيهات 24 ساعة"
+      },
+      "recentUsers": "آخر المستخدمين",
+      "emptyUsers": "لا يوجد مستخدم"
+    },
+    "userList": {
+      "loadError": "قائمة المستخدمين غير متاحة.",
+      "reactivated": "تمت إعادة تفعيل المستخدم.",
+      "deactivated": "تم إلغاء تفعيل المستخدم.",
+      "actionError": "تعذّر تنفيذ الإجراء.",
+      "resetConfirmTitle": "إعادة تعيين كلمة مرور {username}؟",
+      "resetConfirmContent": "سيتم إنشاء كلمة مرور عشوائية وعرضها مرة واحدة فقط.",
+      "reset": "إعادة تعيين",
+      "cancel": "إلغاء",
+      "newPasswordTitle": "كلمة مرور جديدة",
+      "newPasswordHint": "شارك كلمة المرور هذه مع المستخدم:",
+      "close": "إغلاق",
+      "resetError": "فشلت إعادة التعيين.",
+      "col": {
+        "user": "المستخدم",
+        "email": "البريد الإلكتروني",
+        "role": "الدور",
+        "status": "الحالة",
+        "payment": "الدفع",
+        "zones": "المناطق",
+        "joinedAt": "تاريخ التسجيل",
+        "lastLogin": "آخر تسجيل دخول",
+        "actions": "إجراءات"
+      },
+      "role": {
+        "admin": "مشرف",
+        "user": "مستخدم"
+      },
+      "status": {
+        "active": "نشط",
+        "inactive": "غير نشط"
+      },
+      "payment": {
+        "active": "نشط",
+        "suspended": "موقوف"
+      },
+      "action": {
+        "openDetail": "فتح التفاصيل",
+        "openAria": "فتح {username}",
+        "deactivate": "إلغاء التفعيل",
+        "reactivate": "إعادة التفعيل",
+        "toggleAria": "تبديل {username}",
+        "resetPassword": "إعادة تعيين كلمة المرور",
+        "resetAria": "إعادة تعيين كلمة مرور {username}"
+      },
+      "title": "المستخدمون",
+      "subtitle": "إدارة الحسابات ومناطقها وقابلية مراقبتها.",
+      "newUser": "مستخدم جديد",
+      "searchPlaceholder": "بحث (الاسم، البريد الإلكتروني)…",
+      "empty": "لا يوجد مستخدم"
+    },
+    "zoneForm": {
+      "updateSuccess": "تم تحديث المنطقة.",
+      "createSuccess": "تم إنشاء المنطقة.",
+      "saveError": "فشل الحفظ.",
+      "editTitle": "تعديل المنطقة — {name}",
+      "newTitle": "منطقة جديدة",
+      "update": "تحديث",
+      "create": "إنشاء",
+      "tab": {
+        "general": "عام",
+        "irrigation": "الري",
+        "soil": "التربة"
+      },
+      "field": {
+        "name": "الاسم",
+        "space": "المساحة (m²)",
+        "criticalMoisture": "عتبة الرطوبة الحرجة (%)",
+        "pompFlowRate": "تدفق المضخة (L/s)",
+        "irrigationWaterQuantity": "كمية مياه الري (L)",
+        "taw": "TAW (إجمالي المياه المتاحة، mm)",
+        "fc": "FC (السعة الحقلية، %)",
+        "wp": "WP (نقطة الذبول، %)",
+        "raw": "RAW (المياه المتاحة بسهولة، mm)"
+      },
+      "validation": {
+        "required": "مطلوب.",
+        "positive": "يجب أن يكون موجباً.",
+        "range0to100": "من 0 إلى 100.",
+        "nonNegative": "غير سالب."
+      }
+    },
+    "stationData": {
+      "noZones": "لا توجد منطقة مهيّأة",
+      "zoneLabel": "المنطقة:",
+      "alertTitle": "عرض بيانات المحطة",
+      "alertDescription": "يمكن الاطلاع على رسوم ET0 ودرجة الحرارة والرطوبة والإشعاع والرياح والأمطار من واجهة المستخدم المخصّصة.",
+      "openStationView": "فتح واجهة المحطة ←"
+    },
+    "activity": {
+      "loadError": "النشاط غير متاح.",
+      "empty": "لا يوجد نشاط مسجّل"
+    },
+    "profile": {
+      "geoUnavailable": "تحديد الموقع غير متاح.",
+      "geoError": "تعذّر الحصول على الموقع.",
+      "saveSuccess": "تم تحديث الملف الشخصي.",
+      "saveError": "فشل التحديث.",
+      "field": {
+        "email": "البريد الإلكتروني",
+        "firstname": "الاسم الأول",
+        "lastname": "اسم العائلة",
+        "phone": "الهاتف",
+        "latitude": "خط العرض",
+        "longitude": "خط الطول",
+        "status": "الحالة",
+        "adminRole": "صلاحية المشرف",
+        "payment": "الدفع",
+        "notifyEvery": "وتيرة الإشعارات (ساعات)"
+      },
+      "validation": {
+        "required": "مطلوب.",
+        "email": "صيغة البريد الإلكتروني غير صحيحة.",
+        "latitude": "من -90 إلى 90.",
+        "longitude": "من -180 إلى 180."
+      },
+      "fillLocation": "تعبئة الموقع تلقائياً",
+      "status": {
+        "active": "نشط",
+        "inactive": "غير نشط"
+      },
+      "role": {
+        "admin": "مشرف",
+        "user": "مستخدم"
+      },
+      "payment": {
+        "active": "نشط",
+        "suspended": "موقوف"
+      },
+      "save": "حفظ"
+    },
+    "soilDataTab": {
+      "noZonesCreateInTab": "لا توجد منطقة — أنشئ واحدة في علامة تبويب المناطق",
+      "zoneLabel": "المنطقة:",
+      "alertTitle": "عرض بيانات التربة",
+      "alertDescription": "الرسوم البيانية التفصيلية (الرطوبة، الحرارة، الأس الهيدروجيني، الناقلية، الري) متاحة من واجهة المستخدم — نقطة النهاية الإدارية الشاملة قيد التطوير في الخادم.",
+      "openSoilView": "فتح عرض التربة ←"
+    },
+    "userDetail": {
+      "loadUserError": "تعذر تحميل المستخدم.",
+      "loading": "جارٍ التحميل…",
+      "tabProfile": "الملف الشخصي",
+      "tabZones": "المناطق",
+      "tabParams": "الإعدادات",
+      "tabGraphs": "الرسوم البيانية",
+      "tabSoilData": "البيانات — التربة",
+      "tabStationData": "البيانات — المحطة",
+      "tabAlerts": "التنبيهات والإشعارات",
+      "tabActivity": "النشاط",
+      "paymentLabel": "الدفع: {status}",
+      "joinedLastLogin": "مسجَّل في {joined} · آخر تسجيل دخول {lastLogin}"
+    },
+    "zonesTab": {
+      "listError": "قائمة المناطق غير متاحة.",
+      "colName": "الاسم",
+      "colSurface": "المساحة (م²)",
+      "colMoistureThreshold": "عتبة الرطوبة (%)",
+      "colPumpFlow": "تدفق المضخة (ل/ث)",
+      "colTAW": "TAW (مم)",
+      "colActions": "الإجراءات",
+      "edit": "تعديل",
+      "editAria": "تعديل {name}",
+      "deleteConfirm": "حذف المنطقة « {name} »؟",
+      "deleteSuccess": "تم حذف المنطقة.",
+      "empty": "لا توجد منطقة",
+      "newZone": "منطقة جديدة"
+    },
+    "crudTable": {
+      "searchPlaceholder": "بحث…",
+      "empty": "لا توجد بيانات"
+    },
+    "graphsTab": {
+      "listError": "قائمة المناطق غير متاحة.",
+      "readError": "تعذر قراءة الرسوم البيانية.",
+      "updateError": "فشل التحديث.",
+      "noZones": "لا توجد منطقة مُهيأة",
+      "zoneLabel": "المنطقة:",
+      "groupSoil": "التربة",
+      "groupWeather": "الطقس",
+      "groupWater": "الماء",
+      "groupPlant": "النبات",
+      "groupFertilizer": "الأسمدة/المغذيات",
+      "groupOther": "أخرى",
+      "fields": {
+        "soil_irrigation_status": "ري التربة",
+        "soil_ph_status": "الأس الهيدروجيني للتربة",
+        "soil_conductivity_status": "ناقلية التربة",
+        "soil_moisture_status": "رطوبة التربة",
+        "soil_temperature_status": "حرارة التربة",
+        "et0_status": "ET0",
+        "wind_speed_status": "سرعة الرياح",
+        "wind_direction_status": "اتجاه الرياح",
+        "solar_radiation_status": "الإشعاع الشمسي",
+        "temperature_humidity_weather_status": "حرارة / رطوبة الطقس",
+        "precipitation_humidity_rate_status": "معدل الهطول / الرطوبة",
+        "pluviometry_status": "كمية الأمطار",
+        "data_table_status": "جدول البيانات",
+        "wind_radar_status": "رادار الرياح",
+        "cumulative_precipitation_status": "الهطول التراكمي",
+        "precipitation_rate_status": "معدل الهطول",
+        "weather_temperature_humidity_status": "حرارة / رطوبة الطقس",
+        "water_flow_status": "تدفق الماء",
+        "water_pressure_status": "ضغط الماء",
+        "water_ph_status": "الأس الهيدروجيني للماء",
+        "water_ec_status": "ناقلية الماء",
+        "leaf_sensor_status": "مستشعر الأوراق",
+        "fruit_size_status": "حجم الثمار",
+        "large_fruit_diameter_status": "قطر الثمار الكبيرة",
+        "npk_status": "NPK",
+        "electricity_consumption_status": "استهلاك الكهرباء"
+      }
+    },
+    "userHeaderActions": {
+      "reactivated": "تمت إعادة تفعيل المستخدم.",
+      "deactivated": "تم تعطيل المستخدم.",
+      "actionError": "تعذر تنفيذ الإجراء.",
+      "resetConfirm": "إعادة تعيين كلمة مرور {name}؟",
+      "reset": "إعادة تعيين",
+      "cancel": "إلغاء",
+      "newPasswordTitle": "كلمة مرور جديدة",
+      "close": "إغلاق",
+      "resetError": "فشلت إعادة التعيين.",
+      "deactivate": "تعطيل",
+      "reactivate": "إعادة تفعيل",
+      "resetPassword": "إعادة تعيين كلمة المرور"
+    },
+    "alertsTab": {
+      "loadError": "تعذر تحميل التنبيهات.",
+      "actionError": "تعذر تنفيذ الإجراء.",
+      "colName": "الاسم",
+      "colCondition": "الشرط",
+      "colActive": "مفعّل",
+      "colLastTriggered": "آخر تشغيل",
+      "colActions": "الإجراءات",
+      "deleteConfirm": "حذف التنبيه « {name} »؟",
+      "deleteSuccess": "تم حذف التنبيه.",
+      "empty": "لا يوجد تنبيه مُهيأ لهذا المستخدم"
+    },
+    "confirmDelete": {
+      "title": "تأكيد الحذف؟",
+      "ok": "حذف",
+      "cancel": "إلغاء",
+      "success": "تم الحذف بنجاح.",
+      "error": "فشل الحذف.",
+      "button": "حذف"
+    },
+    "zoneCard": {
+      "area": "المساحة",
+      "plant": "النبات",
+      "soilType": "نوع التربة",
+      "kc": "المعامل (Kc)",
+      "irrigationMethod": "طريقة الري",
+      "et0": "Et0",
+      "et0Unit": "ملم/يوم",
+      "lastIrrigation": "آخر ري"
+    },
+    "common": {
+      "loadError": "تعذّر التحميل.",
+      "unknownError": "خطأ غير معروف."
+    }
+  },
+  "alertsPage": {
+    "windForm": {
+      "successTitle": "تم إنشاء التنبيه",
+      "successDescription": "تمت إضافة تنبيه سرعة الرياح بنجاح.",
+      "errorTitle": "خطأ",
+      "errorWindSpeed": "فشل إنشاء تنبيه سرعة الرياح.",
+      "errorPressure": "فشل إنشاء تنبيه الضغط.",
+      "nameLabel": "اسم التنبيه",
+      "namePlaceholder": "أدخل اسم التنبيه",
+      "typeLabel": "نوع التنبيه",
+      "percentageLabel": "النسبة المئوية [مم/س]",
+      "descriptionLabel": "الوصف",
+      "descriptionPlaceholder": "أدخل الوصف",
+      "submit": "إرسال"
+    },
+    "windSpeedForm": {
+      "successTitle": "تم إنشاء التنبيه",
+      "successDescription": "تمت إضافة تنبيه سرعة الرياح بنجاح.",
+      "errorTitle": "خطأ",
+      "errorDescription": "فشل إنشاء تنبيه سرعة الرياح.",
+      "nameLabel": "اسم التنبيه",
+      "namePlaceholder": "أدخل اسم التنبيه",
+      "typeLabel": "نوع التنبيه",
+      "conditionLabel": "الشرط",
+      "descriptionLabel": "الوصف",
+      "descriptionPlaceholder": "أدخل الوصف",
+      "submit": "إرسال"
+    },
+    "createDrawer": {
+      "noRecentReadings": "لا توجد قراءات حديثة لهذا المستشعر — اضبط العتبة يدويًا.",
+      "discardTitle": "تجاهل التغييرات؟",
+      "discardOk": "تجاهل",
+      "discardCancel": "متابعة",
+      "updateSuccess": "تم تحديث التنبيه.",
+      "createSuccess": "تم إنشاء التنبيه.",
+      "saveError": "فشل الحفظ.",
+      "editTitle": "تعديل التنبيه",
+      "newTitle": "تنبيه جديد",
+      "cancel": "إلغاء",
+      "update": "تحديث",
+      "create": "إنشاء"
+    },
+    "main": {
+      "loadError": "تعذّر تحميل التنبيهات.",
+      "limitReached": "تم بلوغ الحد: احذف تنبيهًا لإنشاء آخر (الحد الأقصى {max}).",
+      "deleteSuccess": "تم حذف التنبيه.",
+      "deleteError": "فشل الحذف.",
+      "toggleError": "تعذّر تغيير الحالة.",
+      "columnName": "الاسم",
+      "recentlyTriggered": "تم تشغيله مؤخرًا",
+      "columnSensor": "المستشعر",
+      "columnCategory": "الفئة",
+      "columnCondition": "الشرط",
+      "columnActive": "مُفعّل",
+      "deactivate": "إلغاء التفعيل",
+      "activate": "تفعيل",
+      "yes": "نعم",
+      "no": "لا",
+      "columnActions": "إجراءات",
+      "edit": "تعديل",
+      "editAria": "تعديل {name}",
+      "deleteConfirm": "حذف هذا التنبيه؟",
+      "delete": "حذف",
+      "cancel": "إلغاء",
+      "deleteAria": "حذف {name}",
+      "pageTitle": "إدارة التنبيهات",
+      "pageSubtitle": "اضبط العتبات لكل مستشعر. يُرسم كل تنبيه تلقائيًا على الرسم البياني المقابل.",
+      "newAlert": "تنبيه جديد",
+      "emptyText": "لا يوجد تنبيه مُهيّأ"
+    },
+    "form": {
+      "name": "الاسم",
+      "nameRequired": "اسم التنبيه مطلوب.",
+      "namePlaceholder": "مثال: ارتفاع حرارة القطعة الشمالية",
+      "category": "الفئة",
+      "sensor": "المستشعر",
+      "sensorTooltip": "يحدّد الرسم البياني الذي سيُرسم عليه التنبيه.",
+      "sensorRequired": "اختر مستشعرًا.",
+      "zone": "المنطقة",
+      "zonePlaceholder": "كل مناطقي",
+      "condition": "الشرط",
+      "thresholdRequired": "العتبة مطلوبة.",
+      "thresholdPlaceholder": "العتبة",
+      "thresholdHint": "يُشغَّل التنبيه بمجرد أن تستوفي قيمة المستشعر الشرط المختار.",
+      "description": "الوصف",
+      "active": "مُفعّل"
+    }
+  },
+  "analytics": {
+    "actions": {
+      "captureChart": "التقاط الرسم البياني",
+      "exportCsv": "تصدير بصيغة CSV"
+    },
+    "common": {
+      "noData": "لا توجد بيانات للعرض.",
+      "captureChart": "التقاط الرسم البياني",
+      "exportCsv": "تصدير إلى CSV",
+      "justNow": "الآن",
+      "minutesAgo": "{count} د",
+      "minutesAgoShort": "{count} د.",
+      "hoursAgo": "{count} س",
+      "measuredAt": "القياس: {time}",
+      "lowProbe": "المجس المنخفض",
+      "mediumProbe": "المجس المتوسط",
+      "highProbe": "المجس المرتفع",
+      "captureAria": "التقاط",
+      "exportAria": "تصدير",
+      "captureChartAria": "التقاط الرسم البياني",
+      "exportCsvAria": "تصدير CSV",
+      "noDataAvailable": "لا توجد بيانات متاحة",
+      "downloadCsv": "تنزيل بيانات CSV"
+    },
+    "lastData": {
+      "justNow": "الآن",
+      "minutesAgo": "منذ {count} دقيقة",
+      "hoursAgo": "منذ {count} ساعة",
+      "measuredAt": "القياس: {time}",
+      "hoursAgoShort": "{count} س",
+      "hoursAgoLong": "{count, plural, one {# ساعة} other {# ساعات}}",
+      "noRecentData": "لا توجد بيانات حديثة"
+    },
+    "leaf": {
+      "lastDataTitle": "مستشعر الورقة",
+      "chartTitle": "الورقة — الرطوبة ودرجة الحرارة",
+      "chartSubtitle": "المناخ الدقيق للورقة خلال نافذة التحليل.",
+      "axisTemp": "حرارة الورقة ({unit})",
+      "axisMoisture": "رطوبة الورقة ({unit})"
+    },
+    "windSpeed": {
+      "chartTitle": "سرعة الرياح في المحطة",
+      "chartSubtitle": "سلسلة بالساعة؛ مقياس زمني تكيفي مع شريط تمرير الفترة.",
+      "lastDataTitle": "سرعة الرياح (آخر قياس)"
+    },
+    "waterFlow": {
+      "lastDataTitle": "تدفق المياه / الري",
+      "chartTitle": "تدفق الري",
+      "chartSubtitle": "الحجم لكل وحدة زمنية خلال النافذة المحددة.",
+      "axisFlow": "التدفق ({unit})"
+    },
+    "waterPh": {
+      "lastDataTitle": "الأس الهيدروجيني للمياه (آخر قياس)",
+      "chartTitle": "الأس الهيدروجيني لمياه الري",
+      "chartSubtitle": "الجودة الحمضية القاعدية للمياه الموزعة."
+    },
+    "soilWater": {
+      "lastDataHeading": "الرطوبة ({humidityUnit}) · التدفق ({flowUnit})",
+      "probeLow": "الرطوبة (مجس منخفض)",
+      "probeMedium": "الرطوبة (مجس متوسط)",
+      "probeHigh": "الرطوبة (مجس مرتفع)",
+      "flowLabel": "تدفق الري",
+      "chartTitle": "رطوبة التربة وتوفر المياه والتدفق",
+      "chartSubtitle": "الرطوبة بـ {humidityUnit}؛ التدفق بـ {flowUnit}.",
+      "axisHumidity": "الرطوبة ({unit})",
+      "axisFlow": "التدفق ({unit})",
+      "seriesLow": "رطوبة منخفضة ({unit})",
+      "seriesMedium": "رطوبة متوسطة ({unit})",
+      "seriesHigh": "رطوبة مرتفعة ({unit})"
+    },
+    "solarRadiation": {
+      "title": "الإشعاع الشمسي الكلي",
+      "subtitle": "التدفق على المستوى الأفقي؛ مقياس زمني تكيفي.",
+      "lastTitle": "الإشعاع الكلي (آخر قياس)"
+    },
+    "waterPressure": {
+      "title": "ضغط الماء",
+      "subtitle": "شبكة الري أو التوزيع — مراقبة ديناميكية.",
+      "pressureAxis": "الضغط",
+      "lastDataLabel": "ضغط الماء (آخر قياس)"
+    },
+    "soilConductivity": {
+      "title": "ناقلية التربة والري",
+      "subtitle": "الناقلية الكهربائية (منخفضة / مرتفعة) وتدفق إمداد الماء متزامنان عبر الزمن.",
+      "ecAxis": "الناقلية",
+      "flowAxis": "التدفق",
+      "lowProbe": "ناقلية منخفضة",
+      "highProbe": "ناقلية مرتفعة",
+      "irrigation": "الري",
+      "irrigationFlow": "تدفق الري",
+      "lastDataHeading": "ناقلية التربة وتدفق الري"
+    },
+    "electricity": {
+      "subtitle": "ملف حمل الطاقة خلال الفترة المعروضة.",
+      "energyAxis": "الطاقة",
+      "consumptionSeries": "الاستهلاك"
+    },
+    "windRadar": {
+      "measurements": "{count, plural, one {# قياس} other {# قياسات}}",
+      "title": "الرياح — وردة الاتجاهات",
+      "subtitle": "التوزيع حسب القطاع وفئات السرعة خلال الفترة.",
+      "lastTitle": "الرياح — السرعة والاتجاه",
+      "speed": "السرعة",
+      "direction": "الاتجاه",
+      "csvPercentHeader": "%",
+      "csvCountHeader": "العدد"
+    },
+    "precipitationRate": {
+      "title": "شدة الهطول",
+      "subtitle": "الري الطبيعي — المعدل اللحظي خلال الفترة المحددة.",
+      "intensityAxis": "الشدة ({unit})",
+      "seriesName": "معدل الهطول ({unit})",
+      "lastTitle": "شدة الهطول"
+    },
+    "phSoil": {
+      "subtitle": "تطور التوازن الحمضي القاعدي للوسط.",
+      "axisLabel": "حموضة التربة ({unit})",
+      "seriesName": "حموضة التربة ({unit})"
+    },
+    "weatherTempHumidity": {
+      "title": "الهواء — درجة الحرارة والرطوبة النسبية ونقطة الندى",
+      "subtitle": "مقاييس القراءة {tempUnit} و {humUnit} ؛ محور زمني متكيف حسب النافذة.",
+      "tempAxis": "الحرارة ({unit})",
+      "humidityAxis": "الرطوبة النسبية ({unit})",
+      "temperatureSeries": "درجة الحرارة ({unit})",
+      "humiditySeries": "الرطوبة ({unit})",
+      "dewPointSeries": "نقطة الندى ({unit})",
+      "lastTitle": "الهواء — {tempUnit} · {humUnit}",
+      "temperatureLabel": "درجة الحرارة",
+      "temperatureEmpty": "درجة الحرارة: —",
+      "humidityLabel": "الرطوبة النسبية",
+      "humidityEmpty": "الرطوبة: —"
+    },
+    "cumulPrecipitation": {
+      "title": "التساقطات المتراكمة",
+      "subtitle": "تجميع حسب اليوم أو الأسبوع أو الشهر وفقًا لاختيارك.",
+      "perDay": "حسب اليوم",
+      "perWeek": "حسب الأسبوع",
+      "perMonth": "حسب الشهر",
+      "legendSum": "التساقطات المتراكمة (Σ {unit})",
+      "lastDataLabel": "إجمالي الأمطار"
+    },
+    "vpd": {
+      "title": "عجز ضغط البخار (VPD)",
+      "subtitle": "مؤشر الجفاف الجوي للغطاء النباتي.",
+      "subtitleWithUnit": "مؤشر للغطاء النباتي — المقياس {unit}.",
+      "axisLabel": "VPD ({unit})",
+      "legendName": "عجز ضغط البخار",
+      "legendNameWithUnit": "عجز ضغط البخار ({unit})"
+    },
+    "largeFruitDiameter": {
+      "subtitle": "النمو المعاير لأكثر الثمار تطورًا.",
+      "axisLabel": "القطر ({unit})",
+      "legendName": "القطر ({unit})"
+    },
+    "waterEc": {
+      "subtitle": "الملوحة والحمولة الأيونية لمياه الري.",
+      "axisLabel": "EC ({unit})",
+      "legendName": "الناقلية ({unit})"
+    },
+    "soilSalinityConductivity": {
+      "title": "ملوحة وناقلية التربة",
+      "subtitle": "محتوى الأملاح والناقلية الكهربائية — مؤشرات الإجهاد الأيوني.",
+      "salinityAxisLabel": "الملوحة ({unit})",
+      "conductivityAxisLabel": "EC ({unit})",
+      "salinity": "الملوحة",
+      "conductivity": "الناقلية"
+    },
+    "et0Chart": {
+      "title": "ET₀ — التبخر النتحي المرجعي",
+      "subtitle": "مقارنة بين قياسات المستشعر والسلسلة المحسوبة — الوحدة المعروضة {unit}.",
+      "captureChart": "التقاط الرسم البياني",
+      "exportCsv": "تصدير CSV",
+      "noData": "لا توجد بيانات متاحة",
+      "yAxisLabel": "ET₀ ({unit})",
+      "seriesSensor": "ET₀ المستشعر ({unit})",
+      "seriesCalculated": "ET₀ المحسوب ({unit})"
+    },
+    "et0LastData": {
+      "heading": "التبخر النتحي المرجعي (ET₀)",
+      "weatherSensor": "مستشعر الطقس",
+      "calculatedModel": "النموذج المحسوب",
+      "noRecentData": "لا توجد بيانات حديثة",
+      "todayEt0": "ET₀ اليوم ({day})",
+      "yesterdayEt0": "ET₀ أمس ({day})",
+      "usedForIrrigation": "المستخدمة لري اليوم",
+      "cumulative": "التراكمي ({count} يوم)",
+      "measured": "القياس: {ago}",
+      "justNow": "الآن",
+      "minutesAgo": "{count} د.",
+      "hoursAgo": "{count} س"
+    },
+    "npkLastData": {
+      "heading": "تغذية N-P-K ({units})",
+      "measured": "القياس: {ago}",
+      "justNow": "الآن",
+      "minutesAgo": "{count} د.",
+      "hoursAgo": "{count} ساعة"
+    },
+    "soilTemperature": {
+      "chartTitle": "حرارة التربة ({unit})",
+      "chartSubtitle": "الأعماق المنخفضة والمتوسطة والعالية.",
+      "axisLabel": "حرارة التربة ({unit})",
+      "seriesLow": "منخفض",
+      "seriesMedium": "متوسط",
+      "seriesHigh": "عالٍ"
+    },
+    "fruitSize": {
+      "chartTitle": "حجم الثمار",
+      "chartSubtitle": "متابعة أبعاد الثمار خلال الموسم.",
+      "yAxisLabel": "الحجم ({unit})",
+      "seriesName": "حجم الثمار ({unit})"
+    },
+    "npkChart": {
+      "title": "النيتروجين والفوسفور والبوتاسيوم",
+      "subtitle": "توازن N-P-K في التربة — وحدات القراءة {units}.",
+      "yAxisLabel": "NPK ({units})"
+    }
+  },
+  "data": {
+    "loginError": {
+      "wrongCreds": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+      "unexpected": "حدث خطأ غير متوقع.",
+      "unreachable": "تعذّر الوصول إلى الخادم. تحقق من اتصالك.",
+      "tooManyAttempts": "محاولات تسجيل دخول كثيرة جدًا. حاول مرة أخرى لاحقًا.",
+      "wrongCreds400": "اسم المستخدم أو كلمة المرور غير صحيحة. (400 — راجع علامة تبويب الشبكة لمعرفة تفاصيل الخادم.)"
+    },
+    "zoneNotification": {
+      "confirmation": "تم حفظ إشعار المنطقة. ستستخدم التنبيهات العتبات والقنوات المحددة. (نموذج مؤقت — قابل للاستبدال.)",
+      "confirmationSummary": "{confirmation} — {title}",
+      "periodicReminder": "تذكير مجدول ({rate}) — {label}. تحقق من الرطوبة و ETo×Kc والعتبات.",
+      "zoneFallbackName": "المنطقة {id}"
+    }
+  },
+  "misc": {
+    "adminLogin": {
+      "title": "مساحة المسؤول",
+      "subtitle": "سجّل الدخول لإدارة المنصة",
+      "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+      "usernameLabel": "اسم المستخدم",
+      "usernameRequired": "يرجى إدخال اسم المستخدم.",
+      "usernamePlaceholder": "اسم المستخدم الخاص بك",
+      "passwordLabel": "كلمة المرور",
+      "passwordRequired": "يرجى إدخال كلمة المرور.",
+      "passwordPlaceholder": "كلمة المرور الخاصة بك",
+      "submit": "تسجيل الدخول",
+      "forgotPassword": "هل نسيت كلمة المرور؟"
+    },
+    "sensorDataChart": {
+      "title": "المحطة — الحرارة والإشعاع وET₀",
+      "subtitle": "مقاييس القراءة: {tempUnit} · {solarUnit} · {et0Unit} — نافذة حديثة متزامنة.",
+      "seriesWithUnit": "{name} ({unit})",
+      "tempAxisLabel": "ح ({unit})",
+      "et0AxisLabel": "ET₀ ({unit})"
+    },
+    "sensorDataTable": {
+      "title": "المستشعرات — عرض جدولي",
+      "subtitle": "آخر الصفوف المسجّلة",
+      "timestamp": "الطابع الزمني",
+      "headerWithUnit": "{name} ({unit})"
+    },
+    "vannesPompesSchema": {
+      "synoptic": "مخطط تشغيلي",
+      "pageTitle": "مخطط الصمامات والمضخات",
+      "pageSubtitle": "نظرة عامة على الشبكة: الحالات متزامنة مع صفحة الإدارة.",
+      "backToManagement": "العودة إلى الإدارة",
+      "emptyTitle": "لم يتم تكوين أي معدات",
+      "emptyDescription": "أضف الصمامات والمضخات من صفحة الإدارة لعرض المخطط التفاعلي.",
+      "configureNetwork": "تكوين الشبكة",
+      "valvesEyebrow": "التوزيع",
+      "valvesTitle": "مجمّع الصمامات",
+      "valvesDescription": "متصل بالناقل الرئيسي: كل محطة تعرض القيمة المحددة الحالية والهدف.",
+      "valveOpen": "مفتوح",
+      "valveClosed": "مغلق",
+      "target": "الهدف {value}",
+      "mainlineEyebrow": "النقل",
+      "mainlineTitle": "الخط الرئيسي",
+      "mainlineDescription": "مضخة مركزية على المجمّع: تشير الحالة الخضراء إلى مضخة قيد التشغيل.",
+      "pumpRunning": "قيد التشغيل",
+      "pumpStopped": "متوقفة",
+      "dosingEyebrow": "الحقن",
+      "dosingTitle": "مضخات الجرعات",
+      "dosingDescription": "وحدات طرفية متصلة بالشبكة: يبدأ الترقيم من المضخة الثانية.",
+      "pumpOn": "تشغيل",
+      "pumpOff": "إيقاف",
+      "legendLabel": "وسيلة الإيضاح:",
+      "legendBody": "أخضر = صمام مفتوح / مضخة نشطة؛ درجات الأزرق = الأنابيب؛ بيانات التدفق معروضة للإشارة فقط ({current} / {target})."
+    },
+    "chartLastDataShell": {
+      "hideChartTooltip": "إخفاء الرسم البياني (البيانات الحديثة فقط)",
+      "showChart": "إظهار الرسم البياني",
+      "hideChart": "إخفاء الرسم البياني"
+    },
+    "lastDataAddAlertButton": {
+      "label": "إضافة تنبيه"
+    },
+    "chartDateRangeDragger": {
+      "label": "الفترة المعروضة",
+      "startAria": "بداية الفترة المعروضة",
+      "endAria": "نهاية الفترة المعروضة"
+    },
+    "emptyBox": {
+      "empty": "لا توجد بيانات",
+      "loading": "جارٍ التحميل..."
+    },
+    "map": {
+      "yourLocation": "هذا هو موقعك",
+      "sensor": "مستشعر",
+      "sensorDeleted": "تم حذف المستشعر",
+      "sensorMoved": "تم نقل المستشعر",
+      "zoneRecalculated": "تمت إعادة حساب المنطقة.",
+      "sensorAdded": "المستشعر «{name}»",
+      "zoneNamed": "المنطقة «{zone}»",
+      "outOfDrawnZone": "خارج المنطقة المرسومة",
+      "zoneLabel": "المنطقة: {zone}",
+      "outOfZone": "خارج المنطقة",
+      "sectorsAndSensorsSaved": "تم حفظ القطاعات والمستشعرات",
+      "selectSector": "اختر قطاعًا",
+      "selectSectorHint": "وضع التحديد، ثم انقر على مضلّع.",
+      "nothingToDelete": "لا شيء للحذف",
+      "selectOneOrMoreSectors": "اختر قطاعًا واحدًا أو أكثر.",
+      "sectorsDeleted": "تم حذف القطاع/القطاعات",
+      "onlyOneSector": "قطاع واحد فقط",
+      "onlyOneSectorHint": "اختر مضلّعًا واحدًا بالضبط، ثم طبّق الاسم الجديد.",
+      "sectorRenamed": "تمت إعادة تسمية القطاع",
+      "savedLocally": "تم الحفظ محليًا في المتصفح.",
+      "tokenMissingBefore": "أضف",
+      "tokenMissingAfter": "إلى بيئتك لعرض خريطة Mapbox.",
+      "draw": "رسم",
+      "select": "تحديد",
+      "vertices": "الرؤوس",
+      "delete": "حذف",
+      "save": "حفظ",
+      "nextSectorName": "اسم القطاع التالي",
+      "sectorNumber": "القطاع {n}",
+      "renameSelectedSector": "إعادة تسمية القطاع المحدد",
+      "newName": "اسم جديد",
+      "sectorNamePlaceholder": "اسم القطاع",
+      "applyName": "تطبيق الاسم",
+      "helpText": "لكل <strong>قطاع</strong> <strong>لونه</strong> الخاص على الخريطة. اختر نوع مستشعر وضعه على الخريطة؛ يبقى مثبتًا على إحداثيات GPS (يتحرك عند تحريكك للخريطة مثل البقية). <strong>اسحب</strong> مستشعرًا لنقله؛ تُعاد حساب المنطقة. <strong>انقر</strong> لتحديده.",
+      "chooseSensorType": "المستشعرات — اختر نوعًا",
+      "allSensorTypes": "جميع أنواع المستشعرات",
+      "cancelPlacement": "إلغاء الوضع",
+      "placedSensors": "المستشعرات الموضوعة (الاسم → القطاع)",
+      "noSensorsYet": "لا توجد مستشعرات بعد. أضف بعضها عبر القائمة أعلاه.",
+      "outOfSector": "خارج القطاع",
+      "deleteThisSensor": "حذف هذا المستشعر",
+      "bottomHint": "مرّر فوق مستشعر لعرض التلميح. تُحفظ القطاعات (الشكل والاسم) والمستشعرات تلقائيًا في هذا المتصفح؛ «{save}» يعرض تأكيدًا."
+    },
+    "chatbot": {
+      "welcome": "مرحبًا! أنا مساعد Agrilogy الخاص بك. اسألني عن حقولك ومستشعراتك وصحة محاصيلك أو أداء مزرعتك. اكتب /help لعرض الصفحات المتاحة.",
+      "systemPrompt": "أنت المساعد المدمج في Agrilogy، منصة ذكاء زراعي.\nمهمتك الوحيدة هي مساعدة المستخدمين على التنقّل وفهم البيانات المتاحة في تطبيق Agrilogy: لوحة التحكم، بيانات التربة، محطة الطقس، متابعة النباتات، بيانات المياه، وإدارة التنبيهات.\n\nقاعدة مطلقة: إذا كان السؤال لا يتعلق مباشرة بتطبيق Agrilogy أو بالزراعة المرتبطة ببيانات المنصة، يجب عليك الرفض. أجب فقط: \"أنا متاح فقط للإجابة على الأسئلة المتعلقة بتطبيق Agrilogy. اكتب /help لعرض الصفحات المتاحة.\" لا تقدّم أي معلومات خارج الموضوع، ولو جزئية. لا تعتذر مطوّلاً، ولا تقترح بدائل خارج الموضوع.\n\nأجب دائمًا بالعربية. كن موجزًا وعمليًا.",
+      "error": {
+        "timeout": "انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.",
+        "overloaded": "الخادم مشغول. يرجى المحاولة مرة أخرى بعد لحظة.",
+        "rateLimit": "طلبات كثيرة جدًا. يرجى التمهّل.",
+        "internal": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+        "network": "خطأ في الشبكة. تحقّق من اتصالك وحاول مرة أخرى."
+      },
+      "availablePagesTitle": "📋 الصفحات المتاحة في Agrilogy:",
+      "route": {
+        "dashboard": {
+          "label": "لوحة التحكم",
+          "description": "نظرة عامة على مزرعتك"
+        },
+        "soil": {
+          "label": "بيانات التربة",
+          "description": "الماء المتاح، درجة الحرارة (°C)، الأس الهيدروجيني، الملوحة والتوصيلية، NPK"
+        },
+        "station": {
+          "label": "محطة الطقس",
+          "description": "درجة الحرارة والرطوبة، ET0، سرعة واتجاه الرياح، الإشعاع، الهطول"
+        },
+        "plant": {
+          "label": "متابعة النباتات",
+          "description": "حجم الثمار، قطر الثمار الكبيرة، رطوبة وحرارة الأوراق"
+        },
+        "water": {
+          "label": "بيانات المياه",
+          "description": "التدفّق، الضغط، الأس الهيدروجيني، التوصيلية، إجمالي الهطول"
+        },
+        "alerts": {
+          "label": "إدارة التنبيهات",
+          "description": "عرض وإدارة جميع تنبيهات مزرعتك"
+        }
+      },
+      "pageContext": "سياق الصفحة الحالية: {context}",
+      "assistantName": "مساعد Agrilogy",
+      "statusStreaming": "جارٍ...",
+      "statusReady": "جاهز",
+      "close": "إغلاق",
+      "send": "إرسال",
+      "inputPlaceholder": "اطرح سؤالك أو اكتب /help...",
+      "stopGeneration": "إيقاف التوليد ×",
+      "inputHint": "Enter للإرسال، Shift+Enter لسطر جديد"
+    },
+    "googleMapWeather": {
+      "title": "المزرعة والقطاعات",
+      "showTools": "أدوات الخريطة",
+      "hideTools": "إخفاء الأدوات"
+    }
+  },
+  "notifications": {
+    "alert": {
+      "conditionTitle": "الشرط",
+      "conditionLabel": "الشرط:",
+      "descriptionTitle": "الوصف"
+    },
+    "card": {
+      "nameLabel": "اسم الإشعار:",
+      "unnamedConfig": "— (الاسم غير محدد — عدّل الإعداد)",
+      "zoneNumber": "المنطقة رقم {id}",
+      "notificationFallback": "إشعار",
+      "zoneConfirmation": "تأكيد المنطقة",
+      "engineV1": "المحرك v1",
+      "decisionCritical": "حرج — إجراء الري",
+      "decisionAdvisory": "إرشاد — طلب مرتفع ETo×Kc",
+      "decisionOk": "جيد — ضمن العتبات",
+      "kcUsed": "Kc المستخدم: {kc}",
+      "rulesLabel": "القواعد:",
+      "temperature": "درجة الحرارة",
+      "humidity": "الرطوبة",
+      "soil": "التربة",
+      "humidityLabel": "الرطوبة",
+      "temperatureLabel": "درجة الحرارة",
+      "irrigation": "الري",
+      "idealPeriod": "الفترة المثلى",
+      "lastDate": "آخر تاريخ",
+      "usedWater": "الماء المستخدم",
+      "editNotification": "تعديل الإشعار",
+      "deleteNotification": "حذف الإشعار"
+    },
+    "main": {
+      "title": "الإشعارات",
+      "subtitle": "اضبط تنبيهات البريد الإلكتروني واطّلع على السجل",
+      "addZoneNotification": "إضافة إشعار منطقة",
+      "editModalTitle": "تعديل إشعار المنطقة",
+      "newModalTitle": "إشعار منطقة جديد",
+      "deleteDialogTitle": "حذف إشعار المنطقة هذا؟",
+      "deleteDialogBody": "يُمحى إعداد هذا القطاع على هذا الجهاز وتختفي الأسطر المحلية المرتبطة من القائمة. لا تتأثر الإشعارات الأخرى للمنطقة نفسها.",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "deletedToastTitle": "تم حذف الإشعار",
+      "deletedToastDescription": "تم محو الإعداد المحلي لهذا القطاع على هذا الجهاز."
+    },
+    "detail": {
+      "greeting": "مرحبًا {name}",
+      "parcelInfo": "معلومات حول قطعتك الزراعية.",
+      "dailyAlert": "تنبيه الري اليومي — {zone}",
+      "dateLabel": "التاريخ:",
+      "message": "الرسالة",
+      "weatherLast2Days": "الطقس خلال اليومين الأخيرين",
+      "avgAirTempYesterday": "متوسط درجة حرارة الهواء أمس:",
+      "avgAirHumidityYesterday": "متوسط رطوبة الهواء أمس:",
+      "evaporatedWaterYesterday": "كمية الماء المتبخر أمس (ET0):",
+      "lastIrrigationOperation": "آخر عملية ري",
+      "lastIrrigationOn": "آخر ري بتاريخ {date}",
+      "todayInfo": "معلومات اليوم",
+      "currentSoilHumidity": "رطوبة التربة الحالية:",
+      "currentSoilTemp": "درجة حرارة التربة الحالية:",
+      "soilEc": "الموصلية الكهربائية للتربة (CE):",
+      "npkAmount": "كمية سماد N.P.K:",
+      "soilSalinity": "ملوحة التربة (CE / الملوحة):",
+      "decisionHelp": "مساعدة القرار:",
+      "decisionCritical": "يُوصى بإجراء الري (العتبة الحرجة)",
+      "decisionAdvisory": "مراقبة معززة (ETo×Kc مرتفع)",
+      "decisionOk": "لا إجراء عاجل (ضمن العتبات)",
+      "irrigationDecisionToday": "قرار الري اليوم",
+      "zoneNumber": "المنطقة {id}",
+      "notificationFallback": "إشعار",
+      "userFallback": "مستخدم"
+    },
+    "kcTable": {
+      "breadcrumb": "بروتوكول جديد > الطقس",
+      "title": "جدول معاملات Kc",
+      "protocolNameLabel": "اسم البروتوكول",
+      "protocolNamePlaceholder": "بروتوكول الطقس للتفاح",
+      "defaultProtocolName": "بروتوكول Kc",
+      "stageName": "اسم المرحلة",
+      "stageNamePlaceholder": "مثال: أبريل",
+      "durationDays": "المدة (أيام)",
+      "kcStart": "Kc البداية",
+      "kcEnd": "Kc النهاية",
+      "amountMm": "الكمية (مم)",
+      "active": "مفعّل",
+      "deleteStage": "حذف المرحلة",
+      "addStage": "إضافة مرحلة",
+      "back": "رجوع",
+      "totalDuration": "المدة الإجمالية للبروتوكول:",
+      "days": "أيام",
+      "saveProtocol": "حفظ البروتوكول"
+    },
+    "configForm": {
+      "multiSectorTitle": "عدة قطاعات لهذه المنطقة",
+      "multiSectorDescription": "افتح التعديل من بطاقة الإشعار المعنية لاستهداف القطاع الصحيح.",
+      "configNotFoundTitle": "الإعداد غير موجود",
+      "configNotFoundDescription": "لا يوجد إشعار محفوظ لهذه المنطقة. أغلق هذه اللوحة واستخدم «إضافة إشعار منطقة».",
+      "zonesLoadError": "تعذّر تحميل المناطق",
+      "loading": "جارٍ التحميل…",
+      "noZoneAvailable": "لا توجد منطقة متاحة",
+      "selectZone": "يرجى اختيار منطقة",
+      "missingConfigId": "معرّف الإعداد مفقود",
+      "zoneNumber": "المنطقة {id}",
+      "outboundSubject": "Agrilogy — إعداد الإشعار {name}",
+      "outboundMessage": "تم حفظ إعداد عتبات إشعار المنطقة. ستُستخدم القنوات المقبولة من جهة الخادم عند توفرها.",
+      "savedChanges": "تم حفظ التعديلات",
+      "savedConfig": "تم حفظ الإعداد",
+      "noZoneForAccount": "لا توجد منطقة متاحة لهذا الحساب.",
+      "noZoneHint": "أنشئ أو خصّص أولاً قطعة / منطقة في Agrilogy، ثم عُد لإعداد إشعار.",
+      "zoneParamsTitle": "إعدادات المنطقة",
+      "editHint": "الحفظ يحدّث هذا الإشعار (القطاع والعتبات والقنوات) للمنطقة المحددة.",
+      "createHint": "يمكن أن تجمع المنطقة الواحدة عدة قطاعات: أنشئ إشعارًا لكل قطاع لعتبات ومتابعة مستقلة. تُضاف رسالة تأكيد قصيرة إلى القائمة في أول مرة تحفظ فيها هذا الإعداد.",
+      "zoneLabel": "المنطقة",
+      "sectorLabel": "القطاع (داخل المنطقة)",
+      "sectorPlaceholder": "مثال: القطاع الشمالي، القطعة B، البلوك 2…",
+      "sectorHint": "يحدد جزء المنطقة الذي يغطيه هذا الإشعار.",
+      "notificationNameLabel": "اسم الإشعار",
+      "notificationNamePlaceholder": "مثال: المنطقة 1 البطاطس",
+      "soilTypeLabel": "نوع التربة",
+      "soilLight": "خفيفة",
+      "soilMedium": "متوسطة",
+      "soilHeavy": "ثقيلة",
+      "soilCharacteristicLabel": "خاصية التربة",
+      "soilMoistureSourceLabel": "رطوبة التربة (المصدر)",
+      "avgSensors": "مستشعر متوسط (1+2+3)",
+      "sensor1": "المستشعر 1",
+      "sensor2": "المستشعر 2",
+      "sensor3": "المستشعر 3",
+      "kcCoefficient": "معامل Kc",
+      "kcModeTable": "جدول",
+      "kcModeManual": "يدوي",
+      "openKcTable": "افتح جدول Kc…",
+      "kcValue": "قيمة Kc",
+      "kcWeightedHint": "متوسط مرجّح (المراحل المفعّلة) — قابل للتعديل عبر الجدول.",
+      "humidityLow": "رطوبة منخفضة (%)",
+      "humidityMid": "رطوبة متوسطة (%)",
+      "humidityHigh": "رطوبة عالية (%)",
+      "et0ReferenceLabel": "مرجع ETo",
+      "et0WeatherStation": "حساب محطة الطقس",
+      "et0LocalCalc": "حساب محلي",
+      "precipitationLabel": "التساقطات",
+      "precipSensor": "مستشعر التساقط",
+      "precipStation": "محطة",
+      "krFactor": "معامل KR ({value})",
+      "surfaceHa": "المساحة (هكتار)",
+      "cropLabel": "المحصول",
+      "flowRate": "التدفق (م³/س)",
+      "irrigationPanelTitle": "الري وعتبات المحرك v1",
+      "irrigationMethodLabel": "طريقة الري",
+      "dripSprinkler": "تنقيط / رش",
+      "subsurfaceDrip": "تنقيط تحت السطح",
+      "frequencyLabel": "التكرار والإشعار",
+      "minutes": "دقائق",
+      "permeability": "النفاذية ({value} %)",
+      "valveLabel": "الصمام",
+      "valveAuto": "تلقائي",
+      "valveManual": "يدوي",
+      "vpdThreshold": "عتبة DPV (kPa)",
+      "rootMonitoringLabel": "مراقبة الجذور",
+      "enabled": "مفعّلة",
+      "disabled": "معطّلة",
+      "engineThresholdsTitle": "عتبات المحرك v1 (ET0 × Kc، الرطوبة)",
+      "criticalSoilHumidityLabel": "عتبة الرطوبة الحرجة للتربة (%)",
+      "criticalSoilHumidityHint": "{value} % — تحتها = قرار حرج",
+      "et0KcAdvisoryLabel": "عتبة إرشاد ET0×Kc (مم)",
+      "et0KcAdvisoryHint": "فوقها = قرار إرشادي (طلب ماء مرتفع)",
+      "maxWaterLabel": "أقصى حجم ماء (م³)",
+      "channelsTitle": "قنوات الإشعار",
+      "channelsHint": "حدّد القنوات التي تقبلها لتلقي التنبيهات.",
+      "saveZoneNotification": "حفظ إشعار المنطقة"
+    },
+    "deliveryRate": {
+      "label": "معدل الإرسال",
+      "hint": "الحد الأدنى للمدة قبل الإشعار التالي لهذا القطاع.",
+      "preset": {
+        "every20min": "كل 20 دقيقة",
+        "every1hour": "كل ساعة",
+        "every4hours": "كل 4 ساعات",
+        "daily": "مرة واحدة في اليوم",
+        "weekly": "مرة واحدة في الأسبوع",
+        "custom": "مخصص"
+      },
+      "unit": {
+        "minute": "دقائق",
+        "hour": "ساعات",
+        "day": "أيام",
+        "week": "أسابيع"
+      },
+      "every": "{unit, select, minute {كل {amount} دقيقة} hour {كل {amount} ساعة} day {كل {amount} يوم} week {كل {amount} أسبوع} other {كل {amount}}}"
+    }
+  },
+  "settings": {
+    "main": {
+      "title": "الإعدادات",
+      "tabFarms": "المزارع",
+      "tabUsers": "المستخدمون",
+      "tabSensors": "المستشعرات",
+      "tabReadings": "القراءات",
+      "tabGroups": "مجموعات المستشعرات"
+    },
+    "graphName": {
+      "title": "إعدادات اسم الرسم البياني",
+      "colName": "الاسم",
+      "colCustomName": "اسم مخصص",
+      "successTitle": "نجاح",
+      "successDescription": "تم تحديث الاسم بنجاح.",
+      "errorTitle": "خطأ",
+      "errorDescription": "فشل تحديث الاسم.",
+      "save": "تحديث"
+    },
+    "sensorColor": {
+      "title": "إعدادات ألوان المنحنيات",
+      "colName": "الاسم",
+      "colColor": "اللون",
+      "successTitle": "نجاح",
+      "successDescription": "تم تحديث اللون بنجاح.",
+      "errorTitle": "خطأ",
+      "errorDescription": "فشل تحديث اللون.",
+      "fetchError": "فشل تحميل ألوان المستشعرات."
+    },
+    "groups": {
+      "intro": "اجمع المستشعرات للعثور عليها بسرعة أكبر. تُحفظ المجموعات محليًا على هذا الجهاز.",
+      "newNameLabel": "اسم المجموعة الجديدة",
+      "newNamePlaceholder": "مثال: الدفيئة أ",
+      "createButton": "إنشاء مجموعة",
+      "toastCreated": "تم إنشاء المجموعة",
+      "emptyGroups": "لا توجد مجموعات بعد.",
+      "deleteGroupAria": "حذف المجموعة",
+      "sensorsInGroup": "المستشعرات في هذه المجموعة",
+      "clickToRemove": "انقر للإزالة",
+      "emptySensors": "لا توجد مستشعرات — أضف بعضها أدناه.",
+      "addSensorOption": "إضافة مستشعر إلى المجموعة…"
+    },
+    "users": {
+      "intro": "المشرف العام: أنشئ حسابات بدور مستخدم أو مدير، واختر القراءات (المستشعرات) التي يمكنهم رؤيتها. تُحفظ تفضيلات المستشعرات محليًا؛ وقد تتجاهل الواجهة البرمجية الحقول الإضافية حتى يتم تكييف الخادم.",
+      "listToastTitle": "قائمة المستخدمين",
+      "listToastDesc": "تم رفض الوصول أو الواجهة البرمجية غير متاحة.",
+      "requiredFieldsTitle": "حقول مطلوبة",
+      "requiredFieldsDesc": "اسم المستخدم وكلمة المرور.",
+      "sensorsTitle": "المستشعرات",
+      "selectAtLeastOne": "اختر قراءة مرئية واحدة على الأقل.",
+      "createdTitle": "تم إنشاء المستخدم",
+      "createdDesc": "تُحفظ صلاحيات المستشعرات أيضًا محليًا لتصفية لوحة المعلومات.",
+      "createApiTitle": "إنشاء عبر الواجهة البرمجية",
+      "createApiDesc": "إذا رفض الخادم الطلب، فقد حُفظت صلاحيات المستشعرات محليًا على أي حال.",
+      "loading": "جارٍ تحميل المستخدمين…",
+      "newUserHeading": "مستخدم جديد",
+      "usernameLabel": "اسم المستخدم",
+      "passwordLabel": "كلمة المرور",
+      "roleLabel": "الدور",
+      "roleUser": "مستخدم",
+      "roleAdmin": "مدير",
+      "visibleReadingsHeading": "القراءات المرئية على لوحة المعلومات",
+      "createButton": "إنشاء المستخدم",
+      "existingHeading": "المستخدمون الحاليون",
+      "colUser": "المستخدم",
+      "colEmail": "البريد الإلكتروني",
+      "colApiRole": "دور الواجهة البرمجية",
+      "colSensorsLocal": "المستشعرات (محلي)",
+      "badgeAdmin": "مدير",
+      "badgeUser": "مستخدم",
+      "localSensorsCell": "{count} قراءة — {role}"
+    },
+    "directory": {
+      "toastUpdated": "تم تحديث المستشعر",
+      "requiredFieldsTitle": "حقول مطلوبة",
+      "requiredFieldsDesc": "يرجى ملء جميع الحقول.",
+      "keyUsedTitle": "المفتاح مستخدم بالفعل",
+      "keyUsedDesc": "مفتاح المستشعر هذا موجود بالفعل.",
+      "toastAdded": "تمت إضافة المستشعر",
+      "searchPlaceholder": "ابحث عن مستشعر (الاسم، النوع، الموضع، المفتاح)…",
+      "addSensorButton": "إضافة مستشعر",
+      "countShown": "{count} مستشعر معروض",
+      "colDisplayName": "الاسم المعروض",
+      "colTypePlacement": "النوع / الموضع",
+      "colKey": "المفتاح",
+      "colUnit": "الوحدة",
+      "colVisible": "مرئي",
+      "yes": "نعم",
+      "no": "لا",
+      "editAria": "تعديل",
+      "addModalTitle": "إضافة مستشعر",
+      "fieldLabel": "التسمية",
+      "fieldType": "النوع",
+      "fieldKeyUnique": "المفتاح (فريد)",
+      "fieldUnit": "الوحدة",
+      "cancel": "إلغاء",
+      "add": "إضافة",
+      "editModalTitle": "تعديل المستشعر",
+      "fieldDisplayName": "الاسم المعروض",
+      "displayNamePlaceholder": "اسم مخصص",
+      "fieldPlacementType": "نوع الموضع",
+      "placementPlaceholder": "مثال: تربة، دفيئة…",
+      "visibleInLists": "مرئي في القوائم",
+      "catalogNote": "مستشعر من الكتالوج: تُستبدل البيانات الوصفية محليًا فقط.",
+      "save": "حفظ",
+      "placementOptions": {
+        "soil": "التربة",
+        "water": "الماء",
+        "weather": "الطقس",
+        "greenhouse": "بيت محمي",
+        "leafFruit": "ورقة / ثمرة",
+        "electricity": "الكهرباء",
+        "other": "أخرى"
+      }
+    },
+    "searchDirectory": {
+      "requiredFieldsTitle": "حقول مطلوبة",
+      "requiredFieldsDesc": "يرجى ملء جميع الحقول.",
+      "keyUsedTitle": "المفتاح مستخدم بالفعل",
+      "keyUsedDesc": "مفتاح المستشعر هذا موجود بالفعل.",
+      "toastAddedTitle": "تمت إضافة المستشعر",
+      "toastAddedDesc": "المستشعر متاح في الإعدادات.",
+      "searchPlaceholder": "ابحث عن مستشعر...",
+      "addSensorButton": "إضافة مستشعر",
+      "countFound": "{count} مستشعر تم العثور عليه",
+      "colLabel": "التسمية",
+      "colType": "النوع",
+      "colKey": "المفتاح",
+      "colDefaultUnit": "الوحدة الافتراضية",
+      "addModalTitle": "إضافة مستشعر",
+      "fieldLabel": "التسمية",
+      "fieldType": "النوع",
+      "fieldKeyUnique": "المفتاح (فريد)",
+      "fieldUnit": "الوحدة",
+      "cancel": "إلغاء",
+      "add": "إضافة"
+    },
+    "readings": {
+      "rowSavedTitle": "تم حفظ التعديل",
+      "rowSavedDesc": "تم حفظ السطر محليًا.",
+      "unitsSavedTitle": "تم حفظ الوحدات",
+      "unitsSavedDesc": "طُبّقت التعديلات على الواجهة الأمامية فقط.",
+      "resetTitle": "تمت إعادة التعيين",
+      "resetDesc": "تمت استعادة الوحدات الافتراضية.",
+      "searchPlaceholder": "ابحث عن مستشعر (التسمية، النوع، المفتاح)…",
+      "zoneLabel": "المنطقة",
+      "refreshButton": "تحديث آخر القيم",
+      "colReadingLabel": "تسمية القراءة",
+      "colType": "النوع",
+      "colUnit": "الوحدة",
+      "colScale": "معامل القياس (a)",
+      "colOffset": "الإزاحة (b)",
+      "colLastValue": "آخر قيمة",
+      "colActions": "إجراءات",
+      "editRowAria": "تعديل السطر",
+      "resetButton": "إعادة التعيين",
+      "saveButton": "حفظ",
+      "localChangesNotice": "تم تعديل بعض الوحدات محليًا.",
+      "editModalTitle": "تعديل القراءة",
+      "calibrationNote": "وفقًا للملف «{pdf}»: القيمة الحقيقية = القيمة الخام × a + b. يؤدي تغيير الوحدة إلى إعادة حساب a و b عبر {conversionModule} (معادلات الملف). الإشعاع MJ/m²: المعامل 0.0036 يقابل التكامل خلال ساعة واحدة (انظر الملف). القيم الافتراضية a,b: {defaultsModule}.",
+      "cancel": "إلغاء",
+      "save": "حفظ"
+    },
+    "farms": {
+      "errorTitle": "خطأ",
+      "loadFarmsError": "تعذّر تحميل المزارع.",
+      "nameRequired": "الاسم مطلوب",
+      "farmUpdated": "تم تحديث المزرعة",
+      "saveFailed": "فشل الحفظ",
+      "imageTooLargeTitle": "الصورة كبيرة جدًا",
+      "imageTooLargeDesc": "اختر صورة أصغر (تخزين محلي).",
+      "imageSavedTitle": "تم حفظ الصورة محليًا",
+      "imageSavedDesc": "تُعرض على هذا الجهاز. للتخزين على الخادم، ستلزم واجهة برمجية مخصصة.",
+      "loading": "جارٍ تحميل المزارع…",
+      "intro": "تقابل المزارع المناطق التي تُرجعها الواجهة البرمجية. يُحفظ الاسم على الخادم؛ وتُخزّن الصورة محليًا في المتصفح (معاينة لكل جهاز).",
+      "empty": "لا توجد مزرعة / منطقة لهذا الحساب.",
+      "farmZoneHeading": "مزرعة — المنطقة رقم {id}",
+      "removeImage": "إزالة الصورة",
+      "farmNameLabel": "اسم المزرعة",
+      "saveNameButton": "حفظ الاسم"
+    }
+  },
+  "shell": {
+    "pageSubtitle": {
+      "range": "من {start} إلى {end}"
+    },
+    "zoneSelect": {
+      "label": "اختر منطقة"
+    },
+    "chartDateRange": {
+      "preset24h": "آخر 24 ساعة",
+      "preset7d": "آخر 7 أيام",
+      "preset30d": "آخر 30 يومًا",
+      "preset90d": "آخر 90 يومًا",
+      "preset12m": "آخر 12 شهرًا"
+    },
+    "dashboard": {
+      "title": "لوحة التحكم",
+      "subtitle": "نظرة عامة على المزرعة — الطقس والمناطق وحالة شبكة الري",
+      "zonesAvailable": "المناطق المتاحة",
+      "electrovannesAvailable": "الصمامات الكهربائية المتاحة"
+    },
+    "electrovanCard": {
+      "devEui": "DevEUI",
+      "mode": "الوضع",
+      "modeManual": "يدوي",
+      "modeAuto": "تلقائي",
+      "status": "الحالة",
+      "activated": "مُفعَّل",
+      "deactivated": "مُعطَّل"
+    },
+    "statusIndicators": {
+      "title": "مؤشرات حالة النظام",
+      "panelVoltage": "جهد اللوح",
+      "systemHealthy": "حالة النظام: سليم",
+      "systemUnhealthy": "حالة النظام: غير سليم"
+    },
+    "water": {
+      "title": "بيانات المياه",
+      "zoneFallback": "منطقة"
+    },
+    "vannesPompes": {
+      "title": "الصمامات والمضخات",
+      "vaneCount": "{count, plural, zero {# صمام} one {صمام واحد} two {صمامان} few {# صمامات} many {# صمامًا} other {# صمام}}",
+      "pumpCount": "{count, plural, zero {# مضخة} one {مضخة واحدة} two {مضختان} few {# مضخات} many {# مضخة} other {# مضخة}}",
+      "addVane": "إضافة صمام",
+      "addPump": "إضافة مضخة",
+      "schemaView": "عرض مخطط الشبكة",
+      "vanesHeading": "الصمامات",
+      "pumpsHeading": "المضخات",
+      "emptyVanes": "لا توجد صمامات. انقر على «إضافة صمام» لإنشاء واحد.",
+      "emptyPumps": "لا توجد مضخات. استخدم «إضافة مضخة» لإنشاء واحدة.",
+      "newVaneTitle": "صمام جديد",
+      "newPumpTitle": "مضخة جديدة",
+      "nameLabel": "الاسم",
+      "devEuiOptionalLabel": "DevEUI (اختياري)",
+      "vaneNamePlaceholder": "مثال: الصمام 1",
+      "pumpNamePlaceholder": "مثال: مضخة الخط الرئيسي",
+      "cancel": "إلغاء",
+      "create": "إنشاء",
+      "manual": "يدوي",
+      "vaneOpen": "مفتوح (نشط)",
+      "vaneClosed": "مغلق (غير نشط)",
+      "activate": "تفعيل",
+      "deactivate": "تعطيل",
+      "pumpRunning": "قيد التشغيل",
+      "pumpStopped": "متوقفة",
+      "start": "تشغيل",
+      "stop": "إيقاف"
+    },
+    "common": {
+      "zoneFallback": "منطقة"
+    },
+    "station": {
+      "title": "محطة الطقس"
+    },
+    "plant": {
+      "title": "بيانات النباتات"
+    },
+    "soil": {
+      "title": "بيانات التربة"
+    },
+    "admin": {
+      "dashboard": "لوحة التحكم",
+      "users": "المستخدمون",
+      "affirmations": "مدير التأكيدات",
+      "logout": "تسجيل الخروج",
+      "cancel": "إلغاء",
+      "logoutConfirmTitle": "تأكيد تسجيل الخروج",
+      "logoutConfirmBody": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+      "logoutConfirmOk": "تسجيل الخروج"
+    },
+    "mobileMenu": {
+      "home": "الرئيسية",
+      "menu": "القائمة",
+      "profile": "الملف الشخصي",
+      "openMenu": "فتح القائمة",
+      "greeting": "مرحبًا {name}",
+      "darkMode": "الوضع الداكن",
+      "lightMode": "الوضع الفاتح"
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "openAria": "فتح الإشعارات",
+      "loading": "جارٍ التحميل…",
+      "empty": "لا توجد إشعارات حتى الآن.",
+      "compactSummary": "ح {temperature}°م · تربة {soilHumidity}% · ET0 {et0}",
+      "seeAll": "عرض الكل",
+      "detailTitle": "تفاصيل الإشعار",
+      "modify": "تعديل الإشعار",
+      "delete": "حذف الإشعار",
+      "deleteConfirmTitle": "حذف إشعار هذه المنطقة؟",
+      "deleteConfirmBody": "سيتم محو إعدادات هذا القطاع (العتبات، التكرار، القنوات) من هذا الجهاز وإزالة الصفوف المحلية المرتبطة من القائمة. لن تتأثر الإشعارات الأخرى لنفس المنطقة.",
+      "deleteConfirmOk": "حذف",
+      "deletedToastTitle": "تم حذف الإشعار",
+      "deletedToastBody": "تم محو الإعدادات وإزالة الإدخالات المحلية من القائمة على هذا الجهاز."
+    },
+    "adminMenu": {
+      "logoAlt": "شعار أغريلوجي",
+      "toggleDarkAria": "تبديل الوضع الداكن"
+    },
+    "weather": {
+      "title": "الطقس",
+      "feelsLike": "الإحساس الحراري",
+      "today": "اليوم"
+    }
+  },
+  "station": {
+    "pluvometric": {
+      "title": "الهطول — الشدة بالساعة",
+      "precipAxis": "هطول"
+    },
+    "precipitationHumidity": {
+      "title": "الهطول ورطوبة الهواء",
+      "precipAxis": "هطول",
+      "humidityAxis": "ر.ن"
+    },
+    "tempHumidity": {
+      "title": "الهواء — درجة الحرارة والرطوبة النسبية",
+      "tempAxis": "حرارة",
+      "humidityAxis": "ر.ن"
+    },
+    "vpd": {
+      "title": "الغلاف الجوي — عجز ضغط البخار (DPV)",
+      "vpdAxis": "ع.ض.ب"
+    },
+    "solarRadiation": {
+      "title": "الإشعاع الشمسي — القدرة السطحية",
+      "bandsCaption": "نطاقات 0–90 ٪ و90–100 ٪ من المقياس المعروض"
+    },
+    "et0": {
+      "title": "ET₀ — التبخر النتحي المرجعي"
+    },
+    "dataTable": {
+      "title": "القياسات — جدول مفصل",
+      "exportCsv": "تصدير CSV"
+    },
+    "windDirection": {
+      "title": "الرياح — الاتجاه",
+      "axis": "الاتجاه ({unit})",
+      "series": "اتجاه الرياح ({unit})"
+    },
+    "windSpeed": {
+      "title": "الرياح — السرعة بالساعة",
+      "axis": "السرعة ({unit})",
+      "series": "سرعة الرياح ({unit})"
+    }
+  },
+  "sensorCatalog": {
+    "solar_radiation": {
+      "reading": "الإشعاع",
+      "type": "الإشعاع"
+    },
+    "temperature_weather": {
+      "reading": "الحرارة",
+      "type": "الحرارة"
+    },
+    "humidity_weather": {
+      "reading": "الرطوبة",
+      "type": "الرطوبة"
+    },
+    "pressure_weather": {
+      "reading": "الضغط الجوي",
+      "type": "الطقس"
+    },
+    "wind_speed": {
+      "reading": "سرعة الرياح",
+      "type": "سرعة الرياح"
+    },
+    "wind_gust": {
+      "reading": "سرعة الهبّات",
+      "type": "سرعة الهبّات"
+    },
+    "wind_direction": {
+      "reading": "اتجاه الرياح",
+      "type": "اتجاه الرياح"
+    },
+    "et0": {
+      "reading": "التبخر النتحي المرجعي (ساعي)",
+      "type": "التبخر النتحي ET₀"
+    },
+    "vpd": {
+      "reading": "عجز ضغط البخار",
+      "type": "VPD"
+    },
+    "precipitation_rate": {
+      "reading": "التساقط",
+      "type": "معدل التساقط"
+    },
+    "water_flow": {
+      "reading": "الري",
+      "type": "الري"
+    },
+    "irrigation_cumulative": {
+      "reading": "الري التراكمي",
+      "type": "الري"
+    },
+    "water_level": {
+      "reading": "منسوب المياه",
+      "type": "المياه"
+    },
+    "water_pressure": {
+      "reading": "ضغط المياه",
+      "type": "الضغط"
+    },
+    "water_ph": {
+      "reading": "حموضة المياه",
+      "type": "حموضة المياه"
+    },
+    "water_ec": {
+      "reading": "ناقلية المياه",
+      "type": "ناقلية المياه"
+    },
+    "soil_moisture_low": {
+      "reading": "رطوبة التربة المنخفضة",
+      "type": "رطوبة التربة"
+    },
+    "soil_moisture_medium": {
+      "reading": "رطوبة التربة المتوسطة",
+      "type": "رطوبة التربة"
+    },
+    "soil_moisture_high": {
+      "reading": "رطوبة التربة العالية",
+      "type": "رطوبة التربة"
+    },
+    "soil_temp_low": {
+      "reading": "حرارة التربة المنخفضة",
+      "type": "حرارة التربة"
+    },
+    "soil_temp_medium": {
+      "reading": "حرارة التربة المتوسطة",
+      "type": "حرارة التربة"
+    },
+    "soil_temp_high": {
+      "reading": "حرارة التربة العالية",
+      "type": "حرارة التربة"
+    },
+    "soil_ph": {
+      "reading": "حموضة التربة",
+      "type": "حموضة التربة"
+    },
+    "soil_salinity": {
+      "reading": "ملوحة التربة",
+      "type": "الملوحة"
+    },
+    "soil_conductivity": {
+      "reading": "ناقلية التربة",
+      "type": "ناقلية التربة"
+    },
+    "leaf_temperature": {
+      "reading": "حرارة الورقة",
+      "type": "الورقة"
+    },
+    "leaf_moisture": {
+      "reading": "رطوبة الورقة",
+      "type": "الورقة"
+    },
+    "npk_n": {
+      "reading": "النيتروجين (N)",
+      "type": "NPK"
+    },
+    "npk_p": {
+      "reading": "الفوسفور (P)",
+      "type": "NPK"
+    },
+    "npk_k": {
+      "reading": "البوتاسيوم (K)",
+      "type": "NPK"
+    },
+    "fruit_size": {
+      "reading": "حجم الثمار",
+      "type": "الثمار"
+    },
+    "large_fruit_diameter": {
+      "reading": "قطر الثمار",
+      "type": "الثمار"
+    },
+    "electricity_consumption": {
+      "reading": "استهلاك الكهرباء",
+      "type": "الكهرباء"
+    }
+  }
+}

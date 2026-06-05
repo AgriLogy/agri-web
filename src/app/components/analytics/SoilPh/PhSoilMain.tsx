@@ -25,7 +25,7 @@ const PhSoilMain = ({
 
   useEffect(() => {
     api
-      .get<SensorData[]>('/api/sensors/phsoil/', {
+      .get<SensorData[]>('/sensors/phsoil', {
         params: {
           start_date: startDate,
           end_date: endDate,

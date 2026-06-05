@@ -2,7 +2,7 @@
 
 import { Box, useColorModeValue } from '@chakra-ui/react';
 import { CHART_PLOT_HEIGHT_PX } from '@/app/utils/chartAxisConfig';
-import EmptyBox, { DEFAULT_EMPTY_TEXT, DEFAULT_LOADING_TEXT } from './EmptyBox';
+import EmptyBox from './EmptyBox';
 
 export interface ChartStateViewProps {
   /** When true, shows loading state (spinner + message) */
@@ -29,8 +29,8 @@ export interface ChartStateViewProps {
 const ChartStateView = ({
   loading = false,
   empty = false,
-  emptyText = DEFAULT_EMPTY_TEXT,
-  loadingText = DEFAULT_LOADING_TEXT,
+  emptyText,
+  loadingText,
   height = CHART_PLOT_HEIGHT_PX,
   chartRef,
   children,

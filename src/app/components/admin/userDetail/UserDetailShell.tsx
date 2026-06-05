@@ -1,6 +1,7 @@
 'use client';
 
 import { App, Skeleton, Tabs } from 'antd';
+import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
@@ -44,6 +45,7 @@ export type UserDetailShellProps = {
 };
 
 export function UserDetailShell({ username }: UserDetailShellProps) {
+  const t = useTranslations();
   const { message } = App.useApp();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -61,7 +63,7 @@ export function UserDetailShell({ username }: UserDetailShellProps) {
       const next = await adminUserApi.retrieve(username);
       setUser(next);
     } catch {
-      message.error("Impossible de charger l'utilisateur.");
+      message.error(t('admin.userDetail.loadUserError'));
     } finally {
       setLoading(false);
     }
@@ -76,9 +78,9 @@ export function UserDetailShell({ username }: UserDetailShellProps) {
   };
 
   const subtitle = useMemo(() => {
-    if (loading || !user) return 'Chargement…';
+    if (loading || !user) return t('admin.userDetail.loading');
     return <UserStatusLine user={user} />;
-  }, [loading, user]);
+  }, [loading, user, t]);
 
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
@@ -109,42 +111,42 @@ export function UserDetailShell({ username }: UserDetailShellProps) {
             items={[
               {
                 key: 'profile',
-                label: 'Profil',
+                label: t('admin.userDetail.tabProfile'),
                 children: <ProfileTab user={user} onChange={setUser} />,
               },
               {
                 key: 'zones',
-                label: 'Zones',
+                label: t('admin.userDetail.tabZones'),
                 children: <ZonesTab username={username} />,
               },
               {
                 key: 'params',
-                label: 'Paramètres',
+                label: t('admin.userDetail.tabParams'),
                 children: <ParamsTab username={username} />,
               },
               {
                 key: 'graphs',
-                label: 'Graphiques',
+                label: t('admin.userDetail.tabGraphs'),
                 children: <GraphsTab username={username} />,
               },
               {
                 key: 'soil-data',
-                label: 'Données — Sol',
+                label: t('admin.userDetail.tabSoilData'),
                 children: <SoilDataTab username={username} />,
               },
               {
                 key: 'station-data',
-                label: 'Données — Station',
+                label: t('admin.userDetail.tabStationData'),
                 children: <StationDataTab username={username} />,
               },
               {
                 key: 'alerts',
-                label: 'Alertes & notifs',
+                label: t('admin.userDetail.tabAlerts'),
                 children: <AlertsNotifsTab username={username} />,
               },
               {
                 key: 'activity',
-                label: 'Activité',
+                label: t('admin.userDetail.tabActivity'),
                 children: <ActivityTab username={username} />,
               },
             ]}

@@ -25,7 +25,7 @@ const ElectricityconsumptionMain = ({
 
   useEffect(() => {
     api
-      .get<SensorData[]>('/api/sensors/electricityconsumption/', {
+      .get<SensorData[]>('/sensors/electricityconsumption', {
         params: {
           start_date: startDate,
           end_date: endDate,

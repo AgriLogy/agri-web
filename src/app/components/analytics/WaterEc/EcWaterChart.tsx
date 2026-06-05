@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -45,6 +46,7 @@ const EcWaterChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showLine, setShowLine] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -109,19 +111,19 @@ const EcWaterChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Conductivité électrique de l’eau"
-          subtitle="Salinité et charge ionique de l’eau d’apport."
+          title={t('sensors.water_ec')}
+          subtitle={t('analytics.waterEc.subtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -150,7 +152,10 @@ const EcWaterChart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`CE (${ecUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.waterEc.axisLabel', { unit: ecUnit }),
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -165,7 +170,7 @@ const EcWaterChart = ({
             <Line
               type="monotone"
               dataKey="water_ec"
-              name={`Conductivité (${ecUnit})`}
+              name={t('analytics.waterEc.legendName', { unit: ecUnit })}
               hide={!showLine}
               stroke="#82ca9d"
               strokeWidth={2.25}

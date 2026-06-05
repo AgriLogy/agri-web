@@ -1,6 +1,9 @@
 // components/OpenStreetMap.js
+'use client';
+
 import { useEffect } from 'react';
 import L from 'leaflet';
+import { useTranslations } from 'next-intl';
 
 interface OpenStreetMapProps {
   lat: number;
@@ -8,6 +11,7 @@ interface OpenStreetMapProps {
 }
 
 const OpenStreetMap = ({ lat, lon }: OpenStreetMapProps) => {
+  const t = useTranslations();
   useEffect(() => {
     // Create map instance
     const map = L.map('map').setView([lat, lon], 13);
@@ -21,13 +25,13 @@ const OpenStreetMap = ({ lat, lon }: OpenStreetMapProps) => {
     // Add a marker at the provided latitude and longitude
     L.marker([lat, lon])
       .addTo(map)
-      .bindPopup('This is your location')
+      .bindPopup(t('misc.map.yourLocation'))
       .openPopup();
 
     return () => {
       map.remove();
     };
-  }, [lat, lon]);
+  }, [lat, lon, t]);
 
   return <div id="map" style={{ height: '100%', width: '100%' }}></div>;
 };

@@ -33,18 +33,16 @@ const unwrap = <T>(data: unknown): T[] => {
 
 export const adminAlertApi = {
   listForUser: async (username: string): Promise<AdminAlertRow[]> => {
-    const res = await api.get(
-      `/api/admin/users/${encodeURIComponent(username)}/alerts/`
-    );
+    const res = await api.get(`/users/${encodeURIComponent(username)}/alerts`);
     return unwrap<AdminAlertRow>(res.data);
   },
   setActive: async (pk: number, isActive: boolean): Promise<AdminAlertRow> => {
-    const res = await api.patch<AdminAlertRow>(`/api/admin/alerts/${pk}/`, {
+    const res = await api.patch<AdminAlertRow>(`/admin/alerts/${pk}`, {
       is_active: isActive,
     });
     return res.data;
   },
   remove: async (pk: number): Promise<void> => {
-    await api.delete(`/api/admin/alerts/${pk}/`);
+    await api.delete(`/admin/alerts/${pk}`);
   },
 };

@@ -1,3 +1,94 @@
+# [1.7.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.6.1...v1.7.0) (2026-06-05)
+
+
+### Features
+
+* **notifications:** flexible per-zone notification delivery rate ([#107](https://github.com/AgriLogy/agrilogy-front/issues/107)) ([1f61b13](https://github.com/AgriLogy/agrilogy-front/commit/1f61b1398da6d82640ba7727996791d5a9614e49))
+
+## [1.6.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.6.0...v1.6.1) (2026-06-04)
+
+
+### Bug Fixes
+
+* **i18n:** translate data-driven labels and localize dates (ar/fr/en) ([#103](https://github.com/AgriLogy/agrilogy-front/issues/103)) ([e5d4227](https://github.com/AgriLogy/agrilogy-front/commit/e5d4227982738c0b061aa40aae14fddadb2bbea6))
+
+# [1.6.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.5.0...v1.6.0) (2026-06-04)
+
+
+### Features
+
+* **i18n:** translate the full dashboard (charts, sensors, data) into ar/fr/en ([#101](https://github.com/AgriLogy/agrilogy-front/issues/101)) ([3671e46](https://github.com/AgriLogy/agrilogy-front/commit/3671e4639db83c2f956f616682cf22d6b17682e9))
+
+# [1.5.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.5...v1.5.0) (2026-06-04)
+
+
+### Features
+
+* **i18n:** add Arabic, French & English localization ([#99](https://github.com/AgriLogy/agrilogy-front/issues/99)) ([b2f5ba3](https://github.com/AgriLogy/agrilogy-front/commit/b2f5ba34f43eb19887cf7f7d1139087327c6c308))
+
+## [1.4.5](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.4...v1.4.5) (2026-06-02)
+
+
+### Bug Fixes
+
+* **alerts:** drop trailing slash on alert update/delete URLs ([#95](https://github.com/AgriLogy/agrilogy-front/issues/95)) ([fa6cb73](https://github.com/AgriLogy/agrilogy-front/commit/fa6cb7360bdcc476a46dec61722fa95800bdbad5))
+
+## [1.4.4](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.3...v1.4.4) (2026-06-02)
+
+
+### Bug Fixes
+
+* **meteo:** tidy forecast row (7 cols, short labels, no wrap) ([#93](https://github.com/AgriLogy/agrilogy-front/issues/93)) ([003658a](https://github.com/AgriLogy/agrilogy-front/commit/003658afb6d199a5ec5d51d14fdb41eedb04dd1d))
+
+## [1.4.3](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.2...v1.4.3) (2026-06-02)
+
+
+### Bug Fixes
+
+* **ui:** unify reading panels to brand-green + meteo forecast fit ([#91](https://github.com/AgriLogy/agrilogy-front/issues/91)) ([0899e53](https://github.com/AgriLogy/agrilogy-front/commit/0899e532d3a01422bd9c57de9392e01ce253a30e))
+
+## [1.4.2](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.1...v1.4.2) (2026-06-02)
+
+
+### Bug Fixes
+
+* **dashboard:** match other pages' full-width layout ([#89](https://github.com/AgriLogy/agrilogy-front/issues/89)) ([ce807c9](https://github.com/AgriLogy/agrilogy-front/commit/ce807c9cb73172874697aa4e2268a0a60769580a)), closes [#75](https://github.com/AgriLogy/agrilogy-front/issues/75)
+
+## [1.4.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.4.0...v1.4.1) (2026-06-02)
+
+
+### Bug Fixes
+
+* **charts:** horizontal-only gridlines ([#87](https://github.com/AgriLogy/agrilogy-front/issues/87)) ([a99ee63](https://github.com/AgriLogy/agrilogy-front/commit/a99ee63900603ae02fe3eaa88d50ace8a1d41c99))
+
+# [1.4.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.8...v1.4.0) (2026-06-02)
+
+
+### Bug Fixes
+
+* **dashboard:** cap content max-width at 1400px and center ([#75](https://github.com/AgriLogy/agrilogy-front/issues/75)) ([d92deec](https://github.com/AgriLogy/agrilogy-front/commit/d92deec876325e5bbc46249204bce046d8039ead)), closes [#74](https://github.com/AgriLogy/agrilogy-front/issues/74)
+* **sensors:** rename water_flow label to 'Irrigation' ([#77](https://github.com/AgriLogy/agrilogy-front/issues/77)) ([6ecc66e](https://github.com/AgriLogy/agrilogy-front/commit/6ecc66e6241adfa1d8e2aa9f32f47429d0b0d3b1))
+* **wind:** drop dead /sensors/windgust fetch (404 spam) ([#85](https://github.com/AgriLogy/agrilogy-front/issues/85)) ([33ba144](https://github.com/AgriLogy/agrilogy-front/commit/33ba144d55feb21d7aeba027487ed494137e5171)), closes [#6](https://github.com/AgriLogy/agrilogy-front/issues/6)
+
+
+### Features
+
+* **et0:** show daily total, previous-day & cumulative ET₀ ([#79](https://github.com/AgriLogy/agrilogy-front/issues/79)) ([d8ddbbc](https://github.com/AgriLogy/agrilogy-front/commit/d8ddbbcde67978dd3b949c9ddd658bd706b6224a)), closes [#78](https://github.com/AgriLogy/agrilogy-front/issues/78) [#78](https://github.com/AgriLogy/agrilogy-front/issues/78) [#78](https://github.com/AgriLogy/agrilogy-front/issues/78)
+* **weather:** add point de rosée (dew point) line ([#81](https://github.com/AgriLogy/agrilogy-front/issues/81)) ([d61e3b8](https://github.com/AgriLogy/agrilogy-front/commit/d61e3b802f670d395cc4f7cbe90902f708cb329d)), closes [#80](https://github.com/AgriLogy/agrilogy-front/issues/80)
+
+## [1.3.8](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.7...v1.3.8) (2026-06-02)
+
+
+### Bug Fixes
+
+* **api:** default API base to back.agrogo-datafarm.com ([#73](https://github.com/AgriLogy/agrilogy-front/issues/73)) ([e24229f](https://github.com/AgriLogy/agrilogy-front/commit/e24229f146403c8c606c20460d18750d47d6b909)), closes [#72](https://github.com/AgriLogy/agrilogy-front/issues/72)
+
+## [1.3.7](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.6...v1.3.7) (2026-05-29)
+
+## [1.3.6](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.5...v1.3.6) (2026-05-29)
+
+## [1.3.5](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.4...v1.3.5) (2026-05-28)
+
 ## [1.3.4](https://github.com/AgriLogy/agrilogy-front/compare/v1.3.3...v1.3.4) (2026-05-22)
 
 

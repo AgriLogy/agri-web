@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Alert,
@@ -57,6 +58,7 @@ import {
   SENSOR_TYPES,
   getSensorTypeMeta,
   sensorTypeColorMatchExpression,
+  sensorTypeI18nKey,
 } from '@/app/utils/sensorTypes';
 
 const AGRICULTURE_MAP_STYLE = 'mapbox://styles/mapbox/satellite-streets-v12';
@@ -310,6 +312,7 @@ export default function AgricultureMapboxMap({
     string | null
   >(null);
 
+  const t = useTranslations();
   const toast = useToast();
   const { colorMode } = useColorMode();
   const toolbarBg = useColorModeValue('whiteAlpha.900', 'blackAlpha.600');
@@ -371,9 +374,13 @@ export default function AgricultureMapboxMap({
       persistFarmSensors(sensorsFcRef.current);
       setSelectedSensorId((s) => (s === id ? null : s));
       bumpSensorListRef.current();
-      toast({ title: 'Capteur supprimé', status: 'info', duration: 2000 });
+      toast({
+        title: t('misc.map.sensorDeleted'),
+        status: 'info',
+        duration: 2000,
+      });
     },
-    [toast]
+    [toast, t]
   );
 
   useEffect(() => {
@@ -544,8 +551,8 @@ export default function AgricultureMapboxMap({
         persistFarmSensors(sensorsFcRef.current);
         bumpSensorListRef.current();
         toast({
-          title: 'Capteur déplacé',
-          description: 'Zone recalculée.',
+          title: t('misc.map.sensorMoved'),
+          description: t('misc.map.zoneRecalculated'),
           status: 'success',
           duration: 2200,
         });
@@ -577,14 +584,16 @@ export default function AgricultureMapboxMap({
       const props = f.properties as
         | Record<string, string | undefined>
         | undefined;
-      const name = props?.name ?? 'Capteur';
+      const name = props?.name ?? t('misc.map.sensor');
       const typeKey = props?.sensorType ?? '';
-      const typeLabel = getSensorTypeMeta(typeKey).label;
+      const typeLabel = typeKey
+        ? t(`sensors.${sensorTypeI18nKey(typeKey)}`)
+        : t('misc.map.sensor');
       const zoneName = props?.zoneName;
       const zoneLine =
         zoneName && zoneName.length > 0
-          ? `<div style="margin-top:4px;font-size:11px;opacity:0.9">Zone : ${escapeHtml(zoneName)}</div>`
-          : '<div style="margin-top:4px;font-size:11px;opacity:0.85">Hors zone</div>';
+          ? `<div style="margin-top:4px;font-size:11px;opacity:0.9">${escapeHtml(t('misc.map.zoneLabel', { zone: zoneName }))}</div>`
+          : `<div style="margin-top:4px;font-size:11px;opacity:0.85">${escapeHtml(t('misc.map.outOfZone'))}</div>`;
       sensorPopup
         .setLngLat(coords)
         .setHTML(
@@ -621,9 +630,11 @@ export default function AgricultureMapboxMap({
       );
       const typeId = placingSensorTypeRef.current;
       if (!typeId) return;
-      const meta = getSensorTypeMeta(typeId);
       sensorInstanceCounterRef.current += 1;
-      const name = `${meta.label} ${sensorInstanceCounterRef.current}`;
+      const typeName = typeId
+        ? t(`sensors.${sensorTypeI18nKey(typeId)}`)
+        : t('misc.map.sensor');
+      const name = `${typeName} ${sensorInstanceCounterRef.current}`;
       const sid = `sensor-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
       const props: FarmSensorProperties = {
         name,
@@ -645,8 +656,10 @@ export default function AgricultureMapboxMap({
       persistFarmSensors(sensorsFcRef.current);
       bumpSensorListRef.current();
       toast({
-        title: `Capteur « ${name} »`,
-        description: zone ? `Zone « ${zone.zoneName} »` : 'Hors zone tracée',
+        title: t('misc.map.sensorAdded', { name }),
+        description: zone
+          ? t('misc.map.zoneNamed', { zone: zone.zoneName })
+          : t('misc.map.outOfDrawnZone'),
         status: 'success',
         duration: 2800,
       });
@@ -845,7 +858,7 @@ export default function AgricultureMapboxMap({
       drawRef.current = null;
       syncSectorsAndSensorsRef.current = null;
     };
-  }, [token, lat, lon, pushLabelsFromDraw, toast]);
+  }, [token, lat, lon, pushLabelsFromDraw, toast, t]);
 
   useEffect(() => {
     if (showToolsPanel) return;
@@ -866,7 +879,7 @@ export default function AgricultureMapboxMap({
     normalizeAndPersistFarmSectorsFromDraw(draw);
     persistFarmSensors(sensorsFcRef.current);
     toast({
-      title: 'Secteurs et capteurs enregistrés',
+      title: t('misc.map.sectorsAndSensorsSaved'),
       status: 'success',
       duration: 2500,
     });
@@ -889,8 +902,8 @@ export default function AgricultureMapboxMap({
     const ids = d.getSelectedIds();
     if (ids.length !== 1) {
       toast({
-        title: 'Sélectionnez un secteur',
-        description: 'Mode Sélectionner, puis cliquez sur un polygone.',
+        title: t('misc.map.selectSector'),
+        description: t('misc.map.selectSectorHint'),
         status: 'info',
         duration: 3000,
       });
@@ -908,8 +921,8 @@ export default function AgricultureMapboxMap({
     const ids = d.getSelectedIds();
     if (ids.length === 0) {
       toast({
-        title: 'Rien à supprimer',
-        description: 'Sélectionnez un ou plusieurs secteurs.',
+        title: t('misc.map.nothingToDelete'),
+        description: t('misc.map.selectOneOrMoreSectors'),
         status: 'warning',
         duration: 2500,
       });
@@ -918,7 +931,7 @@ export default function AgricultureMapboxMap({
     d.delete(ids);
     pushLabelsFromDraw();
     toast({
-      title: 'Secteur(s) supprimé(s)',
+      title: t('misc.map.sectorsDeleted'),
       status: 'success',
       duration: 2000,
     });
@@ -931,9 +944,8 @@ export default function AgricultureMapboxMap({
     const ids = d.getSelectedIds();
     if (ids.length !== 1) {
       toast({
-        title: 'Un seul secteur',
-        description:
-          'Sélectionnez exactement un polygone, puis appliquez le nouveau nom.',
+        title: t('misc.map.onlyOneSector'),
+        description: t('misc.map.onlyOneSectorHint'),
         status: 'info',
         duration: 3000,
       });
@@ -954,8 +966,8 @@ export default function AgricultureMapboxMap({
       syncSectorsAndSensorsRef.current?.();
     }
     toast({
-      title: 'Secteur renommé',
-      description: 'Sauvegardé localement dans le navigateur.',
+      title: t('misc.map.sectorRenamed'),
+      description: t('misc.map.savedLocally'),
       status: 'success',
       duration: 2200,
     });
@@ -965,11 +977,11 @@ export default function AgricultureMapboxMap({
     return (
       <Alert status="warning" borderRadius="md" fontSize="sm">
         <AlertIcon />
-        Ajoutez{' '}
+        {t('misc.map.tokenMissingBefore')}{' '}
         <Text as="span" fontWeight="semibold" mx={1}>
           NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
         </Text>{' '}
-        dans votre environnement pour afficher la carte Mapbox.
+        {t('misc.map.tokenMissingAfter')}
       </Alert>
     );
   }
@@ -1004,7 +1016,7 @@ export default function AgricultureMapboxMap({
                   colorScheme="brand"
                   variant={drawMode === 'draw_polygon' ? 'solid' : 'outline'}
                 >
-                  Dessiner
+                  {t('misc.map.draw')}
                 </Button>
                 <Button
                   size="sm"
@@ -1012,7 +1024,7 @@ export default function AgricultureMapboxMap({
                   colorScheme="brand"
                   variant={drawMode === 'simple_select' ? 'solid' : 'outline'}
                 >
-                  Sélectionner
+                  {t('misc.map.select')}
                 </Button>
                 <Button
                   size="sm"
@@ -1020,7 +1032,7 @@ export default function AgricultureMapboxMap({
                   colorScheme="brand"
                   variant={drawMode === 'direct_select' ? 'solid' : 'outline'}
                 >
-                  Sommets
+                  {t('misc.map.vertices')}
                 </Button>
                 <Button
                   size="sm"
@@ -1028,7 +1040,7 @@ export default function AgricultureMapboxMap({
                   colorScheme="red"
                   variant="solid"
                 >
-                  Supprimer
+                  {t('misc.map.delete')}
                 </Button>
                 <Button
                   size="sm"
@@ -1036,17 +1048,19 @@ export default function AgricultureMapboxMap({
                   colorScheme="brand"
                   variant="solid"
                 >
-                  Enregistrer
+                  {t('misc.map.save')}
                 </Button>
               </HStack>
 
               <FormControl maxW={{ md: '280px' }} flex="1" minW="0">
                 <FormLabel mb={1} fontSize="xs">
-                  Nom du prochain secteur
+                  {t('misc.map.nextSectorName')}
                 </FormLabel>
                 <Input
                   size="sm"
-                  placeholder={`Secteur ${nextAutoSectorIndex}`}
+                  placeholder={t('misc.map.sectorNumber', {
+                    n: nextAutoSectorIndex,
+                  })}
                   value={nextSectorName}
                   onChange={(e) => setNextSectorName(e.target.value)}
                 />
@@ -1062,7 +1076,7 @@ export default function AgricultureMapboxMap({
                 borderColor={toolbarBorder}
               >
                 <Text fontSize="xs" color="gray.600" mb={2} fontWeight="medium">
-                  Renommer le secteur sélectionné
+                  {t('misc.map.renameSelectedSector')}
                 </Text>
                 <Flex
                   direction={{ base: 'column', sm: 'row' }}
@@ -1071,11 +1085,11 @@ export default function AgricultureMapboxMap({
                 >
                   <FormControl flex="1" minW={0}>
                     <FormLabel mb={1} fontSize="xs" srOnly>
-                      Nouveau nom
+                      {t('misc.map.newName')}
                     </FormLabel>
                     <Input
                       size="sm"
-                      placeholder="Nom du secteur"
+                      placeholder={t('misc.map.sectorNamePlaceholder')}
                       value={renameSectorDraft}
                       onChange={(e) => setRenameSectorDraft(e.target.value)}
                       onKeyDown={(e) => {
@@ -1093,7 +1107,7 @@ export default function AgricultureMapboxMap({
                     alignSelf={{ base: 'stretch', sm: 'flex-end' }}
                     onClick={handleApplySectorRename}
                   >
-                    Appliquer le nom
+                    {t('misc.map.applyName')}
                   </Button>
                 </Flex>
               </Box>
@@ -1104,12 +1118,9 @@ export default function AgricultureMapboxMap({
 
           <Box>
             <Text fontSize="xs" color="gray.600" mb={2}>
-              Chaque <strong>secteur</strong> a sa <strong>couleur</strong> sur
-              la carte. Choisissez un type de capteur, placez-le sur la carte ;
-              il reste fixé aux coordonnées GPS (il se déplace quand vous
-              déplacez la carte comme le reste). <strong>Glisser</strong> un
-              capteur pour le déplacer ; la zone est recalculée.{' '}
-              <strong>Cliquer</strong> pour le sélectionner.
+              {t.rich('misc.map.helpText', {
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
             </Text>
             <HStack flexWrap="wrap" spacing={2} align="center" mb={3}>
               <Menu closeOnSelect placement="bottom-start">
@@ -1121,8 +1132,8 @@ export default function AgricultureMapboxMap({
                   rightIcon={<ChevronDownIcon />}
                 >
                   {sensorPlacementType
-                    ? getSensorTypeMeta(sensorPlacementType).label
-                    : 'Capteurs — choisir un type'}
+                    ? t(`sensors.${sensorTypeI18nKey(sensorPlacementType)}`)
+                    : t('misc.map.chooseSensorType')}
                 </MenuButton>
                 <MenuList
                   maxH="min(70vh, 340px)"
@@ -1131,27 +1142,27 @@ export default function AgricultureMapboxMap({
                   minW="260px"
                   py={1}
                 >
-                  <MenuGroup title="Tous les types de capteurs">
-                    {SENSOR_TYPES.map((t) => (
+                  <MenuGroup title={t('misc.map.allSensorTypes')}>
+                    {SENSOR_TYPES.map((t_) => (
                       <MenuItem
-                        key={t.id}
-                        onClick={() => setSensorPlacementType(t.id)}
+                        key={t_.id}
+                        onClick={() => setSensorPlacementType(t_.id)}
                         bg={
-                          sensorPlacementType === t.id ? 'pink.50' : undefined
+                          sensorPlacementType === t_.id ? 'pink.50' : undefined
                         }
                         _dark={{
                           bg:
-                            sensorPlacementType === t.id
+                            sensorPlacementType === t_.id
                               ? 'whiteAlpha.100'
                               : undefined,
                         }}
                       >
                         <HStack spacing={3} w="100%">
                           <Text fontSize="lg" aria-hidden>
-                            {t.mapSymbol}
+                            {t_.mapSymbol}
                           </Text>
                           <Text fontSize="sm" flex="1">
-                            {t.label}
+                            {t(`sensors.${sensorTypeI18nKey(t_.id)}`)}
                           </Text>
                         </HStack>
                       </MenuItem>
@@ -1165,7 +1176,7 @@ export default function AgricultureMapboxMap({
                   variant="ghost"
                   onClick={() => setSensorPlacementType(null)}
                 >
-                  Annuler le placement
+                  {t('misc.map.cancelPlacement')}
                 </Button>
               ) : null}
             </HStack>
@@ -1180,12 +1191,11 @@ export default function AgricultureMapboxMap({
               bg={toolbarBg}
             >
               <Text fontSize="xs" fontWeight="semibold" mb={2} color="gray.600">
-                Capteurs placés (nom → secteur)
+                {t('misc.map.placedSensors')}
               </Text>
               {sensorListForUi.length === 0 ? (
                 <Text fontSize="xs" color="gray.500">
-                  Aucun capteur pour l’instant. Ajoutez-en via le menu
-                  ci-dessus.
+                  {t('misc.map.noSensorsYet')}
                 </Text>
               ) : (
                 <VStack align="stretch" spacing={1}>
@@ -1196,7 +1206,7 @@ export default function AgricultureMapboxMap({
                     const zone =
                       p?.zoneName && p.zoneName.length > 0
                         ? p.zoneName
-                        : 'Hors secteur';
+                        : t('misc.map.outOfSector');
                     const sym = getSensorTypeMeta(
                       p?.sensorType ?? ''
                     ).mapSymbol;
@@ -1227,7 +1237,7 @@ export default function AgricultureMapboxMap({
                           </Text>
                         </HStack>
                         <IconButton
-                          aria-label="Supprimer ce capteur"
+                          aria-label={t('misc.map.deleteThisSensor')}
                           icon={<DeleteIcon />}
                           size="xs"
                           variant="ghost"
@@ -1246,9 +1256,7 @@ export default function AgricultureMapboxMap({
           </Box>
 
           <Text fontSize="xs" color="gray.500">
-            Survolez un capteur pour l’info-bulle. Secteurs (forme, nom) et
-            capteurs sont enregistrés automatiquement dans ce navigateur ; «
-            Enregistrer » affiche une confirmation.
+            {t('misc.map.bottomHint', { save: t('misc.map.save') })}
           </Text>
         </VStack>
       </Collapse>

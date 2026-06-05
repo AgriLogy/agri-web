@@ -17,7 +17,7 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           command_timeout: 30m
           script: |
-            cd /root/agrilogy-front
+            cd /root/agri-front
             git fetch origin
             git checkout alpha
             git reset --hard origin/alpha

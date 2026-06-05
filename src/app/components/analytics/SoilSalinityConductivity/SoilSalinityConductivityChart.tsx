@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -51,6 +52,7 @@ const SoilSalinityConductivityChart = ({
   conductivityData,
   loading,
 }: Props) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const { textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
@@ -163,8 +165,8 @@ const SoilSalinityConductivityChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Salinité et conductivité du sol"
-          subtitle="Teneur en sels et conductivité électrique — indicateurs de stress ionique."
+          title={t('analytics.soilSalinityConductivity.title')}
+          subtitle={t('analytics.soilSalinityConductivity.subtitle')}
         />
         <HStack spacing={2}>
           <Button onClick={handleScreenshot} variant="ghost">
@@ -198,7 +200,9 @@ const SoilSalinityConductivityChart = ({
               yAxisId="salinity"
               {...ySal}
               label={yAxisLabelInsideLeft(
-                `Salinité (${salinityUnit})`,
+                t('analytics.soilSalinityConductivity.salinityAxisLabel', {
+                  unit: salinityUnit,
+                }),
                 tickFill
               )}
             />
@@ -207,7 +211,9 @@ const SoilSalinityConductivityChart = ({
               orientation="right"
               {...yCond}
               label={yAxisLabelInsideRight(
-                `CE (${conductivityUnit})`,
+                t('analytics.soilSalinityConductivity.conductivityAxisLabel', {
+                  unit: conductivityUnit,
+                }),
                 tickFill
               )}
             />
@@ -226,7 +232,7 @@ const SoilSalinityConductivityChart = ({
               yAxisId="salinity"
               type="monotone"
               dataKey="soil_salinity"
-              name={`${chartData[0]?.salinity_courbe_name ?? 'Salinité'} (${salinityUnit})`}
+              name={`${chartData[0]?.salinity_courbe_name ?? t('analytics.soilSalinityConductivity.salinity')} (${salinityUnit})`}
               hide={!activeLines.soil_salinity}
               stroke={chartData[0]?.salinity_color || '#dba800'}
               strokeWidth={2.25}
@@ -242,7 +248,7 @@ const SoilSalinityConductivityChart = ({
               yAxisId="conductivity"
               type="monotone"
               dataKey="soil_conductivity"
-              name={`${chartData[0]?.conductivity_courbe_name ?? 'Conductivité'} (${conductivityUnit})`}
+              name={`${chartData[0]?.conductivity_courbe_name ?? t('analytics.soilSalinityConductivity.conductivity')} (${conductivityUnit})`}
               hide={!activeLines.soil_conductivity}
               stroke={chartData[0]?.conductivity_color || '#00a86b'}
               strokeWidth={2.25}

@@ -1,5 +1,5 @@
 /**
- * Typed wrapper for /auth/admin/users/* and /api/admin/users/<u>/*
+ * Typed wrapper for /users/* and users<u>/*
  * (the per-user reads that live under /api/admin).
  */
 import api from './api';
@@ -71,7 +71,7 @@ const unwrap = <T>(data: unknown): T[] => {
 
 export const adminUserApi = {
   list: async (search?: string): Promise<AdminUserRow[]> => {
-    const url = '/auth/admin/users/';
+    const url = '/users';
     const config = search ? { params: { search } } : undefined;
     const res = await api.get(url, config);
     return unwrap<AdminUserRow>(res.data);
@@ -79,13 +79,13 @@ export const adminUserApi = {
 
   retrieve: async (username: string): Promise<AdminUserDetail> => {
     const res = await api.get<AdminUserDetail>(
-      `/auth/admin/users/${encodeURIComponent(username)}/`
+      `/users/${encodeURIComponent(username)}`
     );
     return res.data;
   },
 
   create: async (payload: AdminUserCreatePayload): Promise<AdminUserDetail> => {
-    const res = await api.post<AdminUserDetail>('/auth/admin/users/', payload);
+    const res = await api.post<AdminUserDetail>('/users', payload);
     return res.data;
   },
 
@@ -94,14 +94,14 @@ export const adminUserApi = {
     payload: AdminUserPatchPayload
   ): Promise<AdminUserDetail> => {
     const res = await api.patch<AdminUserDetail>(
-      `/auth/admin/users/${encodeURIComponent(username)}/`,
+      `/users/${encodeURIComponent(username)}`,
       payload
     );
     return res.data;
   },
 
   remove: async (username: string): Promise<void> => {
-    await api.delete(`/auth/admin/users/${encodeURIComponent(username)}/`);
+    await api.delete(`/users/${encodeURIComponent(username)}`);
   },
 
   toggleActive: async (
@@ -110,7 +110,7 @@ export const adminUserApi = {
   ): Promise<AdminUserDetail> => {
     const body = isActive === undefined ? {} : { is_active: isActive };
     const res = await api.post<AdminUserDetail>(
-      `/auth/admin/users/${encodeURIComponent(username)}/activate/`,
+      `/users/${encodeURIComponent(username)}/activate`,
       body
     );
     return res.data;
@@ -122,7 +122,7 @@ export const adminUserApi = {
   ): Promise<{ username: string; password: string }> => {
     const body = password ? { password } : {};
     const res = await api.post<{ username: string; password: string }>(
-      `/auth/admin/users/${encodeURIComponent(username)}/reset-password/`,
+      `/users/${encodeURIComponent(username)}/password-reset`,
       body
     );
     return res.data;
@@ -130,7 +130,7 @@ export const adminUserApi = {
 
   activity: async (username: string): Promise<ActivityEvent[]> => {
     const res = await api.get<{ events: ActivityEvent[] }>(
-      `/api/admin/users/${encodeURIComponent(username)}/activity/`
+      `/users/${encodeURIComponent(username)}/activity`
     );
     return res.data.events ?? [];
   },
@@ -142,7 +142,7 @@ export const adminUserApi = {
     zones_total: number;
     alerts_24h: number;
   }> => {
-    const res = await api.get('/api/admin/overview/');
+    const res = await api.get('/admin/overview');
     return res.data;
   },
 };

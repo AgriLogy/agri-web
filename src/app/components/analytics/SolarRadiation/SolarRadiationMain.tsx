@@ -26,7 +26,7 @@ const SolarRadiationMain = ({
 
   useEffect(() => {
     api
-      .get<SensorData[]>('/api/sensors/solarradiation/', {
+      .get<SensorData[]>('/sensors/solarradiation', {
         params: {
           start_date: startDate,
           end_date: endDate,

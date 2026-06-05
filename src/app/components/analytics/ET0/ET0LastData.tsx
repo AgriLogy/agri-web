@@ -1,4 +1,12 @@
-import { Box, Text, VStack, useColorModeValue } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import {
+  Box,
+  Text,
+  VStack,
+  Divider,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { GiWaterDrop } from 'react-icons/gi';
 import {
   formatCalibratedReading,
@@ -7,6 +15,7 @@ import {
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
+import { aggregateEt0Daily } from '@/app/utils/et0Daily';
 
 interface ET0Data {
   id: number;
@@ -15,17 +24,30 @@ interface ET0Data {
   default_unit: string;
 }
 
-const timeAgo = (timestamp: string): string => {
+type TimeAgoTranslator = (
+  key: string,
+  values?: Record<string, string | number>
+) => string;
+
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+
+const timeAgo = (
+  timestamp: string,
+  t: TimeAgoTranslator,
+  tag: string
+): string => {
   const now = new Date();
   const then = new Date(timestamp);
   const diffMs = now.getTime() - then.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   const diffH = Math.floor(diffMin / 60);
 
-  if (diffMin < 1) return "à l'instant";
-  if (diffMin < 60) return `${diffMin} min.`;
-  if (diffH < 24) return `${diffH} h`;
-  return then.toLocaleDateString();
+  if (diffMin < 1) return t('analytics.et0LastData.justNow');
+  if (diffMin < 60)
+    return t('analytics.et0LastData.minutesAgo', { count: diffMin });
+  if (diffH < 24) return t('analytics.et0LastData.hoursAgo', { count: diffH });
+  return then.toLocaleDateString(tag);
 };
 
 const ET0LastData = ({
@@ -35,6 +57,8 @@ const ET0LastData = ({
   weatherData: ET0Data[];
   calculatedData: ET0Data[];
 }) => {
+  const t = useTranslations();
+  const tag = localeTag(useLocale());
   useUnitOverridesRevision();
   const latestWeather = weatherData[weatherData.length - 1];
   const latestCalculated = calculatedData[calculatedData.length - 1];
@@ -43,9 +67,16 @@ const ET0LastData = ({
 
   const titleColor = useColorModeValue('gray.600', 'gray.300');
   const labelMuted = useColorModeValue('gray.500', 'gray.400');
-  const valueMeteo = useColorModeValue('blue.700', 'blue.200');
+  const valueMeteo = useColorModeValue('brand.700', 'brand.200');
   const valueCalc = useColorModeValue('teal.700', 'teal.200');
   const subColor = useColorModeValue('gray.500', 'gray.400');
+  const valueDaily = useColorModeValue('green.700', 'green.200');
+
+  // Daily / previous-day / cumulative ET₀ (see aggregateEt0Daily for the math).
+  const daily = useMemo(
+    () => aggregateEt0Daily(calculatedData),
+    [calculatedData]
+  );
 
   const newestTs =
     latestWeather && latestCalculated
@@ -80,14 +111,14 @@ const ET0LastData = ({
           mt={3}
           color={titleColor}
         >
-          Évapotranspiration de référence (ET₀)
+          {t('analytics.et0LastData.heading')}
         </Text>
 
         {latestWeather || latestCalculated ? (
           <VStack spacing={3} mt={4} align="stretch" w="100%">
             <Box>
               <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
-                Capteur météo
+                {t('analytics.et0LastData.weatherSensor')}
               </Text>
               <Text fontSize="lg" fontWeight="semibold" color={valueMeteo}>
                 {latestWeather
@@ -97,7 +128,7 @@ const ET0LastData = ({
             </Box>
             <Box>
               <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
-                Modèle calculé
+                {t('analytics.et0LastData.calculatedModel')}
               </Text>
               <Text fontSize="lg" fontWeight="semibold" color={valueCalc}>
                 {latestCalculated
@@ -108,13 +139,58 @@ const ET0LastData = ({
           </VStack>
         ) : (
           <Text mt={4} fontSize="sm" color={subColor}>
-            Aucune donnée récente
+            {t('analytics.et0LastData.noRecentData')}
           </Text>
+        )}
+
+        {daily && (
+          <>
+            <Divider my={4} />
+            <VStack spacing={3} align="stretch" w="100%">
+              <Box>
+                <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
+                  {t('analytics.et0LastData.todayEt0', {
+                    day: daily.latestDay,
+                  })}
+                </Text>
+                <Text fontSize="lg" fontWeight="bold" color={valueDaily}>
+                  {daily.latestTotal.toFixed(2)} mm/j
+                </Text>
+              </Box>
+              {daily.prevDay != null && daily.prevTotal != null && (
+                <Box>
+                  <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
+                    {t('analytics.et0LastData.yesterdayEt0', {
+                      day: daily.prevDay,
+                    })}
+                  </Text>
+                  <Text fontSize="lg" fontWeight="semibold" color={valueDaily}>
+                    {daily.prevTotal.toFixed(2)} mm/j
+                  </Text>
+                  <Text fontSize="xs" color={subColor}>
+                    {t('analytics.et0LastData.usedForIrrigation')}
+                  </Text>
+                </Box>
+              )}
+              <Box>
+                <Text fontSize="xs" fontWeight="medium" color={labelMuted}>
+                  {t('analytics.et0LastData.cumulative', {
+                    count: daily.dayCount,
+                  })}
+                </Text>
+                <Text fontSize="md" fontWeight="semibold" color={valueDaily}>
+                  {daily.cumulative.toFixed(2)} mm
+                </Text>
+              </Box>
+            </VStack>
+          </>
         )}
 
         {newestTs && (
           <Text fontSize="xs" color={subColor} mt={3}>
-            Mesure : {timeAgo(newestTs)}
+            {t('analytics.et0LastData.measured', {
+              ago: timeAgo(newestTs, t, tag),
+            })}
           </Text>
         )}
         <LastDataAddAlertButton sensorKey="et0" />

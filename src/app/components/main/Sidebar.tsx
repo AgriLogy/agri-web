@@ -3,6 +3,7 @@
 import React, { useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
   Flex,
   Tooltip,
@@ -37,6 +38,7 @@ const Sidebar = () => {
   const cancelRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations();
 
   const handleLogout = () => {
     localStorage.clear();
@@ -49,15 +51,15 @@ const Sidebar = () => {
     icon: React.ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
     label: string;
   }[] = [
-    { href: '/', icon: FaHome, label: 'Accueil' },
-    { href: '/soil', icon: FaSeedling, label: 'Données du sol' },
-    { href: '/station', icon: WiDaySunny, label: 'Station météo' },
-    { href: '/plant', icon: GiGrapes, label: 'Données des plantes' },
-    { href: '/water', icon: FaWater, label: "Station d'eau" },
-    { href: '/vannes-pompes', icon: GiValve, label: 'Vannes et pompes' },
-    { href: '/notifications', icon: FaBell, label: 'Notifications' },
-    { href: '/settings', icon: FaCog, label: 'Paramètres' },
-    { href: '/alerts', icon: MdWarningAmber, label: 'Alertes' },
+    { href: '/', icon: FaHome, label: t('nav.home') },
+    { href: '/soil', icon: FaSeedling, label: t('nav.soilData') },
+    { href: '/station', icon: WiDaySunny, label: t('nav.station') },
+    { href: '/plant', icon: GiGrapes, label: t('nav.plantData') },
+    { href: '/water', icon: FaWater, label: t('nav.waterStation') },
+    { href: '/vannes-pompes', icon: GiValve, label: t('nav.valvesPumps') },
+    { href: '/notifications', icon: FaBell, label: t('nav.notifications') },
+    { href: '/settings', icon: FaCog, label: t('nav.settings') },
+    { href: '/alerts', icon: MdWarningAmber, label: t('nav.alerts') },
   ];
 
   const normalizedPath =
@@ -136,7 +138,7 @@ const Sidebar = () => {
 
         <Spacer minH={4} />
 
-        <Tooltip label="Se déconnecter" placement="right" hasArrow>
+        <Tooltip label={t('logout.signOut')} placement="right" hasArrow>
           <Flex
             align="center"
             justify="center"
@@ -155,7 +157,7 @@ const Sidebar = () => {
             }}
             tabIndex={0}
             role="button"
-            aria-label="Se déconnecter"
+            aria-label={t('logout.signOut')}
             _hover={{ color: 'red.500', bg: 'blackAlpha.50' }}
             _dark={{ _hover: { bg: 'whiteAlpha.100' } }}
           >
@@ -177,17 +179,17 @@ const Sidebar = () => {
         <AlertDialogOverlay bg="blackAlpha.400" backdropFilter="blur(4px)">
           <AlertDialogContent borderRadius="xl" mx={4}>
             <AlertDialogHeader fontSize="lg" fontWeight="bold" pb={2}>
-              Confirmer la déconnexion
+              {t('logout.confirmTitle')}
             </AlertDialogHeader>
             <AlertDialogBody color="gray.600" _dark={{ color: 'gray.300' }}>
-              Êtes-vous sûr de vouloir vous déconnecter ?
+              {t('logout.confirmBody')}
             </AlertDialogBody>
             <AlertDialogFooter gap={2}>
               <Button ref={cancelRef} variant="ghost" onClick={onClose}>
-                Annuler
+                {t('common.cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleLogout}>
-                Se déconnecter
+                {t('logout.signOut')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

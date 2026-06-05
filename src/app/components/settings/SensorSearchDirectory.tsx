@@ -24,6 +24,7 @@ import {
   Tr,
   useToast,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import {
   SENSOR_CATALOG,
   getAllSensorsCatalog,
@@ -38,6 +39,15 @@ const SensorSearchDirectory = ({
 }: {
   allowAdd?: boolean;
 }) => {
+  const t = useTranslations();
+  const readingFor = (it: { key: string; readingLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.reading`)
+      ? t(`sensorCatalog.${it.key}.reading`)
+      : it.readingLabel;
+  const typeFor = (it: { key: string; typeLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.type`)
+      ? t(`sensorCatalog.${it.key}.type`)
+      : it.typeLabel;
   const { mutedTextColor } = useColorModeStyles();
   const toast = useToast();
   const [query, setQuery] = useState('');
@@ -72,8 +82,8 @@ const SensorSearchDirectory = ({
 
     if (!key || !readingLabel || !typeLabel || !defaultUnit) {
       toast({
-        title: 'Champs requis',
-        description: 'Veuillez remplir tous les champs.',
+        title: t('settings.searchDirectory.requiredFieldsTitle'),
+        description: t('settings.searchDirectory.requiredFieldsDesc'),
         status: 'warning',
         duration: 2500,
         isClosable: true,
@@ -83,8 +93,8 @@ const SensorSearchDirectory = ({
 
     if (catalog.some((item) => item.key === key)) {
       toast({
-        title: 'Clé déjà utilisée',
-        description: 'Cette clé capteur existe déjà.',
+        title: t('settings.searchDirectory.keyUsedTitle'),
+        description: t('settings.searchDirectory.keyUsedDesc'),
         status: 'error',
         duration: 2500,
         isClosable: true,
@@ -106,8 +116,8 @@ const SensorSearchDirectory = ({
     setOpenAdd(false);
     setForm({ readingLabel: '', typeLabel: '', key: '', defaultUnit: '' });
     toast({
-      title: 'Capteur ajouté',
-      description: 'Le capteur est disponible dans les réglages.',
+      title: t('settings.searchDirectory.toastAddedTitle'),
+      description: t('settings.searchDirectory.toastAddedDesc'),
       status: 'success',
       duration: 2200,
       isClosable: true,
@@ -118,7 +128,7 @@ const SensorSearchDirectory = ({
     <Box>
       <Flex gap={2} mb={3} align="center" flexWrap="wrap">
         <Input
-          placeholder="Rechercher un capteur..."
+          placeholder={t('settings.searchDirectory.searchPlaceholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           maxW="420px"
@@ -129,27 +139,27 @@ const SensorSearchDirectory = ({
             colorScheme="brand"
             onClick={() => setOpenAdd(true)}
           >
-            Ajouter capteur
+            {t('settings.searchDirectory.addSensorButton')}
           </Button>
         )}
       </Flex>
       <Text fontSize="sm" color={mutedTextColor} mb={2}>
-        {rows.length} capteur(s) trouvé(s)
+        {t('settings.searchDirectory.countFound', { count: rows.length })}
       </Text>
       <Table size="sm" variant="simple">
         <Thead>
           <Tr>
-            <Th>Libellé</Th>
-            <Th>Type</Th>
-            <Th>Clé</Th>
-            <Th>Unité par défaut</Th>
+            <Th>{t('settings.searchDirectory.colLabel')}</Th>
+            <Th>{t('settings.searchDirectory.colType')}</Th>
+            <Th>{t('settings.searchDirectory.colKey')}</Th>
+            <Th>{t('settings.searchDirectory.colDefaultUnit')}</Th>
           </Tr>
         </Thead>
         <Tbody>
           {rows.map((row) => (
             <Tr key={row.key}>
-              <Td>{row.readingLabel}</Td>
-              <Td>{row.typeLabel}</Td>
+              <Td>{readingFor(row)}</Td>
+              <Td>{typeFor(row)}</Td>
               <Td>{row.key}</Td>
               <Td>{row.defaultUnit}</Td>
             </Tr>
@@ -160,11 +170,13 @@ const SensorSearchDirectory = ({
       <Modal isOpen={openAdd} onClose={() => setOpenAdd(false)} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Ajouter un capteur</ModalHeader>
+          <ModalHeader>
+            {t('settings.searchDirectory.addModalTitle')}
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl mb={3}>
-              <FormLabel>Libellé</FormLabel>
+              <FormLabel>{t('settings.searchDirectory.fieldLabel')}</FormLabel>
               <Input
                 value={form.readingLabel}
                 onChange={(e) =>
@@ -173,7 +185,7 @@ const SensorSearchDirectory = ({
               />
             </FormControl>
             <FormControl mb={3}>
-              <FormLabel>Type</FormLabel>
+              <FormLabel>{t('settings.searchDirectory.fieldType')}</FormLabel>
               <Input
                 value={form.typeLabel}
                 onChange={(e) =>
@@ -182,7 +194,9 @@ const SensorSearchDirectory = ({
               />
             </FormControl>
             <FormControl mb={3}>
-              <FormLabel>Clé (unique)</FormLabel>
+              <FormLabel>
+                {t('settings.searchDirectory.fieldKeyUnique')}
+              </FormLabel>
               <Input
                 value={form.key}
                 onChange={(e) =>
@@ -191,7 +205,7 @@ const SensorSearchDirectory = ({
               />
             </FormControl>
             <FormControl>
-              <FormLabel>Unité</FormLabel>
+              <FormLabel>{t('settings.searchDirectory.fieldUnit')}</FormLabel>
               <Input
                 value={form.defaultUnit}
                 onChange={(e) =>
@@ -202,10 +216,10 @@ const SensorSearchDirectory = ({
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" mr={2} onClick={() => setOpenAdd(false)}>
-              Annuler
+              {t('settings.searchDirectory.cancel')}
             </Button>
             <Button colorScheme="brand" onClick={addSensor}>
-              Ajouter
+              {t('settings.searchDirectory.add')}
             </Button>
           </ModalFooter>
         </ModalContent>

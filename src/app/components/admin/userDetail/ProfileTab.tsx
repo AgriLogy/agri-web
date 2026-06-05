@@ -12,6 +12,7 @@ import {
   Switch,
 } from 'antd';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   adminUserApi,
@@ -51,6 +52,7 @@ export type ProfileTabProps = {
 };
 
 export function ProfileTab({ user, onChange }: ProfileTabProps) {
+  const t = useTranslations();
   const { message } = App.useApp();
   const [form] = Form.useForm<FormValues>();
   const [saving, setSaving] = useState(false);
@@ -62,7 +64,7 @@ export function ProfileTab({ user, onChange }: ProfileTabProps) {
 
   const fillLocation = () => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      message.warning('Géolocalisation indisponible.');
+      message.warning(t('admin.profile.geoUnavailable'));
       return;
     }
     setGeoLoading(true);
@@ -76,7 +78,7 @@ export function ProfileTab({ user, onChange }: ProfileTabProps) {
       },
       () => {
         setGeoLoading(false);
-        message.error('Impossible de récupérer la position.');
+        message.error(t('admin.profile.geoError'));
       },
       { enableHighAccuracy: true, timeout: 7000 }
     );
@@ -99,7 +101,7 @@ export function ProfileTab({ user, onChange }: ProfileTabProps) {
       };
       const updated = await adminUserApi.update(user.username, payload);
       onChange(updated);
-      message.success('Profil mis à jour.');
+      message.success(t('admin.profile.saveSuccess'));
     } catch (err: unknown) {
       const detail = (err as { response?: { data?: Record<string, unknown> } })
         ?.response?.data;
@@ -110,7 +112,7 @@ export function ProfileTab({ user, onChange }: ProfileTabProps) {
                 `${k}: ${Array.isArray(v) ? v.join(' · ') : String(v)}`
             )
             .join(' · ')
-        : 'Échec de la mise à jour.';
+        : t('admin.profile.saveError');
       message.error(text);
     } finally {
       setSaving(false);
@@ -125,51 +127,67 @@ export function ProfileTab({ user, onChange }: ProfileTabProps) {
       onFinish={handleSubmit}
     >
       <Form.Item
-        label="Email"
+        label={t('admin.profile.field.email')}
         name="email"
         rules={[
-          { required: true, message: 'Requis.' },
-          { type: 'email', message: 'Format email invalide.' },
+          { required: true, message: t('admin.profile.validation.required') },
+          { type: 'email', message: t('admin.profile.validation.email') },
         ]}
       >
         <Input autoComplete="off" />
       </Form.Item>
       <Space.Compact block>
         <Form.Item
-          label="Prénom"
+          label={t('admin.profile.field.firstname')}
           name="firstname"
           style={{ flex: 1 }}
-          rules={[{ required: true, message: 'Requis.' }]}
+          rules={[
+            { required: true, message: t('admin.profile.validation.required') },
+          ]}
         >
           <Input autoComplete="off" />
         </Form.Item>
         <Form.Item
-          label="Nom"
+          label={t('admin.profile.field.lastname')}
           name="lastname"
           style={{ flex: 1 }}
-          rules={[{ required: true, message: 'Requis.' }]}
+          rules={[
+            { required: true, message: t('admin.profile.validation.required') },
+          ]}
         >
           <Input autoComplete="off" />
         </Form.Item>
       </Space.Compact>
-      <Form.Item label="Téléphone" name="phone_number">
+      <Form.Item label={t('admin.profile.field.phone')} name="phone_number">
         <Input autoComplete="off" />
       </Form.Item>
       <Space.Compact block>
         <Form.Item
-          label="Latitude"
+          label={t('admin.profile.field.latitude')}
           name="latitude"
           style={{ flex: 1 }}
-          rules={[{ type: 'number', min: -90, max: 90, message: '-90 à 90.' }]}
+          rules={[
+            {
+              type: 'number',
+              min: -90,
+              max: 90,
+              message: t('admin.profile.validation.latitude'),
+            },
+          ]}
         >
           <InputNumber style={{ width: '100%' }} step={0.000001} />
         </Form.Item>
         <Form.Item
-          label="Longitude"
+          label={t('admin.profile.field.longitude')}
           name="longitude"
           style={{ flex: 1 }}
           rules={[
-            { type: 'number', min: -180, max: 180, message: '-180 à 180.' },
+            {
+              type: 'number',
+              min: -180,
+              max: 180,
+              message: t('admin.profile.validation.longitude'),
+            },
           ]}
         >
           <InputNumber style={{ width: '100%' }} step={0.000001} />
@@ -181,44 +199,50 @@ export function ProfileTab({ user, onChange }: ProfileTabProps) {
           onClick={fillLocation}
           loading={geoLoading}
         >
-          Remplir la position automatiquement
+          {t('admin.profile.fillLocation')}
         </Button>
       </Form.Item>
 
       <Space.Compact block>
         <Form.Item
-          label="Statut"
+          label={t('admin.profile.field.status')}
           name="is_active"
           valuePropName="checked"
           style={{ flex: 1 }}
         >
-          <Switch checkedChildren="Actif" unCheckedChildren="Inactif" />
+          <Switch
+            checkedChildren={t('admin.profile.status.active')}
+            unCheckedChildren={t('admin.profile.status.inactive')}
+          />
         </Form.Item>
         <Form.Item
-          label="Rôle administrateur"
+          label={t('admin.profile.field.adminRole')}
           name="is_staff"
           valuePropName="checked"
           style={{ flex: 1 }}
         >
-          <Switch checkedChildren="Admin" unCheckedChildren="Utilisateur" />
+          <Switch
+            checkedChildren={t('admin.profile.role.admin')}
+            unCheckedChildren={t('admin.profile.role.user')}
+          />
         </Form.Item>
       </Space.Compact>
 
       <Form.Item
-        label="Paiement"
+        label={t('admin.profile.field.payment')}
         name="payement_status"
         rules={[{ required: true }]}
       >
         <Select
           options={[
-            { value: 'actif', label: 'Actif' },
-            { value: 'suspended', label: 'Suspendu' },
+            { value: 'actif', label: t('admin.profile.payment.active') },
+            { value: 'suspended', label: t('admin.profile.payment.suspended') },
           ]}
         />
       </Form.Item>
 
       <Form.Item
-        label="Cadence de notifications (heures)"
+        label={t('admin.profile.field.notifyEvery')}
         name="notify_every"
         rules={[{ required: true }, { type: 'number', min: 1, max: 168 }]}
       >
@@ -227,7 +251,7 @@ export function ProfileTab({ user, onChange }: ProfileTabProps) {
 
       <Form.Item>
         <Button type="primary" htmlType="submit" loading={saving}>
-          Enregistrer
+          {t('admin.profile.save')}
         </Button>
       </Form.Item>
     </Form>

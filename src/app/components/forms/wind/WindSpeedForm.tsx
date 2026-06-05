@@ -18,9 +18,11 @@ import {
   Select,
   useToast,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import api from '@/app/lib/api';
 
 const WindSpeedForm: React.FC = () => {
+  const t = useTranslations();
   const [formData, setFormData] = useState({
     name: '',
     type: 'Wind Speed',
@@ -57,10 +59,10 @@ const WindSpeedForm: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      await api.post('/api/alert/', formData);
+      await api.post('/alerts', formData);
       toast({
-        title: 'Alerte créée',
-        description: 'Alerte de vitesse du vent ajoutée avec succès.',
+        title: t('alertsPage.windSpeedForm.successTitle'),
+        description: t('alertsPage.windSpeedForm.successDescription'),
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -74,8 +76,8 @@ const WindSpeedForm: React.FC = () => {
       });
     } catch {
       toast({
-        title: 'Erreur',
-        description: "Échec de la création de l'alerte de vitesse du vent.",
+        title: t('alertsPage.windSpeedForm.errorTitle'),
+        description: t('alertsPage.windSpeedForm.errorDescription'),
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -88,10 +90,10 @@ const WindSpeedForm: React.FC = () => {
       <VStack spacing={4} align="stretch">
         {/* Nom de l'alerte */}
         <FormControl isRequired>
-          <FormLabel>Nom de l&apos;alerte</FormLabel>
+          <FormLabel>{t('alertsPage.windSpeedForm.nameLabel')}</FormLabel>
           <Input
             name="name"
-            placeholder="Entrez le nom de l'alerte"
+            placeholder={t('alertsPage.windSpeedForm.namePlaceholder')}
             value={formData.name}
             onChange={handleChange}
           />
@@ -99,13 +101,18 @@ const WindSpeedForm: React.FC = () => {
 
         {/* Type d'alerte */}
         <FormControl isReadOnly>
-          <FormLabel>Type d&apos;alerte</FormLabel>
-          <Input name="type" value={formData.type} isReadOnly />
+          <FormLabel>{t('alertsPage.windSpeedForm.typeLabel')}</FormLabel>
+          <Input
+            name="type"
+            value={t('alertTypes.windSpeed')}
+            isReadOnly
+            readOnly
+          />
         </FormControl>
 
         {/* Condition and condition_nbr */}
         <FormControl isRequired>
-          <FormLabel>Condition</FormLabel>
+          <FormLabel>{t('alertsPage.windSpeedForm.conditionLabel')}</FormLabel>
           <Flex direction="row" align="center" gap={4}>
             {/* Dropdown for condition */}
             <Select
@@ -114,9 +121,9 @@ const WindSpeedForm: React.FC = () => {
               onChange={handleConditionChange}
               w="auto"
             >
-              <option value=">">Supérieur à</option>
-              <option value="<">Inférieur à</option>
-              <option value="=">Égal à</option>
+              <option value=">">{t('conditions.gt')}</option>
+              <option value="<">{t('conditions.lt')}</option>
+              <option value="=">{t('conditions.eq')}</option>
             </Select>
 
             {/* Numeric input for condition_nbr */}
@@ -141,10 +148,12 @@ const WindSpeedForm: React.FC = () => {
 
         {/* Description */}
         <FormControl>
-          <FormLabel>Description</FormLabel>
+          <FormLabel>
+            {t('alertsPage.windSpeedForm.descriptionLabel')}
+          </FormLabel>
           <Textarea
             name="description"
-            placeholder="Entrez la description"
+            placeholder={t('alertsPage.windSpeedForm.descriptionPlaceholder')}
             value={formData.description}
             onChange={handleChange}
           />
@@ -152,7 +161,7 @@ const WindSpeedForm: React.FC = () => {
 
         {/* Bouton de soumission */}
         <Button colorScheme="brand" onClick={handleSubmit} w="full">
-          Soumettre
+          {t('alertsPage.windSpeedForm.submit')}
         </Button>
       </VStack>
     </Box>

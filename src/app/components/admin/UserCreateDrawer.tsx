@@ -3,6 +3,7 @@
 import { EnvironmentOutlined } from '@ant-design/icons';
 import { App, Button, Form, Input, Select, Space, Switch } from 'antd';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { AdminEntityDrawer } from '@/app/components/admin/_shared/AdminEntityDrawer';
 import {
@@ -34,6 +35,7 @@ const UserCreateDrawer = ({
   onClose,
   onCreated,
 }: UserCreateDrawerProps) => {
+  const t = useTranslations();
   const { message } = App.useApp();
   const [form] = Form.useForm<FormValues>();
   const [submitting, setSubmitting] = useState(false);
@@ -41,7 +43,7 @@ const UserCreateDrawer = ({
 
   const fillLocation = () => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      message.warning('Géolocalisation indisponible.');
+      message.warning(t('admin.userCreate.geoUnavailable'));
       return;
     }
     setGeoLoading(true);
@@ -52,11 +54,11 @@ const UserCreateDrawer = ({
           longitude: Number(pos.coords.longitude.toFixed(6)),
         });
         setGeoLoading(false);
-        message.success('Position remplie.');
+        message.success(t('admin.userCreate.geoFilled'));
       },
       () => {
         setGeoLoading(false);
-        message.error('Impossible de récupérer la position.');
+        message.error(t('admin.userCreate.geoError'));
       },
       { enableHighAccuracy: true, timeout: 7000 }
     );
@@ -84,7 +86,7 @@ const UserCreateDrawer = ({
         payement_status: values.payement_status,
       };
       await adminUserApi.create(payload);
-      message.success('Utilisateur créé.');
+      message.success(t('admin.userCreate.createSuccess'));
       form.resetFields();
       onCreated?.();
     } catch (err: unknown) {
@@ -97,7 +99,7 @@ const UserCreateDrawer = ({
                 `${k}: ${Array.isArray(v) ? v.join(' · ') : String(v)}`
             )
             .join(' · ')
-        : 'Échec de la création.';
+        : t('admin.userCreate.createError');
       message.error(text);
     } finally {
       setSubmitting(false);
@@ -113,9 +115,9 @@ const UserCreateDrawer = ({
         onClose();
       }}
       onSubmit={handleSubmit}
-      title="Nouvel utilisateur"
+      title={t('admin.userCreate.title')}
       submitting={submitting}
-      submitLabel="Créer"
+      submitLabel={t('admin.userCreate.submit')}
     >
       <Form<FormValues>
         form={form}
@@ -129,10 +131,13 @@ const UserCreateDrawer = ({
       >
         <Form.Item
           name="username"
-          label="Nom d’utilisateur"
+          label={t('admin.userCreate.field.username')}
           rules={[
-            { required: true, message: 'Requis.' },
-            { min: 3, message: 'Au moins 3 caractères.' },
+            {
+              required: true,
+              message: t('admin.userCreate.validation.required'),
+            },
+            { min: 3, message: t('admin.userCreate.validation.minUsername') },
           ]}
         >
           <Input autoComplete="off" />
@@ -140,56 +145,75 @@ const UserCreateDrawer = ({
         <Space.Compact block>
           <Form.Item
             name="firstname"
-            label="Prénom"
+            label={t('admin.userCreate.field.firstname')}
             style={{ flex: 1 }}
-            rules={[{ required: true, message: 'Requis.' }]}
+            rules={[
+              {
+                required: true,
+                message: t('admin.userCreate.validation.required'),
+              },
+            ]}
           >
             <Input autoComplete="off" />
           </Form.Item>
           <Form.Item
             name="lastname"
-            label="Nom"
+            label={t('admin.userCreate.field.lastname')}
             style={{ flex: 1 }}
-            rules={[{ required: true, message: 'Requis.' }]}
+            rules={[
+              {
+                required: true,
+                message: t('admin.userCreate.validation.required'),
+              },
+            ]}
           >
             <Input autoComplete="off" />
           </Form.Item>
         </Space.Compact>
         <Form.Item
           name="email"
-          label="Email"
+          label={t('admin.userCreate.field.email')}
           rules={[
-            { required: true, message: 'Requis.' },
-            { type: 'email', message: 'Format email invalide.' },
+            {
+              required: true,
+              message: t('admin.userCreate.validation.required'),
+            },
+            { type: 'email', message: t('admin.userCreate.validation.email') },
           ]}
         >
           <Input autoComplete="off" />
         </Form.Item>
-        <Form.Item name="phone_number" label="Téléphone">
+        <Form.Item
+          name="phone_number"
+          label={t('admin.userCreate.field.phone')}
+        >
           <Input autoComplete="off" />
         </Form.Item>
         <Form.Item
           name="password"
-          label="Mot de passe"
+          label={t('admin.userCreate.field.password')}
           rules={[
-            { required: true, message: 'Requis.' },
-            { min: 8, message: 'Au moins 8 caractères.' },
+            {
+              required: true,
+              message: t('admin.userCreate.validation.required'),
+            },
+            { min: 8, message: t('admin.userCreate.validation.minPassword') },
           ]}
-          extra="Le mot de passe doit être robuste (8+ caractères, lettres et chiffres)."
+          extra={t('admin.userCreate.passwordHint')}
         >
           <Input.Password autoComplete="new-password" />
         </Form.Item>
         <Space.Compact block>
           <Form.Item
             name="latitude"
-            label="Latitude"
+            label={t('admin.userCreate.field.latitude')}
             style={{ flex: 1 }}
             rules={[
               {
                 type: 'number',
                 min: -90,
                 max: 90,
-                message: 'Doit être entre -90 et 90.',
+                message: t('admin.userCreate.validation.latitude'),
               },
             ]}
           >
@@ -197,14 +221,14 @@ const UserCreateDrawer = ({
           </Form.Item>
           <Form.Item
             name="longitude"
-            label="Longitude"
+            label={t('admin.userCreate.field.longitude')}
             style={{ flex: 1 }}
             rules={[
               {
                 type: 'number',
                 min: -180,
                 max: 180,
-                message: 'Doit être entre -180 et 180.',
+                message: t('admin.userCreate.validation.longitude'),
               },
             ]}
           >
@@ -217,27 +241,33 @@ const UserCreateDrawer = ({
             onClick={fillLocation}
             loading={geoLoading}
           >
-            Remplir la position automatiquement
+            {t('admin.userCreate.fillLocation')}
           </Button>
         </Form.Item>
         <Form.Item
           name="payement_status"
-          label="Statut de paiement"
+          label={t('admin.userCreate.field.paymentStatus')}
           rules={[{ required: true }]}
         >
           <Select
             options={[
-              { value: 'actif', label: 'Actif' },
-              { value: 'suspended', label: 'Suspendu' },
+              { value: 'actif', label: t('admin.userCreate.payment.active') },
+              {
+                value: 'suspended',
+                label: t('admin.userCreate.payment.suspended'),
+              },
             ]}
           />
         </Form.Item>
         <Form.Item
           name="is_staff"
-          label="Rôle administrateur"
+          label={t('admin.userCreate.field.adminRole')}
           valuePropName="checked"
         >
-          <Switch checkedChildren="Admin" unCheckedChildren="Utilisateur" />
+          <Switch
+            checkedChildren={t('admin.userCreate.role.admin')}
+            unCheckedChildren={t('admin.userCreate.role.user')}
+          />
         </Form.Item>
       </Form>
     </AdminEntityDrawer>

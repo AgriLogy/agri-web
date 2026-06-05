@@ -18,6 +18,7 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import html2canvas from 'html2canvas';
 import { FaDownload, FaCloudRain } from 'react-icons/fa';
 import { SensorData } from '@/app/types';
@@ -89,6 +90,7 @@ const CumulPrecipitationChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [groupBy, setGroupBy] = useState('day');
   const [showBar, setShowBar] = useState(true);
@@ -148,8 +150,8 @@ const CumulPrecipitationChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Précipitations cumulées"
-          subtitle="Agrégation par jour, semaine ou mois selon votre sélection."
+          title={t('analytics.cumulPrecipitation.title')}
+          subtitle={t('analytics.cumulPrecipitation.subtitle')}
         />
         <HStack spacing={2}>
           <Select
@@ -158,14 +160,26 @@ const CumulPrecipitationChart = ({
             bg={colorMode === 'dark' ? 'gray.700' : 'white'}
             color={textColor}
           >
-            <option value="day">Par jour</option>
-            <option value="week">Par semaine</option>
-            <option value="month">Par mois</option>
+            <option value="day">
+              {t('analytics.cumulPrecipitation.perDay')}
+            </option>
+            <option value="week">
+              {t('analytics.cumulPrecipitation.perWeek')}
+            </option>
+            <option value="month">
+              {t('analytics.cumulPrecipitation.perMonth')}
+            </option>
           </Select>
-          <Button onClick={handleScreenshot} aria-label="Capture chart">
+          <Button
+            onClick={handleScreenshot}
+            aria-label={t('analytics.common.captureChart')}
+          >
             <FaCloudRain />
           </Button>
-          <Button onClick={handleDownloadData} aria-label="Download data CSV">
+          <Button
+            onClick={handleDownloadData}
+            aria-label={t('analytics.common.downloadCsv')}
+          >
             <FaDownload />
           </Button>
         </HStack>
@@ -225,7 +239,9 @@ const CumulPrecipitationChart = ({
             />
             <Bar
               dataKey="precipitation_rate"
-              name={`Précipitations cumulées (Σ ${precipUnit})`}
+              name={t('analytics.cumulPrecipitation.legendSum', {
+                unit: precipUnit,
+              })}
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               hide={!showBar}

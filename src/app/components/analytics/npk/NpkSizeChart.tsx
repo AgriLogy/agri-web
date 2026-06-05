@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { Box, Flex, Button, HStack } from '@chakra-ui/react';
 import { FaDownload, FaCamera } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import html2canvas from 'html2canvas';
 import { NpkSensorData } from '@/app/types';
 import ChartPanelHeading from '../../common/ChartPanelHeading';
@@ -50,6 +51,7 @@ const NpkSizeChart = ({
   data: NpkSensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const { textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
@@ -165,19 +167,19 @@ const NpkSizeChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Azote, phosphore et potassium"
-          subtitle={`Bilan N-P-K dans le sol — unités lecture ${npkAxisUnits}.`}
+          title={t('analytics.npkChart.title')}
+          subtitle={t('analytics.npkChart.subtitle', { units: npkAxisUnits })}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChartAria')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsvAria')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -206,7 +208,10 @@ const NpkSizeChart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`NPK (${npkAxisUnits})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.npkChart.yAxisLabel', { units: npkAxisUnits }),
+                tickFill
+              )}
             />
             <Tooltip
               content={
@@ -267,7 +272,7 @@ const NpkSizeChart = ({
             <Line
               type="monotone"
               dataKey="npk_n"
-              name={`${data[0]?.nitrogen_courbe_name || 'Azote (N)'} (${unitN})`}
+              name={`${data[0]?.nitrogen_courbe_name || t('sensors.npk_n')} (${unitN})`}
               hide={!activeLines.npk_n}
               stroke={data[0]?.nitrogen_color || '#dba800'}
               strokeWidth={2.25}
@@ -281,7 +286,7 @@ const NpkSizeChart = ({
             <Line
               type="monotone"
               dataKey="npk_p"
-              name={`${data[0]?.phosphorus_courbe_name || 'Phosphore (P)'} (${unitP})`}
+              name={`${data[0]?.phosphorus_courbe_name || t('sensors.npk_p')} (${unitP})`}
               hide={!activeLines.npk_p}
               stroke={data[0]?.phosphorus_color || '#00a86b'}
               strokeWidth={2.25}
@@ -295,7 +300,7 @@ const NpkSizeChart = ({
             <Line
               type="monotone"
               dataKey="npk_k"
-              name={`${data[0]?.potassium_courbe_name || 'Potassium (K)'} (${unitK})`}
+              name={`${data[0]?.potassium_courbe_name || t('sensors.npk_k')} (${unitK})`}
               hide={!activeLines.npk_k}
               stroke={data[0]?.potassium_color || '#4682b4'}
               strokeWidth={2.25}

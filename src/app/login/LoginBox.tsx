@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { App, Button, Form, Input } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import axiosInstance from '../lib/api';
@@ -23,13 +24,14 @@ export default function LoginBox() {
   const router = useRouter();
   const { notification } = App.useApp();
   const [loading, setLoading] = useState(false);
+  const t = useTranslations('auth');
 
   const onFinish = async (values: LoginFormValues) => {
     setLoading(true);
 
     try {
       const { status, data } = await axiosInstance.post<SignInResponse>(
-        '/auth/signin/',
+        '/auth/sessions',
         values
       );
 
@@ -40,7 +42,7 @@ export default function LoginBox() {
       }
     } catch {
       notification.error({
-        message: "Nom d'utilisateur ou mot de passe incorrect.",
+        message: t('invalidCredentials'),
         placement: 'bottom',
         duration: 4,
         showProgress: true,
@@ -51,10 +53,7 @@ export default function LoginBox() {
   };
 
   return (
-    <LoginCard
-      title="Se connecter"
-      subtitle="Accédez à votre tableau de bord Agrilogy"
-    >
+    <LoginCard title={t('title')} subtitle={t('subtitle')}>
       <Form<LoginFormValues>
         layout="vertical"
         size="large"
@@ -64,43 +63,43 @@ export default function LoginBox() {
       >
         <Form.Item
           name="username"
-          label={<span className={styles.label}>Nom d&apos;utilisateur</span>}
+          label={<span className={styles.label}>{t('username')}</span>}
           rules={[
             {
               required: true,
-              message: "Veuillez saisir votre nom d'utilisateur.",
+              message: t('usernameRequired'),
             },
           ]}
         >
           <Input
             className={styles.input}
             prefix={<UserOutlined />}
-            placeholder="Votre nom d'utilisateur"
+            placeholder={t('usernamePlaceholder')}
             autoComplete="username"
           />
         </Form.Item>
 
         <Form.Item
           name="password"
-          label={<span className={styles.label}>Mot de passe</span>}
+          label={<span className={styles.label}>{t('password')}</span>}
           rules={[
             {
               required: true,
-              message: 'Veuillez saisir votre mot de passe.',
+              message: t('passwordRequired'),
             },
           ]}
         >
           <Input.Password
             className={styles.input}
             prefix={<LockOutlined />}
-            placeholder="Votre mot de passe"
+            placeholder={t('passwordPlaceholder')}
             autoComplete="current-password"
           />
         </Form.Item>
 
         <Form.Item style={{ marginBottom: 0 }}>
           <Button type="primary" htmlType="submit" block loading={loading}>
-            Se connecter
+            {t('submit')}
           </Button>
         </Form.Item>
       </Form>

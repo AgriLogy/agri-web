@@ -9,8 +9,12 @@ import {
 } from '@ant-design/icons';
 import { App, Empty, Skeleton, Timeline } from 'antd';
 import { useEffect, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { adminUserApi, type ActivityEvent } from '@/app/lib/adminUserApi';
+
+const localeTag = (locale: string): string =>
+  locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
 
 const ICONS: Record<string, React.ReactNode> = {
   joined: <UserAddOutlined />,
@@ -20,10 +24,10 @@ const ICONS: Record<string, React.ReactNode> = {
   alert: <AlertOutlined />,
 };
 
-const formatDate = (iso: string | null): string => {
+const formatDate = (iso: string | null, tag: string): string => {
   if (!iso) return '';
   try {
-    return new Date(iso).toLocaleString('fr-FR');
+    return new Date(iso).toLocaleString(tag);
   } catch {
     return iso;
   }
@@ -32,6 +36,8 @@ const formatDate = (iso: string | null): string => {
 export type ActivityTabProps = { username: string };
 
 export function ActivityTab({ username }: ActivityTabProps) {
+  const t = useTranslations();
+  const tag = localeTag(useLocale());
   const { message } = App.useApp();
   const [events, setEvents] = useState<ActivityEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,17 +49,17 @@ export function ActivityTab({ username }: ActivityTabProps) {
         const rows = await adminUserApi.activity(username);
         setEvents(rows);
       } catch {
-        message.error('Activité indisponible.');
+        message.error(t('admin.activity.loadError'));
       } finally {
         setLoading(false);
       }
     };
     void run();
-  }, [message, username]);
+  }, [message, t, username]);
 
   if (loading) return <Skeleton active paragraph={{ rows: 5 }} />;
   if (events.length === 0) {
-    return <Empty description="Aucune activité enregistrée" />;
+    return <Empty description={t('admin.activity.empty')} />;
   }
 
   return (
@@ -66,7 +72,9 @@ export function ActivityTab({ username }: ActivityTabProps) {
           <div>
             <div>{event.label}</div>
             {event.at && (
-              <small style={{ opacity: 0.7 }}>{formatDate(event.at)}</small>
+              <small style={{ opacity: 0.7 }}>
+                {formatDate(event.at, tag)}
+              </small>
             )}
           </div>
         ),

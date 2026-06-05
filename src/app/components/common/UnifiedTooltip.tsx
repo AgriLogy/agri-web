@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Text, VStack, HStack, useColorModeValue } from '@chakra-ui/react';
+import { useLocale } from 'next-intl';
 import React from 'react';
 import {
   CHART_TIME_MS_KEY,
@@ -162,8 +163,13 @@ function extractDateFromLabel(label: string | number | undefined): Date | null {
   return parseToDate(label);
 }
 
-function formatLongFrench(d: Date): string {
-  return d.toLocaleString('fr-FR', {
+/** Maps the active next-intl locale to a BCP-47 tag for Intl formatting. */
+function localeToBcp47(locale: string): string {
+  return locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
+}
+
+function formatLongDate(d: Date, localeTag: string): string {
+  return d.toLocaleString(localeTag, {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -177,13 +183,14 @@ function formatLongFrench(d: Date): string {
 function resolveBottomContext(
   label: string | number | undefined,
   payload: UnifiedTooltipPayloadItem[] | undefined,
-  labelFormatter: (l: string | number) => string
+  labelFormatter: (l: string | number) => string,
+  localeTag: string
 ): string {
   const row = payload?.[0]?.payload as Record<string, unknown> | undefined;
   const fromPayload = extractDateFromRow(row);
-  if (fromPayload) return formatLongFrench(fromPayload);
+  if (fromPayload) return formatLongDate(fromPayload, localeTag);
   const fromLabel = extractDateFromLabel(label);
-  if (fromLabel) return formatLongFrench(fromLabel);
+  if (fromLabel) return formatLongDate(fromLabel, localeTag);
   if (label != null && label !== '') return labelFormatter(label);
   return '';
 }
@@ -208,6 +215,7 @@ const UnifiedTooltip: React.FC<UnifiedTooltipProps> = ({
   const mutedColor = useColorModeValue('gray.600', 'gray.400');
   const footerMuted = useColorModeValue('gray.500', 'gray.400');
   const titleMuted = useColorModeValue('gray.600', 'gray.400');
+  const localeTag = localeToBcp47(useLocale());
 
   if (!active || !payload?.length) {
     return null;
@@ -228,7 +236,12 @@ const UnifiedTooltip: React.FC<UnifiedTooltipProps> = ({
           valuesAlreadyCalibrated
         );
 
-  const bottomLine = resolveBottomContext(label, payload, labelFormatter);
+  const bottomLine = resolveBottomContext(
+    label,
+    payload,
+    labelFormatter,
+    localeTag
+  );
 
   return (
     <Box

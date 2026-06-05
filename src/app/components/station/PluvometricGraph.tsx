@@ -1,5 +1,6 @@
 'use client';
 import { Box, useColorMode } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { useCalibratedStationChartRows } from '@/app/hooks/useCalibratedStationChartRows';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -40,6 +41,7 @@ const PLUVIO_FIELDS = [
 ] as const;
 
 const PluvometricGraph = ({ data }: { data: any }) => {
+  const t = useTranslations();
   const { colorMode } = useColorMode();
   const { textColor } = useColorModeStyles();
   const { axis, tickFill, grid } = useChartAxisColors();
@@ -86,7 +88,7 @@ const PluvometricGraph = ({ data }: { data: any }) => {
     >
       <Box mb={4}>
         <ChartPanelHeading
-          title="Précipitations — intensité horaire"
+          title={t('station.pluvometric.title')}
           subtitle={data?.sensor_names?.pluviometrie}
           color={textColor}
         />
@@ -110,7 +112,10 @@ const PluvometricGraph = ({ data }: { data: any }) => {
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`Précip. (${lineUnit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                `${t('station.pluvometric.precipAxis')} (${lineUnit})`,
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -126,7 +131,7 @@ const PluvometricGraph = ({ data }: { data: any }) => {
               type="monotone"
               dataKey="precipitation_rate"
               stroke={data.sensor_colors?.precipitation_rate_color}
-              name={`Précipitation (${lineUnit})`}
+              name={`${t('sensors.precipitation_rate')} (${lineUnit})`}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"

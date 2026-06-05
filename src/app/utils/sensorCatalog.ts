@@ -1,3 +1,9 @@
+/**
+ * i18n: `key` doubles as the shared sensor translation key. Render the
+ * user-facing name with `t('sensors.' + item.key)` (root `useTranslations()`).
+ * `readingLabel` / `typeLabel` remain French fallbacks for non-React consumers
+ * (Réglages selectors, SSR, tests); do NOT translate via those fields.
+ */
 export type SensorCatalogItem = {
   key: string;
   readingLabel: string;
@@ -87,8 +93,8 @@ export const SENSOR_CATALOG: SensorCatalogItem[] = [
   // PDF « mm » = cumul ; ici l’app suit le taux (mm/h) côté API.
   {
     key: 'water_flow',
-    readingLabel: 'Débit eau / irrigation',
-    typeLabel: 'Débit',
+    readingLabel: 'Irrigation',
+    typeLabel: 'Irrigation',
     defaultUnit: 'm³/h',
     category: 'lecture',
   },

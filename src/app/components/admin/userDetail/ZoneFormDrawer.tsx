@@ -2,6 +2,7 @@
 
 import { App, Form, InputNumber, Input, Tabs } from 'antd';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { AdminEntityDrawer } from '@/app/components/admin/_shared/AdminEntityDrawer';
 import {
@@ -50,6 +51,7 @@ export function ZoneFormDrawer({
   username,
   editing,
 }: ZoneFormDrawerProps) {
+  const t = useTranslations();
   const { message } = App.useApp();
   const [form] = Form.useForm<FormValues>();
   const [submitting, setSubmitting] = useState(false);
@@ -72,12 +74,12 @@ export function ZoneFormDrawer({
       if (editing) {
         const payload: AdminZonePatchPayload = values;
         const saved = await adminZoneApi.update(username, editing.id, payload);
-        message.success('Zone mise à jour.');
+        message.success(t('admin.zoneForm.updateSuccess'));
         onSaved(saved);
       } else {
         const payload: AdminZoneCreatePayload = values;
         const saved = await adminZoneApi.create(username, payload);
-        message.success('Zone créée.');
+        message.success(t('admin.zoneForm.createSuccess'));
         onSaved(saved);
       }
       form.resetFields();
@@ -91,7 +93,7 @@ export function ZoneFormDrawer({
                 `${k}: ${Array.isArray(v) ? v.join(' · ') : String(v)}`
             )
             .join(' · ')
-        : 'Échec de l’enregistrement.';
+        : t('admin.zoneForm.saveError');
       message.error(text);
     } finally {
       setSubmitting(false);
@@ -107,9 +109,15 @@ export function ZoneFormDrawer({
         onClose();
       }}
       onSubmit={handleSubmit}
-      title={editing ? `Modifier la zone — ${editing.name}` : 'Nouvelle zone'}
+      title={
+        editing
+          ? t('admin.zoneForm.editTitle', { name: editing.name })
+          : t('admin.zoneForm.newTitle')
+      }
       submitting={submitting}
-      submitLabel={editing ? 'Mettre à jour' : 'Créer'}
+      submitLabel={
+        editing ? t('admin.zoneForm.update') : t('admin.zoneForm.create')
+      }
     >
       <Form<FormValues>
         form={form}
@@ -121,36 +129,46 @@ export function ZoneFormDrawer({
           items={[
             {
               key: 'general',
-              label: 'Général',
+              label: t('admin.zoneForm.tab.general'),
               children: (
                 <>
                   <Form.Item
-                    label="Nom"
+                    label={t('admin.zoneForm.field.name')}
                     name="name"
-                    rules={[{ required: true, message: 'Requis.' }]}
+                    rules={[
+                      {
+                        required: true,
+                        message: t('admin.zoneForm.validation.required'),
+                      },
+                    ]}
                   >
                     <Input autoComplete="off" />
                   </Form.Item>
                   <Form.Item
-                    label="Surface (m²)"
+                    label={t('admin.zoneForm.field.space')}
                     name="space"
                     rules={[
                       { required: true },
                       {
                         type: 'number',
                         min: 0.0001,
-                        message: 'Doit être positif.',
+                        message: t('admin.zoneForm.validation.positive'),
                       },
                     ]}
                   >
                     <InputNumber min={0} style={{ width: '100%' }} />
                   </Form.Item>
                   <Form.Item
-                    label="Seuil critique d’humidité (%)"
+                    label={t('admin.zoneForm.field.criticalMoisture')}
                     name="critical_moisture_threshold"
                     rules={[
                       { required: true },
-                      { type: 'number', min: 0, max: 100, message: '0 à 100.' },
+                      {
+                        type: 'number',
+                        min: 0,
+                        max: 100,
+                        message: t('admin.zoneForm.validation.range0to100'),
+                      },
                     ]}
                   >
                     <InputNumber min={0} max={100} style={{ width: '100%' }} />
@@ -160,24 +178,32 @@ export function ZoneFormDrawer({
             },
             {
               key: 'irrigation',
-              label: 'Irrigation',
+              label: t('admin.zoneForm.tab.irrigation'),
               children: (
                 <>
                   <Form.Item
-                    label="Débit de pompe (L/s)"
+                    label={t('admin.zoneForm.field.pompFlowRate')}
                     name="pomp_flow_rate"
                     rules={[
                       { required: true },
-                      { type: 'number', min: 0, message: 'Non négatif.' },
+                      {
+                        type: 'number',
+                        min: 0,
+                        message: t('admin.zoneForm.validation.nonNegative'),
+                      },
                     ]}
                   >
                     <InputNumber min={0} style={{ width: '100%' }} />
                   </Form.Item>
                   <Form.Item
-                    label="Quantité d’eau d’irrigation (L)"
+                    label={t('admin.zoneForm.field.irrigationWaterQuantity')}
                     name="irrigation_water_quantity"
                     rules={[
-                      { type: 'number', min: 0, message: 'Non négatif.' },
+                      {
+                        type: 'number',
+                        min: 0,
+                        message: t('admin.zoneForm.validation.nonNegative'),
+                      },
                     ]}
                   >
                     <InputNumber min={0} style={{ width: '100%' }} />
@@ -187,26 +213,29 @@ export function ZoneFormDrawer({
             },
             {
               key: 'soil',
-              label: 'Sol',
+              label: t('admin.zoneForm.tab.soil'),
               children: (
                 <>
                   <Form.Item
-                    label="TAW (Total Available Water, mm)"
+                    label={t('admin.zoneForm.field.taw')}
                     name="soil_param_TAW"
                   >
                     <InputNumber min={0} style={{ width: '100%' }} />
                   </Form.Item>
                   <Form.Item
-                    label="FC (Field Capacity, %)"
+                    label={t('admin.zoneForm.field.fc')}
                     name="soil_param_FC"
                   >
                     <InputNumber min={0} max={100} style={{ width: '100%' }} />
                   </Form.Item>
-                  <Form.Item label="WP (Wilting Point, %)" name="soil_param_WP">
+                  <Form.Item
+                    label={t('admin.zoneForm.field.wp')}
+                    name="soil_param_WP"
+                  >
                     <InputNumber min={0} max={100} style={{ width: '100%' }} />
                   </Form.Item>
                   <Form.Item
-                    label="RAW (Readily Available Water, mm)"
+                    label={t('admin.zoneForm.field.raw')}
                     name="soil_param_RAW"
                   >
                     <InputNumber min={0} style={{ width: '100%' }} />

@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -45,6 +46,7 @@ const WindSpeedChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showLine, setShowLine] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -109,19 +111,19 @@ const WindSpeedChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Vitesse du vent à la station"
-          subtitle="Série horaire ; échelle de temps adaptative avec le curseur de période."
+          title={t('analytics.windSpeed.chartTitle')}
+          subtitle={t('analytics.windSpeed.chartSubtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.actions.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.actions.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -165,7 +167,7 @@ const WindSpeedChart = ({
             <Line
               type="monotone"
               dataKey="wind_speed"
-              name={`Vitesse du vent (${windUnit})`}
+              name={`${t('sensors.wind_speed')} (${windUnit})`}
               hide={!showLine}
               stroke="#82ca9d"
               strokeWidth={2.25}

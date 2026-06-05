@@ -16,6 +16,7 @@ import {
   Badge,
 } from '@chakra-ui/react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import {
   getAllSensorsCatalog,
   type SensorCatalogItem,
@@ -29,6 +30,11 @@ import {
 } from '@/app/utils/sensorGroupsStorage';
 
 const SensorGroupsSettings = () => {
+  const t = useTranslations();
+  const readingFor = (it: { key: string; readingLabel: string }) =>
+    t.has(`sensorCatalog.${it.key}.reading`)
+      ? t(`sensorCatalog.${it.key}.reading`)
+      : it.readingLabel;
   const toast = useToast();
   const { textColor, bgColor, borderColor, mutedTextColor } =
     useColorModeStyles();
@@ -49,7 +55,11 @@ const SensorGroupsSettings = () => {
     const g = createEmptyGroup(newName);
     persist([...groups, g]);
     setNewName('');
-    toast({ title: 'Groupe créé', status: 'success', duration: 1500 });
+    toast({
+      title: t('settings.groups.toastCreated'),
+      status: 'success',
+      duration: 1500,
+    });
   };
 
   const removeGroup = (id: string) => {
@@ -99,17 +109,18 @@ const SensorGroupsSettings = () => {
   return (
     <Box>
       <Text fontSize="sm" color={mutedTextColor} mb={3}>
-        Regroupez des capteurs pour les retrouver plus vite. Les groupes sont
-        enregistrés localement sur cet appareil.
+        {t('settings.groups.intro')}
       </Text>
       <Flex gap={2} mb={4} flexWrap="wrap" align="flex-end">
         <FormControl maxW="280px">
-          <FormLabel fontSize="sm">Nom du nouveau groupe</FormLabel>
+          <FormLabel fontSize="sm">
+            {t('settings.groups.newNameLabel')}
+          </FormLabel>
           <Input
             size="sm"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            placeholder="Ex. Serre A"
+            placeholder={t('settings.groups.newNamePlaceholder')}
           />
         </FormControl>
         <Button
@@ -118,13 +129,13 @@ const SensorGroupsSettings = () => {
           colorScheme="brand"
           onClick={addGroup}
         >
-          Créer un groupe
+          {t('settings.groups.createButton')}
         </Button>
       </Flex>
 
       {groups.length === 0 && (
         <Text color={textColor} fontSize="sm">
-          Aucun groupe pour l&apos;instant.
+          {t('settings.groups.emptyGroups')}
         </Text>
       )}
 
@@ -152,7 +163,7 @@ const SensorGroupsSettings = () => {
               onChange={(e) => renameGroup(g.id, e.target.value)}
             />
             <IconButton
-              aria-label="Supprimer le groupe"
+              aria-label={t('settings.groups.deleteGroupAria')}
               size="sm"
               icon={<FaTrash />}
               colorScheme="red"
@@ -161,7 +172,7 @@ const SensorGroupsSettings = () => {
             />
           </Flex>
           <Text fontSize="xs" color={mutedTextColor} mb={2}>
-            Capteurs dans ce groupe
+            {t('settings.groups.sensorsInGroup')}
           </Text>
           <HStack spacing={1} flexWrap="wrap" mb={2}>
             {g.sensorKeys.map((k) => (
@@ -170,14 +181,14 @@ const SensorGroupsSettings = () => {
                 colorScheme="brand"
                 cursor="pointer"
                 onClick={() => removeSensorFromGroup(g.id, k)}
-                title="Cliquer pour retirer"
+                title={t('settings.groups.clickToRemove')}
               >
                 {k} ×
               </Badge>
             ))}
             {g.sensorKeys.length === 0 && (
               <Text fontSize="sm" color={mutedTextColor}>
-                Aucun capteur — ajoutez-en ci-dessous.
+                {t('settings.groups.emptySensors')}
               </Text>
             )}
           </HStack>
@@ -191,10 +202,10 @@ const SensorGroupsSettings = () => {
                 addSensorToGroup(g.id, v);
               }}
             >
-              <option value="">Ajouter un capteur au groupe…</option>
+              <option value="">{t('settings.groups.addSensorOption')}</option>
               {catalog.map((c: SensorCatalogItem) => (
                 <option key={c.key} value={c.key}>
-                  {c.readingLabel} ({c.key})
+                  {readingFor(c)} ({c.key})
                 </option>
               ))}
             </chakra.select>

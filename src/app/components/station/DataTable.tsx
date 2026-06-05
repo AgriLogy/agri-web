@@ -14,6 +14,7 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 import { CSVLink } from 'react-csv';
+import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import ChartPanelHeading from '../common/ChartPanelHeading';
 
@@ -46,6 +47,7 @@ const DataTable = ({
 }: {
   data: { sensor_data: SensorData[]; sensor_names: any };
 }) => {
+  const t = useTranslations();
   const { textColor } = useColorModeStyles();
   const { colorMode } = useColorMode();
 
@@ -67,7 +69,7 @@ const DataTable = ({
     >
       <HStack justify="space-between" align="flex-start" mb={4}>
         <ChartPanelHeading
-          title="Mesures — tableau détaillé"
+          title={t('station.dataTable.title')}
           subtitle={data.sensor_names?.data_table}
           color={textColor}
         />
@@ -78,7 +80,7 @@ const DataTable = ({
           style={{ textDecoration: 'none' }}
         >
           <Button colorScheme="brand" mb={4}>
-            Exporter CSV
+            {t('station.dataTable.exportCsv')}
           </Button>
         </CSVLink>
       </HStack>

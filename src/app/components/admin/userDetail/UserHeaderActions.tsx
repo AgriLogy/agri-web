@@ -6,6 +6,7 @@ import {
   UserSwitchOutlined,
 } from '@ant-design/icons';
 import { App, Button, Space } from 'antd';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { adminUserApi, type AdminUserDetail } from '@/app/lib/adminUserApi';
@@ -16,6 +17,7 @@ export type UserHeaderActionsProps = {
 };
 
 export function UserHeaderActions({ user, onChange }: UserHeaderActionsProps) {
+  const t = useTranslations();
   const { message, modal } = App.useApp();
   const [toggling, setToggling] = useState(false);
   const [resetting, setResetting] = useState(false);
@@ -26,10 +28,12 @@ export function UserHeaderActions({ user, onChange }: UserHeaderActionsProps) {
       const updated = await adminUserApi.toggleActive(user.username);
       onChange({ ...user, is_active: updated.is_active });
       message.success(
-        updated.is_active ? 'Utilisateur réactivé.' : 'Utilisateur désactivé.'
+        updated.is_active
+          ? t('admin.userHeaderActions.reactivated')
+          : t('admin.userHeaderActions.deactivated')
       );
     } catch {
-      message.error('Action impossible.');
+      message.error(t('admin.userHeaderActions.actionError'));
     } finally {
       setToggling(false);
     }
@@ -37,15 +41,15 @@ export function UserHeaderActions({ user, onChange }: UserHeaderActionsProps) {
 
   const handleReset = () => {
     modal.confirm({
-      title: `Réinitialiser le mot de passe de ${user.username} ?`,
-      okText: 'Réinitialiser',
-      cancelText: 'Annuler',
+      title: t('admin.userHeaderActions.resetConfirm', { name: user.username }),
+      okText: t('admin.userHeaderActions.reset'),
+      cancelText: t('admin.userHeaderActions.cancel'),
       onOk: async () => {
         setResetting(true);
         try {
           const { password } = await adminUserApi.resetPassword(user.username);
           modal.info({
-            title: 'Nouveau mot de passe',
+            title: t('admin.userHeaderActions.newPasswordTitle'),
             content: (
               <code
                 style={{
@@ -58,10 +62,10 @@ export function UserHeaderActions({ user, onChange }: UserHeaderActionsProps) {
                 {password}
               </code>
             ),
-            okText: 'Fermer',
+            okText: t('admin.userHeaderActions.close'),
           });
         } catch {
-          message.error('Échec de la réinitialisation.');
+          message.error(t('admin.userHeaderActions.resetError'));
         } finally {
           setResetting(false);
         }
@@ -76,14 +80,16 @@ export function UserHeaderActions({ user, onChange }: UserHeaderActionsProps) {
         onClick={handleToggle}
         loading={toggling}
       >
-        {user.is_active ? 'Désactiver' : 'Réactiver'}
+        {user.is_active
+          ? t('admin.userHeaderActions.deactivate')
+          : t('admin.userHeaderActions.reactivate')}
       </Button>
       <Button
         icon={<UnlockOutlined />}
         onClick={handleReset}
         loading={resetting}
       >
-        Réinitialiser MDP
+        {t('admin.userHeaderActions.resetPassword')}
       </Button>
     </Space>
   );

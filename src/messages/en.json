@@ -1,0 +1,1695 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "loading": "Loading…",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "language": "Language",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "notAvailable": "Not available"
+  },
+  "nav": {
+    "home": "Home",
+    "soilData": "Soil data",
+    "station": "Weather station",
+    "plantData": "Plant data",
+    "waterStation": "Water station",
+    "valvesPumps": "Valves & pumps",
+    "alerts": "Alerts",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "admin": "Admin",
+    "logout": "Log out",
+    "account": "Account",
+    "greeting": "Hello",
+    "profile": "Profile",
+    "navigation": "Navigation",
+    "accountMenu": "Account menu",
+    "openMenu": "Open menu"
+  },
+  "logout": {
+    "signOut": "Sign out",
+    "confirmTitle": "Confirm sign out",
+    "confirmBody": "Are you sure you want to sign out?"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "title": "Sign in",
+    "subtitle": "Access your Agrilogy dashboard",
+    "username": "Username",
+    "password": "Password",
+    "usernamePlaceholder": "Your username",
+    "passwordPlaceholder": "Your password",
+    "usernameRequired": "Please enter your username.",
+    "passwordRequired": "Please enter your password.",
+    "submit": "Sign in",
+    "invalidCredentials": "Incorrect username or password."
+  },
+  "sensors": {
+    "soil_moisture": "Soil moisture",
+    "soil_temperature": "Soil temperature",
+    "air_temperature": "Air temperature",
+    "humidity_air": "Air humidity",
+    "weather_station": "Weather station",
+    "water_level": "Water level",
+    "flow_meter": "Flow meter",
+    "pressure": "Pressure",
+    "ec_soil": "Conductivity (EC)",
+    "ph_soil": "Soil pH",
+    "temperature_weather": "Air temperature",
+    "humidity_weather": "Air humidity",
+    "wind_speed": "Wind speed",
+    "wind_gust": "Wind gust",
+    "wind_direction": "Wind direction",
+    "solar_radiation": "Solar radiation",
+    "pressure_weather": "Atmospheric pressure",
+    "precipitation_rate": "Precipitation rate",
+    "et0": "Reference evapotranspiration ET₀",
+    "vpd": "Vapor pressure deficit (VPD)",
+    "water_flow": "Water flow",
+    "irrigation_cumulative": "Cumulative irrigation",
+    "water_pressure": "Water pressure",
+    "water_ph": "Water pH",
+    "water_ec": "Water conductivity",
+    "soil_moisture_low": "Soil moisture low",
+    "soil_moisture_medium": "Soil moisture medium",
+    "soil_moisture_high": "Soil moisture high",
+    "soil_temperature_medium": "Soil temperature",
+    "soil_temp_low": "Soil temperature low",
+    "soil_temp_medium": "Soil temperature medium",
+    "soil_temp_high": "Soil temperature high",
+    "soil_ph": "Soil pH",
+    "soil_salinity": "Soil salinity",
+    "soil_conductivity": "Soil conductivity",
+    "leaf_temperature": "Leaf temperature",
+    "leaf_moisture": "Leaf moisture",
+    "npk_n": "Nitrogen (N)",
+    "npk_p": "Phosphorus (P)",
+    "npk_k": "Potassium (K)",
+    "fruit_size": "Fruit size",
+    "large_fruit_diameter": "Fruit diameter",
+    "electricity_consumption": "Electricity consumption"
+  },
+  "conditions": {
+    "gt": "Greater than",
+    "lt": "Less than",
+    "eq": "Equal to"
+  },
+  "alertTypes": {
+    "pressure": "Pressure",
+    "flow": "Flow",
+    "weatherTemperature": "Air temperature",
+    "windSpeed": "Wind speed",
+    "rainFall": "Rainfall",
+    "periodicMaintenance": "Periodic maintenance",
+    "ec": "Electrical conductivity",
+    "ph": "pH level",
+    "humidity": "Humidity",
+    "soilTemperature": "Soil temperature"
+  },
+  "stats": {
+    "min": "Min",
+    "max": "Max",
+    "average": "Average",
+    "mean": "Mean",
+    "current": "Current",
+    "latest": "Latest",
+    "total": "Total",
+    "sum": "Sum",
+    "count": "Count"
+  },
+  "time": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "year": "Year",
+    "hour": "Hour",
+    "minute": "Minute",
+    "last24h": "Last 24h",
+    "last7days": "Last 7 days",
+    "last30days": "Last 30 days",
+    "custom": "Custom",
+    "from": "From",
+    "to": "To",
+    "dateRange": "Date range"
+  },
+  "units": {
+    "ph": "pH",
+    "degree": "°"
+  },
+  "admin": {
+    "affirmations": {
+      "title": "Manager affirmations",
+      "subtitle": "Approve or reject user requests.",
+      "loadError": "Affirmations list unavailable.",
+      "action": {
+        "zone_params_change": "Parameter change",
+        "kc_periods_change": "Kc periods change",
+        "user_reactivate": "User reactivation"
+      },
+      "approveConfirmTitle": "Approve request #{id}?",
+      "rejectConfirmTitle": "Reject request #{id}?",
+      "notePlaceholder": "Decision note (optional)",
+      "approve": "Approve",
+      "reject": "Reject",
+      "cancel": "Cancel",
+      "approveSuccess": "Request approved.",
+      "rejectSuccess": "Request rejected.",
+      "actionError": "Action failed.",
+      "col": {
+        "request": "Request",
+        "requester": "Requester",
+        "status": "Status",
+        "createdAt": "Created on",
+        "decidedAt": "Decided on",
+        "decidedBy": "Decided by",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "filter": {
+        "all": "All"
+      },
+      "empty": "No affirmations"
+    },
+    "userCreate": {
+      "geoUnavailable": "Geolocation unavailable.",
+      "geoFilled": "Position filled.",
+      "geoError": "Unable to retrieve position.",
+      "createSuccess": "User created.",
+      "createError": "Creation failed.",
+      "title": "New user",
+      "submit": "Create",
+      "field": {
+        "username": "Username",
+        "firstname": "First name",
+        "lastname": "Last name",
+        "email": "Email",
+        "phone": "Phone",
+        "password": "Password",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "paymentStatus": "Payment status",
+        "adminRole": "Administrator role"
+      },
+      "validation": {
+        "required": "Required.",
+        "minUsername": "At least 3 characters.",
+        "email": "Invalid email format.",
+        "minPassword": "At least 8 characters.",
+        "latitude": "Must be between -90 and 90.",
+        "longitude": "Must be between -180 and 180."
+      },
+      "passwordHint": "The password must be strong (8+ characters, letters and digits).",
+      "fillLocation": "Fill position automatically",
+      "payment": {
+        "active": "Active",
+        "suspended": "Suspended"
+      },
+      "role": {
+        "admin": "Admin",
+        "user": "User"
+      }
+    },
+    "params": {
+      "loadError": "Could not load parameters.",
+      "readError": "Could not read parameters.",
+      "saveSuccess": "Parameters saved.",
+      "saveError": "Save failed.",
+      "unitSaveSuccess": "Unit saved.",
+      "unitSaveError": "Failed to save the unit.",
+      "noZones": "No zone to configure",
+      "zoneLabel": "Zone:",
+      "soilIrrigationTitle": "Soil & irrigation parameters",
+      "preferredUnitsTitle": "Preferred units per sensor",
+      "save": "Save",
+      "field": {
+        "taw": "TAW (mm)",
+        "raw": "RAW (mm)",
+        "fc": "FC (%)",
+        "wp": "WP (%)",
+        "criticalMoisture": "Critical moisture threshold (%)",
+        "pompFlowRate": "Pump flow rate (L/s)",
+        "irrigationWaterQuantity": "Irrigation water quantity (L)"
+      }
+    },
+    "dashboard": {
+      "loadError": "Dashboard unavailable.",
+      "col": {
+        "user": "User",
+        "email": "Email",
+        "joinedAt": "Joined on"
+      },
+      "open": "Open",
+      "title": "Administrator dashboard",
+      "subtitle": "Global KPIs and quick access to the latest users.",
+      "allUsers": "All users",
+      "newUser": "New user",
+      "stat": {
+        "users": "Users",
+        "activeUsers": "Active users",
+        "admins": "Administrators",
+        "zones": "Zones",
+        "alerts24h": "Alerts 24 h"
+      },
+      "recentUsers": "Latest users",
+      "emptyUsers": "No user"
+    },
+    "userList": {
+      "loadError": "Users list unavailable.",
+      "reactivated": "User reactivated.",
+      "deactivated": "User deactivated.",
+      "actionError": "Action failed.",
+      "resetConfirmTitle": "Reset password for {username}?",
+      "resetConfirmContent": "A random password will be generated and shown only once.",
+      "reset": "Reset",
+      "cancel": "Cancel",
+      "newPasswordTitle": "New password",
+      "newPasswordHint": "Share this password with the user:",
+      "close": "Close",
+      "resetError": "Reset failed.",
+      "col": {
+        "user": "User",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "payment": "Payment",
+        "zones": "Zones",
+        "joinedAt": "Joined on",
+        "lastLogin": "Last login",
+        "actions": "Actions"
+      },
+      "role": {
+        "admin": "Admin",
+        "user": "User"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "payment": {
+        "active": "Active",
+        "suspended": "Suspended"
+      },
+      "action": {
+        "openDetail": "Open detail",
+        "openAria": "Open {username}",
+        "deactivate": "Deactivate",
+        "reactivate": "Reactivate",
+        "toggleAria": "Toggle {username}",
+        "resetPassword": "Reset password",
+        "resetAria": "Reset password for {username}"
+      },
+      "title": "Users",
+      "subtitle": "Manage accounts, their zones and observability.",
+      "newUser": "New user",
+      "searchPlaceholder": "Search (name, email)…",
+      "empty": "No user"
+    },
+    "zoneForm": {
+      "updateSuccess": "Zone updated.",
+      "createSuccess": "Zone created.",
+      "saveError": "Save failed.",
+      "editTitle": "Edit zone — {name}",
+      "newTitle": "New zone",
+      "update": "Update",
+      "create": "Create",
+      "tab": {
+        "general": "General",
+        "irrigation": "Irrigation",
+        "soil": "Soil"
+      },
+      "field": {
+        "name": "Name",
+        "space": "Area (m²)",
+        "criticalMoisture": "Critical moisture threshold (%)",
+        "pompFlowRate": "Pump flow rate (L/s)",
+        "irrigationWaterQuantity": "Irrigation water quantity (L)",
+        "taw": "TAW (Total Available Water, mm)",
+        "fc": "FC (Field Capacity, %)",
+        "wp": "WP (Wilting Point, %)",
+        "raw": "RAW (Readily Available Water, mm)"
+      },
+      "validation": {
+        "required": "Required.",
+        "positive": "Must be positive.",
+        "range0to100": "0 to 100.",
+        "nonNegative": "Non-negative."
+      }
+    },
+    "stationData": {
+      "noZones": "No zone configured",
+      "zoneLabel": "Zone:",
+      "alertTitle": "Station data visualization",
+      "alertDescription": "The ET0, temperature, humidity, radiation, wind and precipitation charts can be viewed from the dedicated user view.",
+      "openStationView": "Open station view →"
+    },
+    "activity": {
+      "loadError": "Activity unavailable.",
+      "empty": "No recorded activity"
+    },
+    "profile": {
+      "geoUnavailable": "Geolocation unavailable.",
+      "geoError": "Unable to retrieve position.",
+      "saveSuccess": "Profile updated.",
+      "saveError": "Update failed.",
+      "field": {
+        "email": "Email",
+        "firstname": "First name",
+        "lastname": "Last name",
+        "phone": "Phone",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "status": "Status",
+        "adminRole": "Administrator role",
+        "payment": "Payment",
+        "notifyEvery": "Notification cadence (hours)"
+      },
+      "validation": {
+        "required": "Required.",
+        "email": "Invalid email format.",
+        "latitude": "-90 to 90.",
+        "longitude": "-180 to 180."
+      },
+      "fillLocation": "Fill position automatically",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "role": {
+        "admin": "Admin",
+        "user": "User"
+      },
+      "payment": {
+        "active": "Active",
+        "suspended": "Suspended"
+      },
+      "save": "Save"
+    },
+    "soilDataTab": {
+      "noZonesCreateInTab": "No zone — create one in the Zones tab",
+      "zoneLabel": "Zone:",
+      "alertTitle": "Soil data visualization",
+      "alertDescription": "Detailed charts (moisture, temperature, pH, conductivity, irrigation) are available from the user view — the global admin endpoint is being shipped on the backend.",
+      "openSoilView": "Open soil view →"
+    },
+    "userDetail": {
+      "loadUserError": "Unable to load the user.",
+      "loading": "Loading…",
+      "tabProfile": "Profile",
+      "tabZones": "Zones",
+      "tabParams": "Settings",
+      "tabGraphs": "Charts",
+      "tabSoilData": "Data — Soil",
+      "tabStationData": "Data — Station",
+      "tabAlerts": "Alerts & notifications",
+      "tabActivity": "Activity",
+      "paymentLabel": "Payment: {status}",
+      "joinedLastLogin": "Joined on {joined} · Last login {lastLogin}"
+    },
+    "zonesTab": {
+      "listError": "Zone list unavailable.",
+      "colName": "Name",
+      "colSurface": "Surface (m²)",
+      "colMoistureThreshold": "Moisture threshold (%)",
+      "colPumpFlow": "Pump flow (L/s)",
+      "colTAW": "TAW (mm)",
+      "colActions": "Actions",
+      "edit": "Edit",
+      "editAria": "Edit {name}",
+      "deleteConfirm": "Delete the zone « {name} »?",
+      "deleteSuccess": "Zone deleted.",
+      "empty": "No zone",
+      "newZone": "New zone"
+    },
+    "crudTable": {
+      "searchPlaceholder": "Search…",
+      "empty": "No data"
+    },
+    "graphsTab": {
+      "listError": "Zone list unavailable.",
+      "readError": "Unable to read charts.",
+      "updateError": "Update failed.",
+      "noZones": "No zone configured",
+      "zoneLabel": "Zone:",
+      "groupSoil": "Soil",
+      "groupWeather": "Weather",
+      "groupWater": "Water",
+      "groupPlant": "Plant",
+      "groupFertilizer": "Fertilizer/Nutrients",
+      "groupOther": "Other",
+      "fields": {
+        "soil_irrigation_status": "Soil irrigation",
+        "soil_ph_status": "Soil pH",
+        "soil_conductivity_status": "Soil conductivity",
+        "soil_moisture_status": "Soil moisture",
+        "soil_temperature_status": "Soil temperature",
+        "et0_status": "ET0",
+        "wind_speed_status": "Wind speed",
+        "wind_direction_status": "Wind direction",
+        "solar_radiation_status": "Solar radiation",
+        "temperature_humidity_weather_status": "Weather temperature / humidity",
+        "precipitation_humidity_rate_status": "Precipitation / humidity rate",
+        "pluviometry_status": "Rainfall",
+        "data_table_status": "Data table",
+        "wind_radar_status": "Wind radar",
+        "cumulative_precipitation_status": "Cumulative precipitation",
+        "precipitation_rate_status": "Precipitation rate",
+        "weather_temperature_humidity_status": "Weather temperature / humidity",
+        "water_flow_status": "Water flow",
+        "water_pressure_status": "Water pressure",
+        "water_ph_status": "Water pH",
+        "water_ec_status": "Water EC",
+        "leaf_sensor_status": "Leaf sensor",
+        "fruit_size_status": "Fruit size",
+        "large_fruit_diameter_status": "Large fruit diameter",
+        "npk_status": "NPK",
+        "electricity_consumption_status": "Electricity consumption"
+      }
+    },
+    "userHeaderActions": {
+      "reactivated": "User reactivated.",
+      "deactivated": "User deactivated.",
+      "actionError": "Action failed.",
+      "resetConfirm": "Reset the password for {name}?",
+      "reset": "Reset",
+      "cancel": "Cancel",
+      "newPasswordTitle": "New password",
+      "close": "Close",
+      "resetError": "Reset failed.",
+      "deactivate": "Deactivate",
+      "reactivate": "Reactivate",
+      "resetPassword": "Reset password"
+    },
+    "alertsTab": {
+      "loadError": "Unable to load alerts.",
+      "actionError": "Action failed.",
+      "colName": "Name",
+      "colCondition": "Condition",
+      "colActive": "Active",
+      "colLastTriggered": "Last triggered",
+      "colActions": "Actions",
+      "deleteConfirm": "Delete the alert « {name} »?",
+      "deleteSuccess": "Alert deleted.",
+      "empty": "No alert configured for this user"
+    },
+    "confirmDelete": {
+      "title": "Confirm deletion?",
+      "ok": "Delete",
+      "cancel": "Cancel",
+      "success": "Deletion successful.",
+      "error": "Deletion failed.",
+      "button": "Delete"
+    },
+    "zoneCard": {
+      "area": "Area",
+      "plant": "Plant",
+      "soilType": "Soil type",
+      "kc": "Coefficient (Kc)",
+      "irrigationMethod": "Irrigation method",
+      "et0": "Et0",
+      "et0Unit": "mm/day",
+      "lastIrrigation": "Last irrigation"
+    },
+    "common": {
+      "loadError": "Unable to load.",
+      "unknownError": "Unknown error."
+    }
+  },
+  "alertsPage": {
+    "windForm": {
+      "successTitle": "Alert Created",
+      "successDescription": "Wind speed alert successfully added.",
+      "errorTitle": "Error",
+      "errorWindSpeed": "Failed to create wind speed alert.",
+      "errorPressure": "Failed to create pressure alert.",
+      "nameLabel": "Alert Name",
+      "namePlaceholder": "Enter alert name",
+      "typeLabel": "Alert Type",
+      "percentageLabel": "Percentage [mm/h]",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Enter description",
+      "submit": "Submit"
+    },
+    "windSpeedForm": {
+      "successTitle": "Alert created",
+      "successDescription": "Wind speed alert added successfully.",
+      "errorTitle": "Error",
+      "errorDescription": "Failed to create the wind speed alert.",
+      "nameLabel": "Alert name",
+      "namePlaceholder": "Enter the alert name",
+      "typeLabel": "Alert type",
+      "conditionLabel": "Condition",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Enter the description",
+      "submit": "Submit"
+    },
+    "createDrawer": {
+      "noRecentReadings": "No recent readings for this sensor — adjust the threshold manually.",
+      "discardTitle": "Discard changes?",
+      "discardOk": "Discard",
+      "discardCancel": "Continue",
+      "updateSuccess": "Alert updated.",
+      "createSuccess": "Alert created.",
+      "saveError": "Failed to save.",
+      "editTitle": "Edit alert",
+      "newTitle": "New alert",
+      "cancel": "Cancel",
+      "update": "Update",
+      "create": "Create"
+    },
+    "main": {
+      "loadError": "Unable to load alerts.",
+      "limitReached": "Limit reached: delete an alert to create another one (max {max}).",
+      "deleteSuccess": "Alert deleted.",
+      "deleteError": "Failed to delete.",
+      "toggleError": "Unable to change the status.",
+      "columnName": "Name",
+      "recentlyTriggered": "Recently triggered",
+      "columnSensor": "Sensor",
+      "columnCategory": "Category",
+      "columnCondition": "Condition",
+      "columnActive": "Active",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "yes": "yes",
+      "no": "no",
+      "columnActions": "Actions",
+      "edit": "Edit",
+      "editAria": "Edit {name}",
+      "deleteConfirm": "Delete this alert?",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "deleteAria": "Delete {name}",
+      "pageTitle": "Alert management",
+      "pageSubtitle": "Configure thresholds per sensor. Each alert is automatically plotted on the corresponding chart.",
+      "newAlert": "New alert",
+      "emptyText": "No alert configured"
+    },
+    "form": {
+      "name": "Name",
+      "nameRequired": "The alert name is required.",
+      "namePlaceholder": "e.g. North plot overheating",
+      "category": "Category",
+      "sensor": "Sensor",
+      "sensorTooltip": "Determines the chart on which the alert will be plotted.",
+      "sensorRequired": "Select a sensor.",
+      "zone": "Zone",
+      "zonePlaceholder": "All my zones",
+      "condition": "Condition",
+      "thresholdRequired": "Threshold required.",
+      "thresholdPlaceholder": "Threshold",
+      "thresholdHint": "The alert triggers as soon as the sensor value satisfies the chosen condition.",
+      "description": "Description",
+      "active": "Active"
+    }
+  },
+  "analytics": {
+    "actions": {
+      "captureChart": "Capture chart",
+      "exportCsv": "Export as CSV"
+    },
+    "common": {
+      "noData": "No data to display.",
+      "captureChart": "Capture chart",
+      "exportCsv": "Export to CSV",
+      "justNow": "just now",
+      "minutesAgo": "{count} min",
+      "minutesAgoShort": "{count} min.",
+      "hoursAgo": "{count} h",
+      "measuredAt": "Measured: {time}",
+      "lowProbe": "Low probe",
+      "mediumProbe": "Medium probe",
+      "highProbe": "High probe",
+      "captureAria": "Capture",
+      "exportAria": "Export",
+      "captureChartAria": "Capture chart",
+      "exportCsvAria": "Export CSV",
+      "noDataAvailable": "No data available",
+      "downloadCsv": "Download CSV data"
+    },
+    "lastData": {
+      "justNow": "just now",
+      "minutesAgo": "{count} min ago",
+      "hoursAgo": "{count} h ago",
+      "measuredAt": "Measured: {time}",
+      "hoursAgoShort": "{count} h",
+      "hoursAgoLong": "{count, plural, one {# hour} other {# hours}}",
+      "noRecentData": "No recent data"
+    },
+    "leaf": {
+      "lastDataTitle": "Leaf sensor",
+      "chartTitle": "Leaf — moisture and temperature",
+      "chartSubtitle": "Leaf microclimate over the analysis window.",
+      "axisTemp": "Leaf T ({unit})",
+      "axisMoisture": "Leaf H ({unit})"
+    },
+    "windSpeed": {
+      "chartTitle": "Wind speed at the station",
+      "chartSubtitle": "Hourly series; adaptive time scale with the period slider.",
+      "lastDataTitle": "Wind speed (latest reading)"
+    },
+    "waterFlow": {
+      "lastDataTitle": "Water flow / irrigation",
+      "chartTitle": "Irrigation flow",
+      "chartSubtitle": "Volume per unit of time over the selected window.",
+      "axisFlow": "Flow ({unit})"
+    },
+    "waterPh": {
+      "lastDataTitle": "Water pH (latest reading)",
+      "chartTitle": "Irrigation water pH",
+      "chartSubtitle": "Acid-base quality of the distributed water."
+    },
+    "soilWater": {
+      "lastDataHeading": "Moisture ({humidityUnit}) · flow ({flowUnit})",
+      "probeLow": "Moisture (low probe)",
+      "probeMedium": "Moisture (medium probe)",
+      "probeHigh": "Moisture (high probe)",
+      "flowLabel": "Irrigation flow",
+      "chartTitle": "Soil moisture, water availability and flow",
+      "chartSubtitle": "Moisture in {humidityUnit}; flow in {flowUnit}.",
+      "axisHumidity": "Moisture ({unit})",
+      "axisFlow": "Flow ({unit})",
+      "seriesLow": "Low moisture ({unit})",
+      "seriesMedium": "Medium moisture ({unit})",
+      "seriesHigh": "High moisture ({unit})"
+    },
+    "solarRadiation": {
+      "title": "Global solar radiation",
+      "subtitle": "Flux on the horizontal plane; adaptive time scale.",
+      "lastTitle": "Global radiation (last reading)"
+    },
+    "waterPressure": {
+      "title": "Water pressure",
+      "subtitle": "Irrigation or distribution network — dynamic monitoring.",
+      "pressureAxis": "Pressure",
+      "lastDataLabel": "Water pressure (latest reading)"
+    },
+    "soilConductivity": {
+      "title": "Soil conductivity and irrigation",
+      "subtitle": "EC (low / high) and water supply flow synchronized over time.",
+      "ecAxis": "EC",
+      "flowAxis": "Flow",
+      "lowProbe": "Low conductivity",
+      "highProbe": "High conductivity",
+      "irrigation": "Irrigation",
+      "irrigationFlow": "Irrigation flow",
+      "lastDataHeading": "Soil EC and irrigation flow"
+    },
+    "electricity": {
+      "subtitle": "Energy load profile over the displayed period.",
+      "energyAxis": "Energy",
+      "consumptionSeries": "Consumption"
+    },
+    "windRadar": {
+      "measurements": "{count, plural, one {# measurement} other {# measurements}}",
+      "title": "Wind — direction rose",
+      "subtitle": "Distribution by sector and speed classes over the period.",
+      "lastTitle": "Wind — speed and direction",
+      "speed": "Speed",
+      "direction": "Direction",
+      "csvPercentHeader": "%",
+      "csvCountHeader": "Count"
+    },
+    "precipitationRate": {
+      "title": "Precipitation intensity",
+      "subtitle": "Natural watering — instantaneous rate over the selected interval.",
+      "intensityAxis": "Intensity ({unit})",
+      "seriesName": "Precipitation rate ({unit})",
+      "lastTitle": "Precipitation intensity"
+    },
+    "phSoil": {
+      "subtitle": "Trend of the medium's acid-base balance.",
+      "axisLabel": "Soil pH ({unit})",
+      "seriesName": "Soil pH ({unit})"
+    },
+    "weatherTempHumidity": {
+      "title": "Air — temperature, relative humidity and dew point",
+      "subtitle": "Reading scales {tempUnit} and {humUnit}; adaptive time axis based on the window.",
+      "tempAxis": "Temp. ({unit})",
+      "humidityAxis": "RH ({unit})",
+      "temperatureSeries": "Temperature ({unit})",
+      "humiditySeries": "Humidity ({unit})",
+      "dewPointSeries": "Dew point ({unit})",
+      "lastTitle": "Air — {tempUnit} · {humUnit}",
+      "temperatureLabel": "Temperature",
+      "temperatureEmpty": "Temperature: —",
+      "humidityLabel": "Relative humidity",
+      "humidityEmpty": "Humidity: —"
+    },
+    "cumulPrecipitation": {
+      "title": "Cumulative precipitation",
+      "subtitle": "Aggregated by day, week or month depending on your selection.",
+      "perDay": "By day",
+      "perWeek": "By week",
+      "perMonth": "By month",
+      "legendSum": "Cumulative precipitation (Σ {unit})",
+      "lastDataLabel": "Rainfall total"
+    },
+    "vpd": {
+      "title": "Vapor pressure deficit (VPD)",
+      "subtitle": "Atmospheric dryness indicator for the plant canopy.",
+      "subtitleWithUnit": "Indicator for the plant canopy — scale {unit}.",
+      "axisLabel": "VPD ({unit})",
+      "legendName": "Vapor pressure deficit",
+      "legendNameWithUnit": "Vapor pressure deficit ({unit})"
+    },
+    "largeFruitDiameter": {
+      "subtitle": "Calibrated growth of the most developed fruits.",
+      "axisLabel": "Diameter ({unit})",
+      "legendName": "Diameter ({unit})"
+    },
+    "waterEc": {
+      "subtitle": "Salinity and ionic load of the supply water.",
+      "axisLabel": "EC ({unit})",
+      "legendName": "Conductivity ({unit})"
+    },
+    "soilSalinityConductivity": {
+      "title": "Soil salinity and conductivity",
+      "subtitle": "Salt content and electrical conductivity — ionic stress indicators.",
+      "salinityAxisLabel": "Salinity ({unit})",
+      "conductivityAxisLabel": "EC ({unit})",
+      "salinity": "Salinity",
+      "conductivity": "Conductivity"
+    },
+    "et0Chart": {
+      "title": "ET₀ — reference evapotranspiration",
+      "subtitle": "Comparison of sensor measurements and computed series — displayed unit {unit}.",
+      "captureChart": "Capture chart",
+      "exportCsv": "Export CSV",
+      "noData": "No data available",
+      "yAxisLabel": "ET₀ ({unit})",
+      "seriesSensor": "ET₀ sensor ({unit})",
+      "seriesCalculated": "ET₀ computed ({unit})"
+    },
+    "et0LastData": {
+      "heading": "Reference evapotranspiration (ET₀)",
+      "weatherSensor": "Weather sensor",
+      "calculatedModel": "Computed model",
+      "noRecentData": "No recent data",
+      "todayEt0": "Today's ET₀ ({day})",
+      "yesterdayEt0": "Yesterday's ET₀ ({day})",
+      "usedForIrrigation": "used for today's irrigation",
+      "cumulative": "Cumulative ({count} d)",
+      "measured": "Measured: {ago}",
+      "justNow": "just now",
+      "minutesAgo": "{count} min.",
+      "hoursAgo": "{count} h"
+    },
+    "npkLastData": {
+      "heading": "N-P-K nutrition ({units})",
+      "measured": "Measured: {ago}",
+      "justNow": "just now",
+      "minutesAgo": "{count} min.",
+      "hoursAgo": "{count} hours"
+    },
+    "soilTemperature": {
+      "chartTitle": "Soil temperature ({unit})",
+      "chartSubtitle": "Low, medium and high depths.",
+      "axisLabel": "Soil temp. ({unit})",
+      "seriesLow": "Low",
+      "seriesMedium": "Medium",
+      "seriesHigh": "High"
+    },
+    "fruitSize": {
+      "chartTitle": "Fruit size",
+      "chartSubtitle": "Tracking fruit dimensions across the season.",
+      "yAxisLabel": "Size ({unit})",
+      "seriesName": "Fruit size ({unit})"
+    },
+    "npkChart": {
+      "title": "Nitrogen, phosphorus and potassium",
+      "subtitle": "N-P-K balance in the soil — reading units {units}.",
+      "yAxisLabel": "NPK ({units})"
+    }
+  },
+  "data": {
+    "loginError": {
+      "wrongCreds": "Incorrect username or password.",
+      "unexpected": "An unexpected error occurred.",
+      "unreachable": "Unable to reach the server. Check your connection.",
+      "tooManyAttempts": "Too many login attempts. Try again later.",
+      "wrongCreds400": "Incorrect username or password. (400 — see the Network tab for server details.)"
+    },
+    "zoneNotification": {
+      "confirmation": "Your zone notification has been saved. Alerts will use the defined thresholds and channels. (Provisional template — to be replaced.)",
+      "confirmationSummary": "{confirmation} — {title}",
+      "periodicReminder": "Scheduled reminder ({rate}) — {label}. Check humidity, ETo×Kc and thresholds.",
+      "zoneFallbackName": "Zone {id}"
+    }
+  },
+  "misc": {
+    "adminLogin": {
+      "title": "Administrator area",
+      "subtitle": "Sign in to manage the platform",
+      "invalidCredentials": "Incorrect username or password.",
+      "usernameLabel": "Username",
+      "usernameRequired": "Please enter your username.",
+      "usernamePlaceholder": "Your username",
+      "passwordLabel": "Password",
+      "passwordRequired": "Please enter your password.",
+      "passwordPlaceholder": "Your password",
+      "submit": "Sign in",
+      "forgotPassword": "Forgot password?"
+    },
+    "sensorDataChart": {
+      "title": "Station — temperature, radiation and ET₀",
+      "subtitle": "Reading scales: {tempUnit} · {solarUnit} · {et0Unit} — synchronized recent window.",
+      "seriesWithUnit": "{name} ({unit})",
+      "tempAxisLabel": "T ({unit})",
+      "et0AxisLabel": "ET₀ ({unit})"
+    },
+    "sensorDataTable": {
+      "title": "Sensors — table overview",
+      "subtitle": "Latest recorded rows",
+      "timestamp": "Timestamp",
+      "headerWithUnit": "{name} ({unit})"
+    },
+    "vannesPompesSchema": {
+      "synoptic": "Synoptic",
+      "pageTitle": "Valves & pumps schematic",
+      "pageSubtitle": "Network overview: states synchronized with the Management page.",
+      "backToManagement": "Back to management",
+      "emptyTitle": "No equipment configured",
+      "emptyDescription": "Add valves and pumps from the management page to display the interactive schematic.",
+      "configureNetwork": "Configure the network",
+      "valvesEyebrow": "Distribution",
+      "valvesTitle": "Valve manifold",
+      "valvesDescription": "Connected to the main bus: each station shows the current setpoint and the target.",
+      "valveOpen": "Open",
+      "valveClosed": "Closed",
+      "target": "target {value}",
+      "mainlineEyebrow": "Transport",
+      "mainlineTitle": "Main line",
+      "mainlineDescription": "Central pump on the manifold: a green state indicates a running pump.",
+      "pumpRunning": "Running",
+      "pumpStopped": "Stopped",
+      "dosingEyebrow": "Injection",
+      "dosingTitle": "Dosing pumps",
+      "dosingDescription": "Peripheral units connected to the network: numbering starts from the second pump.",
+      "pumpOn": "On",
+      "pumpOff": "Off",
+      "legendLabel": "Legend:",
+      "legendBody": "green = open valve / active pump; blue tones = pipes; flow data shown for reference only ({current} / {target})."
+    },
+    "chartLastDataShell": {
+      "hideChartTooltip": "Hide the chart (recent data only)",
+      "showChart": "Show the chart",
+      "hideChart": "Hide the chart"
+    },
+    "lastDataAddAlertButton": {
+      "label": "Add an alert"
+    },
+    "chartDateRangeDragger": {
+      "label": "Displayed period",
+      "startAria": "Start of the displayed period",
+      "endAria": "End of the displayed period"
+    },
+    "emptyBox": {
+      "empty": "No data",
+      "loading": "Loading..."
+    },
+    "map": {
+      "yourLocation": "This is your location",
+      "sensor": "Sensor",
+      "sensorDeleted": "Sensor deleted",
+      "sensorMoved": "Sensor moved",
+      "zoneRecalculated": "Zone recalculated.",
+      "sensorAdded": "Sensor “{name}”",
+      "zoneNamed": "Zone “{zone}”",
+      "outOfDrawnZone": "Outside drawn zone",
+      "zoneLabel": "Zone: {zone}",
+      "outOfZone": "Outside zone",
+      "sectorsAndSensorsSaved": "Sectors and sensors saved",
+      "selectSector": "Select a sector",
+      "selectSectorHint": "Select mode, then click on a polygon.",
+      "nothingToDelete": "Nothing to delete",
+      "selectOneOrMoreSectors": "Select one or more sectors.",
+      "sectorsDeleted": "Sector(s) deleted",
+      "onlyOneSector": "Only one sector",
+      "onlyOneSectorHint": "Select exactly one polygon, then apply the new name.",
+      "sectorRenamed": "Sector renamed",
+      "savedLocally": "Saved locally in the browser.",
+      "tokenMissingBefore": "Add",
+      "tokenMissingAfter": "to your environment to display the Mapbox map.",
+      "draw": "Draw",
+      "select": "Select",
+      "vertices": "Vertices",
+      "delete": "Delete",
+      "save": "Save",
+      "nextSectorName": "Next sector name",
+      "sectorNumber": "Sector {n}",
+      "renameSelectedSector": "Rename the selected sector",
+      "newName": "New name",
+      "sectorNamePlaceholder": "Sector name",
+      "applyName": "Apply name",
+      "helpText": "Each <strong>sector</strong> has its own <strong>color</strong> on the map. Choose a sensor type, place it on the map; it stays pinned to GPS coordinates (it moves when you move the map like everything else). <strong>Drag</strong> a sensor to move it; the zone is recalculated. <strong>Click</strong> to select it.",
+      "chooseSensorType": "Sensors — choose a type",
+      "allSensorTypes": "All sensor types",
+      "cancelPlacement": "Cancel placement",
+      "placedSensors": "Placed sensors (name → sector)",
+      "noSensorsYet": "No sensors yet. Add some via the menu above.",
+      "outOfSector": "Outside sector",
+      "deleteThisSensor": "Delete this sensor",
+      "bottomHint": "Hover over a sensor for the tooltip. Sectors (shape, name) and sensors are saved automatically in this browser; “{save}” shows a confirmation."
+    },
+    "chatbot": {
+      "welcome": "Hello! I'm your Agrilogy assistant. Ask me about your fields, sensors, crop health, or your farm's performance. Type /help to see the available pages.",
+      "systemPrompt": "You are Agrilogy's built-in assistant, an agricultural intelligence platform.\nYour sole mission is to help users navigate and understand the data available in the Agrilogy application: dashboard, soil data, weather station, plant monitoring, water data, and alert management.\n\nABSOLUTE RULE: If the question does not directly concern the Agrilogy application or agriculture related to the platform's data, you MUST refuse. Reply only: \"I am only available to answer questions related to the Agrilogy application. Type /help to see the available pages.\" Do not give any off-topic information, even partial. Do not apologize at length, do not offer off-topic alternatives.\n\nAlways reply in English. Be concise and practical.",
+      "error": {
+        "timeout": "The request timed out. Please try again.",
+        "overloaded": "The server is busy. Please try again in a moment.",
+        "rateLimit": "Too many requests. Please slow down.",
+        "internal": "An error occurred. Please try again.",
+        "network": "Network error. Check your connection and try again."
+      },
+      "availablePagesTitle": "📋 Pages available on Agrilogy:",
+      "route": {
+        "dashboard": {
+          "label": "Dashboard",
+          "description": "Overview of your farm"
+        },
+        "soil": {
+          "label": "Soil data",
+          "description": "Available water, Temperature (°C), pH, Salinity & conductivity, NPK"
+        },
+        "station": {
+          "label": "Weather station",
+          "description": "Temperature & Humidity, ET0, Wind speed & direction, Radiation, Precipitation"
+        },
+        "plant": {
+          "label": "Plant monitoring",
+          "description": "Fruit size, Large fruit diameter, Leaf humidity & temperature"
+        },
+        "water": {
+          "label": "Water data",
+          "description": "Flow, Pressure, pH, Conductivity, Cumulative precipitation"
+        },
+        "alerts": {
+          "label": "Alert management",
+          "description": "View and manage all of your farm's alerts"
+        }
+      },
+      "pageContext": "Current page context: {context}",
+      "assistantName": "Agrilogy Assistant",
+      "statusStreaming": "In progress...",
+      "statusReady": "Ready",
+      "close": "Close",
+      "send": "Send",
+      "inputPlaceholder": "Ask your question or type /help...",
+      "stopGeneration": "Stop generation ×",
+      "inputHint": "Enter to send, Shift+Enter for a new line"
+    },
+    "googleMapWeather": {
+      "title": "Farm & sectors",
+      "showTools": "Map tools",
+      "hideTools": "Hide tools"
+    }
+  },
+  "notifications": {
+    "alert": {
+      "conditionTitle": "Condition",
+      "conditionLabel": "Condition:",
+      "descriptionTitle": "Description"
+    },
+    "card": {
+      "nameLabel": "Notification name:",
+      "unnamedConfig": "— (name not set — edit the configuration)",
+      "zoneNumber": "Zone #{id}",
+      "notificationFallback": "Notification",
+      "zoneConfirmation": "Zone confirmation",
+      "engineV1": "Engine v1",
+      "decisionCritical": "Critical — irrigation action",
+      "decisionAdvisory": "Advisory — high ETo×Kc demand",
+      "decisionOk": "OK — within thresholds",
+      "kcUsed": "Kc used: {kc}",
+      "rulesLabel": "Rules:",
+      "temperature": "Temperature",
+      "humidity": "Humidity",
+      "soil": "Soil",
+      "humidityLabel": "Humidity",
+      "temperatureLabel": "Temperature",
+      "irrigation": "Irrigation",
+      "idealPeriod": "Ideal period",
+      "lastDate": "Last date",
+      "usedWater": "Water used",
+      "editNotification": "Edit notification",
+      "deleteNotification": "Delete notification"
+    },
+    "main": {
+      "title": "Notifications",
+      "subtitle": "Configure email alerts and review the history",
+      "addZoneNotification": "Add a zone notification",
+      "editModalTitle": "Edit zone notification",
+      "newModalTitle": "New zone notification",
+      "deleteDialogTitle": "Delete this zone notification?",
+      "deleteDialogBody": "This sector's configuration is erased on this device and the related local rows disappear from the list. Other notifications for the same zone are not affected.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deletedToastTitle": "Notification deleted",
+      "deletedToastDescription": "This sector's local configuration has been erased on this device."
+    },
+    "detail": {
+      "greeting": "Hello {name}",
+      "parcelInfo": "Information about your farm plot.",
+      "dailyAlert": "Daily irrigation alert — {zone}",
+      "dateLabel": "Date:",
+      "message": "Message",
+      "weatherLast2Days": "Weather over the last 2 days",
+      "avgAirTempYesterday": "Average air temperature yesterday:",
+      "avgAirHumidityYesterday": "Average air humidity yesterday:",
+      "evaporatedWaterYesterday": "Water evaporated yesterday (ET0):",
+      "lastIrrigationOperation": "Last irrigation operation",
+      "lastIrrigationOn": "Last irrigation on {date}",
+      "todayInfo": "Today's information",
+      "currentSoilHumidity": "Current soil humidity:",
+      "currentSoilTemp": "Current soil temperature:",
+      "soilEc": "Soil electrical conductivity (EC):",
+      "npkAmount": "N.P.K fertilizer amount:",
+      "soilSalinity": "Soil salinity (EC / salinity):",
+      "decisionHelp": "Decision help:",
+      "decisionCritical": "Irrigation action recommended (critical threshold)",
+      "decisionAdvisory": "Increased monitoring (high ETo×Kc)",
+      "decisionOk": "No urgent action (within thresholds)",
+      "irrigationDecisionToday": "Irrigation decision today",
+      "zoneNumber": "Zone {id}",
+      "notificationFallback": "Notification",
+      "userFallback": "User"
+    },
+    "kcTable": {
+      "breadcrumb": "New protocol > Weather",
+      "title": "Kc coefficients table",
+      "protocolNameLabel": "Protocol name",
+      "protocolNamePlaceholder": "Apple weather protocol",
+      "defaultProtocolName": "Kc protocol",
+      "stageName": "Stage name",
+      "stageNamePlaceholder": "e.g. April",
+      "durationDays": "Duration (days)",
+      "kcStart": "Kc start",
+      "kcEnd": "Kc end",
+      "amountMm": "Amount (mm)",
+      "active": "Active",
+      "deleteStage": "Delete stage",
+      "addStage": "Add a stage",
+      "back": "Back",
+      "totalDuration": "Total protocol duration:",
+      "days": "days",
+      "saveProtocol": "Save protocol"
+    },
+    "configForm": {
+      "multiSectorTitle": "Several sectors for this zone",
+      "multiSectorDescription": "Open the edit from the relevant notification card to target the right sector.",
+      "configNotFoundTitle": "Configuration not found",
+      "configNotFoundDescription": "No notification saved for this zone. Close this panel and use \"Add a zone notification\".",
+      "zonesLoadError": "Unable to load zones",
+      "loading": "Loading…",
+      "noZoneAvailable": "No zone available",
+      "selectZone": "Please select a zone",
+      "missingConfigId": "Missing configuration identifier",
+      "zoneNumber": "Zone {id}",
+      "outboundSubject": "Agrilogy — notification configuration {name}",
+      "outboundMessage": "The zone notification threshold configuration has been saved. The accepted channels will be used server-side when available.",
+      "savedChanges": "Changes saved",
+      "savedConfig": "Configuration saved",
+      "noZoneForAccount": "No zone is available for this account.",
+      "noZoneHint": "First create or assign a plot / zone in Agrilogy, then come back to configure a notification.",
+      "zoneParamsTitle": "Zone settings",
+      "editHint": "Saving updates this notification (sector, thresholds and channels) for the selected zone.",
+      "createHint": "A single zone can group several sectors: create one notification per sector for distinct thresholds and tracking. A short confirmation message is added to the list the first time you save this configuration.",
+      "zoneLabel": "Zone",
+      "sectorLabel": "Sector (within the zone)",
+      "sectorPlaceholder": "e.g. North sector, Plot B, Block 2…",
+      "sectorHint": "Identifies the portion of the zone covered by this notification.",
+      "notificationNameLabel": "Notification name",
+      "notificationNamePlaceholder": "e.g. Zone 1 potatoes",
+      "soilTypeLabel": "Soil type",
+      "soilLight": "Light",
+      "soilMedium": "Medium",
+      "soilHeavy": "Heavy",
+      "soilCharacteristicLabel": "Soil characteristic",
+      "soilMoistureSourceLabel": "Soil moisture (source)",
+      "avgSensors": "Average sensor (1+2+3)",
+      "sensor1": "Sensor 1",
+      "sensor2": "Sensor 2",
+      "sensor3": "Sensor 3",
+      "kcCoefficient": "Kc coefficient",
+      "kcModeTable": "Table",
+      "kcModeManual": "Manual",
+      "openKcTable": "Open the Kc table…",
+      "kcValue": "Kc value",
+      "kcWeightedHint": "Weighted average (active stages) — editable via the table.",
+      "humidityLow": "Low humidity (%)",
+      "humidityMid": "Medium humidity (%)",
+      "humidityHigh": "High humidity (%)",
+      "et0ReferenceLabel": "ETo reference",
+      "et0WeatherStation": "Weather station calculation",
+      "et0LocalCalc": "Local calculation",
+      "precipitationLabel": "Precipitation",
+      "precipSensor": "Precipitation sensor",
+      "precipStation": "Station",
+      "krFactor": "KR factor ({value})",
+      "surfaceHa": "Area (ha)",
+      "cropLabel": "Crop",
+      "flowRate": "Flow rate (m³/h)",
+      "irrigationPanelTitle": "Irrigation & engine v1 thresholds",
+      "irrigationMethodLabel": "Irrigation method",
+      "dripSprinkler": "Drip / sprinkler",
+      "subsurfaceDrip": "Subsurface drip",
+      "frequencyLabel": "Frequency & notification",
+      "minutes": "minutes",
+      "permeability": "Permeability ({value} %)",
+      "valveLabel": "Valve",
+      "valveAuto": "Automatic",
+      "valveManual": "Manual",
+      "vpdThreshold": "VPD threshold (kPa)",
+      "rootMonitoringLabel": "Root monitoring",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "engineThresholdsTitle": "Engine v1 thresholds (ET0 × Kc, humidity)",
+      "criticalSoilHumidityLabel": "Critical soil humidity threshold (%)",
+      "criticalSoilHumidityHint": "{value} % — below = critical decision",
+      "et0KcAdvisoryLabel": "ET0×Kc advisory threshold (mm)",
+      "et0KcAdvisoryHint": "Above = advisory decision (high water demand)",
+      "maxWaterLabel": "Max water volume (m³)",
+      "channelsTitle": "Notification channels",
+      "channelsHint": "Check the channels you accept to receive alerts.",
+      "saveZoneNotification": "Save zone notification"
+    },
+    "deliveryRate": {
+      "label": "Delivery rate",
+      "hint": "Minimum time before the next notification for this sector.",
+      "preset": {
+        "every20min": "Every 20 minutes",
+        "every1hour": "Every hour",
+        "every4hours": "Every 4 hours",
+        "daily": "Once a day",
+        "weekly": "Once a week",
+        "custom": "Custom"
+      },
+      "unit": {
+        "minute": "minutes",
+        "hour": "hours",
+        "day": "days",
+        "week": "weeks"
+      },
+      "every": "{unit, select, minute {every {amount} min} hour {every {amount} h} day {every {amount} d} week {every {amount} wk} other {every {amount}}}"
+    }
+  },
+  "settings": {
+    "main": {
+      "title": "Settings",
+      "tabFarms": "Farms",
+      "tabUsers": "Users",
+      "tabSensors": "Sensors",
+      "tabReadings": "Readings",
+      "tabGroups": "Sensor groups"
+    },
+    "graphName": {
+      "title": "Graph name settings",
+      "colName": "Name",
+      "colCustomName": "Custom name",
+      "successTitle": "Success",
+      "successDescription": "Name updated successfully.",
+      "errorTitle": "Error",
+      "errorDescription": "Failed to update the name.",
+      "save": "Update"
+    },
+    "sensorColor": {
+      "title": "Curve color settings",
+      "colName": "Name",
+      "colColor": "Color",
+      "successTitle": "Success",
+      "successDescription": "Color updated successfully.",
+      "errorTitle": "Error",
+      "errorDescription": "Failed to update the color.",
+      "fetchError": "Failed to load sensor colors."
+    },
+    "groups": {
+      "intro": "Group sensors to find them faster. Groups are stored locally on this device.",
+      "newNameLabel": "New group name",
+      "newNamePlaceholder": "e.g. Greenhouse A",
+      "createButton": "Create a group",
+      "toastCreated": "Group created",
+      "emptyGroups": "No groups yet.",
+      "deleteGroupAria": "Delete the group",
+      "sensorsInGroup": "Sensors in this group",
+      "clickToRemove": "Click to remove",
+      "emptySensors": "No sensors — add some below.",
+      "addSensorOption": "Add a sensor to the group…"
+    },
+    "users": {
+      "intro": "Super-admin: create accounts with a user or administrator role, and choose which readings (sensors) they can see. Sensor preferences are stored locally; the API may ignore extra fields until the backend is adapted.",
+      "listToastTitle": "User list",
+      "listToastDesc": "Access denied or API unavailable.",
+      "requiredFieldsTitle": "Required fields",
+      "requiredFieldsDesc": "Username and password.",
+      "sensorsTitle": "Sensors",
+      "selectAtLeastOne": "Select at least one visible reading.",
+      "createdTitle": "User created",
+      "createdDesc": "Sensor permissions are also stored locally for dashboard filtering.",
+      "createApiTitle": "API creation",
+      "createApiDesc": "If the server rejected the request, sensor permissions were still saved locally.",
+      "loading": "Loading users…",
+      "newUserHeading": "New user",
+      "usernameLabel": "Username",
+      "passwordLabel": "Password",
+      "roleLabel": "Role",
+      "roleUser": "User",
+      "roleAdmin": "Administrator",
+      "visibleReadingsHeading": "Readings visible on the dashboard",
+      "createButton": "Create the user",
+      "existingHeading": "Existing users",
+      "colUser": "User",
+      "colEmail": "Email",
+      "colApiRole": "API role",
+      "colSensorsLocal": "Sensors (local)",
+      "badgeAdmin": "Admin",
+      "badgeUser": "User",
+      "localSensorsCell": "{count} reading(s) — {role}"
+    },
+    "directory": {
+      "toastUpdated": "Sensor updated",
+      "requiredFieldsTitle": "Required fields",
+      "requiredFieldsDesc": "Please fill in all fields.",
+      "keyUsedTitle": "Key already in use",
+      "keyUsedDesc": "This sensor key already exists.",
+      "toastAdded": "Sensor added",
+      "searchPlaceholder": "Search a sensor (name, type, placement, key)…",
+      "addSensorButton": "Add sensor",
+      "countShown": "{count} sensor(s) shown",
+      "colDisplayName": "Display name",
+      "colTypePlacement": "Type / placement",
+      "colKey": "Key",
+      "colUnit": "Unit",
+      "colVisible": "Visible",
+      "yes": "Yes",
+      "no": "No",
+      "editAria": "Edit",
+      "addModalTitle": "Add a sensor",
+      "fieldLabel": "Label",
+      "fieldType": "Type",
+      "fieldKeyUnique": "Key (unique)",
+      "fieldUnit": "Unit",
+      "cancel": "Cancel",
+      "add": "Add",
+      "editModalTitle": "Edit the sensor",
+      "fieldDisplayName": "Display name",
+      "displayNamePlaceholder": "Custom name",
+      "fieldPlacementType": "Placement type",
+      "placementPlaceholder": "e.g. Soil, Greenhouse…",
+      "visibleInLists": "Visible in lists",
+      "catalogNote": "Catalog sensor: metadata is overridden locally only.",
+      "save": "Save",
+      "placementOptions": {
+        "soil": "Soil",
+        "water": "Water",
+        "weather": "Weather",
+        "greenhouse": "Greenhouse",
+        "leafFruit": "Leaf / fruit",
+        "electricity": "Electricity",
+        "other": "Other"
+      }
+    },
+    "searchDirectory": {
+      "requiredFieldsTitle": "Required fields",
+      "requiredFieldsDesc": "Please fill in all fields.",
+      "keyUsedTitle": "Key already in use",
+      "keyUsedDesc": "This sensor key already exists.",
+      "toastAddedTitle": "Sensor added",
+      "toastAddedDesc": "The sensor is available in the settings.",
+      "searchPlaceholder": "Search a sensor...",
+      "addSensorButton": "Add sensor",
+      "countFound": "{count} sensor(s) found",
+      "colLabel": "Label",
+      "colType": "Type",
+      "colKey": "Key",
+      "colDefaultUnit": "Default unit",
+      "addModalTitle": "Add a sensor",
+      "fieldLabel": "Label",
+      "fieldType": "Type",
+      "fieldKeyUnique": "Key (unique)",
+      "fieldUnit": "Unit",
+      "cancel": "Cancel",
+      "add": "Add"
+    },
+    "readings": {
+      "rowSavedTitle": "Change saved",
+      "rowSavedDesc": "The row has been saved locally.",
+      "unitsSavedTitle": "Units saved",
+      "unitsSavedDesc": "Changes applied on the frontend only.",
+      "resetTitle": "Reset",
+      "resetDesc": "Default units have been restored.",
+      "searchPlaceholder": "Search a sensor (label, type, key)…",
+      "zoneLabel": "Zone",
+      "refreshButton": "Refresh latest values",
+      "colReadingLabel": "Reading label",
+      "colType": "Type",
+      "colUnit": "Unit",
+      "colScale": "Scale factor (a)",
+      "colOffset": "Offset (b)",
+      "colLastValue": "Last value",
+      "colActions": "Actions",
+      "editRowAria": "Edit row",
+      "resetButton": "Reset",
+      "saveButton": "Save",
+      "localChangesNotice": "Some units have been changed locally.",
+      "editModalTitle": "Edit the reading",
+      "calibrationNote": "In accordance with the PDF “{pdf}”: real value = raw value × a + b. Changing the unit recomputes a and b via {conversionModule} (equations from the PDF). Radiation MJ/m²: the 0.0036 factor corresponds to integration over 1 h (see PDF). Defaults a,b: {defaultsModule}.",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "farms": {
+      "errorTitle": "Error",
+      "loadFarmsError": "Unable to load farms.",
+      "nameRequired": "Name required",
+      "farmUpdated": "Farm updated",
+      "saveFailed": "Save failed",
+      "imageTooLargeTitle": "Image too large",
+      "imageTooLargeDesc": "Choose a smaller image (local storage).",
+      "imageSavedTitle": "Image saved locally",
+      "imageSavedDesc": "Displayed on this device. A dedicated API will be required for server-side storage.",
+      "loading": "Loading farms…",
+      "intro": "Farms correspond to the zones returned by the API. The name is saved on the server; the image is stored locally in the browser (per-device preview).",
+      "empty": "No farm / zone for this account.",
+      "farmZoneHeading": "Farm — zone #{id}",
+      "removeImage": "Remove the image",
+      "farmNameLabel": "Farm name",
+      "saveNameButton": "Save the name"
+    }
+  },
+  "shell": {
+    "pageSubtitle": {
+      "range": "from {start} to {end}"
+    },
+    "zoneSelect": {
+      "label": "Select a zone"
+    },
+    "chartDateRange": {
+      "preset24h": "Last 24 hours",
+      "preset7d": "Last 7 days",
+      "preset30d": "Last 30 days",
+      "preset90d": "Last 90 days",
+      "preset12m": "Last 12 months"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Farm overview — weather, zones, and irrigation network status",
+      "zonesAvailable": "Available zones",
+      "electrovannesAvailable": "Available solenoid valves"
+    },
+    "electrovanCard": {
+      "devEui": "DevEUI",
+      "mode": "Mode",
+      "modeManual": "Manual",
+      "modeAuto": "Automatic",
+      "status": "Status",
+      "activated": "Activated",
+      "deactivated": "Deactivated"
+    },
+    "statusIndicators": {
+      "title": "System status indicators",
+      "panelVoltage": "Panel voltage",
+      "systemHealthy": "System status: Healthy",
+      "systemUnhealthy": "System status: Unhealthy"
+    },
+    "water": {
+      "title": "Water data",
+      "zoneFallback": "Zone"
+    },
+    "vannesPompes": {
+      "title": "Valves and pumps",
+      "vaneCount": "{count, plural, one {# valve} other {# valves}}",
+      "pumpCount": "{count, plural, one {# pump} other {# pumps}}",
+      "addVane": "Add a valve",
+      "addPump": "Add a pump",
+      "schemaView": "Network schematic view",
+      "vanesHeading": "Valves",
+      "pumpsHeading": "Pumps",
+      "emptyVanes": "No valves. Click “Add a valve” to create one.",
+      "emptyPumps": "No pumps. Use “Add a pump” to create one.",
+      "newVaneTitle": "New valve",
+      "newPumpTitle": "New pump",
+      "nameLabel": "Name",
+      "devEuiOptionalLabel": "DevEUI (optional)",
+      "vaneNamePlaceholder": "e.g. Valve 1",
+      "pumpNamePlaceholder": "e.g. Main line pump",
+      "cancel": "Cancel",
+      "create": "Create",
+      "manual": "Manual",
+      "vaneOpen": "Open (active)",
+      "vaneClosed": "Closed (inactive)",
+      "activate": "ACTIVATE",
+      "deactivate": "DEACTIVATE",
+      "pumpRunning": "Running",
+      "pumpStopped": "Stopped",
+      "start": "START",
+      "stop": "STOP"
+    },
+    "common": {
+      "zoneFallback": "Zone"
+    },
+    "station": {
+      "title": "Weather station"
+    },
+    "plant": {
+      "title": "Plant data"
+    },
+    "soil": {
+      "title": "Soil data"
+    },
+    "admin": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "affirmations": "Affirmations manager",
+      "logout": "Log out",
+      "cancel": "Cancel",
+      "logoutConfirmTitle": "Confirm log out",
+      "logoutConfirmBody": "Are you sure you want to log out?",
+      "logoutConfirmOk": "Log out"
+    },
+    "mobileMenu": {
+      "home": "Home",
+      "menu": "Menu",
+      "profile": "Profile",
+      "openMenu": "Open menu",
+      "greeting": "Hello {name}",
+      "darkMode": "Dark mode",
+      "lightMode": "Light mode"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "openAria": "Open notifications",
+      "loading": "Loading…",
+      "empty": "No notifications yet.",
+      "compactSummary": "T {temperature}°C · soil {soilHumidity}% · ET0 {et0}",
+      "seeAll": "See all",
+      "detailTitle": "Notification detail",
+      "modify": "Edit notification",
+      "delete": "Delete notification",
+      "deleteConfirmTitle": "Delete this zone notification?",
+      "deleteConfirmBody": "This sector's configuration (thresholds, frequency, channels) will be erased from this device and the related local rows removed from the list. Other notifications for the same zone are not affected.",
+      "deleteConfirmOk": "Delete",
+      "deletedToastTitle": "Notification deleted",
+      "deletedToastBody": "Configuration erased and local entries removed from the list on this device."
+    },
+    "adminMenu": {
+      "logoAlt": "Agrilogy logo",
+      "toggleDarkAria": "Toggle dark mode"
+    },
+    "weather": {
+      "title": "Weather",
+      "feelsLike": "Feels like",
+      "today": "Today"
+    }
+  },
+  "station": {
+    "pluvometric": {
+      "title": "Precipitation — hourly intensity",
+      "precipAxis": "Precip."
+    },
+    "precipitationHumidity": {
+      "title": "Precipitation and air humidity",
+      "precipAxis": "Precip.",
+      "humidityAxis": "RH"
+    },
+    "tempHumidity": {
+      "title": "Air — temperature and relative humidity",
+      "tempAxis": "Temp.",
+      "humidityAxis": "RH"
+    },
+    "vpd": {
+      "title": "Atmosphere — vapor pressure deficit (VPD)",
+      "vpdAxis": "VPD"
+    },
+    "solarRadiation": {
+      "title": "Solar radiation — surface power",
+      "bandsCaption": "Bands 0–90 % and 90–100 % of the displayed scale"
+    },
+    "et0": {
+      "title": "ET₀ — reference evapotranspiration"
+    },
+    "dataTable": {
+      "title": "Measurements — detailed table",
+      "exportCsv": "Export CSV"
+    },
+    "windDirection": {
+      "title": "Wind — direction",
+      "axis": "Direction ({unit})",
+      "series": "Wind direction ({unit})"
+    },
+    "windSpeed": {
+      "title": "Wind — hourly speed",
+      "axis": "Speed ({unit})",
+      "series": "Wind speed ({unit})"
+    }
+  },
+  "sensorCatalog": {
+    "solar_radiation": {
+      "reading": "Radiation",
+      "type": "Radiation"
+    },
+    "temperature_weather": {
+      "reading": "Temperature",
+      "type": "Temperature"
+    },
+    "humidity_weather": {
+      "reading": "Humidity",
+      "type": "Humidity"
+    },
+    "pressure_weather": {
+      "reading": "Atmospheric pressure",
+      "type": "Weather"
+    },
+    "wind_speed": {
+      "reading": "Wind speed",
+      "type": "Wind speed"
+    },
+    "wind_gust": {
+      "reading": "Gust speed",
+      "type": "Gust speed"
+    },
+    "wind_direction": {
+      "reading": "Wind direction",
+      "type": "Wind direction"
+    },
+    "et0": {
+      "reading": "Reference evapotranspiration (hourly)",
+      "type": "Evapotranspiration ET₀"
+    },
+    "vpd": {
+      "reading": "Vapor pressure deficit",
+      "type": "VPD"
+    },
+    "precipitation_rate": {
+      "reading": "Precipitation",
+      "type": "Precipitation rate"
+    },
+    "water_flow": {
+      "reading": "Irrigation",
+      "type": "Irrigation"
+    },
+    "irrigation_cumulative": {
+      "reading": "Cumulative irrigation",
+      "type": "Irrigation"
+    },
+    "water_level": {
+      "reading": "Water level",
+      "type": "Water"
+    },
+    "water_pressure": {
+      "reading": "Water pressure",
+      "type": "Pressure"
+    },
+    "water_ph": {
+      "reading": "Water pH",
+      "type": "Water pH"
+    },
+    "water_ec": {
+      "reading": "Water conductivity",
+      "type": "Water EC"
+    },
+    "soil_moisture_low": {
+      "reading": "Soil moisture low",
+      "type": "Soil moisture"
+    },
+    "soil_moisture_medium": {
+      "reading": "Soil moisture medium",
+      "type": "Soil moisture"
+    },
+    "soil_moisture_high": {
+      "reading": "Soil moisture high",
+      "type": "Soil moisture"
+    },
+    "soil_temp_low": {
+      "reading": "Soil temperature low",
+      "type": "Soil temperature"
+    },
+    "soil_temp_medium": {
+      "reading": "Soil temperature medium",
+      "type": "Soil temperature"
+    },
+    "soil_temp_high": {
+      "reading": "Soil temperature high",
+      "type": "Soil temperature"
+    },
+    "soil_ph": {
+      "reading": "Soil pH",
+      "type": "Soil pH"
+    },
+    "soil_salinity": {
+      "reading": "Soil salinity",
+      "type": "Salinity"
+    },
+    "soil_conductivity": {
+      "reading": "Soil conductivity",
+      "type": "Soil conductivity"
+    },
+    "leaf_temperature": {
+      "reading": "Leaf temperature",
+      "type": "Leaf"
+    },
+    "leaf_moisture": {
+      "reading": "Leaf moisture",
+      "type": "Leaf"
+    },
+    "npk_n": {
+      "reading": "Nitrogen (N)",
+      "type": "NPK"
+    },
+    "npk_p": {
+      "reading": "Phosphorus (P)",
+      "type": "NPK"
+    },
+    "npk_k": {
+      "reading": "Potassium (K)",
+      "type": "NPK"
+    },
+    "fruit_size": {
+      "reading": "Fruit size",
+      "type": "Fruit"
+    },
+    "large_fruit_diameter": {
+      "reading": "Fruit diameter",
+      "type": "Fruit"
+    },
+    "electricity_consumption": {
+      "reading": "Electricity consumption",
+      "type": "Electricity"
+    }
+  }
+}

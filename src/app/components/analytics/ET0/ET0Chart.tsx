@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   BarChart,
   Bar,
@@ -52,6 +53,7 @@ const EC0Chart = ({
   calculatedData: Et0Data[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const unitRev = useUnitOverridesRevision();
 
@@ -156,19 +158,19 @@ const EC0Chart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="ET₀ — évapotranspiration de référence"
-          subtitle={`Comparaison mesures capteur et série calculée — unité affichée ${et0Unit}.`}
+          title={t('analytics.et0Chart.title')}
+          subtitle={t('analytics.et0Chart.subtitle', { unit: et0Unit })}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.et0Chart.captureChart')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.et0Chart.exportCsv')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -180,7 +182,7 @@ const EC0Chart = ({
       <ChartStateView
         loading={loading}
         empty={chartData.length === 0}
-        emptyText="Aucune donnée disponible"
+        emptyText={t('analytics.et0Chart.noData')}
         chartRef={chartRef}
         height={CHART_PLOT_HEIGHT_PX}
       >
@@ -199,7 +201,10 @@ const EC0Chart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
-              label={yAxisLabelInsideLeft(`ET₀ (${et0Unit})`, tickFill)}
+              label={yAxisLabelInsideLeft(
+                t('analytics.et0Chart.yAxisLabel', { unit: et0Unit }),
+                tickFill
+              )}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -216,7 +221,7 @@ const EC0Chart = ({
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               fill="#3182ce"
-              name={`ET0 Capteur (${et0Unit})`}
+              name={t('analytics.et0Chart.seriesSensor', { unit: et0Unit })}
               hide={!seriesVisible.et0_sensor}
             />
             <Bar
@@ -224,7 +229,7 @@ const EC0Chart = ({
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               fill="#e53e3e"
-              name={`ET0 Calculé (${et0Unit})`}
+              name={t('analytics.et0Chart.seriesCalculated', { unit: et0Unit })}
               hide={!seriesVisible.et0_calculated}
             />
           </BarChart>

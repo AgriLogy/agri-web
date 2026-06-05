@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Box } from '@chakra-ui/react';
 import { Button } from 'antd';
 import { BellOutlined } from '@ant-design/icons';
@@ -10,7 +11,7 @@ import { useActiveZoneId } from './ActiveZoneContext';
 export interface LastDataAddAlertButtonProps {
   /** Sensor registry key (e.g. "temperature_weather"). When present
    *  the drawer prefills its form with mean-based defaults from
-   *  /api/alerts/suggest/. */
+   *  /alerts/suggest. */
   sensorKey?: string;
   /** Explicit zone scope. Falls back to ActiveZoneContext when omitted
    *  so callers inside StationMain don't have to prop-drill it. */
@@ -25,11 +26,13 @@ export interface LastDataAddAlertButtonProps {
 export default function LastDataAddAlertButton({
   sensorKey,
   zoneId,
-  label = 'Ajouter une alerte',
+  label,
 }: LastDataAddAlertButtonProps) {
+  const t = useTranslations();
   const [open, setOpen] = useState(false);
   const ctxZoneId = useActiveZoneId();
   const effectiveZoneId = zoneId ?? ctxZoneId ?? undefined;
+  const effectiveLabel = label ?? t('misc.lastDataAddAlertButton.label');
 
   return (
     <Box
@@ -45,9 +48,9 @@ export default function LastDataAddAlertButton({
         danger
         icon={<BellOutlined />}
         onClick={() => setOpen(true)}
-        aria-label={label}
+        aria-label={effectiveLabel}
       >
-        {label}
+        {effectiveLabel}
       </Button>
       <AlertCreateDrawer
         open={open}

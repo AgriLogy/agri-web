@@ -45,7 +45,7 @@ export function useAnalyticsHeader(): AnalyticsHeaderState {
 
   useEffect(() => {
     api
-      .get<ZoneOption[]>('/api/zones-names-per-user/')
+      .get<ZoneOption[]>('/zones')
       .then((res) => {
         const list = res.data ?? [];
         setZones(list);

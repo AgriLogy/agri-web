@@ -30,6 +30,7 @@ import {
 } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
 import { FaTrash } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import {
   type KcProtocolStageRow,
@@ -67,6 +68,7 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
   initialStages,
   onSave,
 }) => {
+  const t = useTranslations();
   const { textColor, borderColor, headerBarBorder, mutedTextColor } =
     useColorModeStyles();
   const [protocolName, setProtocolName] = useState('');
@@ -108,7 +110,8 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
 
   const handleSave = () => {
     onSave({
-      protocolName: protocolName.trim() || 'Protocole Kc',
+      protocolName:
+        protocolName.trim() || t('notifications.kcTable.defaultProtocolName'),
       stages: cloneStages(stages),
     });
     onClose();
@@ -136,10 +139,10 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
           <HStack justify="space-between" align="flex-start" pr={10}>
             <VStack align="start" spacing={1}>
               <Text fontSize="sm" color={mutedTextColor} fontWeight="normal">
-                Nouveau protocole &gt; Météo
+                {t('notifications.kcTable.breadcrumb')}
               </Text>
               <Text fontSize="md" fontWeight="bold" color={textColor}>
-                Table des coefficients Kc
+                {t('notifications.kcTable.title')}
               </Text>
             </VStack>
           </HStack>
@@ -148,12 +151,12 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
         <ModalBody py={4}>
           <FormControl mb={4} maxW="md">
             <FormLabel fontSize="sm" color={textColor}>
-              Nom du protocole
+              {t('notifications.kcTable.protocolNameLabel')}
             </FormLabel>
             <Input
               value={protocolName}
               onChange={(e) => setProtocolName(e.target.value)}
-              placeholder="Protocole météo Pomme"
+              placeholder={t('notifications.kcTable.protocolNamePlaceholder')}
               borderRadius="lg"
             />
           </FormControl>
@@ -171,22 +174,22 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
                     #
                   </Th>
                   <Th color={textColor} minW="120px">
-                    Nom du stade
+                    {t('notifications.kcTable.stageName')}
                   </Th>
                   <Th color={textColor} isNumeric minW="100px">
-                    Durée (jours)
+                    {t('notifications.kcTable.durationDays')}
                   </Th>
                   <Th color={textColor} isNumeric minW="90px">
-                    Kc début
+                    {t('notifications.kcTable.kcStart')}
                   </Th>
                   <Th color={textColor} isNumeric minW="90px">
-                    Kc fin
+                    {t('notifications.kcTable.kcEnd')}
                   </Th>
                   <Th color={textColor} isNumeric minW="100px">
-                    Quantité (mm)
+                    {t('notifications.kcTable.amountMm')}
                   </Th>
                   <Th color={textColor} textAlign="center" minW="72px">
-                    Actif
+                    {t('notifications.kcTable.active')}
                   </Th>
                   <Th w="52px" />
                 </Tr>
@@ -204,7 +207,9 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
                         onChange={(e) =>
                           updateRow(i, { stageName: e.target.value })
                         }
-                        placeholder="ex. Avril"
+                        placeholder={t(
+                          'notifications.kcTable.stageNamePlaceholder'
+                        )}
                         borderRadius="md"
                       />
                     </Td>
@@ -275,7 +280,7 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
                     </Td>
                     <Td>
                       <IconButton
-                        aria-label="Supprimer le stade"
+                        aria-label={t('notifications.kcTable.deleteStage')}
                         icon={<FaTrash />}
                         size="sm"
                         variant="ghost"
@@ -298,7 +303,7 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
             borderRadius="full"
             onClick={addRow}
           >
-            + Ajouter un stade
+            + {t('notifications.kcTable.addStage')}
           </Button>
         </ModalBody>
 
@@ -311,7 +316,7 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
           gap={3}
         >
           <IconButton
-            aria-label="Retour"
+            aria-label={t('notifications.kcTable.back')}
             icon={<ChevronLeftIcon boxSize={6} />}
             variant="outline"
             borderRadius="full"
@@ -324,14 +329,14 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
             w={{ base: 'full', md: 'auto' }}
           >
             <Text fontSize="sm" color={mutedTextColor} whiteSpace="nowrap">
-              Durée totale du protocole :{' '}
+              {t('notifications.kcTable.totalDuration')}{' '}
               <Text as="span" fontWeight="bold" color={textColor}>
                 {totalDurationDays}
               </Text>{' '}
-              jours
+              {t('notifications.kcTable.days')}
             </Text>
             <Button colorScheme="brand" borderRadius="lg" onClick={handleSave}>
-              Enregistrer le protocole
+              {t('notifications.kcTable.saveProtocol')}
             </Button>
           </HStack>
         </ModalFooter>

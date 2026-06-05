@@ -2,12 +2,14 @@
 
 import { Alert, Button, Empty, Select, Space } from 'antd';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { adminZoneApi, type AdminZone } from '@/app/lib/adminZoneApi';
 
 export type StationDataTabProps = { username: string };
 
 export function StationDataTab({ username }: StationDataTabProps) {
+  const t = useTranslations();
   const [zones, setZones] = useState<AdminZone[]>([]);
   const [zoneId, setZoneId] = useState<number | null>(null);
 
@@ -19,13 +21,13 @@ export function StationDataTab({ username }: StationDataTabProps) {
   }, [username]);
 
   if (zones.length === 0) {
-    return <Empty description="Aucune zone configurée" />;
+    return <Empty description={t('admin.stationData.noZones')} />;
   }
 
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
       <Space>
-        <span>Zone :</span>
+        <span>{t('admin.stationData.zoneLabel')}</span>
         <Select<number>
           value={zoneId ?? undefined}
           onChange={setZoneId}
@@ -37,19 +39,16 @@ export function StationDataTab({ username }: StationDataTabProps) {
       <Alert
         type="info"
         showIcon
-        message="Visualisation des données station"
+        message={t('admin.stationData.alertTitle')}
         description={
           <Space direction="vertical">
-            <span>
-              Les graphiques ET0, température, humidité, rayonnement, vent,
-              précipitations sont consultables depuis la vue utilisateur dédiée.
-            </span>
+            <span>{t('admin.stationData.alertDescription')}</span>
             <Button
               type="primary"
               href={`/station${zoneId ? `?zone_id=${zoneId}` : ''}`}
               target="_blank"
             >
-              Ouvrir la vue station →
+              {t('admin.stationData.openStationView')}
             </Button>
           </Space>
         }

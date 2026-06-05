@@ -38,9 +38,9 @@ const SoilConductivityMain = ({
     };
 
     Promise.all([
-      api.get<SensorData[]>('/api/sensors/ecsoillow/', { params }),
-      api.get<SensorData[]>('/api/sensors/ecsoilhigh/', { params }),
-      api.get<SensorData[]>('/api/sensors/waterflow/', { params }),
+      api.get<SensorData[]>('/sensors/ecsoillow', { params }),
+      api.get<SensorData[]>('/sensors/ecsoilhigh', { params }),
+      api.get<SensorData[]>('/sensors/waterflow', { params }),
     ])
       .then(([lowRes, highRes, flowRes]) => {
         setLowData(lowRes.data);

@@ -32,7 +32,7 @@ const WindRadarMain = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSpeed = api.get<WindData[]>('/api/sensors/windspeed/', {
+    const fetchSpeed = api.get<WindData[]>('/sensors/windspeed', {
       params: {
         start_date: startDate,
         end_date: endDate,
@@ -40,7 +40,7 @@ const WindRadarMain = ({
       },
     });
 
-    const fetchDirection = api.get<WindData[]>('/api/sensors/winddirection/', {
+    const fetchDirection = api.get<WindData[]>('/sensors/winddirection', {
       params: {
         start_date: startDate,
         end_date: endDate,

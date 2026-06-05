@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Box, Button, useBreakpointValue } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import Loading from '@component/common/Loading';
 import DashboardCard from '@component/dashboard/DashboardCard';
 
@@ -18,6 +19,7 @@ const DEFAULT_LAT = 32.88986;
 const DEFAULT_LON = -6.914351;
 
 export default function GoogleMapWeather() {
+  const t = useTranslations();
   const p = useBreakpointValue({ base: 2, md: 4 }) ?? 2;
   const [mapToolsOpen, setMapToolsOpen] = useState(false);
 
@@ -47,14 +49,16 @@ export default function GoogleMapWeather() {
       colorScheme="brand"
       onClick={() => setMapToolsOpen((o) => !o)}
     >
-      {mapToolsOpen ? 'Masquer les outils' : 'Outils carte'}
+      {mapToolsOpen
+        ? t('misc.googleMapWeather.hideTools')
+        : t('misc.googleMapWeather.showTools')}
     </Button>
   );
 
   return (
     <Box width="100%" height="100%" p={p} overflowX="auto">
       <DashboardCard
-        title="Exploitation & secteurs"
+        title={t('misc.googleMapWeather.title')}
         titleAddon={titleAddon}
         content={content}
       />

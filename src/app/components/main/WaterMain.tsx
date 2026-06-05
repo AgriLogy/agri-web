@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Stack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import ZoneNotificationBell from '@/app/components/common/ZoneNotificationBell';
 import { ChartDateRangeControl } from '@/app/components/layout/ChartDateRangeControl';
@@ -17,6 +18,7 @@ import PhWaterMain from '../analytics/WaterPh/PhWaterMain';
 import WaterPressureMain from '../analytics/WaterPressure/WaterPressureMain';
 
 const WaterMain = () => {
+  const t = useTranslations();
   const {
     zones,
     selectedZone,
@@ -31,11 +33,12 @@ const WaterMain = () => {
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Données sur l'eau"
+        title={t('shell.water.title')}
         subtitle={pageSubtitle({
           zoneName,
           startDate: range.startDate,
           endDate: range.endDate,
+          t,
         })}
         zoneControl={
           <ZoneSelect
@@ -49,7 +52,7 @@ const WaterMain = () => {
           selectedZone != null ? (
             <ZoneNotificationBell
               zoneId={selectedZone}
-              zoneName={zoneName ?? 'Zone'}
+              zoneName={zoneName ?? t('shell.water.zoneFallback')}
             />
           ) : null
         }

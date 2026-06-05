@@ -1,26 +1,58 @@
 'use client';
 
 import { ConfigProvider, DatePicker } from 'antd';
+import arEG from 'antd/locale/ar_EG';
+import enGB from 'antd/locale/en_GB';
 import frFR from 'antd/locale/fr_FR';
 import dayjs, { type Dayjs } from 'dayjs';
-import 'dayjs/locale/fr';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 
-dayjs.locale('fr');
+const antdLocaleFor = (locale: string) =>
+  locale === 'ar' ? arEG : locale === 'en' ? enGB : frFR;
+
+// dayjs is globally localized in app/providers.tsx from the active locale;
+// do NOT pin it to 'fr' here.
 
 const { RangePicker } = DatePicker;
 
 /**
  * Five canonical analytics windows + a "personnalisé" path through the
- * calendar. The labels are French; the keys stay machine-readable in
+ * calendar. `i18nKey` resolves to a `shell.chartDateRange.*` message;
+ * `label` is a French fallback only. The keys stay machine-readable in
  * case the caller wants to track which preset fired.
  */
 export const DATE_PRESETS = [
-  { key: '24h', label: '24 dernières heures', days: 1 },
-  { key: '7j', label: '7 derniers jours', days: 7 },
-  { key: '30j', label: '30 derniers jours', days: 30 },
-  { key: '90j', label: '90 derniers jours', days: 90 },
-  { key: '12mois', label: '12 derniers mois', days: 365 },
+  {
+    key: '24h',
+    i18nKey: 'shell.chartDateRange.preset24h',
+    label: '24 dernières heures',
+    days: 1,
+  },
+  {
+    key: '7j',
+    i18nKey: 'shell.chartDateRange.preset7d',
+    label: '7 derniers jours',
+    days: 7,
+  },
+  {
+    key: '30j',
+    i18nKey: 'shell.chartDateRange.preset30d',
+    label: '30 derniers jours',
+    days: 30,
+  },
+  {
+    key: '90j',
+    i18nKey: 'shell.chartDateRange.preset90d',
+    label: '90 derniers jours',
+    days: 90,
+  },
+  {
+    key: '12mois',
+    i18nKey: 'shell.chartDateRange.preset12m',
+    label: '12 derniers mois',
+    days: 365,
+  },
 ] as const;
 
 export type ChartDateRange = {
@@ -59,20 +91,22 @@ export function ChartDateRangeControl({
   disableFuture = true,
   className,
 }: ChartDateRangeControlProps) {
+  const t = useTranslations();
+  const locale = useLocale();
   const disabledDate = (current: Dayjs) =>
     disableFuture && current && current.isAfter(dayjs().endOf('day'));
 
   const rangePresets = useMemo(
     () =>
       DATE_PRESETS.map((p) => ({
-        label: p.label,
+        label: t(p.i18nKey),
         value: [dayjs().subtract(p.days - 1, 'day'), dayjs()] as [Dayjs, Dayjs],
       })),
-    []
+    [t]
   );
 
   return (
-    <ConfigProvider locale={frFR}>
+    <ConfigProvider locale={antdLocaleFor(locale)}>
       <RangePicker
         className={className}
         value={[toDayjs(value.startDate), toDayjs(value.endDate)]}

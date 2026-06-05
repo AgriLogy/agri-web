@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   BarChart,
   Bar,
@@ -47,6 +48,7 @@ const PrecipitationRateChart = ({
   data: SensorData[];
   loading: boolean;
 }) => {
+  const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showBar, setShowBar] = useState(true);
   const unitRev = useUnitOverridesRevision();
@@ -117,19 +119,19 @@ const PrecipitationRateChart = ({
       <Flex justify="space-between" align="center" mb={4}>
         <ChartPanelHeading
           color={textColor}
-          title="Intensité des précipitations"
-          subtitle="Arrosage naturel — taux instantané sur l’intervalle sélectionné."
+          title={t('analytics.precipitationRate.title')}
+          subtitle={t('analytics.precipitationRate.subtitle')}
         />
         <HStack spacing={2}>
           <Button
-            aria-label="Capture graphique"
+            aria-label={t('analytics.common.captureChartAria')}
             variant="ghost"
             onClick={handleScreenshot}
           >
             <FaCamera />
           </Button>
           <Button
-            aria-label="Exporter CSV"
+            aria-label={t('analytics.common.exportCsvAria')}
             variant="ghost"
             onClick={handleDownloadData}
           >
@@ -163,7 +165,9 @@ const PrecipitationRateChart = ({
             <YAxis
               {...yProps}
               label={yAxisLabelInsideLeft(
-                `Intensité (${precipUnit})`,
+                t('analytics.precipitationRate.intensityAxis', {
+                  unit: precipUnit,
+                }),
                 tickFill
               )}
             />
@@ -179,7 +183,9 @@ const PrecipitationRateChart = ({
             />
             <Bar
               dataKey="precipitation_rate"
-              name={`Taux de précipitation (${precipUnit})`}
+              name={t('analytics.precipitationRate.seriesName', {
+                unit: precipUnit,
+              })}
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               hide={!showBar}

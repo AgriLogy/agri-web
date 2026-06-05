@@ -26,7 +26,7 @@ export async function dispatchZoneNotificationOutbound(
   console.info('[notification-dispatch]', entry);
 
   try {
-    await api.post('/api/zone-notification-outbound/', entry);
+    await api.post('/notifications/zone-outbound', entry);
   } catch {
     /* Backend hook optional in v1 */
   }

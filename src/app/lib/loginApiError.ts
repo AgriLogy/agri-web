@@ -1,6 +1,26 @@
 import axios from 'axios';
 
-const DEFAULT_WRONG_CREDS = "Nom d'utilisateur ou mot de passe incorrect.";
+/**
+ * Minimal translator shape compatible with next-intl's `useTranslations()` /
+ * `getTranslations()` root translator. Callers pass `t` so messages are localized;
+ * when omitted, the French fallback strings below are used (non-React contexts).
+ */
+type Translator = (key: string, values?: Record<string, unknown>) => string;
+
+const FALLBACK = {
+  'data.loginError.wrongCreds': "Nom d'utilisateur ou mot de passe incorrect.",
+  'data.loginError.unexpected': 'Une erreur inattendue est survenue.',
+  'data.loginError.unreachable':
+    'Impossible de joindre le serveur. Vérifiez votre connexion.',
+  'data.loginError.tooManyAttempts':
+    'Trop de tentatives de connexion. Réessayez plus tard.',
+  'data.loginError.wrongCreds400':
+    'Nom d’utilisateur ou mot de passe incorrect. (400 — voir l’onglet Réseau pour le détail du serveur.)',
+} as const;
+
+function tr(t: Translator | undefined, key: keyof typeof FALLBACK): string {
+  return t ? t(key) : FALLBACK[key];
+}
 
 function firstString(val: unknown): string | null {
   if (typeof val === 'string' && val.trim()) return val;
@@ -8,13 +28,17 @@ function firstString(val: unknown): string | null {
   return null;
 }
 
-/** Maps sign-in API errors to a short French message for the UI / toast. */
-export function formatLoginApiError(error: unknown): string {
+/**
+ * Maps sign-in API errors to a short message for the UI / toast.
+ * Pass a next-intl translator (`t`) to localize; falls back to French otherwise.
+ * Server-provided messages (detail/error/field errors) are returned verbatim.
+ */
+export function formatLoginApiError(error: unknown, t?: Translator): string {
   if (!axios.isAxiosError(error)) {
-    return 'Une erreur inattendue est survenue.';
+    return tr(t, 'data.loginError.unexpected');
   }
   if (!error.response) {
-    return 'Impossible de joindre le serveur. Vérifiez votre connexion.';
+    return tr(t, 'data.loginError.unreachable');
   }
 
   const { status, data } = error.response;
@@ -38,11 +62,11 @@ export function formatLoginApiError(error: unknown): string {
   }
 
   if (status === 429) {
-    return 'Trop de tentatives de connexion. Réessayez plus tard.';
+    return tr(t, 'data.loginError.tooManyAttempts');
   }
-  if (status === 401) return DEFAULT_WRONG_CREDS;
+  if (status === 401) return tr(t, 'data.loginError.wrongCreds');
   if (status === 400) {
-    return `${DEFAULT_WRONG_CREDS} (400 — voir l’onglet Réseau pour le détail du serveur.)`;
+    return tr(t, 'data.loginError.wrongCreds400');
   }
-  return DEFAULT_WRONG_CREDS;
+  return tr(t, 'data.loginError.wrongCreds');
 }

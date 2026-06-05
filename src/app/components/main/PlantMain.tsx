@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Stack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import ZoneNotificationBell from '@/app/components/common/ZoneNotificationBell';
 import { ChartDateRangeControl } from '@/app/components/layout/ChartDateRangeControl';
@@ -15,6 +16,7 @@ import LargeFruitDiameterMain from '../analytics/LargeFruitDiameter/LargeFruitDi
 import SensorLeafMain from '../analytics/Leaf/SensorLeafMain';
 
 const PlantMain = () => {
+  const t = useTranslations();
   const {
     zones,
     selectedZone,
@@ -29,7 +31,7 @@ const PlantMain = () => {
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
-        title="Données des plantes"
+        title={t('shell.plant.title')}
         subtitle={pageSubtitle({
           zoneName,
           startDate: range.startDate,
@@ -47,7 +49,7 @@ const PlantMain = () => {
           selectedZone != null ? (
             <ZoneNotificationBell
               zoneId={selectedZone}
-              zoneName={zoneName ?? 'Zone'}
+              zoneName={zoneName ?? t('shell.common.zoneFallback')}
             />
           ) : null
         }
