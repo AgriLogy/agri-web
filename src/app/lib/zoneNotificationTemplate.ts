@@ -1,4 +1,8 @@
 import type { ZoneNotificationConfig } from '@/app/lib/zoneNotificationConfigStorage';
+import {
+  deliveryRateToMinutes,
+  normalizeDeliveryRate,
+} from '@/app/lib/notificationDeliveryRate';
 
 /**
  * Minimal translator shape compatible with next-intl's root translator
@@ -107,12 +111,19 @@ export function buildPeriodicZoneReminderNotification(
     (t
       ? t('data.zoneNotification.zoneFallbackName', { id: config.zoneId })
       : `Zone ${config.zoneId}`);
+  const rate = normalizeDeliveryRate(config.deliveryRate);
+  const rateLabel = t
+    ? t('notifications.deliveryRate.every', {
+        amount: rate.amount,
+        unit: rate.unit,
+      })
+    : `toutes les ${deliveryRateToMinutes(rate)} min`;
   const summary = t
     ? t('data.zoneNotification.periodicReminder', {
-        minutes: config.intervalMinutes,
+        rate: rateLabel,
         label,
       })
-    : `Rappel planifié (toutes les ${config.intervalMinutes} min) — ${label}. Vérifiez humidité, ETo×Kc et seuils.`;
+    : `Rappel planifié (${rateLabel}) — ${label}. Vérifiez humidité, ETo×Kc et seuils.`;
   return {
     id,
     is_read: false,

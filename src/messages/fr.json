@@ -849,7 +849,7 @@
     "zoneNotification": {
       "confirmation": "Votre notification de zone a été enregistrée. Les alertes utiliseront les seuils et canaux définis. (Modèle provisoire — à remplacer.)",
       "confirmationSummary": "{confirmation} — {title}",
-      "periodicReminder": "Rappel planifié (toutes les {minutes} min) — {label}. Vérifiez humidité, ETo×Kc et seuils.",
+      "periodicReminder": "Rappel planifié ({rate}) — {label}. Vérifiez humidité, ETo×Kc et seuils.",
       "zoneFallbackName": "Zone {id}"
     }
   },
@@ -1189,6 +1189,25 @@
       "channelsTitle": "Canaux de notification",
       "channelsHint": "Cochez les canaux que vous acceptez pour recevoir des alertes.",
       "saveZoneNotification": "Enregistrer la notification de zone"
+    },
+    "deliveryRate": {
+      "label": "Fréquence d’envoi",
+      "hint": "Période minimale avant la prochaine notification pour ce secteur.",
+      "preset": {
+        "every20min": "Toutes les 20 minutes",
+        "every1hour": "Toutes les heures",
+        "every4hours": "Toutes les 4 heures",
+        "daily": "Une fois par jour",
+        "weekly": "Une fois par semaine",
+        "custom": "Personnalisé"
+      },
+      "unit": {
+        "minute": "minutes",
+        "hour": "heures",
+        "day": "jours",
+        "week": "semaines"
+      },
+      "every": "{unit, select, minute {toutes les {amount} min} hour {toutes les {amount} h} day {tous les {amount} j} week {toutes les {amount} sem.} other {toutes les {amount}}}"
     }
   },
   "settings": {

@@ -1,5 +1,10 @@
 import type { NotificationThresholds } from '@/app/lib/notificationDecisionEngine';
 import { DEFAULT_NOTIFICATION_THRESHOLDS } from '@/app/lib/notificationDecisionEngine';
+import type { DeliveryRate } from '@/app/lib/notificationDeliveryRate';
+import {
+  deliveryRateFromMinutes,
+  normalizeDeliveryRate,
+} from '@/app/lib/notificationDeliveryRate';
 import {
   clearNotificationConfigListSuppress,
   clearZoneNotificationsListSuppress,
@@ -95,7 +100,16 @@ export interface ZoneNotificationConfig {
   cropType: string;
   flowRateM3h: number;
   irrigationMethod: 'drip_sprinkler' | 'subsurface_drip';
+  /** @deprecated kept for back-compat; the cadence is now `deliveryRate`. */
   intervalMinutes: number;
+  /**
+   * Flexible delivery rate — the minimum period before the user receives the
+   * next notification for this sector (e.g. every 20 min / 4 h / day / week,
+   * or any custom amount+unit).
+   */
+  deliveryRate: DeliveryRate;
+  /** ISO timestamp of the last delivered periodic notification (throttle state). */
+  lastNotifiedAt?: string | null;
   soilPermeabilityPct: number;
   valveMode: 'auto' | 'manual';
   vpdThresholdKpa: number;
@@ -129,6 +143,21 @@ function migrateLegacyMap(
     }
     row.configId = row.configId.trim();
     if (typeof row.secteurLabel !== 'string') row.secteurLabel = '';
+    // Ensure every config has a valid flexible delivery rate. Legacy configs
+    // only had `intervalMinutes`; derive the nicest rate from it.
+    if (!row.deliveryRate || typeof row.deliveryRate !== 'object') {
+      row.deliveryRate = deliveryRateFromMinutes(row.intervalMinutes);
+      changed = true;
+    } else {
+      const norm = normalizeDeliveryRate(row.deliveryRate);
+      if (
+        norm.amount !== row.deliveryRate.amount ||
+        norm.unit !== row.deliveryRate.unit
+      ) {
+        changed = true;
+      }
+      row.deliveryRate = norm;
+    }
     out[row.configId] = row as ZoneNotificationConfig;
     if (k !== row.configId) changed = true;
   }
@@ -279,6 +308,24 @@ export function deleteNotificationConfigById(configId: string): void {
       new CustomEvent(ZONE_NOTIFICATION_CONFIG_UPDATED_EVENT)
     );
   }
+}
+
+/**
+ * Records that a periodic notification was just delivered for a config, so the
+ * delivery-rate throttle can space out the next one. Persists `lastNotifiedAt`
+ * WITHOUT firing the config-updated event (avoids reschedule storms).
+ */
+export function recordZoneNotificationSent(
+  configId: string,
+  atISO?: string
+): void {
+  const id = configId?.trim();
+  if (!id) return;
+  const map = readMap();
+  const cfg = map[id];
+  if (!cfg) return;
+  map[id] = { ...cfg, lastNotifiedAt: atISO ?? new Date().toISOString() };
+  writeMap(map);
 }
 
 /** Deletes every secteur configuration for a zone (legacy / reset). */

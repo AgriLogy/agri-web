@@ -849,7 +849,7 @@
     "zoneNotification": {
       "confirmation": "Your zone notification has been saved. Alerts will use the defined thresholds and channels. (Provisional template — to be replaced.)",
       "confirmationSummary": "{confirmation} — {title}",
-      "periodicReminder": "Scheduled reminder (every {minutes} min) — {label}. Check humidity, ETo×Kc and thresholds.",
+      "periodicReminder": "Scheduled reminder ({rate}) — {label}. Check humidity, ETo×Kc and thresholds.",
       "zoneFallbackName": "Zone {id}"
     }
   },
@@ -1189,6 +1189,25 @@
       "channelsTitle": "Notification channels",
       "channelsHint": "Check the channels you accept to receive alerts.",
       "saveZoneNotification": "Save zone notification"
+    },
+    "deliveryRate": {
+      "label": "Delivery rate",
+      "hint": "Minimum time before the next notification for this sector.",
+      "preset": {
+        "every20min": "Every 20 minutes",
+        "every1hour": "Every hour",
+        "every4hours": "Every 4 hours",
+        "daily": "Once a day",
+        "weekly": "Once a week",
+        "custom": "Custom"
+      },
+      "unit": {
+        "minute": "minutes",
+        "hour": "hours",
+        "day": "days",
+        "week": "weeks"
+      },
+      "every": "{unit, select, minute {every {amount} min} hour {every {amount} h} day {every {amount} d} week {every {amount} wk} other {every {amount}}}"
     }
   },
   "settings": {

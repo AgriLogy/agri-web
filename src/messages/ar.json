@@ -849,7 +849,7 @@
     "zoneNotification": {
       "confirmation": "تم حفظ إشعار المنطقة. ستستخدم التنبيهات العتبات والقنوات المحددة. (نموذج مؤقت — قابل للاستبدال.)",
       "confirmationSummary": "{confirmation} — {title}",
-      "periodicReminder": "تذكير مجدول (كل {minutes} دقيقة) — {label}. تحقق من الرطوبة و ETo×Kc والعتبات.",
+      "periodicReminder": "تذكير مجدول ({rate}) — {label}. تحقق من الرطوبة و ETo×Kc والعتبات.",
       "zoneFallbackName": "المنطقة {id}"
     }
   },
@@ -1189,6 +1189,25 @@
       "channelsTitle": "قنوات الإشعار",
       "channelsHint": "حدّد القنوات التي تقبلها لتلقي التنبيهات.",
       "saveZoneNotification": "حفظ إشعار المنطقة"
+    },
+    "deliveryRate": {
+      "label": "معدل الإرسال",
+      "hint": "الحد الأدنى للمدة قبل الإشعار التالي لهذا القطاع.",
+      "preset": {
+        "every20min": "كل 20 دقيقة",
+        "every1hour": "كل ساعة",
+        "every4hours": "كل 4 ساعات",
+        "daily": "مرة واحدة في اليوم",
+        "weekly": "مرة واحدة في الأسبوع",
+        "custom": "مخصص"
+      },
+      "unit": {
+        "minute": "دقائق",
+        "hour": "ساعات",
+        "day": "أيام",
+        "week": "أسابيع"
+      },
+      "every": "{unit, select, minute {كل {amount} دقيقة} hour {كل {amount} ساعة} day {كل {amount} يوم} week {كل {amount} أسبوع} other {كل {amount}}}"
     }
   },
   "settings": {

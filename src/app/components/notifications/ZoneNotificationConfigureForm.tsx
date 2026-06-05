@@ -14,8 +14,6 @@ import {
   HStack,
   Icon,
   Input,
-  InputGroup,
-  InputRightAddon,
   NumberInput,
   NumberInputField,
   Radio,
@@ -81,6 +79,16 @@ import {
   removeLocalZoneTemplateNotificationsForConfig,
 } from '@/app/lib/notificationsCacheStorage';
 import { buildLocalZoneConfirmationNotification } from '@/app/lib/zoneNotificationTemplate';
+import {
+  DELIVERY_RATE_PRESETS,
+  DELIVERY_UNITS,
+  deliveryRateToMinutes,
+  matchPresetKey,
+  normalizeDeliveryRate,
+  presetByKey,
+  type DeliveryRate,
+  type DeliveryUnit,
+} from '@/app/lib/notificationDeliveryRate';
 
 const defaultConfig = (
   zoneId: number,
@@ -103,6 +111,8 @@ const defaultConfig = (
   flowRateM3h: 30,
   irrigationMethod: 'drip_sprinkler',
   intervalMinutes: 60,
+  deliveryRate: { amount: 1, unit: 'hour' },
+  lastNotifiedAt: null,
   soilPermeabilityPct: 75,
   valveMode: 'auto',
   vpdThresholdKpa: 0.5,
@@ -369,6 +379,20 @@ const ZoneNotificationConfigureForm: React.FC<
     value: ZoneNotificationConfig[K]
   ) => {
     setForm((f) => (f ? { ...f, [key]: value } : f));
+  };
+
+  /** Set the flexible delivery rate (and keep legacy intervalMinutes in sync). */
+  const setDeliveryRate = (next: DeliveryRate) => {
+    const norm = normalizeDeliveryRate(next);
+    setForm((f) =>
+      f
+        ? {
+            ...f,
+            deliveryRate: norm,
+            intervalMinutes: deliveryRateToMinutes(norm),
+          }
+        : f
+    );
   };
 
   const apply = async () => {
@@ -924,29 +948,66 @@ const ZoneNotificationConfigureForm: React.FC<
 
               <FormControl>
                 <LabelWithIcon icon={FaClock} labelColor={textColor}>
-                  {t('notifications.configForm.frequencyLabel')}
+                  {t('notifications.deliveryRate.label')}
                 </LabelWithIcon>
-                <InputGroup>
-                  <Input
-                    type="number"
-                    inputMode="numeric"
-                    min={5}
-                    max={1440}
-                    step={5}
-                    value={form.intervalMinutes}
+                <Stack spacing={2}>
+                  <Select
+                    value={
+                      matchPresetKey(
+                        normalizeDeliveryRate(form.deliveryRate)
+                      ) ?? 'custom'
+                    }
                     onChange={(e) => {
-                      const v = Number(e.target.value);
-                      if (!Number.isFinite(v)) return;
-                      update(
-                        'intervalMinutes',
-                        Math.min(1440, Math.max(5, Math.round(v)))
-                      );
+                      const preset = presetByKey(e.target.value);
+                      if (preset) setDeliveryRate(preset.rate);
                     }}
-                  />
-                  <InputRightAddon>
-                    {t('notifications.configForm.minutes')}
-                  </InputRightAddon>
-                </InputGroup>
+                  >
+                    {DELIVERY_RATE_PRESETS.map((p) => (
+                      <option key={p.key} value={p.key}>
+                        {t(`notifications.deliveryRate.preset.${p.key}`)}
+                      </option>
+                    ))}
+                    <option value="custom">
+                      {t('notifications.deliveryRate.preset.custom')}
+                    </option>
+                  </Select>
+                  <HStack spacing={2}>
+                    <NumberInput
+                      min={1}
+                      max={1000}
+                      maxW="120px"
+                      value={normalizeDeliveryRate(form.deliveryRate).amount}
+                      onChange={(_, n) => {
+                        if (!Number.isFinite(n)) return;
+                        setDeliveryRate({
+                          amount: n,
+                          unit: normalizeDeliveryRate(form.deliveryRate).unit,
+                        });
+                      }}
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                    <Select
+                      value={normalizeDeliveryRate(form.deliveryRate).unit}
+                      onChange={(e) =>
+                        setDeliveryRate({
+                          amount: normalizeDeliveryRate(form.deliveryRate)
+                            .amount,
+                          unit: e.target.value as DeliveryUnit,
+                        })
+                      }
+                    >
+                      {DELIVERY_UNITS.map((u) => (
+                        <option key={u} value={u}>
+                          {t(`notifications.deliveryRate.unit.${u}`)}
+                        </option>
+                      ))}
+                    </Select>
+                  </HStack>
+                  <Text fontSize="xs" color="gray.500">
+                    {t('notifications.deliveryRate.hint')}
+                  </Text>
+                </Stack>
               </FormControl>
 
               <FormControl>
