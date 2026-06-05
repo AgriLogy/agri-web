@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.6.1...v1.7.0) (2026-06-05)
+
+
+### Features
+
+* **notifications:** flexible per-zone notification delivery rate ([#107](https://github.com/AgriLogy/agrilogy-front/issues/107)) ([1f61b13](https://github.com/AgriLogy/agrilogy-front/commit/1f61b1398da6d82640ba7727996791d5a9614e49))
+
 ## [1.6.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.6.0...v1.6.1) (2026-06-04)
 
 
