@@ -252,6 +252,20 @@ export const SENSOR_CATALOG: SensorCatalogItem[] = [
     defaultUnit: 'Wh',
     category: 'lecture',
   },
+  {
+    key: 'battery',
+    readingLabel: 'Batterie',
+    typeLabel: 'Batterie',
+    defaultUnit: 'V',
+    category: 'sensor',
+  },
+  {
+    key: 'signal',
+    readingLabel: 'Signal',
+    typeLabel: 'Signal',
+    defaultUnit: 'dBm',
+    category: 'sensor',
+  },
 ];
 
 export function getCustomSensorsCatalog(): SensorCatalogItem[] {

@@ -56,6 +56,8 @@
     "invalidCredentials": "Incorrect username or password."
   },
   "sensors": {
+    "battery": "Battery",
+    "signal": "Signal",
     "soil_moisture": "Soil moisture",
     "soil_temperature": "Soil temperature",
     "air_temperature": "Air temperature",

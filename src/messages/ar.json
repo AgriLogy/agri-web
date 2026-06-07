@@ -56,6 +56,8 @@
     "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة."
   },
   "sensors": {
+    "battery": "البطارية",
+    "signal": "الإشارة",
     "soil_moisture": "رطوبة التربة",
     "soil_temperature": "حرارة التربة",
     "air_temperature": "حرارة الهواء",
