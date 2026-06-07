@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.8.0...v1.9.0) (2026-06-07)
+
+
+### Features
+
+* **dashboard:** show device battery + signal as a current-value badge ([#111](https://github.com/AgriLogy/agrilogy-front/issues/111)) ([2d2bbf3](https://github.com/AgriLogy/agrilogy-front/commit/2d2bbf347f85c502dd61b1066cb935ba529ca0d1))
+
 # [1.8.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.7.0...v1.8.0) (2026-06-07)
 
 
