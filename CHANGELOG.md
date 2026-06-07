@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.7.0...v1.8.0) (2026-06-07)
+
+
+### Features
+
+* **sensors:** show battery + signal metrics on the dashboard ([#109](https://github.com/AgriLogy/agrilogy-front/issues/109)) ([0f1ea41](https://github.com/AgriLogy/agrilogy-front/commit/0f1ea41a5f84377ccb58d19833a2507c781c5cd7))
+
 # [1.7.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.6.1...v1.7.0) (2026-06-05)
 
 
