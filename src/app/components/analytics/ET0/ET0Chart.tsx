@@ -32,7 +32,7 @@ import {
   maxBarSizeForPointCount,
   mergeAxisTheme,
   themedCartesianGrid,
-  CHART_MARGIN_LEFT_Y_LABEL,
+  getChartMarginLeft,
   CHART_PLOT_HEIGHT_PX,
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
@@ -155,7 +155,12 @@ const EC0Chart = ({
 
   return (
     <Box {...analyticsChartPanelLayoutProps}>
-      <Flex justify="space-between" align="center" mb={4}>
+      <Flex
+        justify="space-between"
+        align={{ base: 'flex-start', md: 'center' }}
+        gap={2}
+        mb={4}
+      >
         <ChartPanelHeading
           color={textColor}
           title={t('analytics.et0Chart.title')}
@@ -192,7 +197,7 @@ const EC0Chart = ({
             margin={{
               top: 10,
               right: 30,
-              left: CHART_MARGIN_LEFT_Y_LABEL,
+              left: getChartMarginLeft(),
               bottom: 5,
             }}
             barCategoryGap="14%"

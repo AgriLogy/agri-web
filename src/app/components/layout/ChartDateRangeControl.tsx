@@ -108,7 +108,9 @@ export function ChartDateRangeControl({
   return (
     <ConfigProvider locale={antdLocaleFor(locale)}>
       <RangePicker
-        className={className}
+        // `agri-date-compact` collapses the picker to a calendar icon on
+        // phones (see globals.scss); harmless on desktop.
+        className={`${className ?? ''} agri-date-compact`.trim()}
         value={[toDayjs(value.startDate), toDayjs(value.endDate)]}
         presets={rangePresets}
         disabledDate={disabledDate}

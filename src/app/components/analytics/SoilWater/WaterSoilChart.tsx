@@ -41,8 +41,8 @@ import {
   getDefaultYAxisProps,
   mergeAxisTheme,
   themedCartesianGrid,
-  CHART_MARGIN_LEFT_Y_LABEL,
-  CHART_MARGIN_RIGHT_Y_LABEL,
+  getChartMarginLeft,
+  getChartMarginRight,
   CHART_PLOT_HEIGHT_PX,
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
@@ -205,7 +205,12 @@ const WaterSoilChart = ({
 
   return (
     <Box {...analyticsChartPanelLayoutProps} maxW="100%" minW={0}>
-      <Flex justify="space-between" align="center" mb={2}>
+      <Flex
+        justify="space-between"
+        align={{ base: 'flex-start', md: 'center' }}
+        gap={2}
+        mb={2}
+      >
         <ChartPanelHeading
           color={textColor}
           title={t('analytics.soilWater.chartTitle')}
@@ -244,8 +249,8 @@ const WaterSoilChart = ({
             data={chartRows}
             margin={{
               top: 12,
-              right: CHART_MARGIN_RIGHT_Y_LABEL,
-              left: CHART_MARGIN_LEFT_Y_LABEL,
+              right: getChartMarginRight(),
+              left: getChartMarginLeft(),
               bottom: 8,
             }}
           >

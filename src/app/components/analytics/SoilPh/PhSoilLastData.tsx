@@ -7,6 +7,8 @@ import {
   resolveAxisUnit,
 } from '@/app/utils/unitOverrides';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
+import { useActiveZoneId } from '../../common/ActiveZoneContext';
+import DeviceStatusIndicator from '../../common/DeviceStatusIndicator';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
@@ -31,6 +33,7 @@ const timeAgo = (
 const PhSoilLastData = ({ data }: { data: SensorData[] }) => {
   const t = useTranslations();
   useUnitOverridesRevision();
+  const zoneId = useActiveZoneId();
   const latest = data[data.length - 1];
   const unit = resolveAxisUnit('soil_ph', latest?.default_unit);
 
@@ -50,11 +53,15 @@ const PhSoilLastData = ({ data }: { data: SensorData[] }) => {
     >
       <LastDataPanel
         variant="phSoil"
+        position="relative"
         display="flex"
         flexDirection="column"
         textAlign="center"
         minW="250px"
       >
+        <Box position="absolute" top={2} right={2} zIndex={1}>
+          <DeviceStatusIndicator zoneId={zoneId} />
+        </Box>
         <GiChemicalDrop size={44} color="#68d391" />
         <Text
           fontWeight="semibold"

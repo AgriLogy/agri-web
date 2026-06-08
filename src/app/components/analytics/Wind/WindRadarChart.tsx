@@ -18,6 +18,7 @@ import {
 } from 'chart.js';
 import { PolarArea } from 'react-chartjs-2';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
 import {
   applySensorCalibration,
   resolveAxisUnit,
@@ -248,6 +249,7 @@ const WindRadarChart = ({
   const t = useTranslations();
   const chartRef = useRef<HTMLDivElement>(null);
   const unitRev = useUnitOverridesRevision();
+  const isMobile = useIsMobile();
   const speedBins = useMemo(() => {
     const u = resolveAxisUnit('wind_speed', windSpeedData[0]?.default_unit);
     return buildSpeedBinsWithLabels(u);
@@ -305,6 +307,7 @@ const WindRadarChart = ({
           backdropColor: backdropColor,
           backdropPadding: 3,
           z: 10,
+          font: { size: isMobile ? 9 : 11 },
           callback: (value: any) => {
             // If the value is 0 (the center point), return an empty string to hide it
             if (value === 0) {
@@ -317,14 +320,17 @@ const WindRadarChart = ({
         pointLabels: {
           display: true,
           color: textColor,
-          font: { size: 12 },
+          font: { size: isMobile ? 9 : 12 },
+          padding: isMobile ? 2 : 4,
         },
       },
     },
     plugins: {
       legend: {
         display: true,
-        position: 'right',
+        // On phones the rose is the priority: drop the legend below so the
+        // plot gets the full width instead of being squeezed into the left.
+        position: isMobile ? 'bottom' : 'right',
         reverse: false,
         onClick: (_e, legendItem, legend) => {
           const chart = legend.chart;
@@ -336,7 +342,9 @@ const WindRadarChart = ({
         labels: {
           color: textColor,
           usePointStyle: true,
-          padding: 20,
+          padding: isMobile ? 10 : 20,
+          boxWidth: isMobile ? 10 : undefined,
+          font: { size: isMobile ? 11 : 12 },
           generateLabels: (chart: Chart) =>
             chart.data.datasets.map((dataset, i) => ({
               text: String(dataset.label ?? ''),
@@ -414,7 +422,12 @@ const WindRadarChart = ({
 
   return (
     <Box {...analyticsChartPanelLayoutProps}>
-      <Flex justify="space-between" align="center" mb={4}>
+      <Flex
+        justify="space-between"
+        align={{ base: 'flex-start', md: 'center' }}
+        gap={2}
+        mb={4}
+      >
         <ChartPanelHeading
           color={textColor}
           title={t('analytics.windRadar.title')}
@@ -444,7 +457,7 @@ const WindRadarChart = ({
         empty={isDataEmpty}
         emptyText={t('analytics.common.noDataAvailable')}
         chartRef={chartRef}
-        height={CHART_PLOT_HEIGHT_TALL_PX}
+        height={isMobile ? 460 : CHART_PLOT_HEIGHT_TALL_PX}
       >
         <PolarArea data={chartData as any} options={chartOptions} />
       </ChartStateView>

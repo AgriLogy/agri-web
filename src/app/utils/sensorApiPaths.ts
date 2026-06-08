@@ -14,6 +14,10 @@ export type SensorEndpointSpec =
     };
 
 const SPECS: Record<string, SensorEndpointSpec> = {
+  // Device-health metrics (LoRaWAN nodes report battery + signal; Bivocom
+  // reports signal). Shown per-zone only when the device actually has data.
+  battery: { kind: 'single', path: '/sensors/battery' },
+  signal: { kind: 'single', path: '/sensors/signal' },
   solar_radiation: { kind: 'single', path: '/sensors/solarradiation' },
   temperature_weather: {
     kind: 'single',

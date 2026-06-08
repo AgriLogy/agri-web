@@ -1,3 +1,45 @@
+# [1.13.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.12.0...v1.13.0) (2026-06-08)
+
+
+### Features
+
+* **dashboard:** human-friendly battery % + signal Strong/Good/Fair/Weak ([#119](https://github.com/AgriLogy/agrilogy-front/issues/119)) ([4a7e18c](https://github.com/AgriLogy/agrilogy-front/commit/4a7e18cbd61ee696784f849cba1cc550e1fbe117))
+
+# [1.12.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.11.0...v1.12.0) (2026-06-08)
+
+
+### Features
+
+* **mobile:** responsive overhaul of charts, tables, headers and cards ([#117](https://github.com/AgriLogy/agrilogy-front/issues/117)) ([e927c72](https://github.com/AgriLogy/agrilogy-front/commit/e927c72c0980a6083ae2790419630eddda7e81cb)), closes [#116](https://github.com/AgriLogy/agrilogy-front/issues/116)
+
+# [1.11.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.10.0...v1.11.0) (2026-06-08)
+
+
+### Features
+
+* **dashboard:** human-friendly battery % + signal Strong/Good/Fair/Weak ([#115](https://github.com/AgriLogy/agrilogy-front/issues/115)) ([c726d79](https://github.com/AgriLogy/agrilogy-front/commit/c726d79b6d5ec210a771c6439ebd8bc55d6082ca))
+
+# [1.10.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.9.0...v1.10.0) (2026-06-08)
+
+
+### Features
+
+* **dashboard:** move battery/signal badge into the pH card corner ([#113](https://github.com/AgriLogy/agrilogy-front/issues/113)) ([b584fc1](https://github.com/AgriLogy/agrilogy-front/commit/b584fc1df67b641409c8da9bb22575e3b5d05c84))
+
+# [1.9.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.8.0...v1.9.0) (2026-06-07)
+
+
+### Features
+
+* **dashboard:** show device battery + signal as a current-value badge ([#111](https://github.com/AgriLogy/agrilogy-front/issues/111)) ([2d2bbf3](https://github.com/AgriLogy/agrilogy-front/commit/2d2bbf347f85c502dd61b1066cb935ba529ca0d1))
+
+# [1.8.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.7.0...v1.8.0) (2026-06-07)
+
+
+### Features
+
+* **sensors:** show battery + signal metrics on the dashboard ([#109](https://github.com/AgriLogy/agrilogy-front/issues/109)) ([0f1ea41](https://github.com/AgriLogy/agrilogy-front/commit/0f1ea41a5f84377ccb58d19833a2507c781c5cd7))
+
 # [1.7.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.6.1...v1.7.0) (2026-06-05)
 
 

@@ -39,8 +39,8 @@ import {
   maxBarSizeForPointCount,
   mergeAxisTheme,
   themedCartesianGrid,
-  CHART_MARGIN_LEFT_Y_LABEL,
-  CHART_MARGIN_RIGHT_Y_LABEL,
+  getChartMarginLeft,
+  getChartMarginRight,
   CHART_PLOT_HEIGHT_PX,
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
@@ -152,7 +152,12 @@ const SoilConductivityChart = ({
 
   return (
     <Box {...analyticsChartPanelLayoutProps}>
-      <Flex justify="space-between" align="center" mb={4}>
+      <Flex
+        justify="space-between"
+        align={{ base: 'flex-start', md: 'center' }}
+        gap={2}
+        mb={4}
+      >
         <ChartPanelHeading
           color={textColor}
           title={t('analytics.soilConductivity.title')}
@@ -179,8 +184,8 @@ const SoilConductivityChart = ({
             data={chartData}
             margin={{
               top: 12,
-              right: CHART_MARGIN_RIGHT_Y_LABEL,
-              left: CHART_MARGIN_LEFT_Y_LABEL,
+              right: getChartMarginRight(),
+              left: getChartMarginLeft(),
               bottom: 8,
             }}
             barCategoryGap="14%"

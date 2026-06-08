@@ -11,6 +11,7 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
 
 export type ChartLastDataShellProps = {
   chart: ReactNode;
@@ -34,6 +35,7 @@ export default function ChartLastDataShell({
   ...stackProps
 }: ChartLastDataShellProps) {
   const t = useTranslations();
+  const isMobile = useIsMobile();
   const [chartVisible, setChartVisible] = useState(true);
 
   return (
@@ -46,32 +48,37 @@ export default function ChartLastDataShell({
       minH={minH}
       overflowX="hidden"
     >
-      <Tooltip
-        label={
-          chartVisible
-            ? t('misc.chartLastDataShell.hideChartTooltip')
-            : t('misc.chartLastDataShell.showChart')
-        }
-        hasArrow
-        placement="left"
-      >
-        <IconButton
-          aria-label={
+      {/* Hide-chart toggle is a desktop affordance only: on phones it wastes
+          the top-right corner and the reserved padding, so we drop it and
+          reclaim the full width for the title + plot. */}
+      {!isMobile && (
+        <Tooltip
+          label={
             chartVisible
-              ? t('misc.chartLastDataShell.hideChart')
+              ? t('misc.chartLastDataShell.hideChartTooltip')
               : t('misc.chartLastDataShell.showChart')
           }
-          icon={chartVisible ? <FaEyeSlash /> : <FaEye />}
-          size="sm"
-          variant="ghost"
-          colorScheme="brand"
-          position="absolute"
-          top={0}
-          right={0}
-          zIndex={4}
-          onClick={() => setChartVisible((v) => !v)}
-        />
-      </Tooltip>
+          hasArrow
+          placement="left"
+        >
+          <IconButton
+            aria-label={
+              chartVisible
+                ? t('misc.chartLastDataShell.hideChart')
+                : t('misc.chartLastDataShell.showChart')
+            }
+            icon={chartVisible ? <FaEyeSlash /> : <FaEye />}
+            size="sm"
+            variant="ghost"
+            colorScheme="brand"
+            position="absolute"
+            top={0}
+            right={0}
+            zIndex={4}
+            onClick={() => setChartVisible((v) => !v)}
+          />
+        </Tooltip>
+      )}
       <Stack
         direction={direction}
         spacing={spacing}
@@ -81,7 +88,7 @@ export default function ChartLastDataShell({
         height="auto"
         align={align}
         pt={1}
-        pr={{ base: 10, md: 10 }}
+        pr={{ base: 0, md: 10 }}
         {...stackProps}
       >
         {chartVisible ? chart : null}
