@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.11.0...v1.12.0) (2026-06-08)
+
+
+### Features
+
+* **mobile:** responsive overhaul of charts, tables, headers and cards ([#117](https://github.com/AgriLogy/agrilogy-front/issues/117)) ([e927c72](https://github.com/AgriLogy/agrilogy-front/commit/e927c72c0980a6083ae2790419630eddda7e81cb)), closes [#116](https://github.com/AgriLogy/agrilogy-front/issues/116)
+
 # [1.11.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.10.0...v1.11.0) (2026-06-08)
 
 
