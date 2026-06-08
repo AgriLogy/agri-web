@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.10.0...v1.11.0) (2026-06-08)
+
+
+### Features
+
+* **dashboard:** human-friendly battery % + signal Strong/Good/Fair/Weak ([#115](https://github.com/AgriLogy/agrilogy-front/issues/115)) ([c726d79](https://github.com/AgriLogy/agrilogy-front/commit/c726d79b6d5ec210a771c6439ebd8bc55d6082ca))
+
 # [1.10.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.9.0...v1.10.0) (2026-06-08)
 
 
