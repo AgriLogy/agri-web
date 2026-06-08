@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.9.0...v1.10.0) (2026-06-08)
+
+
+### Features
+
+* **dashboard:** move battery/signal badge into the pH card corner ([#113](https://github.com/AgriLogy/agrilogy-front/issues/113)) ([b584fc1](https://github.com/AgriLogy/agrilogy-front/commit/b584fc1df67b641409c8da9bb22575e3b5d05c84))
+
 # [1.9.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.8.0...v1.9.0) (2026-06-07)
 
 
