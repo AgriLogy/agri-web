@@ -28,6 +28,11 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaCheck, FaPen, FaTimes } from 'react-icons/fa';
+import {
+  MobileRecordCards,
+  type RecordCard,
+} from '@/app/components/common/MobileRecordCards';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
 import { useTranslations } from 'next-intl';
 import {
   getAllSensorsCatalog,
@@ -133,6 +138,7 @@ function loadRows(): UnitSettingRow[] {
 const SensorReadingsSettings = () => {
   const t = useTranslations();
   const toast = useToast();
+  const isMobile = useIsMobile();
   const [rows, setRows] = useState<UnitSettingRow[]>(() => getDefaultRows());
   const [search, setSearch] = useState('');
   const [zones, setZones] = useState<{ id: number; name: string }[]>([]);
@@ -414,41 +420,80 @@ const SensorReadingsSettings = () => {
           {t('settings.readings.refreshButton')}
         </Button>
       </Flex>
-      <Table size="md" variant="simple">
-        <Thead>
-          <Tr bg={theadBg} borderBottomWidth="1px" borderColor={panelBorder}>
-            <Th>{t('settings.readings.colReadingLabel')}</Th>
-            <Th>{t('settings.readings.colType')}</Th>
-            <Th>{t('settings.readings.colUnit')}</Th>
-            <Th>{t('settings.readings.colScale')}</Th>
-            <Th>{t('settings.readings.colOffset')}</Th>
-            <Th>{t('settings.readings.colLastValue')}</Th>
-            <Th>{t('settings.readings.colActions')}</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {filteredRows.map((row) => (
-            <Tr key={row.key}>
-              <Td minW="220px">{row.readingLabel}</Td>
-              <Td>{row.typeLabel}</Td>
-              <Td minW="120px">{row.unit}</Td>
-              <Td minW="120px">{row.scaleA}</Td>
-              <Td minW="120px">{row.offsetB}</Td>
-              <Td>{row.lastValue}</Td>
-              <Td>
-                <IconButton
-                  aria-label={t('settings.readings.editRowAria')}
-                  size="sm"
-                  icon={<FaPen />}
-                  variant="ghost"
-                  colorScheme="brand"
-                  onClick={() => startEdit(row)}
-                />
-              </Td>
+      {isMobile ? (
+        <Box p={3}>
+          <MobileRecordCards
+            cards={filteredRows.map(
+              (row): RecordCard => ({
+                key: row.key,
+                title: row.readingLabel,
+                fields: [
+                  {
+                    label: t('settings.readings.colType'),
+                    value: row.typeLabel,
+                  },
+                  { label: t('settings.readings.colUnit'), value: row.unit },
+                  { label: t('settings.readings.colScale'), value: row.scaleA },
+                  {
+                    label: t('settings.readings.colOffset'),
+                    value: row.offsetB,
+                  },
+                  {
+                    label: t('settings.readings.colLastValue'),
+                    value: row.lastValue,
+                  },
+                ],
+                footer: (
+                  <IconButton
+                    aria-label={t('settings.readings.editRowAria')}
+                    size="sm"
+                    icon={<FaPen />}
+                    variant="ghost"
+                    colorScheme="brand"
+                    onClick={() => startEdit(row)}
+                  />
+                ),
+              })
+            )}
+          />
+        </Box>
+      ) : (
+        <Table size="md" variant="simple">
+          <Thead>
+            <Tr bg={theadBg} borderBottomWidth="1px" borderColor={panelBorder}>
+              <Th>{t('settings.readings.colReadingLabel')}</Th>
+              <Th>{t('settings.readings.colType')}</Th>
+              <Th>{t('settings.readings.colUnit')}</Th>
+              <Th>{t('settings.readings.colScale')}</Th>
+              <Th>{t('settings.readings.colOffset')}</Th>
+              <Th>{t('settings.readings.colLastValue')}</Th>
+              <Th>{t('settings.readings.colActions')}</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {filteredRows.map((row) => (
+              <Tr key={row.key}>
+                <Td minW="220px">{row.readingLabel}</Td>
+                <Td>{row.typeLabel}</Td>
+                <Td minW="120px">{row.unit}</Td>
+                <Td minW="120px">{row.scaleA}</Td>
+                <Td minW="120px">{row.offsetB}</Td>
+                <Td>{row.lastValue}</Td>
+                <Td>
+                  <IconButton
+                    aria-label={t('settings.readings.editRowAria')}
+                    size="sm"
+                    icon={<FaPen />}
+                    variant="ghost"
+                    colorScheme="brand"
+                    onClick={() => startEdit(row)}
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      )}
 
       <Flex justify="flex-end" gap={2} mt={4} p={3}>
         <Button size="sm" variant="outline" onClick={handleReset}>

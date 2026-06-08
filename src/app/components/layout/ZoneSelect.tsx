@@ -28,7 +28,9 @@ export function ZoneSelect({ zones, value, onChange, label }: ZoneSelectProps) {
       value={value ?? ''}
       onChange={(e) => onChange(Number(e.target.value))}
       width="auto"
-      minW="180px"
+      // Narrower on phones so Zone + date icon + alert bell share one line.
+      minW={{ base: '120px', md: '180px' }}
+      maxW={{ base: '190px', md: 'none' }}
       size="md"
       bg="app.surface"
       color="app.text"

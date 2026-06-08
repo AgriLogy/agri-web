@@ -15,6 +15,8 @@ import {
   resolveAxisUnit,
 } from '@/app/utils/unitOverrides';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
+import { Flex } from '@chakra-ui/react';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 
@@ -47,9 +49,49 @@ const SensorRow = ({
   sensorKey: string;
 }) => {
   const t = useTranslations();
+  const isMobile = useIsMobile();
   const valueColor = useColorModeValue('brand.700', 'brand.200');
   const textColor = useColorModeValue('gray.600', 'gray.400');
   const timeColor = useColorModeValue('gray.500', 'gray.500');
+
+  const valueText = data
+    ? `${formatCalibratedReading(sensorKey, data.value)} ${resolveAxisUnit(sensorKey, data.default_unit)}`
+    : '—';
+
+  // Mobile: compact, icon-free label : value row + freshness — essentials only.
+  if (isMobile) {
+    return (
+      <Box py={2} w="100%">
+        <Flex justify="space-between" align="baseline" gap={3}>
+          <Text
+            fontSize="xs"
+            fontWeight="semibold"
+            letterSpacing="0.04em"
+            textTransform="uppercase"
+            color={textColor}
+            minW={0}
+          >
+            {label}
+          </Text>
+          <Text
+            fontSize="md"
+            fontWeight="semibold"
+            color={valueColor}
+            whiteSpace="nowrap"
+          >
+            {valueText}
+          </Text>
+        </Flex>
+        {data && (
+          <Text fontSize="xs" color={timeColor} textAlign="right" mt={0.5}>
+            {t('analytics.lastData.measuredAt', {
+              time: timeAgo(data.timestamp, t),
+            })}
+          </Text>
+        )}
+      </Box>
+    );
+  }
 
   return (
     <Box textAlign="center" py={2} w="100%">
@@ -67,9 +109,7 @@ const SensorRow = ({
         {label}
       </Text>
       <Text fontSize="xl" fontWeight="semibold" color={valueColor} mt={1}>
-        {data
-          ? `${formatCalibratedReading(sensorKey, data.value)} ${resolveAxisUnit(sensorKey, data.default_unit)}`
-          : '—'}
+        {valueText}
       </Text>
       <Text fontSize="xs" color={timeColor} mt={1}>
         {data

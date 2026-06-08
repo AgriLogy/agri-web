@@ -10,6 +10,7 @@ import {
   FormLabel,
   Input,
   Table,
+  TableContainer,
   Tbody,
   Td,
   Text,
@@ -254,44 +255,46 @@ const SuperAdminUsersSettings = () => {
       <Text fontWeight="bold" mb={2} color={textColor}>
         {t('settings.users.existingHeading')}
       </Text>
-      <Table size="sm" variant="simple">
-        <Thead>
-          <Tr>
-            <Th>{t('settings.users.colUser')}</Th>
-            <Th>{t('settings.users.colEmail')}</Th>
-            <Th>{t('settings.users.colApiRole')}</Th>
-            <Th>{t('settings.users.colSensorsLocal')}</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {users.map((u) => {
-            const local = accessMap[u.username.toLowerCase()];
-            return (
-              <Tr key={u.id}>
-                <Td>{u.username}</Td>
-                <Td fontSize="xs">{u.email}</Td>
-                <Td>
-                  {u.is_staff ? (
-                    <Badge colorScheme="brand">
-                      {t('settings.users.badgeAdmin')}
-                    </Badge>
-                  ) : (
-                    <Badge>{t('settings.users.badgeUser')}</Badge>
-                  )}
-                </Td>
-                <Td fontSize="xs">
-                  {local
-                    ? t('settings.users.localSensorsCell', {
-                        count: local.sensorKeys.length,
-                        role: local.role,
-                      })
-                    : '—'}
-                </Td>
-              </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
+      <TableContainer>
+        <Table size="sm" variant="simple">
+          <Thead>
+            <Tr>
+              <Th>{t('settings.users.colUser')}</Th>
+              <Th>{t('settings.users.colEmail')}</Th>
+              <Th>{t('settings.users.colApiRole')}</Th>
+              <Th>{t('settings.users.colSensorsLocal')}</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {users.map((u) => {
+              const local = accessMap[u.username.toLowerCase()];
+              return (
+                <Tr key={u.id}>
+                  <Td>{u.username}</Td>
+                  <Td fontSize="xs">{u.email}</Td>
+                  <Td>
+                    {u.is_staff ? (
+                      <Badge colorScheme="brand">
+                        {t('settings.users.badgeAdmin')}
+                      </Badge>
+                    ) : (
+                      <Badge>{t('settings.users.badgeUser')}</Badge>
+                    )}
+                  </Td>
+                  <Td fontSize="xs">
+                    {local
+                      ? t('settings.users.localSensorsCell', {
+                          count: local.sensorKeys.length,
+                          role: local.role,
+                        })
+                      : '—'}
+                  </Td>
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };

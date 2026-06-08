@@ -33,7 +33,7 @@ import {
   getDefaultYAxisProps,
   mergeAxisTheme,
   themedCartesianGrid,
-  CHART_MARGIN_LEFT_Y_LABEL,
+  getChartMarginLeft,
   CHART_PLOT_HEIGHT_PX,
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
@@ -108,7 +108,12 @@ const PhWaterChart = ({
 
   return (
     <Box {...analyticsChartPanelLayoutProps}>
-      <Flex justify="space-between" align="center" mb={4}>
+      <Flex
+        justify="space-between"
+        align={{ base: 'flex-start', md: 'center' }}
+        gap={2}
+        mb={4}
+      >
         <ChartPanelHeading
           color={textColor}
           title={t('analytics.waterPh.chartTitle')}
@@ -144,7 +149,7 @@ const PhWaterChart = ({
             margin={{
               top: 12,
               right: 12,
-              left: CHART_MARGIN_LEFT_Y_LABEL,
+              left: getChartMarginLeft(),
               bottom: 8,
             }}
           >

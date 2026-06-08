@@ -17,6 +17,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Table,
+  TableContainer,
   Tbody,
   Td,
   Text,
@@ -200,46 +201,48 @@ const SensorDirectorySettings = () => {
       <Text fontSize="sm" color={mutedTextColor} mb={2}>
         {t('settings.directory.countShown', { count: rows.length })}
       </Text>
-      <Table size="sm" variant="simple">
-        <Thead>
-          <Tr>
-            <Th>{t('settings.directory.colDisplayName')}</Th>
-            <Th>{t('settings.directory.colTypePlacement')}</Th>
-            <Th>{t('settings.directory.colKey')}</Th>
-            <Th>{t('settings.directory.colUnit')}</Th>
-            <Th>{t('settings.directory.colVisible')}</Th>
-            <Th />
-          </Tr>
-        </Thead>
-        <Tbody>
-          {rows.map((row) => (
-            <Tr key={row.key}>
-              <Td>{row.displayName ?? readingFor(row)}</Td>
-              <Td>
-                {row.placementType
-                  ? `${typeFor(row)} — ${row.placementType}`
-                  : typeFor(row)}
-              </Td>
-              <Td>{row.key}</Td>
-              <Td>{row.defaultUnit}</Td>
-              <Td>
-                {row.visible === false
-                  ? t('settings.directory.no')
-                  : t('settings.directory.yes')}
-              </Td>
-              <Td>
-                <IconButton
-                  aria-label={t('settings.directory.editAria')}
-                  size="sm"
-                  icon={<FaPen />}
-                  variant="ghost"
-                  onClick={() => startEdit(row)}
-                />
-              </Td>
+      <TableContainer>
+        <Table size="sm" variant="simple">
+          <Thead>
+            <Tr>
+              <Th>{t('settings.directory.colDisplayName')}</Th>
+              <Th>{t('settings.directory.colTypePlacement')}</Th>
+              <Th>{t('settings.directory.colKey')}</Th>
+              <Th>{t('settings.directory.colUnit')}</Th>
+              <Th>{t('settings.directory.colVisible')}</Th>
+              <Th />
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {rows.map((row) => (
+              <Tr key={row.key}>
+                <Td>{row.displayName ?? readingFor(row)}</Td>
+                <Td>
+                  {row.placementType
+                    ? `${typeFor(row)} — ${row.placementType}`
+                    : typeFor(row)}
+                </Td>
+                <Td>{row.key}</Td>
+                <Td>{row.defaultUnit}</Td>
+                <Td>
+                  {row.visible === false
+                    ? t('settings.directory.no')
+                    : t('settings.directory.yes')}
+                </Td>
+                <Td>
+                  <IconButton
+                    aria-label={t('settings.directory.editAria')}
+                    size="sm"
+                    icon={<FaPen />}
+                    variant="ghost"
+                    onClick={() => startEdit(row)}
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
 
       <Modal isOpen={openAdd} onClose={() => setOpenAdd(false)} isCentered>
         <ModalOverlay />

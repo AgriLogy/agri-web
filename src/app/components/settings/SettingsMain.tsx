@@ -38,40 +38,46 @@ const SettingsMain = () => {
 
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
-      <PageInfoBar
-        title={t('settings.main.title')}
-        subtitle={activeLabel}
-        actions={
-          <HStack
-            spacing={{ base: 1, md: 2 }}
-            overflowX="auto"
-            whiteSpace="nowrap"
-          >
-            {TAB_KEYS.map((tabKey) => {
-              const isActive = tabKey === activeTab;
-              return (
-                <Button
-                  key={tabKey}
-                  onClick={() => setActiveTab(tabKey)}
-                  variant="ghost"
-                  size="sm"
-                  color={isActive ? tabAccent : iconColor}
-                  borderBottomWidth="2px"
-                  borderBottomColor={isActive ? tabAccent : 'transparent'}
-                  borderRadius="0"
-                  textTransform="uppercase"
-                  fontSize="xs"
-                  fontWeight="700"
-                  letterSpacing="0.3px"
-                  _hover={{ color: tabAccent }}
-                >
-                  {t(TAB_LABEL_KEY[tabKey])}
-                </Button>
-              );
-            })}
-          </HStack>
-        }
-      />
+      <PageInfoBar title={t('settings.main.title')} subtitle={activeLabel} />
+
+      {/* Full-width tab strip: scrolls horizontally on narrow screens instead
+          of cramming/overlapping the labels in the info-bar (mobile fix). */}
+      <Box
+        overflowX="auto"
+        overflowY="hidden"
+        mb={{ base: 3, md: 4 }}
+        sx={{
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none',
+          '::-webkit-scrollbar': { display: 'none' },
+        }}
+      >
+        <HStack spacing={{ base: 1, md: 2 }} minW="max-content">
+          {TAB_KEYS.map((tabKey) => {
+            const isActive = tabKey === activeTab;
+            return (
+              <Button
+                key={tabKey}
+                onClick={() => setActiveTab(tabKey)}
+                variant="ghost"
+                size="sm"
+                flexShrink={0}
+                color={isActive ? tabAccent : iconColor}
+                borderBottomWidth="2px"
+                borderBottomColor={isActive ? tabAccent : 'transparent'}
+                borderRadius="0"
+                textTransform="uppercase"
+                fontSize="xs"
+                fontWeight="700"
+                letterSpacing="0.3px"
+                _hover={{ color: tabAccent }}
+              >
+                {t(TAB_LABEL_KEY[tabKey])}
+              </Button>
+            );
+          })}
+        </HStack>
+      </Box>
 
       <Box
         bg="app.surface"

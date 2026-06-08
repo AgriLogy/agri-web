@@ -147,3 +147,38 @@ svg {
     text-wrap: balance;
   }
 }
+
+/* ----------------------------------------------------------------------------
+ * Mobile: collapse the analytics date RangePicker to just its calendar icon.
+ * The selected window is already shown in the page subtitle, so on phones the
+ * full "07 juin 2026 → 08 juin 2026" input is redundant and pushes the Zone
+ * select + alert bell onto extra lines. Inputs are kept in the DOM at width 0
+ * (not display:none) so a tap still focuses them and opens the calendar.
+ * ------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .ant-picker.agri-date-compact {
+    width: 46px !important;
+    min-width: 46px;
+    padding-left: 0;
+    padding-right: 0;
+    justify-content: center;
+  }
+  .ant-picker.agri-date-compact .ant-picker-input {
+    width: 0;
+    flex: 0 0 0;
+    overflow: hidden;
+  }
+  .ant-picker.agri-date-compact .ant-picker-input > input {
+    width: 0;
+    min-width: 0;
+    padding: 0;
+  }
+  .ant-picker.agri-date-compact .ant-picker-range-separator,
+  .ant-picker.agri-date-compact .ant-picker-active-bar {
+    display: none !important;
+  }
+  .ant-picker.agri-date-compact .ant-picker-suffix {
+    margin-inline-start: 0;
+    font-size: 17px;
+  }
+}

@@ -23,6 +23,11 @@ import {
   type SensorKeyOption,
 } from '@/app/utils/alertChoices';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
+import {
+  MobileRecordCards,
+  type RecordCard,
+} from '@/app/components/common/MobileRecordCards';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
 import AlertCreateDrawer from './AlertCreateDrawer';
 import styles from './AlertMain.module.scss';
 
@@ -31,6 +36,7 @@ const ALERT_LIMIT = 10;
 const AlertMain: React.FC = () => {
   const t = useTranslations();
   const { message } = App.useApp();
+  const isMobile = useIsMobile();
 
   const conditionLabel = (c: string) => {
     const choice = CONDITION_CHOICES.find((cc) => cc.value === c);
@@ -221,6 +227,94 @@ const AlertMain: React.FC = () => {
     [sensorKeys, t]
   );
 
+  const sensorLabel = useCallback(
+    (key: string) =>
+      key && t.has(`sensors.${key}`)
+        ? t(`sensors.${key}`)
+        : (sensorKeys.find((s) => s.key === key)?.label ?? key ?? '—'),
+    [sensorKeys, t]
+  );
+
+  const mobileCards: RecordCard[] = useMemo(
+    () =>
+      alerts.map((row) => ({
+        key: row.id,
+        title: (
+          <Space size={8} wrap>
+            <span>{row.name}</span>
+            {row.last_triggered_at && (
+              <Tag color="red" className={styles.triggeredTag}>
+                {t('alertsPage.main.recentlyTriggered')}
+              </Tag>
+            )}
+          </Space>
+        ),
+        fields: [
+          {
+            label: t('alertsPage.main.columnSensor'),
+            value: sensorLabel(row.sensor_key),
+          },
+          {
+            label: t('alertsPage.main.columnCategory'),
+            value: <Tag>{typeLabel(row.type)}</Tag>,
+          },
+          {
+            label: t('alertsPage.main.columnCondition'),
+            value: (
+              <span>
+                {conditionLabel(row.condition)}{' '}
+                <strong>{row.threshold ?? row.condition_nbr}</strong>{' '}
+                {sensorKeys.find((s) => s.key === row.sensor_key)?.unit ?? ''}
+              </span>
+            ),
+          },
+          {
+            label: t('alertsPage.main.columnActive'),
+            value: (
+              <Tag
+                color={row.is_active ? 'green' : 'default'}
+                onClick={() => handleToggleActive(row)}
+                style={{ cursor: 'pointer', marginInlineEnd: 0 }}
+              >
+                {row.is_active
+                  ? t('alertsPage.main.yes')
+                  : t('alertsPage.main.no')}
+              </Tag>
+            ),
+          },
+        ],
+        footer: (
+          <Space>
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => openEdit(row)}
+              aria-label={t('alertsPage.main.editAria', { name: row.name })}
+            >
+              {t('alertsPage.main.edit')}
+            </Button>
+            <Popconfirm
+              title={t('alertsPage.main.deleteConfirm')}
+              okText={t('alertsPage.main.delete')}
+              cancelText={t('alertsPage.main.cancel')}
+              onConfirm={() => handleDelete(row.id)}
+            >
+              <Button
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+                aria-label={t('alertsPage.main.deleteAria', { name: row.name })}
+              >
+                {t('alertsPage.main.delete')}
+              </Button>
+            </Popconfirm>
+          </Space>
+        ),
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [alerts, sensorKeys, t, sensorLabel]
+  );
+
   return (
     <Box
       px={{ base: 3, md: 4 }}
@@ -251,21 +345,26 @@ const AlertMain: React.FC = () => {
         py={{ base: 3, md: 4 }}
         minW={0}
       >
-        <Table<AlertRecord>
-          rowKey="id"
-          columns={columns}
-          dataSource={alerts}
-          loading={loading}
-          pagination={false}
-          locale={{
-            emptyText: (
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={t('alertsPage.main.emptyText')}
-              />
-            ),
-          }}
-        />
+        {isMobile && !loading && alerts.length > 0 ? (
+          <MobileRecordCards cards={mobileCards} />
+        ) : (
+          <Table<AlertRecord>
+            rowKey="id"
+            columns={columns}
+            dataSource={alerts}
+            loading={loading}
+            pagination={false}
+            scroll={{ x: 'max-content' }}
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={t('alertsPage.main.emptyText')}
+                />
+              ),
+            }}
+          />
+        )}
       </Box>
 
       <AlertCreateDrawer

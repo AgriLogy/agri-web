@@ -27,7 +27,7 @@ export default function ChartPanelHeading({
     <Box minW={0}>
       <Text
         as="h2"
-        fontSize="lg"
+        fontSize={{ base: 'md', md: 'lg' }}
         fontWeight="semibold"
         color={color}
         letterSpacing="-0.02em"

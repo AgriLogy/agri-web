@@ -34,7 +34,7 @@ import {
   getDefaultYAxisProps,
   mergeAxisTheme,
   themedCartesianGrid,
-  CHART_MARGIN_LEFT_Y_LABEL,
+  getChartMarginLeft,
   CHART_PLOT_HEIGHT_VPD_PX,
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
@@ -103,7 +103,12 @@ const VPDChart = ({
 
   return (
     <Box {...analyticsChartPanelLayoutProps}>
-      <Flex justify="space-between" align="center" mb={4}>
+      <Flex
+        justify="space-between"
+        align={{ base: 'flex-start', md: 'center' }}
+        gap={2}
+        mb={4}
+      >
         <ChartPanelHeading
           color={textColor}
           title={t('analytics.vpd.title')}
@@ -145,7 +150,7 @@ const VPDChart = ({
             margin={{
               top: 16,
               right: 0,
-              left: CHART_MARGIN_LEFT_Y_LABEL,
+              left: getChartMarginLeft(),
               bottom: 0,
             }}
           >

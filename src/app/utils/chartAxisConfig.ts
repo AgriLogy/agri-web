@@ -72,8 +72,33 @@ export const defaultCartesianGridProps = {
   horizontal: true,
 };
 
-/** Left Y-axis unit label — outside the tick column so it is not covered by values. */
+/**
+ * True on phone-width viewports. SSR-safe (false on the server → desktop
+ * layout, then charts re-read on the client where they actually render).
+ */
+function isNarrowChartViewport(): boolean {
+  return typeof window !== 'undefined' && window.innerWidth < 768;
+}
+
+/**
+ * Chart left/right margin that holds the rotated Y-axis unit label on desktop.
+ * On phones the label is dropped (see {@link yAxisLabelInsideLeft}) and the
+ * margin collapses so the plotted curve uses (almost) the full card width.
+ */
+export function getChartMarginLeft(): number {
+  return isNarrowChartViewport() ? 6 : CHART_MARGIN_LEFT_Y_LABEL;
+}
+export function getChartMarginRight(): number {
+  return isNarrowChartViewport() ? 6 : CHART_MARGIN_RIGHT_Y_LABEL;
+}
+
+/**
+ * Left Y-axis unit label — outside the tick column so it is not covered by
+ * values. Dropped on phones: the unit already shows in the card subtitle and
+ * legend, and the rotated text would otherwise steal width from the plot.
+ */
 export function yAxisLabelInsideLeft(value: string, fill: string = TICK_FILL) {
+  if (isNarrowChartViewport()) return undefined;
   return {
     value,
     angle: -90,
@@ -89,8 +114,9 @@ export function yAxisLabelInsideLeft(value: string, fill: string = TICK_FILL) {
   };
 }
 
-/** Right Y-axis unit label — outside the tick column so it is not covered by values. */
+/** Right Y-axis unit label — outside the tick column. Dropped on phones (see left). */
 export function yAxisLabelInsideRight(value: string, fill: string = TICK_FILL) {
+  if (isNarrowChartViewport()) return undefined;
   return {
     value,
     angle: 90,
@@ -458,6 +484,33 @@ function mergeSortedUniqueMs(...lists: number[][]): number[] {
 }
 
 /**
+ * Max number of *labelled* X-axis ticks that fit without overlapping at the
+ * current viewport width. Narrow phones can only fit a handful of rotated
+ * time labels before they collide into an unreadable smear. SSR-safe:
+ * falls back to the desktop count on the server, then the chart (which only
+ * renders client-side) re-reads the real width on mount.
+ */
+function getMaxAxisLabels(): number {
+  if (typeof window === 'undefined') return 12;
+  const w = window.innerWidth;
+  if (w < 420) return 4;
+  if (w < 640) return 5;
+  if (w < 900) return 8;
+  return 12;
+}
+
+/** Keep first + last, evenly drop the rest until at most `max` remain. */
+function downsampleTicks(ticks: number[], max: number): number[] {
+  if (max < 2 || ticks.length <= max) return ticks;
+  const step = Math.ceil((ticks.length - 1) / (max - 1));
+  const out: number[] = [];
+  for (let i = 0; i < ticks.length; i += step) out.push(ticks[i]);
+  const last = ticks[ticks.length - 1];
+  if (out[out.length - 1] !== last) out.push(last);
+  return out;
+}
+
+/**
  * Adaptive X-axis for time-series:
  * - Wide windows: category axis, "DD MMM"
  * - Zoomed/small windows: **numeric** `timeMs` axis so hourly ticks render (Recharts category axes ignore mismatched tick strings)
@@ -505,7 +558,13 @@ export function getAdaptiveTimeXAxisProps(
      */
     const dataTimeMs = uniqueMs;
     const ticksMs = mergeSortedUniqueMs(sparseTicksMs, dataTimeMs);
-    const sparseLabelSet = new Set(sparseTicksMs);
+    /**
+     * Only a viewport-appropriate subset of the sparse ticks gets a visible
+     * label — on phones 12 rotated time labels collide into an unreadable
+     * smear, so thin them down while always keeping the first and last.
+     */
+    const labelTicksMs = downsampleTicks(sparseTicksMs, getMaxAxisLabels());
+    const sparseLabelSet = new Set(labelTicksMs);
 
     let domainMin = minMs;
     let domainMax = maxMs;
@@ -590,8 +649,9 @@ export function getDefaultYAxisProps(decimals: number = 2) {
     axisLine: { stroke: AXIS_STROKE, strokeWidth: AXIS_STROKE_WIDTH },
     tickLine: { stroke: AXIS_STROKE, strokeWidth: AXIS_STROKE_WIDTH },
     tickFormatter: (v: number) => formatYAxisTick(v, decimals),
-    width: 48,
-    tickMargin: 8,
+    // Narrower tick gutter on phones so the curve gets the width back.
+    width: isNarrowChartViewport() ? 34 : 48,
+    tickMargin: isNarrowChartViewport() ? 3 : 8,
   };
 }
 
