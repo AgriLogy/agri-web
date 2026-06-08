@@ -55,6 +55,14 @@
     "submit": "Sign in",
     "invalidCredentials": "Incorrect username or password."
   },
+  "deviceStatus": {
+    "signal": {
+      "strong": "Strong",
+      "good": "Good",
+      "fair": "Fair",
+      "weak": "Weak"
+    }
+  },
   "sensors": {
     "battery": "Battery",
     "signal": "Signal",

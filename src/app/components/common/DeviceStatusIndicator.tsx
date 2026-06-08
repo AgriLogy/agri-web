@@ -45,6 +45,14 @@ function signalColor(dbm: number): string {
   return 'red.500';
 }
 
+// RSSI (dBm) → a human label key. Farmers read "Good"/"Weak", not "-113 dBm".
+function signalLevelKey(dbm: number): 'strong' | 'good' | 'fair' | 'weak' {
+  if (dbm > -90) return 'strong';
+  if (dbm > -100) return 'good';
+  if (dbm > -110) return 'fair';
+  return 'weak';
+}
+
 export default function DeviceStatusIndicator({ zoneId }: Props) {
   const t = useTranslations();
   const [battery, setBattery] = useState<number | null>(null);
@@ -97,7 +105,7 @@ export default function DeviceStatusIndicator({ zoneId }: Props) {
         >
           <HStack spacing={1} color={bat.color}>
             <bat.Icon size={15} aria-label={t('sensors.battery')} />
-            <Text color="inherit">{battery.toFixed(2)} V</Text>
+            <Text color="inherit">{batteryPct(battery)}%</Text>
           </HStack>
         </Tooltip>
       )}
@@ -108,7 +116,9 @@ export default function DeviceStatusIndicator({ zoneId }: Props) {
         >
           <HStack spacing={1} color={signalColor(signal)}>
             <Signal size={15} aria-label={t('sensors.signal')} />
-            <Text color="inherit">{Math.round(signal)} dBm</Text>
+            <Text color="inherit">
+              {t(`deviceStatus.signal.${signalLevelKey(signal)}`)}
+            </Text>
           </HStack>
         </Tooltip>
       )}

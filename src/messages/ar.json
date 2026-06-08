@@ -55,6 +55,14 @@
     "submit": "تسجيل الدخول",
     "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة."
   },
+  "deviceStatus": {
+    "signal": {
+      "strong": "ممتازة",
+      "good": "جيدة",
+      "fair": "متوسطة",
+      "weak": "ضعيفة"
+    }
+  },
   "sensors": {
     "battery": "البطارية",
     "signal": "الإشارة",
