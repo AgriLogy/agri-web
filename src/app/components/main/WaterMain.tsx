@@ -1,9 +1,8 @@
 'use client';
 
-import { Box, HStack, Stack } from '@chakra-ui/react';
+import { Box, Stack } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 
-import DeviceStatusIndicator from '@/app/components/common/DeviceStatusIndicator';
 import ZoneNotificationBell from '@/app/components/common/ZoneNotificationBell';
 import { ChartDateRangeControl } from '@/app/components/layout/ChartDateRangeControl';
 import { ChartSection } from '@/app/components/layout/ChartSection';
@@ -50,15 +49,12 @@ const WaterMain = () => {
         }
         dateRange={<ChartDateRangeControl value={range} onChange={setRange} />}
         actions={
-          <HStack spacing={2}>
-            <DeviceStatusIndicator zoneId={selectedZone} />
-            {selectedZone != null ? (
-              <ZoneNotificationBell
-                zoneId={selectedZone}
-                zoneName={zoneName ?? t('shell.water.zoneFallback')}
-              />
-            ) : null}
-          </HStack>
+          selectedZone != null ? (
+            <ZoneNotificationBell
+              zoneId={selectedZone}
+              zoneName={zoneName ?? t('shell.water.zoneFallback')}
+            />
+          ) : null
         }
       />
 

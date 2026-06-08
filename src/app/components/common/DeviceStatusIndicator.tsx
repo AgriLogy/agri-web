@@ -1,14 +1,14 @@
 'use client';
 
 /**
- * Compact, phone-style current-value badges for a LoRaWAN device's health
- * metrics — battery (V) and signal (RSSI dBm). We show only the *latest*
- * value (these are status readouts, not trends — you never want a battery
- * curve). If a zone reports neither (e.g. a Bivocom-only zone), the whole
- * thing renders nothing, so it never clutters non-LoRa dashboards.
+ * Compact device-health badge — battery (V) and signal (RSSI dBm) for a
+ * LoRaWAN node, shown as small icon+value chips (latest value only, like a
+ * phone status bar — never a curve). Designed to sit in the top-right corner
+ * of a "last reading" card. Renders nothing when a zone reports neither
+ * (e.g. a Bivocom zone), so it never clutters non-LoRa dashboards.
  */
 
-import { HStack, Text, Tooltip } from '@chakra-ui/react';
+import { HStack, Text, Tooltip, VStack } from '@chakra-ui/react';
 import {
   Battery,
   BatteryLow,
@@ -78,36 +78,40 @@ export default function DeviceStatusIndicator({ zoneId }: Props) {
   const bat = battery != null ? batteryVisual(batteryPct(battery)) : null;
 
   return (
-    <HStack
-      spacing={3}
-      px={2.5}
+    <VStack
+      spacing={0.5}
+      align="flex-end"
+      bg="blackAlpha.50"
+      _dark={{ bg: 'whiteAlpha.200' }}
+      borderRadius="lg"
+      px={2}
       py={1}
-      borderWidth="1px"
-      borderColor="app.border"
-      borderRadius="full"
-      bg="app.surface"
-      fontSize="sm"
+      fontSize="xs"
       fontWeight="medium"
-      whiteSpace="nowrap"
+      lineHeight="1.2"
     >
       {battery != null && bat && (
         <Tooltip
           label={`${t('sensors.battery')} · ${battery.toFixed(2)} V (${batteryPct(battery)}%)`}
+          openDelay={300}
         >
           <HStack spacing={1} color={bat.color}>
-            <bat.Icon size={18} aria-label={t('sensors.battery')} />
-            <Text color="app.text">{battery.toFixed(2)} V</Text>
+            <bat.Icon size={15} aria-label={t('sensors.battery')} />
+            <Text color="inherit">{battery.toFixed(2)} V</Text>
           </HStack>
         </Tooltip>
       )}
       {signal != null && (
-        <Tooltip label={`${t('sensors.signal')} · ${Math.round(signal)} dBm`}>
+        <Tooltip
+          label={`${t('sensors.signal')} · ${Math.round(signal)} dBm`}
+          openDelay={300}
+        >
           <HStack spacing={1} color={signalColor(signal)}>
-            <Signal size={18} aria-label={t('sensors.signal')} />
-            <Text color="app.text">{Math.round(signal)} dBm</Text>
+            <Signal size={15} aria-label={t('sensors.signal')} />
+            <Text color="inherit">{Math.round(signal)} dBm</Text>
           </HStack>
         </Tooltip>
       )}
-    </HStack>
+    </VStack>
   );
 }
