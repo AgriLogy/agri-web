@@ -19,6 +19,7 @@ import PrecipitationRateMain from '../analytics/PrecipitationRate/PrecipitationR
 import SolarRadiationMain from '../analytics/SolarRadiation/SolarRadiationMain';
 import TempuratureHumidtyMain from '../analytics/WeatherTempuratureHumidty/TempuratureHumidtyMain';
 import VPDMain from '../analytics/VPD/VPDMain';
+import WaterLevelMain from '../analytics/WaterLevel/WaterLevelMain';
 import WindRadarMain from '../analytics/Wind/WindRadarMain';
 import WindSpeedMain from '../analytics/WindSpeed/WindSpeedMain';
 
@@ -36,6 +37,13 @@ const StationMain = () => {
     activeGraph,
     filters,
   } = useAnalyticsHeader();
+
+  // The basin/water-level section shows only for zones that have a level
+  // sensor configured (basin geometry present on the zone).
+  const currentZone = zones.find((z) => z.id === selectedZone);
+  const hasBasin =
+    currentZone?.basin_max_depth_m != null ||
+    currentZone?.basin_area_m2 != null;
 
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
@@ -107,6 +115,18 @@ const StationMain = () => {
           {activeGraph?.precipitation_rate_status && (
             <ChartSection>
               <PrecipitationRateMain filters={filters} />
+            </ChartSection>
+          )}
+          {hasBasin && (
+            <ChartSection>
+              <WaterLevelMain
+                filters={filters}
+                basin={{
+                  maxDepthM: currentZone?.basin_max_depth_m,
+                  areaM2: currentZone?.basin_area_m2,
+                  offsetM: currentZone?.sensor_mount_offset_m,
+                }}
+              />
             </ChartSection>
           )}
         </Stack>

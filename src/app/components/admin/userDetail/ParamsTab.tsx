@@ -22,6 +22,9 @@ type ParamsFormValues = {
   critical_moisture_threshold: number;
   pomp_flow_rate: number;
   irrigation_water_quantity: number;
+  basin_max_depth_m?: number | null;
+  basin_area_m2?: number | null;
+  sensor_mount_offset_m?: number | null;
 };
 
 const SENSOR_UNIT_FAMILIES: Array<{
@@ -114,6 +117,9 @@ export function ParamsTab({ username }: ParamsTabProps) {
           critical_moisture_threshold: data.critical_moisture_threshold,
           pomp_flow_rate: data.pomp_flow_rate,
           irrigation_water_quantity: data.irrigation_water_quantity,
+          basin_max_depth_m: data.basin_max_depth_m,
+          basin_area_m2: data.basin_area_m2,
+          sensor_mount_offset_m: data.sensor_mount_offset_m,
         });
       } catch {
         message.error(t('admin.params.readError'));
@@ -201,6 +207,9 @@ export function ParamsTab({ username }: ParamsTabProps) {
                     params.critical_moisture_threshold,
                   pomp_flow_rate: params.pomp_flow_rate,
                   irrigation_water_quantity: params.irrigation_water_quantity,
+                  basin_max_depth_m: params.basin_max_depth_m,
+                  basin_area_m2: params.basin_area_m2,
+                  sensor_mount_offset_m: params.sensor_mount_offset_m,
                 }
               : undefined
           }
@@ -261,6 +270,34 @@ export function ParamsTab({ username }: ParamsTabProps) {
             rules={[{ type: 'number', min: 0 }]}
           >
             <InputNumber min={0} style={{ width: '100%' }} />
+          </Form.Item>
+          <h3 style={{ margin: '12px 0 8px' }}>
+            {t('admin.params.basinTitle')}
+          </h3>
+          <Space.Compact block>
+            <Form.Item
+              name="basin_max_depth_m"
+              label={t('admin.params.field.basinMaxDepth')}
+              style={{ flex: 1 }}
+              rules={[{ type: 'number', min: 0 }]}
+            >
+              <InputNumber min={0} step={0.1} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              name="basin_area_m2"
+              label={t('admin.params.field.basinArea')}
+              style={{ flex: 1 }}
+              rules={[{ type: 'number', min: 0 }]}
+            >
+              <InputNumber min={0} step={0.1} style={{ width: '100%' }} />
+            </Form.Item>
+          </Space.Compact>
+          <Form.Item
+            name="sensor_mount_offset_m"
+            label={t('admin.params.field.sensorMountOffset')}
+            rules={[{ type: 'number', min: 0 }]}
+          >
+            <InputNumber min={0} step={0.1} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={savingParams}>

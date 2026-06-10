@@ -246,6 +246,7 @@
       "noZones": "No zone to configure",
       "zoneLabel": "Zone:",
       "soilIrrigationTitle": "Soil & irrigation parameters",
+      "basinTitle": "Basin / reservoir (level sensor)",
       "preferredUnitsTitle": "Preferred units per sensor",
       "save": "Save",
       "field": {
@@ -255,7 +256,10 @@
         "wp": "WP (%)",
         "criticalMoisture": "Critical moisture threshold (%)",
         "pompFlowRate": "Pump flow rate (L/s)",
-        "irrigationWaterQuantity": "Irrigation water quantity (L)"
+        "irrigationWaterQuantity": "Irrigation water quantity (L)",
+        "basinMaxDepth": "Basin max depth (m)",
+        "basinArea": "Basin area (m²)",
+        "sensorMountOffset": "Sensor mount offset (m)"
       }
     },
     "dashboard": {
@@ -683,6 +687,16 @@
       "chartSubtitle": "Hourly series; adaptive time scale with the period slider.",
       "lastDataTitle": "Wind speed (latest reading)",
       "gustMax": "Gust (max)"
+    },
+    "waterLevel": {
+      "chartTitle": "Basin water level",
+      "chartSubtitle": "Water-column height measured by the sensor.",
+      "seriesName": "Water level",
+      "cardTitle": "Height of water column",
+      "maxDepth": "Basin max depth",
+      "sensorLevel": "Sensor level",
+      "capacity": "Actual capacity",
+      "fillPct": "Percentage of filling"
     },
     "waterFlow": {
       "lastDataTitle": "Water flow / irrigation",

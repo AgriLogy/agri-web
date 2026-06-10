@@ -15,6 +15,10 @@ export type AdminZone = {
   critical_moisture_threshold: number;
   pomp_flow_rate: number;
   irrigation_water_quantity: number;
+  // Basin / reservoir geometry for the water-level widget (nullable).
+  basin_max_depth_m?: number | null;
+  basin_area_m2?: number | null;
+  sensor_mount_offset_m?: number | null;
 };
 
 export type AdminZoneCreatePayload = Omit<AdminZone, 'id'> & {
@@ -37,6 +41,9 @@ export type AdminZoneParams = Pick<
   | 'critical_moisture_threshold'
   | 'pomp_flow_rate'
   | 'irrigation_water_quantity'
+  | 'basin_max_depth_m'
+  | 'basin_area_m2'
+  | 'sensor_mount_offset_m'
 >;
 
 export type ActiveGraphRecord = Record<string, boolean | number>;

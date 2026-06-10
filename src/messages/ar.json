@@ -246,6 +246,7 @@
       "noZones": "لا توجد منطقة لضبطها",
       "zoneLabel": "المنطقة:",
       "soilIrrigationTitle": "معاملات التربة والري",
+      "basinTitle": "الحوض / الخزّان (مستشعر المنسوب)",
       "preferredUnitsTitle": "الوحدات المفضّلة لكل مستشعر",
       "save": "حفظ",
       "field": {
@@ -255,7 +256,10 @@
         "wp": "WP (%)",
         "criticalMoisture": "عتبة الرطوبة الحرجة (%)",
         "pompFlowRate": "تدفق المضخة (L/s)",
-        "irrigationWaterQuantity": "كمية مياه الري (L)"
+        "irrigationWaterQuantity": "كمية مياه الري (L)",
+        "basinMaxDepth": "أقصى عمق للحوض (m)",
+        "basinArea": "مساحة الحوض (m²)",
+        "sensorMountOffset": "إزاحة تركيب المستشعر (m)"
       }
     },
     "dashboard": {
@@ -683,6 +687,16 @@
       "chartSubtitle": "سلسلة بالساعة؛ مقياس زمني تكيفي مع شريط تمرير الفترة.",
       "lastDataTitle": "سرعة الرياح (آخر قياس)",
       "gustMax": "أقصى هبّة"
+    },
+    "waterLevel": {
+      "chartTitle": "منسوب مياه الحوض",
+      "chartSubtitle": "ارتفاع عمود الماء المقاس بواسطة المستشعر.",
+      "seriesName": "منسوب المياه",
+      "cardTitle": "ارتفاع عمود الماء",
+      "maxDepth": "أقصى عمق للحوض",
+      "sensorLevel": "مستوى المستشعر",
+      "capacity": "السعة الحالية",
+      "fillPct": "نسبة الامتلاء"
     },
     "waterFlow": {
       "lastDataTitle": "تدفق المياه / الري",

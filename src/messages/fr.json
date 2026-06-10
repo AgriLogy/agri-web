@@ -246,6 +246,7 @@
       "noZones": "Aucune zone à paramétrer",
       "zoneLabel": "Zone :",
       "soilIrrigationTitle": "Paramètres du sol & irrigation",
+      "basinTitle": "Bassin / réservoir (capteur de niveau)",
       "preferredUnitsTitle": "Unités préférées par capteur",
       "save": "Enregistrer",
       "field": {
@@ -255,7 +256,10 @@
         "wp": "WP (%)",
         "criticalMoisture": "Seuil critique d’humidité (%)",
         "pompFlowRate": "Débit de pompe (L/s)",
-        "irrigationWaterQuantity": "Quantité d’eau d’irrigation (L)"
+        "irrigationWaterQuantity": "Quantité d’eau d’irrigation (L)",
+        "basinMaxDepth": "Profondeur max du bassin (m)",
+        "basinArea": "Surface du bassin (m²)",
+        "sensorMountOffset": "Décalage du capteur (m)"
       }
     },
     "dashboard": {
@@ -683,6 +687,16 @@
       "chartSubtitle": "Série horaire ; échelle de temps adaptative avec le curseur de période.",
       "lastDataTitle": "Vitesse du vent (dernière mesure)",
       "gustMax": "Rafale (max)"
+    },
+    "waterLevel": {
+      "chartTitle": "Niveau d'eau du bassin",
+      "chartSubtitle": "Hauteur de la colonne d'eau mesurée par le capteur.",
+      "seriesName": "Niveau d'eau",
+      "cardTitle": "Hauteur de la colonne d'eau",
+      "maxDepth": "Profondeur max du bassin",
+      "sensorLevel": "Niveau capteur",
+      "capacity": "Capacité actuelle",
+      "fillPct": "Pourcentage de remplissage"
     },
     "waterFlow": {
       "lastDataTitle": "Débit d'eau / irrigation",
