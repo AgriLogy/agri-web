@@ -4,7 +4,9 @@ import { Box, Stack } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 
 import ZoneNotificationBell from '@/app/components/common/ZoneNotificationBell';
+import { ChartFrequencyProvider } from '@/app/components/common/ChartFrequencyContext';
 import { ChartDateRangeControl } from '@/app/components/layout/ChartDateRangeControl';
+import { ChartFrequencyControl } from '@/app/components/layout/ChartFrequencyControl';
 import { ChartSection } from '@/app/components/layout/ChartSection';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import { ZoneSelect } from '@/app/components/layout/ZoneSelect';
@@ -29,6 +31,8 @@ const StationMain = () => {
     zoneName,
     range,
     setRange,
+    frequency,
+    setFrequency,
     activeGraph,
     filters,
   } = useAnalyticsHeader();
@@ -50,6 +54,9 @@ const StationMain = () => {
           />
         }
         dateRange={<ChartDateRangeControl value={range} onChange={setRange} />}
+        frequencyControl={
+          <ChartFrequencyControl value={frequency} onChange={setFrequency} />
+        }
         actions={
           selectedZone != null ? (
             <ZoneNotificationBell
@@ -60,48 +67,50 @@ const StationMain = () => {
         }
       />
 
-      <Stack spacing={{ base: 3, md: 4 }} minW={0}>
-        {activeGraph?.wind_radar_status && (
-          <ChartSection>
-            <WindRadarMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.weather_temperature_humidity_status && (
-          <ChartSection>
-            <TempuratureHumidtyMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.weather_temperature_humidity_status && (
-          <ChartSection>
-            <VPDMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.et0_status && (
-          <ChartSection>
-            <ET0Main filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.wind_speed_status && (
-          <ChartSection>
-            <WindSpeedMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.solar_radiation_status && (
-          <ChartSection>
-            <SolarRadiationMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.cumulative_precipitation_status && (
-          <ChartSection>
-            <CumulPrecipitationMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.precipitation_rate_status && (
-          <ChartSection>
-            <PrecipitationRateMain filters={filters} />
-          </ChartSection>
-        )}
-      </Stack>
+      <ChartFrequencyProvider value={frequency}>
+        <Stack spacing={{ base: 3, md: 4 }} minW={0}>
+          {activeGraph?.wind_radar_status && (
+            <ChartSection>
+              <WindRadarMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.weather_temperature_humidity_status && (
+            <ChartSection>
+              <TempuratureHumidtyMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.weather_temperature_humidity_status && (
+            <ChartSection>
+              <VPDMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.et0_status && (
+            <ChartSection>
+              <ET0Main filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.wind_speed_status && (
+            <ChartSection>
+              <WindSpeedMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.solar_radiation_status && (
+            <ChartSection>
+              <SolarRadiationMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.cumulative_precipitation_status && (
+            <ChartSection>
+              <CumulPrecipitationMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.precipitation_rate_status && (
+            <ChartSection>
+              <PrecipitationRateMain filters={filters} />
+            </ChartSection>
+          )}
+        </Stack>
+      </ChartFrequencyProvider>
     </Box>
   );
 };

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
+import { useBucketed } from '../../common/ChartFrequencyContext';
 import {
   filterByTimestampWindow,
   unionSortedTimestamps,
@@ -51,9 +52,15 @@ const SoilConductivityMain = ({
       .finally(() => setLoading(false));
   }, [startDate, endDate, selectedZone]);
 
+  // Bucket each series to the page frequency before unioning so all three stay
+  // aligned on identical bucket timestamps.
+  const low = useBucketed(lowData);
+  const high = useBucketed(highData);
+  const flow = useBucketed(flowData);
+
   const timeline = useMemo(
-    () => unionSortedTimestamps(lowData, highData, flowData),
-    [lowData, highData, flowData]
+    () => unionSortedTimestamps(low, high, flow),
+    [low, high, flow]
   );
 
   return (
@@ -70,19 +77,19 @@ const SoilConductivityMain = ({
               <VStack spacing={0} align="stretch" width="100%">
                 <SoilConductivityChart
                   lowData={filterByTimestampWindow(
-                    lowData,
+                    low,
                     timeline,
                     startIdx,
                     endIdx
                   )}
                   highData={filterByTimestampWindow(
-                    highData,
+                    high,
                     timeline,
                     startIdx,
                     endIdx
                   )}
                   flowData={filterByTimestampWindow(
-                    flowData,
+                    flow,
                     timeline,
                     startIdx,
                     endIdx

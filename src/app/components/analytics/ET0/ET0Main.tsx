@@ -1,9 +1,12 @@
 import { Box, VStack } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
-import { sortByTimestamp } from '@/app/utils/chartDateWindow';
+import {
+  useBucketed,
+  useFrequencySeries,
+} from '../../common/ChartFrequencyContext';
 import api from '@/app/lib/api';
 import ET0LastData from './ET0LastData';
 import ET0Chart from './ET0Chart';
@@ -62,14 +65,8 @@ const ET0Main = ({
       .finally(() => setLoading(false));
   }, [startDate, endDate, selectedZone]);
 
-  const sortedWeather = useMemo(
-    () => sortByTimestamp(weatherData),
-    [weatherData]
-  );
-  const timeline = useMemo(
-    () => sortedWeather.map((w) => w.timestamp),
-    [sortedWeather]
-  );
+  const { series: sortedWeather, timeline } = useFrequencySeries(weatherData);
+  const calculated = useBucketed(calculatedData);
 
   return (
     <ChartLastDataShell
@@ -86,7 +83,7 @@ const ET0Main = ({
               <VStack spacing={0} align="stretch" width="100%">
                 <ET0Chart
                   weatherData={sortedWeather.slice(startIdx, endIdx + 1)}
-                  calculatedData={calculatedData}
+                  calculatedData={calculated}
                   loading={loading}
                 />
                 <ChartDateRangeDragger

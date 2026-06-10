@@ -1,9 +1,9 @@
 import { Box, VStack } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
-import { sortByTimestamp } from '@/app/utils/chartDateWindow';
+import { useFrequencySeries } from '../../common/ChartFrequencyContext';
 import { SensorData } from '@/app/types';
 import api from '@/app/lib/api';
 import '@/app/styles/style.module.css';
@@ -37,11 +37,7 @@ const ElectricityconsumptionMain = ({
       .finally(() => setLoading(false));
   }, [startDate, endDate, selectedZone]);
 
-  const sortedData = useMemo(() => sortByTimestamp(data), [data]);
-  const timeline = useMemo(
-    () => sortedData.map((d) => d.timestamp),
-    [sortedData]
-  );
+  const { series: sortedData, timeline } = useFrequencySeries(data);
 
   return (
     <ChartLastDataShell

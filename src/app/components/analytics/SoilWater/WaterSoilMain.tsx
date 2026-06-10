@@ -7,6 +7,7 @@ import WaterSoilChart from './WaterSoilChart';
 import WaterSoilLastData from './WaterSoilLastData';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
+import { useBucketed } from '../../common/ChartFrequencyContext';
 import { filterByTimestampWindow } from '@/app/utils/chartDateWindow';
 
 interface SensorEntry {
@@ -96,10 +97,9 @@ const WaterSoilMain = ({
       .finally(() => setLoading(false));
   }, [startDate, endDate, selectedZone]);
 
-  const timeline = useMemo(
-    () => mergedData.map((d) => d.timestamp),
-    [mergedData]
-  );
+  // Bucket the merged soil-moisture + water-flow series to the page frequency.
+  const merged = useBucketed(mergedData);
+  const timeline = useMemo(() => merged.map((d) => d.timestamp), [merged]);
 
   return (
     <ChartLastDataShell
@@ -113,7 +113,7 @@ const WaterSoilMain = ({
               <VStack spacing={0} align="stretch" width="100%">
                 <WaterSoilChart
                   data={filterByTimestampWindow(
-                    mergedData,
+                    merged,
                     timeline,
                     startIdx,
                     endIdx

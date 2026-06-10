@@ -1416,6 +1416,21 @@
       "preset90d": "Last 90 days",
       "preset12m": "Last 12 months"
     },
+    "chartDataFrequency": {
+      "label": "Data frequency",
+      "minute": "Per minute",
+      "hour": "Per hour",
+      "day": "Per day",
+      "custom": "Custom",
+      "customTitle": "Custom frequency",
+      "amountLabel": "Every",
+      "unitLabel": "Unit",
+      "unitMinute": "minutes",
+      "unitHour": "hours",
+      "unitDay": "days",
+      "apply": "Apply",
+      "cancel": "Cancel"
+    },
     "dashboard": {
       "title": "Dashboard",
       "subtitle": "Farm overview — weather, zones, and irrigation network status",

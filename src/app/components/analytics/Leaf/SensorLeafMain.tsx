@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
+import { useBucketed } from '../../common/ChartFrequencyContext';
 import {
   filterByTimestampWindow,
   unionSortedTimestamps,
@@ -63,9 +64,14 @@ const SensorLeafMain = ({
     fetchData();
   }, [startDate, endDate, selectedZone]);
 
+  // Bucket each series to the page frequency before unioning so the two stay
+  // aligned on identical bucket timestamps.
+  const moisture = useBucketed(moistureData);
+  const temperature = useBucketed(temperatureData);
+
   const timeline = useMemo(
-    () => unionSortedTimestamps(moistureData, temperatureData),
-    [moistureData, temperatureData]
+    () => unionSortedTimestamps(moisture, temperature),
+    [moisture, temperature]
   );
 
   return (
@@ -81,13 +87,13 @@ const SensorLeafMain = ({
               <VStack spacing={0} align="stretch" width="100%">
                 <SensorLeafChart
                   temperatureData={filterByTimestampWindow(
-                    temperatureData,
+                    temperature,
                     timeline,
                     startIdx,
                     endIdx
                   )}
                   moistureData={filterByTimestampWindow(
-                    moistureData,
+                    moisture,
                     timeline,
                     startIdx,
                     endIdx

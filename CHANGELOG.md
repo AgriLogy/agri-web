@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.13.0...v1.14.0) (2026-06-10)
+
+
+### Features
+
+* **charts:** global data-frequency selector with client-side averaging ([#123](https://github.com/AgriLogy/agrilogy-front/issues/123)) ([a6338c3](https://github.com/AgriLogy/agrilogy-front/commit/a6338c3e64f1007985b0e160ed441cd18f0d08a4)), closes [hi#frequency](https://github.com/hi/issues/frequency)
+
 # [1.13.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.12.0...v1.13.0) (2026-06-08)
 
 

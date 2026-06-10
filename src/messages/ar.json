@@ -1416,6 +1416,21 @@
       "preset90d": "آخر 90 يومًا",
       "preset12m": "آخر 12 شهرًا"
     },
+    "chartDataFrequency": {
+      "label": "تواتر البيانات",
+      "minute": "كل دقيقة",
+      "hour": "كل ساعة",
+      "day": "كل يوم",
+      "custom": "مخصص",
+      "customTitle": "تواتر مخصص",
+      "amountLabel": "كل",
+      "unitLabel": "الوحدة",
+      "unitMinute": "دقائق",
+      "unitHour": "ساعات",
+      "unitDay": "أيام",
+      "apply": "تطبيق",
+      "cancel": "إلغاء"
+    },
     "dashboard": {
       "title": "لوحة التحكم",
       "subtitle": "نظرة عامة على المزرعة — الطقس والمناطق وحالة شبكة الري",

@@ -1416,6 +1416,21 @@
       "preset90d": "90 derniers jours",
       "preset12m": "12 derniers mois"
     },
+    "chartDataFrequency": {
+      "label": "Fréquence des données",
+      "minute": "Par minute",
+      "hour": "Par heure",
+      "day": "Par jour",
+      "custom": "Personnalisé",
+      "customTitle": "Fréquence personnalisée",
+      "amountLabel": "Toutes les",
+      "unitLabel": "Unité",
+      "unitMinute": "minutes",
+      "unitHour": "heures",
+      "unitDay": "jours",
+      "apply": "Appliquer",
+      "cancel": "Annuler"
+    },
     "dashboard": {
       "title": "Tableau de bord",
       "subtitle": "Vue d'ensemble de la ferme — météo, zones, et état du réseau d'irrigation",

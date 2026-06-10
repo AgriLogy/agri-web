@@ -2,7 +2,11 @@ import { Box, VStack } from '@chakra-ui/react';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
-import { sortByTimestamp } from '@/app/utils/chartDateWindow';
+import { useChartFrequency } from '../../common/ChartFrequencyContext';
+import {
+  averageByFrequency,
+  sortByTimestamp,
+} from '@/app/utils/chartDateWindow';
 import { useEffect, useMemo, useState } from 'react';
 import api from '@/app/lib/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
@@ -37,6 +41,7 @@ const VPDMain = ({
   const [temperatureData, setTemperatureData] = useState<WeatherData[]>([]);
   const [loading, setLoading] = useState(true);
   const unitRev = useUnitOverridesRevision();
+  const freq = useChartFrequency();
 
   useEffect(() => {
     const fetchHumidity = api.get<WeatherData[]>('/sensors/humidityweather', {
@@ -83,8 +88,9 @@ const VPDMain = ({
         return { timestamp: h.timestamp, vpd };
       })
       .filter((d): d is VPDDataPoint => d != null);
-    return sortByTimestamp(rows);
-  }, [humidityData, temperatureData, unitRev]);
+    // Bucket the computed VPD series to the page frequency (avg per bucket).
+    return averageByFrequency(sortByTimestamp(rows), freq);
+  }, [humidityData, temperatureData, unitRev, freq]);
 
   const timeline = useMemo(() => series.map((d) => d.timestamp), [series]);
 
