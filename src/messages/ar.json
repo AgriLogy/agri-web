@@ -691,7 +691,7 @@
       "probeMedium": "الرطوبة (مجس متوسط)",
       "probeHigh": "الرطوبة (مجس مرتفع)",
       "flowLabel": "تدفق الري",
-      "chartTitle": "رطوبة التربة وتوفر المياه والتدفق",
+      "chartTitle": "رطوبة التربة وتوفر المياه والري",
       "chartSubtitle": "الرطوبة بـ {humidityUnit}؛ التدفق بـ {flowUnit}.",
       "axisHumidity": "الرطوبة ({unit})",
       "axisFlow": "التدفق ({unit})",

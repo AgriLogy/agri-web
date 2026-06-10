@@ -691,7 +691,7 @@
       "probeMedium": "Humidité (sonde moyenne)",
       "probeHigh": "Humidité (sonde haute)",
       "flowLabel": "Débit d'irrigation",
-      "chartTitle": "Humidité du sol, disponibilité en eau et débit",
+      "chartTitle": "Humidité du sol, disponibilité en eau et irrigation",
       "chartSubtitle": "Humidité en {humidityUnit} ; débit en {flowUnit}.",
       "axisHumidity": "Humidité ({unit})",
       "axisFlow": "Débit ({unit})",

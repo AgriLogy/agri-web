@@ -691,7 +691,7 @@
       "probeMedium": "Moisture (medium probe)",
       "probeHigh": "Moisture (high probe)",
       "flowLabel": "Irrigation flow",
-      "chartTitle": "Soil moisture, water availability and flow",
+      "chartTitle": "Soil moisture, water availability and irrigation",
       "chartSubtitle": "Moisture in {humidityUnit}; flow in {flowUnit}.",
       "axisHumidity": "Moisture ({unit})",
       "axisFlow": "Flow ({unit})",
