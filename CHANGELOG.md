@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.0...v1.14.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* **i18n:** label soil-water chart 'irrigation' instead of 'débit/flow' ([#126](https://github.com/AgriLogy/agrilogy-front/issues/126)) ([c9752df](https://github.com/AgriLogy/agrilogy-front/commit/c9752dfc87f5422d8de006be02717f4d306ea9a9))
+
 # [1.14.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.13.0...v1.14.0) (2026-06-10)
 
 
