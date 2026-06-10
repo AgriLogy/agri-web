@@ -56,29 +56,27 @@ export function prependNotificationsToCache(newRows: unknown[]): void {
   notifyNotificationsCacheChanged();
 }
 
-const LEGACY_PRUNE_FLAG = 'agrilogy_notif_prune_local_v1';
+const LEGACY_PRUNE_FLAG = 'agrilogy_notif_prune_local_v2';
 
 /**
- * One-time self-heal for existing users: the inbox used to receive a
- * placeholder "confirmation" row on every save AND, due to a bug, an immediate
- * duplicate periodic reminder. We've since dropped the confirmation row
- * (toast instead) and stopped the immediate reminder, but the old rows persist
- * in localStorage. This prunes them once: remove every `local_zone_template`
- * (confirmation) row and de-dupe `local_periodic` reminders to one per config.
+ * One-time self-heal for existing users: the duplicate-on-save bug left two
+ * near-identical local rows per config (the representation/confirmation card +
+ * an immediate periodic reminder). De-dupe local rows to ONE per
+ * (source, config) — keeping the first (newest, since rows are prepended) — so
+ * each config shows a single card. Real API rows are untouched.
  */
 export function pruneLegacyLocalNotifications(): void {
   if (typeof window === 'undefined') return;
   try {
     if (localStorage.getItem(LEGACY_PRUNE_FLAG)) return;
     const rows = readNotificationsFromCache();
-    const seenPeriodic = new Set<string>();
+    const seen = new Set<string>();
     const kept = rows.filter((r) => {
       const src = (r as { _source?: string } | null)?._source;
-      if (src === 'local_zone_template') return false;
-      if (src === 'local_periodic') {
-        const key = notificationRowConfigId(r) ?? '';
-        if (seenPeriodic.has(key)) return false;
-        seenPeriodic.add(key);
+      if (src === 'local_zone_template' || src === 'local_periodic') {
+        const key = `${src}::${notificationRowConfigId(r) ?? ''}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
       }
       return true;
     });

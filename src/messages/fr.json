@@ -1199,7 +1199,8 @@
       "channelsTitle": "Canaux de notification",
       "channelsHint": "Cochez les canaux que vous acceptez pour recevoir des alertes.",
       "saveZoneNotification": "Enregistrer la notification de zone",
-      "savedToast": "Configuration de notification enregistrée"
+      "savedToast": "Configuration de notification enregistrée",
+      "nameRequired": "Veuillez saisir un nom de notification."
     },
     "deliveryRate": {
       "label": "Fréquence d’envoi",

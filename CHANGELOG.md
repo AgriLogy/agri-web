@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.3...v1.15.0) (2026-06-10)
+
+
+### Features
+
+* **notifications:** toast on save (no inbox confirmation row) + one-time legacy prune ([#134](https://github.com/AgriLogy/agrilogy-front/issues/134)) ([e72d153](https://github.com/AgriLogy/agrilogy-front/commit/e72d153af583d93d01e7877a65ece6a08f3233ff))
+
 ## [1.14.3](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.2...v1.14.3) (2026-06-10)
 
 
