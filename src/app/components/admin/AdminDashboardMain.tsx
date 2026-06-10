@@ -2,6 +2,7 @@
 
 import {
   AlertOutlined,
+  ApiOutlined,
   EnvironmentOutlined,
   RightOutlined,
   TeamOutlined,
@@ -114,6 +115,12 @@ const AdminDashboardMain = () => {
               onClick={() => router.push('/admin/users')}
             >
               {t('admin.dashboard.allUsers')}
+            </Button>
+            <Button
+              icon={<ApiOutlined />}
+              onClick={() => router.push('/admin/devices')}
+            >
+              {t('admin.dashboard.devices')}
             </Button>
             <Button
               type="primary"

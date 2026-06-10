@@ -262,6 +262,42 @@
         "sensorMountOffset": "إزاحة تركيب المستشعر (m)"
       }
     },
+    "devices": {
+      "title": "أجهزة التوجيه والأجهزة",
+      "subtitle": "سجّل أجهزة التوجيه (dragon / lora / bivocom) واربطها بمستخدم ومنطقة.",
+      "register": "تسجيل جهاز",
+      "newTitle": "تسجيل جهاز",
+      "editTitle": "تعديل الجهاز",
+      "serialLabel": "الرقم التسلسلي / DevEUI",
+      "serialPlaceholder": "مثل A8404152... أو device_id",
+      "ownerLabel": "المالك (اسم المستخدم)",
+      "ownerPlaceholder": "اسم المستخدم",
+      "zoneLabel": "المنطقة",
+      "zonePlaceholder": "اختر منطقة",
+      "activeLabel": "مُفعّل",
+      "active": "مُفعّل",
+      "inactive": "غير مُفعّل",
+      "create": "تسجيل",
+      "update": "تحديث",
+      "cancel": "إلغاء",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "confirmDelete": "حذف هذا الجهاز؟",
+      "created": "تم تسجيل الجهاز",
+      "updated": "تم تحديث الجهاز",
+      "deleted": "تم حذف الجهاز",
+      "loadError": "فشل تحميل الأجهزة",
+      "saveError": "فشل الحفظ",
+      "col": {
+        "type": "النوع",
+        "serial": "التسلسلي / DevEUI",
+        "name": "الاسم",
+        "owner": "المالك",
+        "zone": "المنطقة",
+        "status": "الحالة",
+        "actions": "إجراءات"
+      }
+    },
     "dashboard": {
       "loadError": "لوحة التحكم غير متاحة.",
       "col": {
@@ -274,6 +310,7 @@
       "subtitle": "مؤشرات الأداء العامة ووصول سريع إلى آخر المستخدمين.",
       "allUsers": "جميع المستخدمين",
       "newUser": "مستخدم جديد",
+      "devices": "أجهزة التوجيه والأجهزة",
       "stat": {
         "users": "المستخدمون",
         "activeUsers": "المستخدمون النشطون",

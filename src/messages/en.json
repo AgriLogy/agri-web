@@ -262,6 +262,42 @@
         "sensorMountOffset": "Sensor mount offset (m)"
       }
     },
+    "devices": {
+      "title": "Routers & devices",
+      "subtitle": "Register routers (dragon / lora / bivocom) and bind them to a user and zone.",
+      "register": "Register a device",
+      "newTitle": "Register a device",
+      "editTitle": "Edit device",
+      "serialLabel": "Serial / DevEUI",
+      "serialPlaceholder": "e.g. A8404152... or device_id",
+      "ownerLabel": "Owner (username)",
+      "ownerPlaceholder": "username",
+      "zoneLabel": "Zone",
+      "zonePlaceholder": "Select a zone",
+      "activeLabel": "Active",
+      "active": "Active",
+      "inactive": "Inactive",
+      "create": "Register",
+      "update": "Update",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Delete this device?",
+      "created": "Device registered",
+      "updated": "Device updated",
+      "deleted": "Device deleted",
+      "loadError": "Failed to load devices",
+      "saveError": "Save failed",
+      "col": {
+        "type": "Type",
+        "serial": "Serial / DevEUI",
+        "name": "Name",
+        "owner": "Owner",
+        "zone": "Zone",
+        "status": "Status",
+        "actions": "Actions"
+      }
+    },
     "dashboard": {
       "loadError": "Dashboard unavailable.",
       "col": {
@@ -274,6 +310,7 @@
       "subtitle": "Global KPIs and quick access to the latest users.",
       "allUsers": "All users",
       "newUser": "New user",
+      "devices": "Routers & devices",
       "stat": {
         "users": "Users",
         "activeUsers": "Active users",

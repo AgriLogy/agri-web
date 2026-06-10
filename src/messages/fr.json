@@ -262,6 +262,42 @@
         "sensorMountOffset": "Décalage du capteur (m)"
       }
     },
+    "devices": {
+      "title": "Routeurs & appareils",
+      "subtitle": "Enregistrez les routeurs (dragon / lora / bivocom) et associez-les à un utilisateur et une zone.",
+      "register": "Enregistrer un appareil",
+      "newTitle": "Enregistrer un appareil",
+      "editTitle": "Modifier l'appareil",
+      "serialLabel": "Numéro de série / DevEUI",
+      "serialPlaceholder": "ex. A8404152... ou device_id",
+      "ownerLabel": "Propriétaire (nom d'utilisateur)",
+      "ownerPlaceholder": "nom d'utilisateur",
+      "zoneLabel": "Zone",
+      "zonePlaceholder": "Sélectionner une zone",
+      "activeLabel": "Actif",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "create": "Enregistrer",
+      "update": "Mettre à jour",
+      "cancel": "Annuler",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "confirmDelete": "Supprimer cet appareil ?",
+      "created": "Appareil enregistré",
+      "updated": "Appareil mis à jour",
+      "deleted": "Appareil supprimé",
+      "loadError": "Échec du chargement des appareils",
+      "saveError": "Échec de l'enregistrement",
+      "col": {
+        "type": "Type",
+        "serial": "Série / DevEUI",
+        "name": "Nom",
+        "owner": "Propriétaire",
+        "zone": "Zone",
+        "status": "Statut",
+        "actions": "Actions"
+      }
+    },
     "dashboard": {
       "loadError": "Tableau de bord indisponible.",
       "col": {
@@ -274,6 +310,7 @@
       "subtitle": "KPIs globaux et accès rapide aux derniers utilisateurs.",
       "allUsers": "Tous les utilisateurs",
       "newUser": "Nouvel utilisateur",
+      "devices": "Routeurs & appareils",
       "stat": {
         "users": "Utilisateurs",
         "activeUsers": "Utilisateurs actifs",
