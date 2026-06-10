@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.1...v1.14.2) (2026-06-10)
+
+
+### Bug Fixes
+
+* **header:** render PageInfoBar actions once (was duplicated on every page) ([#130](https://github.com/AgriLogy/agrilogy-front/issues/130)) ([61e5162](https://github.com/AgriLogy/agrilogy-front/commit/61e51629c426eff42455ac13cee4f6ed9bcdf5fe))
+
 ## [1.14.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.0...v1.14.1) (2026-06-10)
 
 
