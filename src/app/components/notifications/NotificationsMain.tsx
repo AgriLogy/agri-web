@@ -227,6 +227,7 @@ const NotificationsMain: React.FC = () => {
             leftIcon={<AddIcon />}
             size="sm"
             onClick={openConfigure}
+            data-testid="add-zone-notif"
           >
             {t('notifications.main.addZoneNotification')}
           </Button>

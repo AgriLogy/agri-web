@@ -1199,7 +1199,8 @@
       "channelsTitle": "قنوات الإشعار",
       "channelsHint": "حدّد القنوات التي تقبلها لتلقي التنبيهات.",
       "saveZoneNotification": "حفظ إشعار المنطقة",
-      "savedToast": "تم حفظ إعدادات التنبيه"
+      "savedToast": "تم حفظ إعدادات التنبيه",
+      "nameRequired": "يرجى إدخال اسم التنبيه."
     },
     "deliveryRate": {
       "label": "معدل الإرسال",
