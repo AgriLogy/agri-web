@@ -1,3 +1,10 @@
+## [1.14.3](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.2...v1.14.3) (2026-06-10)
+
+
+### Bug Fixes
+
+* **notifications:** don't fire the first zone reminder immediately on save ([#132](https://github.com/AgriLogy/agrilogy-front/issues/132)) ([e04473d](https://github.com/AgriLogy/agrilogy-front/commit/e04473d8985c9d4c7434271e5ab0bcc45f9b00a1))
+
 ## [1.14.2](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.1...v1.14.2) (2026-06-10)
 
 
