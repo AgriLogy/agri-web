@@ -1198,7 +1198,8 @@
       "maxWaterLabel": "Max water volume (m³)",
       "channelsTitle": "Notification channels",
       "channelsHint": "Check the channels you accept to receive alerts.",
-      "saveZoneNotification": "Save zone notification"
+      "saveZoneNotification": "Save zone notification",
+      "savedToast": "Notification settings saved"
     },
     "deliveryRate": {
       "label": "Delivery rate",

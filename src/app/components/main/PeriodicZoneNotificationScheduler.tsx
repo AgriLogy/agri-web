@@ -7,7 +7,10 @@ import {
   recordZoneNotificationSent,
   ZONE_NOTIFICATION_CONFIG_UPDATED_EVENT,
 } from '@/app/lib/zoneNotificationConfigStorage';
-import { prependNotificationsToCache } from '@/app/lib/notificationsCacheStorage';
+import {
+  prependNotificationsToCache,
+  pruneLegacyLocalNotifications,
+} from '@/app/lib/notificationsCacheStorage';
 import { buildPeriodicZoneReminderNotification } from '@/app/lib/zoneNotificationTemplate';
 import {
   msUntilNextDelivery,
@@ -34,6 +37,10 @@ export default function PeriodicZoneNotificationScheduler() {
   );
 
   useEffect(() => {
+    // One-time self-heal: drop legacy confirmation rows + duplicate reminders
+    // left in localStorage from before the toast/immediate-fire fixes.
+    pruneLegacyLocalNotifications();
+
     const timers = timersRef.current;
 
     const clearTimers = () => {
