@@ -29,6 +29,11 @@ export interface AlertFormValues {
   condition: '>' | '<' | '=';
   condition_nbr: number;
   is_active: boolean;
+  notify_email: boolean;
+  notify_whatsapp: boolean;
+  notify_sms: boolean;
+  override_phone?: string;
+  override_email?: string;
 }
 
 export interface AlertFormProps {
@@ -36,6 +41,8 @@ export interface AlertFormProps {
   initial?: AlertRecord | null;
   sensorKeys: SensorKeyOption[];
   zones?: { id: number; name: string }[];
+  /** The user's default contact, shown as placeholders for the overrides. */
+  defaultContact?: { phone?: string; email?: string };
   onSubmit: (payload: AlertWritePayload) => Promise<void> | void;
 }
 
@@ -52,6 +59,11 @@ const toFormValues = (alert: AlertRecord): AlertFormValues => ({
       ? Number(alert.condition_nbr)
       : Number(alert.condition_nbr ?? 0)),
   is_active: alert.is_active ?? true,
+  notify_email: alert.notify_email ?? true,
+  notify_whatsapp: alert.notify_whatsapp ?? false,
+  notify_sms: alert.notify_sms ?? false,
+  override_phone: alert.override_phone ?? '',
+  override_email: alert.override_email ?? '',
 });
 
 const DEFAULT_VALUES: AlertFormValues = {
@@ -63,6 +75,11 @@ const DEFAULT_VALUES: AlertFormValues = {
   condition: '>',
   condition_nbr: 30,
   is_active: true,
+  notify_email: true,
+  notify_whatsapp: false,
+  notify_sms: false,
+  override_phone: '',
+  override_email: '',
 };
 
 const AlertForm: React.FC<AlertFormProps> = ({
@@ -70,6 +87,7 @@ const AlertForm: React.FC<AlertFormProps> = ({
   initial,
   sensorKeys,
   zones = [],
+  defaultContact,
   onSubmit,
 }) => {
   const t = useTranslations();
@@ -102,6 +120,11 @@ const AlertForm: React.FC<AlertFormProps> = ({
       sensor_key: values.sensor_key,
       zone: values.zone ?? null,
       is_active: values.is_active ?? true,
+      notify_email: values.notify_email ?? true,
+      notify_whatsapp: values.notify_whatsapp ?? false,
+      notify_sms: values.notify_sms ?? false,
+      override_phone: (values.override_phone ?? '').trim() || null,
+      override_email: (values.override_email ?? '').trim() || null,
     };
     return onSubmit(payload);
   };
@@ -226,6 +249,91 @@ const AlertForm: React.FC<AlertFormProps> = ({
           maxLength={400}
           showCount
         />
+      </Form.Item>
+
+      <Form.Item
+        label={
+          <span className={styles.label}>{t('alertsPage.form.channels')}</span>
+        }
+      >
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Space>
+            <Form.Item name="notify_email" noStyle valuePropName="checked">
+              <Switch size="small" />
+            </Form.Item>
+            <span>{t('alertsPage.form.channelEmail')}</span>
+          </Space>
+          <Space>
+            <Form.Item name="notify_whatsapp" noStyle valuePropName="checked">
+              <Switch size="small" />
+            </Form.Item>
+            <span>{t('alertsPage.form.channelWhatsapp')}</span>
+          </Space>
+          <Space>
+            <Form.Item name="notify_sms" noStyle valuePropName="checked">
+              <Switch size="small" />
+            </Form.Item>
+            <span>{t('alertsPage.form.channelSms')}</span>
+          </Space>
+        </Space>
+      </Form.Item>
+
+      <Form.Item
+        noStyle
+        shouldUpdate={(prev, cur) =>
+          prev.notify_whatsapp !== cur.notify_whatsapp ||
+          prev.notify_sms !== cur.notify_sms ||
+          prev.notify_email !== cur.notify_email
+        }
+      >
+        {({ getFieldValue }) => {
+          const phoneChannels =
+            getFieldValue('notify_whatsapp') || getFieldValue('notify_sms');
+          const emailChannel = getFieldValue('notify_email');
+          if (!phoneChannels && !emailChannel) return null;
+          return (
+            <>
+              {phoneChannels && (
+                <Form.Item
+                  name="override_phone"
+                  label={
+                    <span className={styles.label}>
+                      {t('alertsPage.form.overridePhone')}
+                    </span>
+                  }
+                  tooltip={t('alertsPage.form.overridePhoneHint')}
+                >
+                  <Input
+                    className={styles.input}
+                    placeholder={
+                      defaultContact?.phone ||
+                      t('alertsPage.form.overridePhonePlaceholder')
+                    }
+                  />
+                </Form.Item>
+              )}
+              {emailChannel && (
+                <Form.Item
+                  name="override_email"
+                  label={
+                    <span className={styles.label}>
+                      {t('alertsPage.form.overrideEmail')}
+                    </span>
+                  }
+                  tooltip={t('alertsPage.form.overridePhoneHint')}
+                >
+                  <Input
+                    className={styles.input}
+                    placeholder={
+                      defaultContact?.email ||
+                      t('alertsPage.form.overrideEmailPlaceholder')
+                    }
+                  />
+                </Form.Item>
+              )}
+            </>
+          );
+        }}
       </Form.Item>
 
       <Form.Item

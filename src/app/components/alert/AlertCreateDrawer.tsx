@@ -26,6 +26,7 @@ import {
   type SensorKeyOption,
 } from '@/app/utils/alertChoices';
 import api from '@/app/lib/api';
+import { userProfileApi } from '@/app/lib/userProfileApi';
 import AlertForm, { type AlertFormValues } from './AlertForm';
 
 export interface AlertCreateDrawerProps {
@@ -57,10 +58,18 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
   const [sensorKeys, setSensorKeys] =
     useState<SensorKeyOption[]>(DEFAULT_SENSOR_KEYS);
   const [zones, setZones] = useState<{ id: number; name: string }[]>([]);
+  const [defaultContact, setDefaultContact] = useState<{
+    phone?: string;
+    email?: string;
+  }>({});
 
   // Lazy-load the registry + the zone list once the drawer first opens.
   useEffect(() => {
     if (!open) return;
+    void userProfileApi
+      .get()
+      .then((p) => setDefaultContact({ phone: p.phone_number, email: p.email }))
+      .catch(() => {});
     void alertApi
       .sensorKeys()
       .then((keys) => {
@@ -204,6 +213,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
         initial={editing}
         sensorKeys={sensorKeys}
         zones={zones}
+        defaultContact={defaultContact}
         onSubmit={handleSubmit}
       />
     </Drawer>

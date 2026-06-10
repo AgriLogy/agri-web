@@ -120,6 +120,9 @@ export interface ZoneNotificationConfig {
   notifyEmail: boolean;
   notifySms: boolean;
   notifyWhatsapp: boolean;
+  /** Optional per-config recipient overrides; blank = use the user's profile contact. */
+  overridePhone?: string;
+  overrideEmail?: string;
   updatedAt: string;
 }
 

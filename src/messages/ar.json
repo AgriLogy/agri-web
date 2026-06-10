@@ -626,6 +626,15 @@
       "thresholdPlaceholder": "العتبة",
       "thresholdHint": "يُشغَّل التنبيه بمجرد أن تستوفي قيمة المستشعر الشرط المختار.",
       "description": "الوصف",
+      "channels": "قنوات الإشعار",
+      "channelEmail": "البريد الإلكتروني",
+      "channelWhatsapp": "واتساب",
+      "channelSms": "رسالة SMS",
+      "overridePhone": "رقم مخصّص",
+      "overridePhonePlaceholder": "استخدام رقمي الافتراضي",
+      "overridePhoneHint": "اتركه فارغًا لاستخدام جهة اتصال ملفك.",
+      "overrideEmail": "بريد مخصّص",
+      "overrideEmailPlaceholder": "استخدام بريدي الافتراضي",
       "active": "مُفعّل"
     }
   },
@@ -1199,6 +1208,9 @@
       "maxWaterLabel": "أقصى حجم ماء (م³)",
       "channelsTitle": "قنوات الإشعار",
       "channelsHint": "حدّد القنوات التي تقبلها لتلقي التنبيهات.",
+      "overridePhone": "رقم مخصّص (SMS / واتساب)",
+      "overrideEmail": "بريد مخصّص",
+      "overrideContactHint": "اتركه فارغًا لاستخدام جهة اتصال ملفك.",
       "saveZoneNotification": "حفظ إشعار المنطقة",
       "savedToast": "تم حفظ إعدادات التنبيه",
       "nameRequired": "يرجى إدخال اسم التنبيه."
@@ -1227,6 +1239,7 @@
     "main": {
       "title": "الإعدادات",
       "tabFarms": "المزارع",
+      "tabContact": "جهة الاتصال",
       "tabUsers": "المستخدمون",
       "tabSensors": "المستشعرات",
       "tabReadings": "القراءات",
@@ -1385,6 +1398,16 @@
       "calibrationNote": "وفقًا للملف «{pdf}»: القيمة الحقيقية = القيمة الخام × a + b. يؤدي تغيير الوحدة إلى إعادة حساب a و b عبر {conversionModule} (معادلات الملف). الإشعاع MJ/m²: المعامل 0.0036 يقابل التكامل خلال ساعة واحدة (انظر الملف). القيم الافتراضية a,b: {defaultsModule}.",
       "cancel": "إلغاء",
       "save": "حفظ"
+    },
+    "contact": {
+      "intro": "جهة الاتصال الافتراضية للتنبيهات والإشعارات. يمكن لكل تنبيه أيضًا استخدام رقم مخصّص.",
+      "phoneLabel": "الهاتف (SMS / واتساب)",
+      "phoneHelp": "الصيغة الدولية، مثل ‎+212600000000.",
+      "emailLabel": "البريد الإلكتروني",
+      "saveButton": "حفظ",
+      "saved": "تم تحديث جهة الاتصال",
+      "saveFailed": "فشل الحفظ",
+      "loading": "جارٍ التحميل…"
     },
     "farms": {
       "errorTitle": "خطأ",

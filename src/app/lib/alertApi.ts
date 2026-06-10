@@ -23,6 +23,11 @@ export interface AlertRecord {
   created_at: string | null;
   updated_at: string | null;
   user: number;
+  notify_email: boolean;
+  notify_whatsapp: boolean;
+  notify_sms: boolean;
+  override_phone: string | null;
+  override_email: string | null;
 }
 
 export interface GraphAlert {
@@ -50,6 +55,11 @@ export interface AlertWritePayload {
   sensor_key: string;
   zone?: number | null;
   is_active?: boolean;
+  notify_email?: boolean;
+  notify_whatsapp?: boolean;
+  notify_sms?: boolean;
+  override_phone?: string | null;
+  override_email?: string | null;
 }
 
 export const alertApi = {

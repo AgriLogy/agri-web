@@ -123,6 +123,8 @@ const defaultConfig = (
   notifyEmail: true,
   notifySms: false,
   notifyWhatsapp: false,
+  overridePhone: '',
+  overrideEmail: '',
   updatedAt: '',
   kcProtocolName: 'Protocole météo culture',
   kcStages: defaultKcProtocolStages(),
@@ -493,6 +495,12 @@ const ZoneNotificationConfigureForm: React.FC<
           sms: toSave.notifySms,
           whatsapp: toSave.notifyWhatsapp,
         },
+        ...(toSave.overridePhone?.trim()
+          ? { contactPhone: toSave.overridePhone.trim() }
+          : {}),
+        ...(toSave.overrideEmail?.trim()
+          ? { contactEmail: toSave.overrideEmail.trim() }
+          : {}),
         decisionMeta: {
           rulesFired: sample.rulesFired,
           et0TimesKc: sample.et0TimesKc,
@@ -1232,6 +1240,37 @@ const ZoneNotificationConfigureForm: React.FC<
                     <span>WhatsApp</span>
                   </HStack>
                 </Checkbox>
+
+                {(form.notifySms || form.notifyWhatsapp) && (
+                  <FormControl>
+                    <FormLabel fontSize="sm" mb={1}>
+                      {t('notifications.configForm.overridePhone')}
+                    </FormLabel>
+                    <Input
+                      size="sm"
+                      value={form.overridePhone ?? ''}
+                      onChange={(e) => update('overridePhone', e.target.value)}
+                      placeholder={t(
+                        'notifications.configForm.overrideContactHint'
+                      )}
+                    />
+                  </FormControl>
+                )}
+                {form.notifyEmail && (
+                  <FormControl>
+                    <FormLabel fontSize="sm" mb={1}>
+                      {t('notifications.configForm.overrideEmail')}
+                    </FormLabel>
+                    <Input
+                      size="sm"
+                      value={form.overrideEmail ?? ''}
+                      onChange={(e) => update('overrideEmail', e.target.value)}
+                      placeholder={t(
+                        'notifications.configForm.overrideContactHint'
+                      )}
+                    />
+                  </FormControl>
+                )}
               </VStack>
             </VStack>
           </Box>

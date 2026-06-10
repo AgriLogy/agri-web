@@ -626,6 +626,15 @@
       "thresholdPlaceholder": "Threshold",
       "thresholdHint": "The alert triggers as soon as the sensor value satisfies the chosen condition.",
       "description": "Description",
+      "channels": "Notification channels",
+      "channelEmail": "Email",
+      "channelWhatsapp": "WhatsApp",
+      "channelSms": "SMS",
+      "overridePhone": "Custom number",
+      "overridePhonePlaceholder": "Use my default number",
+      "overridePhoneHint": "Leave empty to use your profile contact.",
+      "overrideEmail": "Custom email",
+      "overrideEmailPlaceholder": "Use my default email",
       "active": "Active"
     }
   },
@@ -1199,6 +1208,9 @@
       "maxWaterLabel": "Max water volume (m³)",
       "channelsTitle": "Notification channels",
       "channelsHint": "Check the channels you accept to receive alerts.",
+      "overridePhone": "Custom number (SMS / WhatsApp)",
+      "overrideEmail": "Custom email",
+      "overrideContactHint": "Leave empty to use your profile contact.",
       "saveZoneNotification": "Save zone notification",
       "savedToast": "Notification settings saved",
       "nameRequired": "Please enter a notification name."
@@ -1227,6 +1239,7 @@
     "main": {
       "title": "Settings",
       "tabFarms": "Farms",
+      "tabContact": "Contact",
       "tabUsers": "Users",
       "tabSensors": "Sensors",
       "tabReadings": "Readings",
@@ -1385,6 +1398,16 @@
       "calibrationNote": "In accordance with the PDF “{pdf}”: real value = raw value × a + b. Changing the unit recomputes a and b via {conversionModule} (equations from the PDF). Radiation MJ/m²: the 0.0036 factor corresponds to integration over 1 h (see PDF). Defaults a,b: {defaultsModule}.",
       "cancel": "Cancel",
       "save": "Save"
+    },
+    "contact": {
+      "intro": "Your default contact for alerts and notifications. Each alert can also use a custom number.",
+      "phoneLabel": "Phone (SMS / WhatsApp)",
+      "phoneHelp": "International format, e.g. +212600000000.",
+      "emailLabel": "Email",
+      "saveButton": "Save",
+      "saved": "Contact updated",
+      "saveFailed": "Save failed",
+      "loading": "Loading…"
     },
     "farms": {
       "errorTitle": "Error",

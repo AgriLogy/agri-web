@@ -128,6 +128,11 @@ describe('AlertForm', () => {
       created_at: null,
       updated_at: null,
       user: 1,
+      notify_email: true,
+      notify_whatsapp: false,
+      notify_sms: false,
+      override_phone: null,
+      override_email: null,
     };
     let formRef: ReturnType<typeof Form.useForm<AlertFormValues>>[0] | null =
       null;

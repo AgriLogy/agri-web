@@ -626,6 +626,15 @@
       "thresholdPlaceholder": "Seuil",
       "thresholdHint": "L'alerte se déclenche dès que la valeur du capteur satisfait la condition choisie.",
       "description": "Description",
+      "channels": "Canaux de notification",
+      "channelEmail": "E-mail",
+      "channelWhatsapp": "WhatsApp",
+      "channelSms": "SMS",
+      "overridePhone": "Numéro personnalisé",
+      "overridePhonePlaceholder": "Utiliser mon numéro par défaut",
+      "overridePhoneHint": "Laissez vide pour utiliser le contact de votre profil.",
+      "overrideEmail": "E-mail personnalisé",
+      "overrideEmailPlaceholder": "Utiliser mon e-mail par défaut",
       "active": "Active"
     }
   },
@@ -1199,6 +1208,9 @@
       "maxWaterLabel": "Volume d'eau max (m³)",
       "channelsTitle": "Canaux de notification",
       "channelsHint": "Cochez les canaux que vous acceptez pour recevoir des alertes.",
+      "overridePhone": "Numéro personnalisé (SMS / WhatsApp)",
+      "overrideEmail": "E-mail personnalisé",
+      "overrideContactHint": "Laissez vide pour utiliser le contact de votre profil.",
       "saveZoneNotification": "Enregistrer la notification de zone",
       "savedToast": "Configuration de notification enregistrée",
       "nameRequired": "Veuillez saisir un nom de notification."
@@ -1227,6 +1239,7 @@
     "main": {
       "title": "Paramètres",
       "tabFarms": "Fermes",
+      "tabContact": "Contact",
       "tabUsers": "Utilisateurs",
       "tabSensors": "Capteurs",
       "tabReadings": "Lectures",
@@ -1385,6 +1398,16 @@
       "calibrationNote": "Conformément au PDF « {pdf} » : valeur réelle = valeur brute × a + b. Le changement d’unité recalcule a et b via {conversionModule} (équations du PDF). Rayonnement MJ/m² : le facteur 0,0036 correspond à une intégration sur 1 h (voir PDF). Défauts a,b : {defaultsModule}.",
       "cancel": "Annuler",
       "save": "Enregistrer"
+    },
+    "contact": {
+      "intro": "Votre contact par défaut pour les alertes et notifications. Chaque alerte peut aussi utiliser un numéro personnalisé.",
+      "phoneLabel": "Téléphone (SMS / WhatsApp)",
+      "phoneHelp": "Format international, ex. +212600000000.",
+      "emailLabel": "E-mail",
+      "saveButton": "Enregistrer",
+      "saved": "Contact mis à jour",
+      "saveFailed": "Échec de l'enregistrement",
+      "loading": "Chargement…"
     },
     "farms": {
       "errorTitle": "Erreur",
