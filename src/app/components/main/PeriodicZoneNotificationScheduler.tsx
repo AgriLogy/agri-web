@@ -7,7 +7,10 @@ import {
   recordZoneNotificationSent,
   ZONE_NOTIFICATION_CONFIG_UPDATED_EVENT,
 } from '@/app/lib/zoneNotificationConfigStorage';
-import { prependNotificationsToCache } from '@/app/lib/notificationsCacheStorage';
+import {
+  prependNotificationsToCache,
+  pruneLegacyLocalNotifications,
+} from '@/app/lib/notificationsCacheStorage';
 import { buildPeriodicZoneReminderNotification } from '@/app/lib/zoneNotificationTemplate';
 import {
   msUntilNextDelivery,
@@ -34,6 +37,10 @@ export default function PeriodicZoneNotificationScheduler() {
   );
 
   useEffect(() => {
+    // One-time self-heal: drop legacy confirmation rows + duplicate reminders
+    // left in localStorage from before the toast/immediate-fire fixes.
+    pruneLegacyLocalNotifications();
+
     const timers = timersRef.current;
 
     const clearTimers = () => {
@@ -45,10 +52,20 @@ export default function PeriodicZoneNotificationScheduler() {
       const existing = timers.get(configId);
       if (existing) clearTimeout(existing);
 
-      const cfg = getNotificationConfigById(configId);
+      let cfg = getNotificationConfigById(configId);
       if (!cfg) {
         timers.delete(configId);
         return;
+      }
+      // Brand-new config (never notified): seed the clock so the FIRST periodic
+      // reminder waits a full interval instead of firing ~immediately. Without
+      // this, msUntilNextDelivery(null) === 0 → the reminder landed ~1s after
+      // save, duplicating the save-confirmation row. recordZoneNotificationSent
+      // persists lastNotifiedAt WITHOUT emitting the config-updated event (no
+      // reschedule storm); the confirmation row is the single "just saved" notice.
+      if (!cfg.lastNotifiedAt) {
+        recordZoneNotificationSent(configId);
+        cfg = getNotificationConfigById(configId) ?? cfg;
       }
       const rate = normalizeDeliveryRate(cfg.deliveryRate);
       const wait = Math.min(

@@ -1,3 +1,24 @@
+## [1.14.3](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.2...v1.14.3) (2026-06-10)
+
+
+### Bug Fixes
+
+* **notifications:** don't fire the first zone reminder immediately on save ([#132](https://github.com/AgriLogy/agrilogy-front/issues/132)) ([e04473d](https://github.com/AgriLogy/agrilogy-front/commit/e04473d8985c9d4c7434271e5ab0bcc45f9b00a1))
+
+## [1.14.2](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.1...v1.14.2) (2026-06-10)
+
+
+### Bug Fixes
+
+* **header:** render PageInfoBar actions once (was duplicated on every page) ([#130](https://github.com/AgriLogy/agrilogy-front/issues/130)) ([61e5162](https://github.com/AgriLogy/agrilogy-front/commit/61e51629c426eff42455ac13cee4f6ed9bcdf5fe))
+
+## [1.14.1](https://github.com/AgriLogy/agrilogy-front/compare/v1.14.0...v1.14.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* **i18n:** label soil-water chart 'irrigation' instead of 'débit/flow' ([#126](https://github.com/AgriLogy/agrilogy-front/issues/126)) ([c9752df](https://github.com/AgriLogy/agrilogy-front/commit/c9752dfc87f5422d8de006be02717f4d306ea9a9))
+
 # [1.14.0](https://github.com/AgriLogy/agrilogy-front/compare/v1.13.0...v1.14.0) (2026-06-10)
 
 

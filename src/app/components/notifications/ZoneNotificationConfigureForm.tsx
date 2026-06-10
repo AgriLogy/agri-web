@@ -74,11 +74,7 @@ import {
 import KcProtocolTableModal from '@/app/components/notifications/KcProtocolTableModal';
 import { evaluateV1NotificationDecision } from '@/app/lib/notificationDecisionEngine';
 import { dispatchZoneNotificationOutbound } from '@/app/lib/notificationDispatch';
-import {
-  prependNotificationsToCache,
-  removeLocalZoneTemplateNotificationsForConfig,
-} from '@/app/lib/notificationsCacheStorage';
-import { buildLocalZoneConfirmationNotification } from '@/app/lib/zoneNotificationTemplate';
+import { removeLocalZoneTemplateNotificationsForConfig } from '@/app/lib/notificationsCacheStorage';
 import {
   DELIVERY_RATE_PRESETS,
   DELIVERY_UNITS,
@@ -428,8 +424,6 @@ const ZoneNotificationConfigureForm: React.FC<
       });
       return;
     }
-    const hadConfigBefore =
-      intent === 'edit' || getNotificationConfigById(cfgId) !== undefined;
     const toSave = { ...form, zoneId: resolvedZoneId, configId: cfgId };
 
     removeLocalZoneTemplateNotificationsForConfig(cfgId);
@@ -438,17 +432,15 @@ const ZoneNotificationConfigureForm: React.FC<
     const zoneLabel =
       zones.find((z) => z.id === toSave.zoneId)?.name ??
       t('notifications.configForm.zoneNumber', { id: toSave.zoneId });
-    if (!hadConfigBefore) {
-      prependNotificationsToCache([
-        buildLocalZoneConfirmationNotification({
-          configId: cfgId,
-          zoneId: toSave.zoneId,
-          zoneName: zoneLabel,
-          notificationName: toSave.notificationName,
-          secteurLabel: toSave.secteurLabel,
-        }),
-      ]);
-    }
+    // Acknowledge the save with a toast — we no longer inject a placeholder
+    // "confirmation" row into the notification inbox. Only real scheduled
+    // reminders belong there.
+    toast({
+      title: t('notifications.configForm.savedToast'),
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
 
     const sample = evaluateV1NotificationDecision({
       et0Mm: 5,

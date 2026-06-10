@@ -691,7 +691,7 @@
       "probeMedium": "Humidité (sonde moyenne)",
       "probeHigh": "Humidité (sonde haute)",
       "flowLabel": "Débit d'irrigation",
-      "chartTitle": "Humidité du sol, disponibilité en eau et débit",
+      "chartTitle": "Humidité du sol, disponibilité en eau et irrigation",
       "chartSubtitle": "Humidité en {humidityUnit} ; débit en {flowUnit}.",
       "axisHumidity": "Humidité ({unit})",
       "axisFlow": "Débit ({unit})",
@@ -1198,7 +1198,8 @@
       "maxWaterLabel": "Volume d'eau max (m³)",
       "channelsTitle": "Canaux de notification",
       "channelsHint": "Cochez les canaux que vous acceptez pour recevoir des alertes.",
-      "saveZoneNotification": "Enregistrer la notification de zone"
+      "saveZoneNotification": "Enregistrer la notification de zone",
+      "savedToast": "Configuration de notification enregistrée"
     },
     "deliveryRate": {
       "label": "Fréquence d’envoi",

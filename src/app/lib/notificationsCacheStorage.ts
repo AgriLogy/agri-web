@@ -56,6 +56,42 @@ export function prependNotificationsToCache(newRows: unknown[]): void {
   notifyNotificationsCacheChanged();
 }
 
+const LEGACY_PRUNE_FLAG = 'agrilogy_notif_prune_local_v1';
+
+/**
+ * One-time self-heal for existing users: the inbox used to receive a
+ * placeholder "confirmation" row on every save AND, due to a bug, an immediate
+ * duplicate periodic reminder. We've since dropped the confirmation row
+ * (toast instead) and stopped the immediate reminder, but the old rows persist
+ * in localStorage. This prunes them once: remove every `local_zone_template`
+ * (confirmation) row and de-dupe `local_periodic` reminders to one per config.
+ */
+export function pruneLegacyLocalNotifications(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    if (localStorage.getItem(LEGACY_PRUNE_FLAG)) return;
+    const rows = readNotificationsFromCache();
+    const seenPeriodic = new Set<string>();
+    const kept = rows.filter((r) => {
+      const src = (r as { _source?: string } | null)?._source;
+      if (src === 'local_zone_template') return false;
+      if (src === 'local_periodic') {
+        const key = notificationRowConfigId(r) ?? '';
+        if (seenPeriodic.has(key)) return false;
+        seenPeriodic.add(key);
+      }
+      return true;
+    });
+    if (kept.length !== rows.length) {
+      writeNotificationsToCache(kept);
+      notifyNotificationsCacheChanged();
+    }
+    localStorage.setItem(LEGACY_PRUNE_FLAG, '1');
+  } catch {
+    /* localStorage unavailable — skip */
+  }
+}
+
 type CachedRow = { id?: number; is_read?: boolean; _source?: string };
 
 function readSuppressedZoneIds(): Set<number> {
