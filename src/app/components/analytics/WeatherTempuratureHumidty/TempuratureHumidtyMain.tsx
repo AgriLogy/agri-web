@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
+import { useBucketed } from '../../common/ChartFrequencyContext';
 import {
   filterByTimestampWindow,
   unionSortedTimestamps,
@@ -65,9 +66,14 @@ const TempuratureHumidtyMain = ({
       .finally(() => setLoading(false));
   }, [startDate, endDate, selectedZone]);
 
+  // Bucket each series to the page frequency first; same-frequency buckets snap
+  // to identical timestamps so the union timeline keeps the two series aligned.
+  const humidity = useBucketed(humidityData);
+  const temperature = useBucketed(temperatureData);
+
   const timeline = useMemo(
-    () => unionSortedTimestamps(humidityData, temperatureData),
-    [humidityData, temperatureData]
+    () => unionSortedTimestamps(humidity, temperature),
+    [humidity, temperature]
   );
 
   return (
@@ -85,13 +91,13 @@ const TempuratureHumidtyMain = ({
               <VStack spacing={0} align="stretch" width="100%">
                 <TempuratureHumidtyChart
                   humidityData={filterByTimestampWindow(
-                    humidityData,
+                    humidity,
                     timeline,
                     startIdx,
                     endIdx
                   )}
                   temperatureData={filterByTimestampWindow(
-                    temperatureData,
+                    temperature,
                     timeline,
                     startIdx,
                     endIdx

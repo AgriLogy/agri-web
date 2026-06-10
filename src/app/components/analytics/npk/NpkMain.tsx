@@ -1,8 +1,9 @@
 import { Box, VStack } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
+import { useFrequencySeries } from '../../common/ChartFrequencyContext';
 import api from '@/app/lib/api';
 import '@/app/styles/style.module.css';
 import NpkLastData from './NpkLastData';
@@ -37,14 +38,7 @@ const NpkMain = ({
       .finally(() => setLoading(false));
   }, [startDate, endDate, selectedZone]);
 
-  const sortedData = useMemo(
-    () => [...data].sort((a, b) => a.timestamp.localeCompare(b.timestamp)),
-    [data]
-  );
-  const timeline = useMemo(
-    () => sortedData.map((d) => d.timestamp),
-    [sortedData]
-  );
+  const { series: sortedData, timeline } = useFrequencySeries(data);
   return (
     <ChartLastDataShell
       spacing={2}

@@ -4,7 +4,9 @@ import { Box, Stack } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 
 import ZoneNotificationBell from '@/app/components/common/ZoneNotificationBell';
+import { ChartFrequencyProvider } from '@/app/components/common/ChartFrequencyContext';
 import { ChartDateRangeControl } from '@/app/components/layout/ChartDateRangeControl';
+import { ChartFrequencyControl } from '@/app/components/layout/ChartFrequencyControl';
 import { ChartSection } from '@/app/components/layout/ChartSection';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import { ZoneSelect } from '@/app/components/layout/ZoneSelect';
@@ -26,6 +28,8 @@ const WaterMain = () => {
     zoneName,
     range,
     setRange,
+    frequency,
+    setFrequency,
     activeGraph,
     filters,
   } = useAnalyticsHeader();
@@ -48,6 +52,9 @@ const WaterMain = () => {
           />
         }
         dateRange={<ChartDateRangeControl value={range} onChange={setRange} />}
+        frequencyControl={
+          <ChartFrequencyControl value={frequency} onChange={setFrequency} />
+        }
         actions={
           selectedZone != null ? (
             <ZoneNotificationBell
@@ -58,33 +65,35 @@ const WaterMain = () => {
         }
       />
 
-      <Stack spacing={{ base: 3, md: 4 }} minW={0}>
-        {activeGraph?.water_flow_status && (
-          <ChartSection>
-            <WaterFlowMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.water_pressure_status && (
-          <ChartSection>
-            <WaterPressureMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.water_ph_status && (
-          <ChartSection>
-            <PhWaterMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.water_ec_status && (
-          <ChartSection>
-            <EcWaterMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.cumulative_precipitation_status && (
-          <ChartSection>
-            <CumulPrecipitationMain filters={filters} />
-          </ChartSection>
-        )}
-      </Stack>
+      <ChartFrequencyProvider value={frequency}>
+        <Stack spacing={{ base: 3, md: 4 }} minW={0}>
+          {activeGraph?.water_flow_status && (
+            <ChartSection>
+              <WaterFlowMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.water_pressure_status && (
+            <ChartSection>
+              <WaterPressureMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.water_ph_status && (
+            <ChartSection>
+              <PhWaterMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.water_ec_status && (
+            <ChartSection>
+              <EcWaterMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.cumulative_precipitation_status && (
+            <ChartSection>
+              <CumulPrecipitationMain filters={filters} />
+            </ChartSection>
+          )}
+        </Stack>
+      </ChartFrequencyProvider>
     </Box>
   );
 };

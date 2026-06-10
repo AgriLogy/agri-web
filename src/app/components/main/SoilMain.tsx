@@ -4,7 +4,9 @@ import { Box, Stack } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 
 import ZoneNotificationBell from '@/app/components/common/ZoneNotificationBell';
+import { ChartFrequencyProvider } from '@/app/components/common/ChartFrequencyContext';
 import { ChartDateRangeControl } from '@/app/components/layout/ChartDateRangeControl';
+import { ChartFrequencyControl } from '@/app/components/layout/ChartFrequencyControl';
 import { ChartSection } from '@/app/components/layout/ChartSection';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import { ZoneSelect } from '@/app/components/layout/ZoneSelect';
@@ -27,6 +29,8 @@ const SoilMain = () => {
     zoneName,
     range,
     setRange,
+    frequency,
+    setFrequency,
     activeGraph,
     filters,
   } = useAnalyticsHeader();
@@ -48,6 +52,9 @@ const SoilMain = () => {
           />
         }
         dateRange={<ChartDateRangeControl value={range} onChange={setRange} />}
+        frequencyControl={
+          <ChartFrequencyControl value={frequency} onChange={setFrequency} />
+        }
         actions={
           selectedZone != null ? (
             <ZoneNotificationBell
@@ -58,38 +65,40 @@ const SoilMain = () => {
         }
       />
 
-      <Stack spacing={{ base: 3, md: 4 }} minW={0}>
-        {activeGraph?.soil_irrigation_status && (
-          <ChartSection>
-            <WaterSoilMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.soil_temperature_status && (
-          <ChartSection>
-            <SoilTemperatureMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.soil_ph_status && (
-          <ChartSection>
-            <PhSoilMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.soil_conductivity_status && (
-          <ChartSection>
-            <SoilSalinityConductivityMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.soil_moisture_status && (
-          <ChartSection>
-            <SoilConductivityIrrigationMain filters={filters} />
-          </ChartSection>
-        )}
-        {activeGraph?.npk_status && (
-          <ChartSection>
-            <NpkMain filters={filters} />
-          </ChartSection>
-        )}
-      </Stack>
+      <ChartFrequencyProvider value={frequency}>
+        <Stack spacing={{ base: 3, md: 4 }} minW={0}>
+          {activeGraph?.soil_irrigation_status && (
+            <ChartSection>
+              <WaterSoilMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.soil_temperature_status && (
+            <ChartSection>
+              <SoilTemperatureMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.soil_ph_status && (
+            <ChartSection>
+              <PhSoilMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.soil_conductivity_status && (
+            <ChartSection>
+              <SoilSalinityConductivityMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.soil_moisture_status && (
+            <ChartSection>
+              <SoilConductivityIrrigationMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.npk_status && (
+            <ChartSection>
+              <NpkMain filters={filters} />
+            </ChartSection>
+          )}
+        </Stack>
+      </ChartFrequencyProvider>
     </Box>
   );
 };

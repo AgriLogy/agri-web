@@ -23,6 +23,8 @@ export type PageInfoBarProps = {
   zoneControl?: ReactNode;
   /** Controls slot - usually a ChartDateRangeControl. */
   dateRange?: ReactNode;
+  /** Controls slot - usually a ChartFrequencyControl (data density picker). */
+  frequencyControl?: ReactNode;
   /** Trailing actions (notification bell, export buttons, etc.). */
   actions?: ReactNode;
 };
@@ -44,11 +46,14 @@ export function PageInfoBar({
   subtitle,
   zoneControl,
   dateRange,
+  frequencyControl,
   actions,
 }: PageInfoBarProps) {
   const [borderColor] = useToken('colors', ['app.border']);
 
-  const hasControls = Boolean(zoneControl || dateRange || actions);
+  const hasControls = Boolean(
+    zoneControl || dateRange || frequencyControl || actions
+  );
 
   return (
     <Box
@@ -69,29 +74,44 @@ export function PageInfoBar({
         justify="space-between"
         gap={{ base: 3, md: 4 }}
       >
-        <Stack spacing={1} flex="1" minW={0}>
-          <Heading
-            as="h1"
-            size={{ base: 'md', md: 'lg' }}
-            color="app.text"
-            fontWeight="semibold"
-            lineHeight="short"
-            noOfLines={1}
-          >
-            {title}
-          </Heading>
-          {subtitle ? (
-            <Text
-              color="app.text.muted"
-              fontSize={{ base: 'sm', md: 'sm' }}
-              fontWeight="normal"
+        {/* Title row. On mobile the actions (alert bell) sit top-right beside
+            the title so they never wrap onto their own line under the filters. */}
+        <Flex
+          align="flex-start"
+          justify="space-between"
+          gap={3}
+          flex="1"
+          minW={0}
+        >
+          <Stack spacing={1} minW={0}>
+            <Heading
+              as="h1"
+              size={{ base: 'md', md: 'lg' }}
+              color="app.text"
+              fontWeight="semibold"
               lineHeight="short"
-              noOfLines={2}
+              noOfLines={1}
             >
-              {subtitle}
-            </Text>
+              {title}
+            </Heading>
+            {subtitle ? (
+              <Text
+                color="app.text.muted"
+                fontSize={{ base: 'sm', md: 'sm' }}
+                fontWeight="normal"
+                lineHeight="short"
+                noOfLines={2}
+              >
+                {subtitle}
+              </Text>
+            ) : null}
+          </Stack>
+          {actions ? (
+            <Box display={{ base: 'flex', md: 'none' }} flexShrink={0}>
+              {actions}
+            </Box>
           ) : null}
-        </Stack>
+        </Flex>
 
         {hasControls ? (
           <HStack
@@ -102,7 +122,11 @@ export function PageInfoBar({
           >
             {zoneControl}
             {dateRange}
-            {actions}
+            {frequencyControl}
+            {/* Desktop keeps the bell at the end of the controls cluster. */}
+            {actions ? (
+              <Box display={{ base: 'none', md: 'flex' }}>{actions}</Box>
+            ) : null}
           </HStack>
         ) : null}
       </Flex>

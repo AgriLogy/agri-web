@@ -7,6 +7,8 @@ import getActiveGraphs, {
   type ActiveGraphResponse,
 } from '@/app/utils/getActiveGraphs';
 
+import type { ChartFrequency } from '@/app/utils/chartDateWindow';
+
 import type { ZoneOption } from './ZoneSelect';
 import {
   type ChartDateRange,
@@ -26,6 +28,9 @@ export type AnalyticsHeaderState = {
   zoneName: string | null;
   range: ChartDateRange;
   setRange: (next: ChartDateRange) => void;
+  /** Page-wide chart data frequency. Charts bucket+average themselves to it. */
+  frequency: ChartFrequency;
+  setFrequency: (next: ChartFrequency) => void;
   activeGraph: ActiveGraphResponse | null;
   filters: AnalyticsFilters;
 };
@@ -42,6 +47,9 @@ export function useAnalyticsHeader(): AnalyticsHeaderState {
     null
   );
   const [range, setRange] = useState<ChartDateRange>(defaultChartDateRange);
+  // Default to hourly so freshly-loaded pages tame high-frequency devices
+  // (e.g. router 02's per-minute flood) out of the box.
+  const [frequency, setFrequency] = useState<ChartFrequency>({ kind: 'hour' });
 
   useEffect(() => {
     api
@@ -80,6 +88,8 @@ export function useAnalyticsHeader(): AnalyticsHeaderState {
     zoneName,
     range,
     setRange,
+    frequency,
+    setFrequency,
     activeGraph,
     filters,
   };

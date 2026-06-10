@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
+import { useBucketed } from '../../common/ChartFrequencyContext';
 import api from '@/app/lib/api';
 import { SensorData } from '@/app/types';
 import SoilTemperatureChart from './SoilTemperatureChart';
@@ -84,7 +85,9 @@ const SoilTemperatureMain = ({
       .finally(() => setLoading(false));
   }, [startDate, endDate, selectedZone]);
 
-  const timeline = useMemo(() => data.map((d) => d.timestamp), [data]);
+  // Bucket the merged low/medium/high series to the page frequency.
+  const series = useBucketed(data);
+  const timeline = useMemo(() => series.map((d) => d.timestamp), [series]);
 
   return (
     <ChartLastDataShell
@@ -99,7 +102,7 @@ const SoilTemperatureMain = ({
             {({ startIdx, endIdx, setRange }) => (
               <VStack spacing={0} align="stretch" width="100%">
                 <SoilTemperatureChart
-                  data={data.slice(startIdx, endIdx + 1)}
+                  data={series.slice(startIdx, endIdx + 1)}
                   loading={loading}
                 />
                 <ChartDateRangeDragger
