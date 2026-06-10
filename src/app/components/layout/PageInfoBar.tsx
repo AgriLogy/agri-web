@@ -74,44 +74,29 @@ export function PageInfoBar({
         justify="space-between"
         gap={{ base: 3, md: 4 }}
       >
-        {/* Title row. On mobile the actions (alert bell) sit top-right beside
-            the title so they never wrap onto their own line under the filters. */}
-        <Flex
-          align="flex-start"
-          justify="space-between"
-          gap={3}
-          flex="1"
-          minW={0}
-        >
-          <Stack spacing={1} minW={0}>
-            <Heading
-              as="h1"
-              size={{ base: 'md', md: 'lg' }}
-              color="app.text"
-              fontWeight="semibold"
+        <Stack spacing={1} flex="1" minW={0}>
+          <Heading
+            as="h1"
+            size={{ base: 'md', md: 'lg' }}
+            color="app.text"
+            fontWeight="semibold"
+            lineHeight="short"
+            noOfLines={1}
+          >
+            {title}
+          </Heading>
+          {subtitle ? (
+            <Text
+              color="app.text.muted"
+              fontSize={{ base: 'sm', md: 'sm' }}
+              fontWeight="normal"
               lineHeight="short"
-              noOfLines={1}
+              noOfLines={2}
             >
-              {title}
-            </Heading>
-            {subtitle ? (
-              <Text
-                color="app.text.muted"
-                fontSize={{ base: 'sm', md: 'sm' }}
-                fontWeight="normal"
-                lineHeight="short"
-                noOfLines={2}
-              >
-                {subtitle}
-              </Text>
-            ) : null}
-          </Stack>
-          {actions ? (
-            <Box display={{ base: 'flex', md: 'none' }} flexShrink={0}>
-              {actions}
-            </Box>
+              {subtitle}
+            </Text>
           ) : null}
-        </Flex>
+        </Stack>
 
         {hasControls ? (
           <HStack
@@ -123,10 +108,9 @@ export function PageInfoBar({
             {zoneControl}
             {dateRange}
             {frequencyControl}
-            {/* Desktop keeps the bell at the end of the controls cluster. */}
-            {actions ? (
-              <Box display={{ base: 'none', md: 'flex' }}>{actions}</Box>
-            ) : null}
+            {/* Rendered once (no per-breakpoint duplication, which previously
+                produced two action buttons in the DOM on every page). */}
+            {actions}
           </HStack>
         ) : null}
       </Flex>
