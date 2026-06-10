@@ -7,7 +7,7 @@ import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import ElectrovannesList from './ElectrovannesDashboardCard';
 import GoogleMapWeather from '../GoogleMapWeather';
 import WeatherDashboard from './WeatherDashboard';
-import Zones from './ZonesDashboardCard';
+import RecentNotificationsCard from './RecentNotificationsCard';
 
 const Card = ({ children }: { children: React.ReactNode }) => (
   <Box
@@ -42,7 +42,7 @@ const MainContent = () => {
           <WeatherDashboard />
         </Card>
         <Card>
-          <Zones />
+          <RecentNotificationsCard />
         </Card>
         <Card>
           <ElectrovannesList />

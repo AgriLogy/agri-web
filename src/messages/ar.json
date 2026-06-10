@@ -85,7 +85,7 @@
     "pressure_weather": "الضغط الجوي",
     "precipitation_rate": "معدل التساقط",
     "et0": "التبخر النتحي المرجعي ET₀",
-    "vpd": "عجز ضغط البخار (VPD)",
+    "vpd": "عجز ضغط البخار (DPV)",
     "water_flow": "تدفق المياه",
     "irrigation_cumulative": "الري التراكمي",
     "water_pressure": "ضغط المياه",
@@ -672,7 +672,8 @@
     "windSpeed": {
       "chartTitle": "سرعة الرياح في المحطة",
       "chartSubtitle": "سلسلة بالساعة؛ مقياس زمني تكيفي مع شريط تمرير الفترة.",
-      "lastDataTitle": "سرعة الرياح (آخر قياس)"
+      "lastDataTitle": "سرعة الرياح (آخر قياس)",
+      "gustMax": "أقصى هبّة"
     },
     "waterFlow": {
       "lastDataTitle": "تدفق المياه / الري",
@@ -1437,6 +1438,9 @@
       "title": "لوحة التحكم",
       "subtitle": "نظرة عامة على المزرعة — الطقس والمناطق وحالة شبكة الري",
       "zonesAvailable": "المناطق المتاحة",
+      "recentNotifications": "أحدث الإشعارات",
+      "recentNotificationsEmpty": "لا توجد إشعارات حديثة",
+      "viewAll": "عرض الكل",
       "electrovannesAvailable": "الصمامات الكهربائية المتاحة"
     },
     "electrovanCard": {

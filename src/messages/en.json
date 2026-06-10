@@ -672,7 +672,8 @@
     "windSpeed": {
       "chartTitle": "Wind speed at the station",
       "chartSubtitle": "Hourly series; adaptive time scale with the period slider.",
-      "lastDataTitle": "Wind speed (latest reading)"
+      "lastDataTitle": "Wind speed (latest reading)",
+      "gustMax": "Gust (max)"
     },
     "waterFlow": {
       "lastDataTitle": "Water flow / irrigation",
@@ -1437,6 +1438,9 @@
       "title": "Dashboard",
       "subtitle": "Farm overview — weather, zones, and irrigation network status",
       "zonesAvailable": "Available zones",
+      "recentNotifications": "Recent notifications",
+      "recentNotificationsEmpty": "No recent notifications",
+      "viewAll": "View all",
       "electrovannesAvailable": "Available solenoid valves"
     },
     "electrovanCard": {

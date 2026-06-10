@@ -39,7 +39,17 @@ const WindSpeedLastData = ({ data }: { data: SensorData[] }) => {
   useUnitOverridesRevision();
   const unit = resolveAxisUnit('wind_speed', latest?.default_unit);
 
+  // Rafale (gust): peak wind speed across the loaded window. A dedicated
+  // high-frequency gust sensor is a later backend item; until then the series
+  // maximum is the best available proxy.
+  const gustMax = data.reduce<number | null>((max, row) => {
+    const v = typeof row?.value === 'number' ? row.value : null;
+    if (v === null) return max;
+    return max === null || v > max ? v : max;
+  }, null);
+
   const valueColor = useColorModeValue('brand.700', 'brand.200');
+  const gustColor = useColorModeValue('orange.600', 'orange.300');
   const textColor = useColorModeValue('gray.600', 'gray.300');
   const timeColor = useColorModeValue('gray.500', 'gray.400');
 
@@ -76,6 +86,22 @@ const WindSpeedLastData = ({ data }: { data: SensorData[] }) => {
             ? `${formatCalibratedReading('wind_speed', latest.value)} ${unit}`
             : t('common.notAvailable')}
         </Text>
+        {gustMax !== null && (
+          <Box mt={2}>
+            <Text
+              fontSize="xs"
+              fontWeight="medium"
+              letterSpacing="0.04em"
+              textTransform="uppercase"
+              color={textColor}
+            >
+              {t('analytics.windSpeed.gustMax')}
+            </Text>
+            <Text fontSize="lg" fontWeight="semibold" color={gustColor}>
+              {`${formatCalibratedReading('wind_speed', gustMax)} ${unit}`}
+            </Text>
+          </Box>
+        )}
         <Text fontSize="xs" color={timeColor} mt={2}>
           {latest
             ? t('analytics.lastData.measuredAt', {

@@ -1,5 +1,6 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
+import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import { resolveAxisUnit } from '@/app/utils/unitOverrides';
@@ -69,6 +70,7 @@ const VPDLastData = ({ data }: { data: VPDDataPoint[] }) => {
               })
             : ''}
         </Text>
+        <LastDataAddAlertButton sensorKey="vpd" />
       </LastDataPanel>
     </Box>
   );

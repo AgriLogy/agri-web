@@ -85,7 +85,7 @@
     "pressure_weather": "Pression atmosphérique",
     "precipitation_rate": "Taux de précipitation",
     "et0": "Évapotranspiration ET₀",
-    "vpd": "Déficit de pression de vapeur (VPD)",
+    "vpd": "Déficit de pression de vapeur (DPV)",
     "water_flow": "Débit d'eau",
     "irrigation_cumulative": "Irrigation cumulée",
     "water_pressure": "Pression d'eau",
@@ -672,7 +672,8 @@
     "windSpeed": {
       "chartTitle": "Vitesse du vent à la station",
       "chartSubtitle": "Série horaire ; échelle de temps adaptative avec le curseur de période.",
-      "lastDataTitle": "Vitesse du vent (dernière mesure)"
+      "lastDataTitle": "Vitesse du vent (dernière mesure)",
+      "gustMax": "Rafale (max)"
     },
     "waterFlow": {
       "lastDataTitle": "Débit d'eau / irrigation",
@@ -1437,6 +1438,9 @@
       "title": "Tableau de bord",
       "subtitle": "Vue d'ensemble de la ferme — météo, zones, et état du réseau d'irrigation",
       "zonesAvailable": "Zones disponibles",
+      "recentNotifications": "Notifications récentes",
+      "recentNotificationsEmpty": "Aucune notification récente",
+      "viewAll": "Tout voir",
       "electrovannesAvailable": "Électrovannes disponibles"
     },
     "electrovanCard": {

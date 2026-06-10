@@ -49,10 +49,15 @@ interface WeatherData {
 const localeTag = (locale: string): string =>
   locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
 
+// Station coordinates the dashboard forecast is anchored to.
+const STATION_LAT = 32.906323;
+const STATION_LON = -6.93442;
+
 const WeatherDashboard = () => {
   const t = useTranslations();
   const locale = useLocale();
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [cityName, setCityName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [useImperial, setUseImperial] = useState(false);
   const bgColor = useColorModeValue('white', 'gray.800');
@@ -66,7 +71,7 @@ const WeatherDashboard = () => {
     const fetchWeather = async () => {
       try {
         const response = await fetch(
-          'https://api.open-meteo.com/v1/forecast/?latitude=32.906323&longitude=-6.934420&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&temperature_unit=celsius'
+          `https://api.open-meteo.com/v1/forecast/?latitude=${STATION_LAT}&longitude=${STATION_LON}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&temperature_unit=celsius`
         );
         const data = await response.json();
         setWeatherData(data);
@@ -78,6 +83,34 @@ const WeatherDashboard = () => {
     };
     fetchWeather();
   }, []);
+
+  // Reverse-geocode the station coordinates to a city label (keyless endpoint).
+  useEffect(() => {
+    let cancelled = false;
+    const lang = locale === 'ar' ? 'ar' : locale === 'en' ? 'en' : 'fr';
+    const fetchCity = async () => {
+      try {
+        const res = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${STATION_LAT}&longitude=${STATION_LON}&localityLanguage=${lang}`
+        );
+        const data = await res.json();
+        if (cancelled) return;
+        const name =
+          data?.city ||
+          data?.locality ||
+          data?.principalSubdivision ||
+          data?.countryName ||
+          null;
+        setCityName(name);
+      } catch {
+        /* city label is best-effort; ignore failures */
+      }
+    };
+    fetchCity();
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   const toFahrenheit = (celsius: number) => (celsius * 9) / 5 + 32;
   const toMilesPerHour = (kmph: number) => kmph * 0.621371;
@@ -122,9 +155,16 @@ const WeatherDashboard = () => {
     <Box bg={tableBg} p={p} width="100%" borderRadius="md" boxShadow="lg">
       {/* Unit Toggle */}
       <HStack justify="space-between" mb={4}>
-        <Text color="app.text" fontSize="lg" fontWeight="bold" mb={4}>
-          {t('shell.weather.title')}
-        </Text>
+        <VStack align="start" spacing={0} mb={4}>
+          <Text color="app.text" fontSize="lg" fontWeight="bold">
+            {t('shell.weather.title')}
+          </Text>
+          {cityName && (
+            <Text fontSize="sm" color={secondaryText}>
+              📍 {cityName}
+            </Text>
+          )}
+        </VStack>
         <HStack spacing={2}>
           <Text
             fontSize="sm"

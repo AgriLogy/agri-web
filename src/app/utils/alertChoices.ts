@@ -62,6 +62,7 @@ export const DEFAULT_SENSOR_KEYS: SensorKeyOption[] = [
   { key: 'pressure_weather', label: 'Pression atmosphérique', unit: 'hPa' },
   { key: 'precipitation_rate', label: 'Précipitations', unit: 'mm/h' },
   { key: 'et0', label: 'ET₀', unit: 'mm/h' },
+  { key: 'vpd', label: 'Déficit de pression de vapeur (DPV)', unit: 'kPa' },
   { key: 'soil_moisture_medium', label: 'Humidité du sol', unit: '%' },
   { key: 'soil_temperature_medium', label: 'Température du sol', unit: '°C' },
   { key: 'soil_ph', label: 'pH du sol', unit: 'pH' },
