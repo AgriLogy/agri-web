@@ -7,6 +7,7 @@ import { Button } from 'antd';
 import { BellOutlined } from '@ant-design/icons';
 import AlertCreateDrawer from '../alert/AlertCreateDrawer';
 import { useActiveZoneId } from './ActiveZoneContext';
+import { useReadOnly } from '@/app/hooks/useReadOnly';
 
 export interface LastDataAddAlertButtonProps {
   /** Sensor registry key (e.g. "temperature_weather"). When present
@@ -31,8 +32,12 @@ export default function LastDataAddAlertButton({
   const t = useTranslations();
   const [open, setOpen] = useState(false);
   const ctxZoneId = useActiveZoneId();
+  const readOnly = useReadOnly();
   const effectiveZoneId = zoneId ?? ctxZoneId ?? undefined;
   const effectiveLabel = label ?? t('misc.lastDataAddAlertButton.label');
+
+  // Technicians have read-only access — no alert creation.
+  if (readOnly) return null;
 
   return (
     <Box

@@ -18,6 +18,7 @@ type SignInResponse = {
   access: string;
   refresh: string;
   is_staff: boolean;
+  is_technician?: boolean;
 };
 
 export default function LoginBox() {
@@ -38,6 +39,7 @@ export default function LoginBox() {
       if (status >= 200 && status < 300) {
         localStorage.setItem('accessToken', data.access);
         localStorage.setItem('refreshToken', data.refresh);
+        localStorage.setItem('isTechnician', data.is_technician ? '1' : '0');
         router.push(data.is_staff ? '/admin' : '/');
       }
     } catch {
