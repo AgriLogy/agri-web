@@ -1,4 +1,5 @@
 import { getRequestConfig } from 'next-intl/server';
+import { getMessages } from '@agri/i18n';
 import { getUserLocale } from './locale';
 
 // Loads the active locale (from cookie) and its message catalog for every
@@ -7,6 +8,6 @@ export default getRequestConfig(async () => {
   const locale = await getUserLocale();
   return {
     locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    messages: await getMessages(locale),
   };
 });
