@@ -15,11 +15,11 @@ import type { Locale as AntdLocale } from 'antd/es/locale';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import 'dayjs/locale/ar';
-import { EmotionCacheProvider } from './EmotionCache';
-import { theme } from './theme';
-import { antdTheme } from './styles/antdTheme';
+import { EmotionCacheProvider } from '@agri/ui';
+import { theme } from '@agri/ui';
+import { antdTheme } from '@agri/ui';
 import PeriodicZoneNotificationScheduler from './components/main/PeriodicZoneNotificationScheduler';
-import { dirFor, type Locale } from '../i18n/config';
+import { dirFor, type Locale } from '@agri/i18n';
 
 const antdLocales: Record<Locale, AntdLocale> = {
   fr: frFR,

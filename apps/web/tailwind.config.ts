@@ -8,7 +8,7 @@ import {
   lineHeight,
   radii,
   shadows,
-} from './src/app/styles/tokens';
+} from '@agri/ui/tokens';
 
 const config: Config = {
   content: [

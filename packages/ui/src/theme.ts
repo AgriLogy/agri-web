@@ -3,7 +3,7 @@
 import { extendTheme, type StyleFunctionProps } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { chakraColorModeConfig } from './colorModeConfig';
-import { neutral, primary, semantic } from './styles/tokens/colors';
+import { neutral, primary, semantic } from './tokens/colors';
 
 /**
  * Chakra theme wired to the design tokens in src/app/styles/tokens/.

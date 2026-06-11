@@ -6,7 +6,7 @@ import { ColorModeScript } from '@chakra-ui/react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { Providers } from './providers';
-import { chakraColorModeConfig } from './colorModeConfig';
+import { chakraColorModeConfig } from '@agri/ui';
 import { dirFor, type Locale } from '../i18n/config';
 
 export const metadata: Metadata = {
