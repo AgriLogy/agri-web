@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { AdminConfirmDelete } from '@/app/components/admin/_shared/AdminConfirmDelete';
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
-import { adminAlertApi, type AdminAlertRow } from '@/app/lib/adminAlertApi';
+import { adminAlertApi, type AdminAlertRow } from '@agri/api-client/adminAlertApi';
 
 const localeTag = (locale: string): string =>
   locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';

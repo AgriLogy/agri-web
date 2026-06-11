@@ -51,7 +51,7 @@ import {
   formatCalibratedReading,
   resolveAxisUnit,
 } from '@/app/utils/unitOverrides';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 
 type UnitSettingRow = {
   key: string;

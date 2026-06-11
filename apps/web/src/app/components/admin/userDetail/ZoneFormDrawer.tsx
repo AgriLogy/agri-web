@@ -10,7 +10,7 @@ import {
   type AdminZone,
   type AdminZoneCreatePayload,
   type AdminZonePatchPayload,
-} from '@/app/lib/adminZoneApi';
+} from '@agri/api-client/adminZoneApi';
 
 type FormValues = {
   name: string;

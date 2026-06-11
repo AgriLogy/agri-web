@@ -14,7 +14,7 @@ import {
   presetByKey,
   shouldDeliverNow,
   type DeliveryRate,
-} from './notificationDeliveryRate';
+} from '@agri/api-client/notificationDeliveryRate';
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;

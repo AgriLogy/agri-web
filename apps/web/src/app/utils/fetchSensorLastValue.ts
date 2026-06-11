@@ -1,4 +1,4 @@
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import type { NpkSensorData, SensorData } from '@/app/types';
 import { getSensorEndpointSpec } from '@/app/utils/sensorApiPaths';
 

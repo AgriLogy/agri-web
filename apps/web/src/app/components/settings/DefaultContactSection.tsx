@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
-import { userProfileApi } from '@/app/lib/userProfileApi';
+import { userProfileApi } from '@agri/api-client/userProfileApi';
 
 /**
  * Self-service editor for the user's default alert contact (phone + email).

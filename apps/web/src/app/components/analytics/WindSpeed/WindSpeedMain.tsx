@@ -5,7 +5,7 @@ import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
 import { useFrequencySeries } from '../../common/ChartFrequencyContext';
 import { SensorData } from '@/app/types';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import { type WindSpeedSensorRow } from '@/app/utils/windSpeedMerge';
 import '@/app/styles/style.module.css';

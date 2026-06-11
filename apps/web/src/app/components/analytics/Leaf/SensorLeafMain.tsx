@@ -10,7 +10,7 @@ import {
 } from '@/app/utils/chartDateWindow';
 import SensorLeafLastData from './SensorLeafLastData';
 import SensorLeafChart from './SensorLeafChart';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';
 
 type SensorData = {

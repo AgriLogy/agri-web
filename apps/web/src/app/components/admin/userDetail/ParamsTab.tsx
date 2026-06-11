@@ -8,11 +8,11 @@ import {
   adminZoneApi,
   type AdminZone,
   type AdminZoneParams,
-} from '@/app/lib/adminZoneApi';
+} from '@agri/api-client/adminZoneApi';
 import {
   adminSensorUnitsApi,
   type SensorUnitsMap,
-} from '@/app/lib/adminSensorUnitsApi';
+} from '@agri/api-client/adminSensorUnitsApi';
 
 type ParamsFormValues = {
   soil_param_TAW: number;

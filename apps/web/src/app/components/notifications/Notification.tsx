@@ -10,13 +10,13 @@ import {
   parseNumericSensor,
   type DecisionEngineResult,
   type NotificationDecisionLevel,
-} from '@/app/lib/notificationDecisionEngine';
+} from '@agri/api-client/notificationDecisionEngine';
 import {
   findNotificationConfigForZoneRow,
   getNotificationConfigById,
   thresholdsFromConfig,
   ZONE_NOTIFICATION_CONFIG_UPDATED_EVENT,
-} from '@/app/lib/zoneNotificationConfigStorage';
+} from '@agri/api-client/zoneNotificationConfigStorage';
 
 export interface NotificationPayload {
   yesterday_temperature: string;

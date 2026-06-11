@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Box, VStack } from '@chakra-ui/react';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import type { WaterSoilData } from '@/app/types';
 import WaterSoilChart from './WaterSoilChart';

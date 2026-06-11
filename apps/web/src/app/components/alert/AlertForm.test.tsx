@@ -12,7 +12,7 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { Form, App as AntdApp } from 'antd';
 import AlertForm, { type AlertFormValues } from './AlertForm';
-import type { AlertRecord } from '@/app/lib/alertApi';
+import type { AlertRecord } from '@agri/api-client/alertApi';
 
 const SENSOR_KEYS = [
   { key: 'temperature_weather', label: 'Air', unit: '°C' },

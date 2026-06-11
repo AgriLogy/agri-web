@@ -16,12 +16,12 @@ import {
   Table,
   Tag,
 } from 'antd';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import {
   technicianApi,
   type Technician,
   type ZoneScope,
-} from '@/app/lib/technicianApi';
+} from '@agri/api-client/technicianApi';
 import {
   GRAPH_SCOPE_GROUPS,
   graphKeyLabel,

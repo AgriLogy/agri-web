@@ -5,7 +5,7 @@ import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
 import { useFrequencySeries } from '../../common/ChartFrequencyContext';
 import { SensorData } from '@/app/types';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import '@/app/styles/style.module.css';
 import PrecipitationRateChart from './PrecipitationRateChart';
 import PrecipitationRateLastData from './WatePrecipitationRateLastData';

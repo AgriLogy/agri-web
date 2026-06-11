@@ -1,5 +1,5 @@
 // utils/getActiveGraphs.ts
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 
 export interface ActiveGraphResponse {
   soil_irrigation_status: boolean;

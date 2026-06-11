@@ -40,7 +40,7 @@ import { IoLogOut } from 'react-icons/io5';
 import Image from 'next/image';
 import logo from '../../public/logo.png';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import { FaBell, FaSeedling, FaWater } from 'react-icons/fa';
 import { WiDaySunny } from 'react-icons/wi';

@@ -5,7 +5,7 @@ import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
 import { sortByTimestamp } from '@/app/utils/chartDateWindow';
 import { SensorData } from '@/app/types';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import CumulPrecipitationChart from './CumulPrecipitationChart';
 import CumulPrecipitationLastData from './CumulPrecipitationLastData';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';

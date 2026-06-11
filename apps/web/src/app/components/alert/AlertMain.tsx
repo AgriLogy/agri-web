@@ -15,7 +15,7 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslations } from 'next-intl';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { alertApi, type AlertRecord } from '@/app/lib/alertApi';
+import { alertApi, type AlertRecord } from '@agri/api-client/alertApi';
 import {
   ALERT_CHOICES,
   CONDITION_CHOICES,

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import { alignWindSeriesByTimestamp } from '@/app/utils/chartDateWindow';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import WindRadarLastData from './WindRadarLastData';
 import WindRadarChart from './WindRadarChart';
 

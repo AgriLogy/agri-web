@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { App, Button, Form, Input } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import axiosInstance from '../lib/api';
+import axiosInstance from '@agri/api-client/api';
 import { LoginCard } from '../components/auth/LoginCard';
 import styles from './LoginBox.module.scss';
 

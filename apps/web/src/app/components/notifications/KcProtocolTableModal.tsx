@@ -35,7 +35,7 @@ import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import {
   type KcProtocolStageRow,
   defaultKcProtocolStages,
-} from '@/app/lib/zoneNotificationConfigStorage';
+} from '@agri/api-client/zoneNotificationConfigStorage';
 
 export type KcProtocolTableModalProps = {
   isOpen: boolean;

@@ -4,7 +4,7 @@ import { Alert, Button, Empty, Select, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { adminZoneApi, type AdminZone } from '@/app/lib/adminZoneApi';
+import { adminZoneApi, type AdminZone } from '@agri/api-client/adminZoneApi';
 
 export type StationDataTabProps = { username: string };
 

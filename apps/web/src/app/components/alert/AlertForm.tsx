@@ -11,7 +11,7 @@ import {
   Switch,
   type FormInstance,
 } from 'antd';
-import type { AlertRecord, AlertWritePayload } from '@/app/lib/alertApi';
+import type { AlertRecord, AlertWritePayload } from '@agri/api-client/alertApi';
 import {
   ALERT_CHOICES,
   CONDITION_CHOICES,

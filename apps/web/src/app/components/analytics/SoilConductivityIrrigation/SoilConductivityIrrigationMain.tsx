@@ -8,7 +8,7 @@ import {
   filterByTimestampWindow,
   unionSortedTimestamps,
 } from '@/app/utils/chartDateWindow';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import SoilConductivityLastData from './SoilConductivityLastData';
 import SoilConductivityChart from './SoilConductivityChart';
 import { SensorData } from '@/app/types';

@@ -5,9 +5,9 @@
  * assert the wrapper hits the right URL with the right shape.
  */
 
-import { alertApi } from './alertApi';
+import { alertApi } from '@agri/api-client/alertApi';
 
-jest.mock('./api', () => {
+jest.mock('@agri/api-client/api', () => {
   const get = jest.fn();
   const post = jest.fn();
   const patch = jest.fn();
@@ -22,7 +22,7 @@ jest.mock('./api', () => {
   };
 });
 
-import api from './api';
+import api from '@agri/api-client/api';
 
 const mocked = api as unknown as {
   get: jest.Mock;

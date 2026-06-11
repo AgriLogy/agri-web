@@ -22,7 +22,7 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon, BellIcon } from '@chakra-ui/icons';
 import Notification from '../notifications/Notification';
-import axiosInstance from '@/app/lib/api';
+import axiosInstance from '@agri/api-client/api';
 import {
   mergeNotificationsForStorage,
   normalizeApiNotificationsList,
@@ -30,7 +30,7 @@ import {
   notificationRowZoneId,
   readNotificationsFromCache,
   writeNotificationsToCache,
-} from '@/app/lib/notificationsCacheStorage';
+} from '@agri/api-client/notificationsCacheStorage';
 import EmptyBox from '../common/EmptyBox';
 import { useTranslations } from 'next-intl';
 import { useNotificationBellCounts } from '@/app/hooks/useNotificationBellCounts';
@@ -41,7 +41,7 @@ import {
   getNotificationConfigById,
   getNotificationConfigsForZone,
   resolveStoredNotificationConfigId,
-} from '@/app/lib/zoneNotificationConfigStorage';
+} from '@agri/api-client/zoneNotificationConfigStorage';
 
 const NotificationsMain: React.FC = () => {
   const t = useTranslations();

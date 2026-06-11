@@ -7,7 +7,7 @@ import { useFrequencySeries } from '../../common/ChartFrequencyContext';
 import FruitSizeChart from './FruitSizeChart';
 import FruiteSizeLastData from './FruiteSizeLastData';
 import { SensorData } from '@/app/types';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import '@/app/styles/style.module.css';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';
 

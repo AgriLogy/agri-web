@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { checkAuthTokens } from './lib/checkAuthTokens';
+import { checkAuthTokens } from '@agri/api-client/checkAuthTokens';
 import MainContent from './components/dashboard/MainContent';
 import { AppPageShell } from './components/layout/AppPageShell';
 

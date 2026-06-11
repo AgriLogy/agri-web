@@ -61,7 +61,7 @@ import {
 } from 'react-icons/fa';
 import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import {
   saveZoneNotificationConfig,
@@ -70,15 +70,15 @@ import {
   defaultKcProtocolStages,
   representativeKcFromStages,
   type ZoneNotificationConfig,
-} from '@/app/lib/zoneNotificationConfigStorage';
+} from '@agri/api-client/zoneNotificationConfigStorage';
 import KcProtocolTableModal from '@/app/components/notifications/KcProtocolTableModal';
-import { evaluateV1NotificationDecision } from '@/app/lib/notificationDecisionEngine';
-import { dispatchZoneNotificationOutbound } from '@/app/lib/notificationDispatch';
+import { evaluateV1NotificationDecision } from '@agri/api-client/notificationDecisionEngine';
+import { dispatchZoneNotificationOutbound } from '@agri/api-client/notificationDispatch';
 import {
   prependNotificationsToCache,
   removeLocalZoneTemplateNotificationsForConfig,
-} from '@/app/lib/notificationsCacheStorage';
-import { buildLocalZoneConfirmationNotification } from '@/app/lib/zoneNotificationTemplate';
+} from '@agri/api-client/notificationsCacheStorage';
+import { buildLocalZoneConfirmationNotification } from '@agri/api-client/zoneNotificationTemplate';
 import {
   DELIVERY_RATE_PRESETS,
   DELIVERY_UNITS,
@@ -88,7 +88,7 @@ import {
   presetByKey,
   type DeliveryRate,
   type DeliveryUnit,
-} from '@/app/lib/notificationDeliveryRate';
+} from '@agri/api-client/notificationDeliveryRate';
 
 const defaultConfig = (
   zoneId: number,

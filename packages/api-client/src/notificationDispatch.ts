@@ -1,4 +1,4 @@
-import api from '@/app/lib/api';
+import api from './api';
 
 export type NotificationDispatchChannels = {
   email: boolean;

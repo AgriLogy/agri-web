@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Alert, Button, Form, Input, Space } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import axiosInstance from '@/app/lib/api';
+import axiosInstance from '@agri/api-client/api';
 import { LoginCard } from '@/app/components/auth/LoginCard';
 
 type LoginFormValues = {

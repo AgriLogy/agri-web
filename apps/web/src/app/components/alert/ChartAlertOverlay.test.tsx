@@ -27,7 +27,7 @@ import ChartAlertOverlay, {
   TRIGGERED_COLOR,
   IDLE_COLOR,
 } from './ChartAlertOverlay';
-import type { GraphAlert } from '@/app/lib/alertApi';
+import type { GraphAlert } from '@agri/api-client/alertApi';
 
 const baseAlert: GraphAlert = {
   id: 1,

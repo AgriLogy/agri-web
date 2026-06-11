@@ -6,17 +6,17 @@ import {
   getNotificationConfigById,
   recordZoneNotificationSent,
   ZONE_NOTIFICATION_CONFIG_UPDATED_EVENT,
-} from '@/app/lib/zoneNotificationConfigStorage';
+} from '@agri/api-client/zoneNotificationConfigStorage';
 import {
   prependNotificationsToCache,
   pruneLegacyLocalNotifications,
-} from '@/app/lib/notificationsCacheStorage';
-import { buildPeriodicZoneReminderNotification } from '@/app/lib/zoneNotificationTemplate';
+} from '@agri/api-client/notificationsCacheStorage';
+import { buildPeriodicZoneReminderNotification } from '@agri/api-client/zoneNotificationTemplate';
 import {
   msUntilNextDelivery,
   normalizeDeliveryRate,
   shouldDeliverNow,
-} from '@/app/lib/notificationDeliveryRate';
+} from '@agri/api-client/notificationDeliveryRate';
 
 /**
  * Re-evaluate at least this often so config edits, clock changes and very long

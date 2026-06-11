@@ -1,8 +1,8 @@
-import type { ZoneNotificationConfig } from '@/app/lib/zoneNotificationConfigStorage';
+import type { ZoneNotificationConfig } from './zoneNotificationConfigStorage';
 import {
   deliveryRateToMinutes,
   normalizeDeliveryRate,
-} from '@/app/lib/notificationDeliveryRate';
+} from './notificationDeliveryRate';
 
 /**
  * Minimal translator shape compatible with next-intl's root translator

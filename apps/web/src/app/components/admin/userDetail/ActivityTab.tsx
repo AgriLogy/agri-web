@@ -11,7 +11,7 @@ import { App, Empty, Skeleton, Timeline } from 'antd';
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { adminUserApi, type ActivityEvent } from '@/app/lib/adminUserApi';
+import { adminUserApi, type ActivityEvent } from '@agri/api-client/adminUserApi';
 
 const localeTag = (locale: string): string =>
   locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';

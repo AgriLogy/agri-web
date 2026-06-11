@@ -9,7 +9,7 @@ import { AdminEntityDrawer } from '@/app/components/admin/_shared/AdminEntityDra
 import {
   adminUserApi,
   type AdminUserCreatePayload,
-} from '@/app/lib/adminUserApi';
+} from '@agri/api-client/adminUserApi';
 
 type FormValues = {
   username: string;

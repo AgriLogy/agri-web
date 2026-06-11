@@ -8,7 +8,7 @@ import {
   adminZoneApi,
   type ActiveGraphRecord,
   type AdminZone,
-} from '@/app/lib/adminZoneApi';
+} from '@agri/api-client/adminZoneApi';
 
 const FIELD_GROUPS: Array<{
   id: string;

@@ -1,4 +1,4 @@
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import type { SensorData } from '@/app/types';
 
 /** Optional `wind_gust` after merge or from embedded API fields on windspeed rows. */

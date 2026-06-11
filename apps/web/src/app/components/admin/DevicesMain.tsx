@@ -21,8 +21,8 @@ import {
   type AdminDevice,
   type AdminDeviceWritePayload,
   type DeviceType,
-} from '@/app/lib/adminDeviceApi';
-import { adminZoneApi, type AdminZone } from '@/app/lib/adminZoneApi';
+} from '@agri/api-client/adminDeviceApi';
+import { adminZoneApi, type AdminZone } from '@agri/api-client/adminZoneApi';
 
 const DEVICE_TYPES: DeviceType[] = ['dragon', 'lora', 'bivocom'];
 

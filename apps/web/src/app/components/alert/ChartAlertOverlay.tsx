@@ -17,7 +17,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ReferenceLine } from 'recharts';
-import { alertApi, type GraphAlert } from '@/app/lib/alertApi';
+import { alertApi, type GraphAlert } from '@agri/api-client/alertApi';
 
 export interface ChartAlertOverlayProps {
   sensorKey: string;

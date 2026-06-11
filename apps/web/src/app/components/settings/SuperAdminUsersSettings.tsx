@@ -23,7 +23,7 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import { getAllSensorsCatalog } from '@/app/utils/sensorCatalog';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import {

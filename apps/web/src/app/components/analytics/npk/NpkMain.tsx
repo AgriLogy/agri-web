@@ -4,7 +4,7 @@ import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
 import { useFrequencySeries } from '../../common/ChartFrequencyContext';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import '@/app/styles/style.module.css';
 import NpkLastData from './NpkLastData';
 import NpkSizeChart from './NpkSizeChart';

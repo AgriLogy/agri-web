@@ -8,7 +8,7 @@ import {
   filterByTimestampWindow,
   unionSortedTimestamps,
 } from '@/app/utils/chartDateWindow';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import TempuratureHumidtyChart from './TempuratureHumidtyChart';
 import TempuratureHumidtyLastData from './TempuratureHumidtyLastData';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';

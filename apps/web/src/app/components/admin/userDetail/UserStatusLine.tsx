@@ -2,7 +2,7 @@
 
 import { Space, Tag } from 'antd';
 import { useLocale, useTranslations } from 'next-intl';
-import type { AdminUserDetail } from '@/app/lib/adminUserApi';
+import type { AdminUserDetail } from '@agri/api-client/adminUserApi';
 
 const localeTag = (locale: string): string =>
   locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';

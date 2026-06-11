@@ -14,20 +14,20 @@ import {
   FaThermometerHalf,
 } from 'react-icons/fa';
 import { useLocale, useTranslations } from 'next-intl';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import {
   evaluateV1NotificationDecision,
   parseNumericSensor,
   type DecisionEngineResult,
   type NotificationDecisionLevel,
-} from '@/app/lib/notificationDecisionEngine';
+} from '@agri/api-client/notificationDecisionEngine';
 import {
   findNotificationConfigForZoneRow,
   getNotificationConfigById,
   thresholdsFromConfig,
   ZONE_NOTIFICATION_CONFIG_UPDATED_EVENT,
-} from '@/app/lib/zoneNotificationConfigStorage';
+} from '@agri/api-client/zoneNotificationConfigStorage';
 import type { NotificationPayload } from '@/app/components/notifications/Notification';
 
 const localeTag = (locale: string): string =>

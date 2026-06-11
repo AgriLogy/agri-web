@@ -7,7 +7,7 @@ import {
   useBucketed,
   useFrequencySeries,
 } from '../../common/ChartFrequencyContext';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import ET0LastData from './ET0LastData';
 import ET0Chart from './ET0Chart';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';

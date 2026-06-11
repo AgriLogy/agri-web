@@ -17,6 +17,7 @@
     "test:jest": "jest --passWithNoTests"
   },
   "dependencies": {
+    "@agri/api-client": "*",
     "@agri/i18n": "*",
     "@agri/sensor-catalog": "*",
     "@ant-design/icons": "^6.2.2",

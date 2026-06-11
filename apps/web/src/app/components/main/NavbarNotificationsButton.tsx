@@ -45,7 +45,7 @@ import {
 } from '@chakra-ui/react';
 import { BellIcon } from '@chakra-ui/icons';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import NotificationDetailFrench from '@/app/components/notifications/NotificationDetailFrench';
 import type { NotificationPayload } from '@/app/components/notifications/Notification';
 import {
@@ -55,13 +55,13 @@ import {
   NOTIFICATIONS_CACHE_UPDATED_EVENT,
   readNotificationsFromCache,
   writeNotificationsToCache,
-} from '@/app/lib/notificationsCacheStorage';
+} from '@agri/api-client/notificationsCacheStorage';
 import { useNotificationBellCounts } from '@/app/hooks/useNotificationBellCounts';
 import {
   deleteNotificationConfigById,
   getNotificationConfigById,
   resolveStoredNotificationConfigId,
-} from '@/app/lib/zoneNotificationConfigStorage';
+} from '@agri/api-client/zoneNotificationConfigStorage';
 
 type PopupNotification = {
   id: number;

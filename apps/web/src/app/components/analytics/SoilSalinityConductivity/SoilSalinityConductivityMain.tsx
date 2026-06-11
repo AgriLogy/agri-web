@@ -14,7 +14,7 @@ import SoilSalinityConductivityLastData from './SoilSalinityConductivityLastData
 import SoilSalinityConductivityChart from './SoilSalinityConductivityChart';
 
 import '@/app/styles/style.module.css';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';
 
 const SoilSalinityConductivityMain = ({

@@ -16,7 +16,7 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
-import { adminUserApi, type AdminUserRow } from '@/app/lib/adminUserApi';
+import { adminUserApi, type AdminUserRow } from '@agri/api-client/adminUserApi';
 import UserCreateDrawer from './UserCreateDrawer';
 
 const localeTag = (locale: string): string =>

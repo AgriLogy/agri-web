@@ -18,7 +18,7 @@ import {
   adminUserApi,
   type AdminUserDetail,
   type AdminUserPatchPayload,
-} from '@/app/lib/adminUserApi';
+} from '@agri/api-client/adminUserApi';
 
 type FormValues = {
   email: string;

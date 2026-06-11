@@ -13,7 +13,7 @@ import {
   managerAffirmationApi,
   type Affirmation,
   type AffirmationStatus,
-} from '@/app/lib/managerAffirmationApi';
+} from '@agri/api-client/managerAffirmationApi';
 
 const STATUS_COLOR: Record<AffirmationStatus, string> = {
   pending: 'orange',

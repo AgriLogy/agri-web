@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { AdminConfirmDelete } from '@/app/components/admin/_shared/AdminConfirmDelete';
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
-import { adminZoneApi, type AdminZone } from '@/app/lib/adminZoneApi';
+import { adminZoneApi, type AdminZone } from '@agri/api-client/adminZoneApi';
 import ZoneFormDrawer from './ZoneFormDrawer';
 
 export type ZonesTabProps = {

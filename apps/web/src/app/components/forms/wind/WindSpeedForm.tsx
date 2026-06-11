@@ -19,7 +19,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 
 const WindSpeedForm: React.FC = () => {
   const t = useTranslations();

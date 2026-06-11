@@ -1,14 +1,14 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import {
   mergeNotificationsForStorage,
   normalizeApiNotificationsList,
   NOTIFICATIONS_CACHE_UPDATED_EVENT,
   readNotificationsFromCache,
   writeNotificationsToCache,
-} from '@/app/lib/notificationsCacheStorage';
+} from '@agri/api-client/notificationsCacheStorage';
 
 export type NotificationApiRow = {
   id: number;

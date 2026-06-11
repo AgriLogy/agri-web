@@ -1,10 +1,10 @@
-import type { NotificationThresholds } from '@/app/lib/notificationDecisionEngine';
-import { DEFAULT_NOTIFICATION_THRESHOLDS } from '@/app/lib/notificationDecisionEngine';
-import type { DeliveryRate } from '@/app/lib/notificationDeliveryRate';
+import type { NotificationThresholds } from './notificationDecisionEngine';
+import { DEFAULT_NOTIFICATION_THRESHOLDS } from './notificationDecisionEngine';
+import type { DeliveryRate } from './notificationDeliveryRate';
 import {
   deliveryRateFromMinutes,
   normalizeDeliveryRate,
-} from '@/app/lib/notificationDeliveryRate';
+} from './notificationDeliveryRate';
 import {
   clearNotificationConfigListSuppress,
   clearZoneNotificationsListSuppress,
@@ -12,7 +12,7 @@ import {
   notificationRowZoneId,
   removeNotificationsForConfigFromCache,
   suppressNotificationConfigInList,
-} from '@/app/lib/notificationsCacheStorage';
+} from './notificationsCacheStorage';
 
 /** Fired when a zone notification config is saved (reschedule periodic reminders). */
 export const ZONE_NOTIFICATION_CONFIG_UPDATED_EVENT =

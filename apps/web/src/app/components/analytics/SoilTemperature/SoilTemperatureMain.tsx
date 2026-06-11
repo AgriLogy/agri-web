@@ -6,7 +6,7 @@ import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
 import { useBucketed } from '../../common/ChartFrequencyContext';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import { SensorData } from '@/app/types';
 import SoilTemperatureChart from './SoilTemperatureChart';
 import SoilTemperatureLastData from './SoilTemperatureLastData';

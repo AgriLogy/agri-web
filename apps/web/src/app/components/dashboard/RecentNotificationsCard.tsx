@@ -13,14 +13,14 @@ import {
 } from '@chakra-ui/react';
 import { BellIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/navigation';
-import axiosInstance from '@/app/lib/api';
+import axiosInstance from '@agri/api-client/api';
 import {
   mergeNotificationsForStorage,
   normalizeApiNotificationsList,
   NOTIFICATIONS_CACHE_UPDATED_EVENT,
   readNotificationsFromCache,
   writeNotificationsToCache,
-} from '@/app/lib/notificationsCacheStorage';
+} from '@agri/api-client/notificationsCacheStorage';
 import DashboardCard from '@component/dashboard/DashboardCard';
 import Loading from '@component/common/Loading';
 

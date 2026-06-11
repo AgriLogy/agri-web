@@ -15,7 +15,7 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import EmptyBox from '../common/EmptyBox';
 

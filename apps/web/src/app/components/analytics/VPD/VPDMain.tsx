@@ -8,7 +8,7 @@ import {
   sortByTimestamp,
 } from '@/app/utils/chartDateWindow';
 import { useEffect, useMemo, useState } from 'react';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import { calibrateChartValue } from '@/app/utils/chartSeriesCalibration';

@@ -20,13 +20,13 @@ import {
   alertApi,
   type AlertRecord,
   type AlertWritePayload,
-} from '@/app/lib/alertApi';
+} from '@agri/api-client/alertApi';
 import {
   DEFAULT_SENSOR_KEYS,
   type SensorKeyOption,
 } from '@/app/utils/alertChoices';
-import api from '@/app/lib/api';
-import { userProfileApi } from '@/app/lib/userProfileApi';
+import api from '@agri/api-client/api';
+import { userProfileApi } from '@agri/api-client/userProfileApi';
 import AlertForm, { type AlertFormValues } from './AlertForm';
 
 export interface AlertCreateDrawerProps {

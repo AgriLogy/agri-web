@@ -24,7 +24,7 @@ import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { FaCog } from 'react-icons/fa';
 import { IoLogOut } from 'react-icons/io5';
 import Image from 'next/image';
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import logo from '../../public/logo.png';
 import NavbarNotificationsButton from '@/app/components/main/NavbarNotificationsButton';

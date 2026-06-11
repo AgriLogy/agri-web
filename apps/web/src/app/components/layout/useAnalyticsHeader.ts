@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import api from '@/app/lib/api';
+import api from '@agri/api-client/api';
 import getActiveGraphs, {
   type ActiveGraphResponse,
 } from '@/app/utils/getActiveGraphs';

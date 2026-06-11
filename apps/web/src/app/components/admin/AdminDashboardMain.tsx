@@ -17,7 +17,7 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { AdminCrudTable } from '@/app/components/admin/_shared/AdminCrudTable';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
-import { adminUserApi, type AdminUserRow } from '@/app/lib/adminUserApi';
+import { adminUserApi, type AdminUserRow } from '@agri/api-client/adminUserApi';
 
 type Overview = {
   users_total: number;
