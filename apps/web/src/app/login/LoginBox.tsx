@@ -40,7 +40,18 @@ export default function LoginBox() {
         localStorage.setItem('accessToken', data.access);
         localStorage.setItem('refreshToken', data.refresh);
         localStorage.setItem('isTechnician', data.is_technician ? '1' : '0');
-        router.push(data.is_staff ? '/admin' : '/');
+        // Admin now lives in a separate app (apps/admin) on its own domain.
+        // NEXT_PUBLIC_ADMIN_URL points at it; falls back to /admin for local dev.
+        if (data.is_staff) {
+          const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL;
+          if (adminUrl) {
+            window.location.href = adminUrl;
+          } else {
+            router.push('/admin');
+          }
+        } else {
+          router.push('/');
+        }
       }
     } catch {
       notification.error({

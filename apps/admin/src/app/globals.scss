@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap');
+
+/* ----------------------------------------------------------------------------
+ * Raw tokens — pulled from `src/app/styles/tokens/` via Tailwind's theme().
+ * Updates to colors.ts -> tailwind.config.ts -> these variables propagate
+ * automatically because `theme()` resolves at build time.
+ *
+ * SCSS files should generally consume the SEMANTIC tokens below
+ * (`var(--brand)`, `var(--surface-card)`…) rather than these raw values.
+ * The raw scale is here so SCSS can reach for any step when needed.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  --color-primary-50: theme('colors.primary.50');
+  --color-primary-100: theme('colors.primary.100');
+  --color-primary-200: theme('colors.primary.200');
+  --color-primary-300: theme('colors.primary.300');
+  --color-primary-400: theme('colors.primary.400');
+  --color-primary-500: theme('colors.primary.500');
+  --color-primary-600: theme('colors.primary.600');
+  --color-primary-700: theme('colors.primary.700');
+  --color-primary-800: theme('colors.primary.800');
+  --color-primary-900: theme('colors.primary.900');
+
+  --color-neutral-0: theme('colors.neutral.0');
+  --color-neutral-50: theme('colors.neutral.50');
+  --color-neutral-100: theme('colors.neutral.100');
+  --color-neutral-200: theme('colors.neutral.200');
+  --color-neutral-300: theme('colors.neutral.300');
+  --color-neutral-400: theme('colors.neutral.400');
+  --color-neutral-500: theme('colors.neutral.500');
+  --color-neutral-600: theme('colors.neutral.600');
+  --color-neutral-700: theme('colors.neutral.700');
+  --color-neutral-800: theme('colors.neutral.800');
+  --color-neutral-900: theme('colors.neutral.900');
+
+  --color-success: theme('colors.success');
+  --color-warning: theme('colors.warning');
+  --color-danger: theme('colors.danger');
+  --color-info: theme('colors.info');
+
+  --shadow-sm: theme('boxShadow.sm');
+  --shadow-card: theme('boxShadow.card');
+  --shadow-floating: theme('boxShadow.floating');
+  --shadow-overlay: theme('boxShadow.overlay');
+
+  --radius-sm: theme('borderRadius.sm');
+  --radius-md: theme('borderRadius.md');
+  --radius-lg: theme('borderRadius.lg');
+  --radius-xl: theme('borderRadius.xl');
+  --radius-2xl: theme('borderRadius.2xl');
+  --radius-3xl: theme('borderRadius.3xl');
+}
+
+/* ----------------------------------------------------------------------------
+ * Semantic tokens — theme-aware.
+ *
+ * These are the names SCSS files should use. Light mode picks deeper
+ * brand shades; dark mode picks lighter ones for contrast on dark surfaces.
+ * ------------------------------------------------------------------------- */
+
+:root,
+[data-theme='light'] {
+  --brand: var(--color-primary-600);
+  --brand-hover: var(--color-primary-700);
+  --brand-soft: var(--color-primary-50);
+  --brand-on: var(--color-neutral-0);
+
+  --surface-page: var(--color-neutral-50);
+  --surface-card: var(--color-neutral-0);
+  --surface-elevated: var(--color-neutral-100);
+
+  --text-primary: var(--color-neutral-900);
+  --text-secondary: var(--color-neutral-600);
+  --text-muted: var(--color-neutral-500);
+  --text-inverse: var(--color-neutral-0);
+
+  --border-subtle: var(--color-neutral-200);
+  --border-default: var(--color-neutral-300);
+
+  --background: var(--surface-card);
+  --foreground: var(--text-primary);
+}
+
+[data-theme='dark'] {
+  --brand: var(--color-primary-400);
+  --brand-hover: var(--color-primary-300);
+  --brand-soft: var(--color-primary-900);
+  --brand-on: var(--color-neutral-900);
+
+  --surface-page: var(--color-neutral-900);
+  --surface-card: var(--color-neutral-800);
+  --surface-elevated: var(--color-neutral-700);
+
+  --text-primary: var(--color-neutral-50);
+  --text-secondary: var(--color-neutral-300);
+  --text-muted: var(--color-neutral-400);
+  --text-inverse: var(--color-neutral-900);
+
+  --border-subtle: var(--color-neutral-700);
+  --border-default: var(--color-neutral-600);
+
+  --background: var(--surface-card);
+  --foreground: var(--text-primary);
+}
+
+/* ----------------------------------------------------------------------------
+ * Base reset
+ * ------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--text-primary);
+  background: var(--surface-page);
+  font-family: theme('fontFamily.sans');
+  min-height: 100%;
+  max-width: 100%;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+ * Mobile: collapse the analytics date RangePicker to just its calendar icon.
+ * The selected window is already shown in the page subtitle, so on phones the
+ * full "07 juin 2026 → 08 juin 2026" input is redundant and pushes the Zone
+ * select + alert bell onto extra lines. Inputs are kept in the DOM at width 0
+ * (not display:none) so a tap still focuses them and opens the calendar.
+ * ------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .ant-picker.agri-date-compact {
+    width: 46px !important;
+    min-width: 46px;
+    padding-left: 0;
+    padding-right: 0;
+    justify-content: center;
+  }
+  .ant-picker.agri-date-compact .ant-picker-input {
+    width: 0;
+    flex: 0 0 0;
+    overflow: hidden;
+  }
+  .ant-picker.agri-date-compact .ant-picker-input > input {
+    width: 0;
+    min-width: 0;
+    padding: 0;
+  }
+  .ant-picker.agri-date-compact .ant-picker-range-separator,
+  .ant-picker.agri-date-compact .ant-picker-active-bar {
+    display: none !important;
+  }
+  .ant-picker.agri-date-compact .ant-picker-suffix {
+    margin-inline-start: 0;
+    font-size: 17px;
+  }
+}

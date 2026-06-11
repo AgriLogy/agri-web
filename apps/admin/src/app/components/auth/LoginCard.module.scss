@@ -1,0 +1,59 @@
+.card {
+  width: 100%;
+  max-width: 24rem;
+  padding: 2.25rem 2rem;
+  background: var(--surface-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-floating);
+  /* Asymmetric corners — Agrilogy's brand signature. */
+  border-radius: var(--radius-3xl) 0 var(--radius-3xl) 0;
+}
+
+[data-theme='dark'] .card {
+  box-shadow: var(--shadow-overlay);
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1.75rem 1.5rem;
+    border-radius: var(--radius-2xl) 0 var(--radius-2xl) 0;
+  }
+}
+
+.brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.accent {
+  width: 2rem;
+  height: 3px;
+  background: var(--brand);
+  border-radius: var(--radius-pill, 9999px);
+  margin: 0 auto 1.25rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0;
+}
+
+.body > * + * {
+  margin-top: 1rem;
+}
