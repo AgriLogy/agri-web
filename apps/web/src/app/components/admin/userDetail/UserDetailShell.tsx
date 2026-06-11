@@ -7,7 +7,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
-import { adminUserApi, type AdminUserDetail } from '@agri/api-client/adminUserApi';
+import {
+  adminUserApi,
+  type AdminUserDetail,
+} from '@agri/api-client/adminUserApi';
 import ActivityTab from './ActivityTab';
 import AlertsNotifsTab from './AlertsNotifsTab';
 import GraphsTab from './GraphsTab';

@@ -9,7 +9,10 @@ import { App, Button, Space } from 'antd';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { adminUserApi, type AdminUserDetail } from '@agri/api-client/adminUserApi';
+import {
+  adminUserApi,
+  type AdminUserDetail,
+} from '@agri/api-client/adminUserApi';
 
 export type UserHeaderActionsProps = {
   user: AdminUserDetail;
