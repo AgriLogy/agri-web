@@ -5,6 +5,8 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  // Compile TypeScript sources from shared workspace packages.
+  transpilePackages: ['@agri/sensor-catalog'],
   typescript: {
     ignoreBuildErrors: true,
   },
