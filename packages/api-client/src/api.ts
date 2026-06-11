@@ -38,7 +38,9 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401 && !isAuthEndpoint) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      window.location.href = '/login';
+      // Login route differs per app (web: /login, admin: /admin/login).
+      // NEXT_PUBLIC_LOGIN_PATH overrides; default keeps the farmer app's path.
+      window.location.href = process.env.NEXT_PUBLIC_LOGIN_PATH || '/login';
     }
     return Promise.reject(error);
   }

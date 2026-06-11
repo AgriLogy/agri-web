@@ -5,6 +5,10 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  // Admin login lives at /admin/login — the shared api-client reads this on 401.
+  env: {
+    NEXT_PUBLIC_LOGIN_PATH: '/admin/login',
+  },
   // Compile TypeScript sources from shared workspace packages.
   transpilePackages: [
     '@agri/sensor-catalog',
