@@ -1,0 +1,19 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+build
+dist
+coverage
+
+# Generated
+next-env.d.ts
+*.tsbuildinfo
+package-lock.json
+CHANGELOG.md
+
+# Editor / tooling
+.claude
+.vscode
