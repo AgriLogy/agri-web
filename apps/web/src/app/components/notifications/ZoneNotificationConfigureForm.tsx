@@ -63,6 +63,7 @@ import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import api from '@agri/api-client/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
+import { fetchLastSensorSample } from '@/app/utils/fetchSensorLastValue';
 import {
   saveZoneNotificationConfig,
   getNotificationConfigById,
@@ -99,7 +100,10 @@ const defaultConfig = (
   secteurLabel: '',
   notificationName: '',
   soilType: 'light',
-  soilCharacteristics: 'TAW & RAW & FC & WP',
+  soilTawMm: 120,
+  soilRawMm: 60,
+  soilFcPct: 30,
+  soilWpPct: 12,
   soilMoistureSource: 'avg_sensors',
   kcMode: 'table',
   kc: 0.85,
@@ -114,7 +118,7 @@ const defaultConfig = (
   deliveryRate: { amount: 1, unit: 'hour' },
   lastNotifiedAt: null,
   soilPermeabilityPct: 75,
-  valveMode: 'auto',
+  valveMode: 'manual',
   vpdThresholdKpa: 0.5,
   rootMonitoring: 'on',
   criticalThresholdPct: 20,
@@ -289,6 +293,9 @@ const ZoneNotificationConfigureForm: React.FC<
   const [zoneId, setZoneId] = useState<number>(0);
   const [form, setForm] = useState<ZoneNotificationConfig | null>(null);
   const [nameError, setNameError] = useState(false);
+  /** Live VPD reading pulled from the captor (`/sensors/vpd`) for the selected zone. */
+  const [vpdLive, setVpdLive] = useState<number | null>(null);
+  const [vpdLoading, setVpdLoading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -376,6 +383,30 @@ const ZoneNotificationConfigureForm: React.FC<
     };
     void load();
   }, [initialZoneId, initialConfigId, intent, toast]);
+
+  // VPD is read from the captor, never typed by the user. Pull the latest
+  // `/sensors/vpd` sample for the selected zone and mirror it into the form so
+  // the saved config + decision engine use the real sensor value.
+  useEffect(() => {
+    if (!zoneId) return;
+    let cancelled = false;
+    setVpdLoading(true);
+    fetchLastSensorSample('vpd', zoneId)
+      .then((sample) => {
+        if (cancelled) return;
+        const v = sample?.rawValue ?? null;
+        setVpdLive(v);
+        if (v != null) {
+          setForm((f) => (f ? { ...f, vpdThresholdKpa: v } : f));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setVpdLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [zoneId]);
 
   const update = <K extends keyof ZoneNotificationConfig>(
     key: K,
@@ -673,12 +704,70 @@ const ZoneNotificationConfigureForm: React.FC<
                 <LabelWithIcon icon={FaInfoCircle} labelColor={textColor}>
                   {t('notifications.configForm.soilCharacteristicLabel')}
                 </LabelWithIcon>
-                <Input
-                  value={form.soilCharacteristics}
-                  onChange={(e) =>
-                    update('soilCharacteristics', e.target.value)
-                  }
-                />
+                <SimpleGrid columns={2} spacing={3}>
+                  <Box>
+                    <Text fontSize="xs" color={mutedTextColor} mb={1}>
+                      {t('notifications.configForm.soilTaw')}
+                    </Text>
+                    <NumberInput
+                      value={form.soilTawMm}
+                      min={0}
+                      step={1}
+                      onChange={(_, v) =>
+                        update('soilTawMm', Number.isFinite(v) ? v : 0)
+                      }
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                  </Box>
+                  <Box>
+                    <Text fontSize="xs" color={mutedTextColor} mb={1}>
+                      {t('notifications.configForm.soilRaw')}
+                    </Text>
+                    <NumberInput
+                      value={form.soilRawMm}
+                      min={0}
+                      step={1}
+                      onChange={(_, v) =>
+                        update('soilRawMm', Number.isFinite(v) ? v : 0)
+                      }
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                  </Box>
+                  <Box>
+                    <Text fontSize="xs" color={mutedTextColor} mb={1}>
+                      {t('notifications.configForm.soilFc')}
+                    </Text>
+                    <NumberInput
+                      value={form.soilFcPct}
+                      min={0}
+                      max={100}
+                      step={1}
+                      onChange={(_, v) =>
+                        update('soilFcPct', Number.isFinite(v) ? v : 0)
+                      }
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                  </Box>
+                  <Box>
+                    <Text fontSize="xs" color={mutedTextColor} mb={1}>
+                      {t('notifications.configForm.soilWp')}
+                    </Text>
+                    <NumberInput
+                      value={form.soilWpPct}
+                      min={0}
+                      max={100}
+                      step={1}
+                      onChange={(_, v) =>
+                        update('soilWpPct', Number.isFinite(v) ? v : 0)
+                      }
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                  </Box>
+                </SimpleGrid>
               </FormControl>
 
               <FormControl>
@@ -975,6 +1064,9 @@ const ZoneNotificationConfigureForm: React.FC<
                   }
                 >
                   <Stack>
+                    <Radio value="drip">
+                      {t('notifications.configForm.drip')}
+                    </Radio>
                     <Radio value="drip_sprinkler">
                       {t('notifications.configForm.dripSprinkler')}
                     </Radio>
@@ -1073,39 +1165,30 @@ const ZoneNotificationConfigureForm: React.FC<
                 <LabelWithIcon icon={FaRandom} labelColor={textColor}>
                   {t('notifications.configForm.valveLabel')}
                 </LabelWithIcon>
-                <RadioGroup
-                  value={form.valveMode}
-                  onChange={(v) =>
-                    update(
-                      'valveMode',
-                      v as ZoneNotificationConfig['valveMode']
-                    )
-                  }
-                >
-                  <HStack spacing={4}>
-                    <Radio value="auto">
-                      {t('notifications.configForm.valveAuto')}
-                    </Radio>
-                    <Radio value="manual">
-                      {t('notifications.configForm.valveManual')}
-                    </Radio>
-                  </HStack>
+                <RadioGroup value="manual">
+                  <Radio value="manual" isChecked isReadOnly>
+                    {t('notifications.configForm.valveManual')}
+                  </Radio>
                 </RadioGroup>
+                <Text fontSize="xs" color={mutedTextColor} mt={1}>
+                  {t('notifications.configForm.valveManualOnlyHint')}
+                </Text>
               </FormControl>
 
               <FormControl>
                 <LabelWithIcon icon={FaFan} labelColor={textColor}>
                   {t('notifications.configForm.vpdThreshold')}
                 </LabelWithIcon>
-                <NumberInput
-                  value={form.vpdThresholdKpa}
-                  min={0}
-                  max={5}
-                  step={0.1}
-                  onChange={(_, v) => update('vpdThresholdKpa', v)}
-                >
-                  <NumberInputField />
+                <NumberInput value={vpdLive ?? form.vpdThresholdKpa} isReadOnly>
+                  <NumberInputField opacity={0.85} />
                 </NumberInput>
+                <Text fontSize="xs" color={mutedTextColor} mt={1}>
+                  {vpdLoading
+                    ? t('notifications.configForm.vpdLoading')
+                    : vpdLive != null
+                      ? t('notifications.configForm.vpdSensorHint')
+                      : t('notifications.configForm.vpdNoData')}
+                </Text>
               </FormControl>
 
               <FormControl>

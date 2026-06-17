@@ -81,7 +81,11 @@ export interface ZoneNotificationConfig {
   secteurLabel: string;
   notificationName: string;
   soilType: SoilTypeLightHeavy;
-  soilCharacteristics: string;
+  /** Soil water-holding parameters, entered by the user. */
+  soilTawMm: number;
+  soilRawMm: number;
+  soilFcPct: number;
+  soilWpPct: number;
   soilMoistureSource: string;
   kcMode: 'table' | 'manual';
   kc: number;
@@ -99,7 +103,7 @@ export interface ZoneNotificationConfig {
   zoneAreaHa: number;
   cropType: string;
   flowRateM3h: number;
-  irrigationMethod: 'drip_sprinkler' | 'subsurface_drip';
+  irrigationMethod: 'drip' | 'drip_sprinkler' | 'subsurface_drip';
   /** @deprecated kept for back-compat; the cadence is now `deliveryRate`. */
   intervalMinutes: number;
   /**
@@ -111,7 +115,9 @@ export interface ZoneNotificationConfig {
   /** ISO timestamp of the last delivered periodic notification (throttle state). */
   lastNotifiedAt?: string | null;
   soilPermeabilityPct: number;
-  valveMode: 'auto' | 'manual';
+  /** Vanne is manual-only (the automatic mode was removed). */
+  valveMode: 'manual';
+  /** VPD (kPa) read live from the `/sensors/vpd` captor — not user-entered. */
   vpdThresholdKpa: number;
   rootMonitoring: 'on' | 'off';
   criticalThresholdPct: number;
@@ -146,6 +152,11 @@ function migrateLegacyMap(
     }
     row.configId = row.configId.trim();
     if (typeof row.secteurLabel !== 'string') row.secteurLabel = '';
+    // Vanne is manual-only now — legacy 'auto' configs collapse to 'manual'.
+    if ((row.valveMode as string) !== 'manual') {
+      row.valveMode = 'manual';
+      changed = true;
+    }
     // Ensure every config has a valid flexible delivery rate. Legacy configs
     // only had `intervalMinutes`; derive the nicest rate from it.
     if (!row.deliveryRate || typeof row.deliveryRate !== 'object') {
