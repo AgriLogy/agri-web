@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/mks-zakaria/agri-web/compare/v1.0.3...v1.0.4) (2026-06-18)
+
+
+### Bug Fixes
+
+* **security:** move the chatbot Anthropic key server-side ([45e9ad4](https://github.com/mks-zakaria/agri-web/commit/45e9ad48e7cce61841d12cef956946a285ec4212))
+
 ## [1.0.3](https://github.com/mks-zakaria/agri-web/compare/v1.0.2...v1.0.3) (2026-06-18)
 
 ## [1.0.2](https://github.com/mks-zakaria/agri-web/compare/v1.0.1...v1.0.2) (2026-06-17)
