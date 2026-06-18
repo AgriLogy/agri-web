@@ -2,7 +2,7 @@
 
 The frontend is a Turborepo (npm workspaces). It hosts the farmer app
 (`apps/web`), with shared code factored into `packages/*`. The admin console is a
-**separate repository** (`mks-zakaria/agri-admin`) deployed independently; the web
+**separate repository** (`AgriLogy/agri-admin`) deployed independently; the web
 app links to it via the `NEXT_PUBLIC_ADMIN_URL` env var.
 
 ```
