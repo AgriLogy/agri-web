@@ -134,42 +134,40 @@ interface AgrilogyChatBotProps {
   pageContext?: string;
 }
 
-// ── Direct Anthropic API call ─────────────────────────────────────────────
-async function sendToAnthropic(
+// ── Assistant API call (via our server route) ─────────────────────────────
+// The Anthropic key lives only on the server; this hits /api/chat, which proxies
+// to Anthropic and streams back simple { text } chunks (terminated by [DONE]) or a
+// single { error } event.
+async function sendToAssistant(
   messages: { role: string; content: string }[],
   system: string,
   onChunk: (text: string) => void,
   signal: AbortSignal
 ): Promise<void> {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY ?? '',
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1024,
-      stream: true,
-      system,
-      messages,
-    }),
-    signal,
-  });
+  let response: Response;
+  try {
+    response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system, messages }),
+      signal,
+    });
+  } catch (e) {
+    if ((e as Error).name === 'AbortError') throw e;
+    throw Object.assign(new Error(), { code: 'network' });
+  }
 
-  if (!response.ok) {
+  if (!response.ok || !response.body) {
     const status = response.status;
     if (status === 429)
       throw Object.assign(new Error(), { code: 'rate_limit' });
-    if (status === 503)
+    if (status === 503 || status === 529)
       throw Object.assign(new Error(), { code: 'overloaded' });
     if (status >= 500) throw Object.assign(new Error(), { code: 'internal' });
     throw Object.assign(new Error(), { code: 'network' });
   }
 
-  const reader = response.body!.getReader();
+  const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
 
@@ -189,14 +187,14 @@ async function sendToAnthropic(
       if (jsonStr === '[DONE]') return;
       try {
         const event = JSON.parse(jsonStr);
-        if (
-          event.type === 'content_block_delta' &&
-          event.delta?.type === 'text_delta' &&
-          typeof event.delta.text === 'string'
-        ) {
-          onChunk(event.delta.text);
+        if (typeof event.error === 'string') {
+          throw Object.assign(new Error(), { code: event.error });
         }
-      } catch {
+        if (typeof event.text === 'string') {
+          onChunk(event.text);
+        }
+      } catch (e) {
+        if ((e as { code?: string }).code) throw e;
         // skip malformed chunks
       }
     }
@@ -364,7 +362,7 @@ export const AgrilogyChatBot = ({
     abortRef.current = controller;
 
     try {
-      await sendToAnthropic(
+      await sendToAssistant(
         [...historySnapshot, { role: 'user', content: text }],
         `${SYSTEM_PROMPT}\n${t('misc.chatbot.pageContext', { context: pageContext })}`,
         updateLastAssistant,
