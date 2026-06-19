@@ -1839,5 +1839,10 @@
       "reading": "Consommation électrique",
       "type": "Électricité"
     }
+  },
+  "impersonation": {
+    "banner": "Affichage en tant que {user} — lecture seule",
+    "exit": "Quitter",
+    "loading": "Ouverture de la session…"
   }
 }

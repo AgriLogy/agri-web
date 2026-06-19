@@ -1839,5 +1839,10 @@
       "reading": "Electricity consumption",
       "type": "Electricity"
     }
+  },
+  "impersonation": {
+    "banner": "Viewing as {user} — read-only",
+    "exit": "Exit",
+    "loading": "Opening session…"
   }
 }
