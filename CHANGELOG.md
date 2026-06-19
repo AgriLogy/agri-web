@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/mks-zakaria/agri-web/compare/v1.0.4...v1.1.0) (2026-06-19)
+
+
+### Features
+
+* **web:** read-only view-as handoff route + impersonation banner ([df5a4fc](https://github.com/mks-zakaria/agri-web/commit/df5a4fcfc2620d4574380e9ebb41fbb89972a471)), closes [#1](https://github.com/mks-zakaria/agri-web/issues/1)
+
 ## [1.0.4](https://github.com/mks-zakaria/agri-web/compare/v1.0.3...v1.0.4) (2026-06-18)
 
 
