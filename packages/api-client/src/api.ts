@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { hydrateSsoSession } from './hydrateSsoSession';
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || 'https://back.agrogo-datafarm.com';
@@ -16,6 +17,9 @@ const api = axios.create({
 // Add an interceptor to include the access token in every request
 api.interceptors.request.use(
   (config) => {
+    // Adopt a single-sign-on session from the identity gateway before the
+    // first request so the Bearer header is attached on deep links too.
+    hydrateSsoSession();
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
