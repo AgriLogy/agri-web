@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/mks-zakaria/agri-web/compare/v1.1.1...v1.2.0) (2026-06-21)
+
+
+### Features
+
+* adopt SSO session from identity gateway ([b16f4e1](https://github.com/mks-zakaria/agri-web/commit/b16f4e17526403b4d131111e85940731d35c1762))
+
 ## [1.1.1](https://github.com/mks-zakaria/agri-web/compare/v1.1.0...v1.1.1) (2026-06-19)
 
 # [1.1.0](https://github.com/mks-zakaria/agri-web/compare/v1.0.4...v1.1.0) (2026-06-19)
