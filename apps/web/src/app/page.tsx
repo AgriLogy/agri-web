@@ -1,19 +1,15 @@
 'use client';
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { checkAuthTokens } from '@agri/api-client/checkAuthTokens';
+import React from 'react';
+import { useRequireAuth } from './hooks/useRequireAuth';
 import MainContent from './components/dashboard/MainContent';
 import { AppPageShell } from './components/layout/AppPageShell';
 
 const Page = () => {
-  const router = useRouter();
+  // Gate the render on auth so the dashboard never paints (and MainContent
+  // never starts fetching) for users who get bounced to /login.
+  const ready = useRequireAuth();
+  if (!ready) return null;
 
-  useEffect(() => {
-    const isAuthenticated = checkAuthTokens();
-    if (!isAuthenticated) {
-      router.push('/login');
-    }
-  }, [router]);
   return (
     <AppPageShell>
       <MainContent />
