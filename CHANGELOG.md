@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/mks-zakaria/agri-web/compare/v1.2.0...v1.2.1) (2026-06-22)
+
+
+### Bug Fixes
+
+* **web:** gate dashboard render on auth to stop login-redirect flash ([cbc904f](https://github.com/mks-zakaria/agri-web/commit/cbc904fba6c9b05434cc0554bae5222b7a23c7ee))
+
 # [1.2.0](https://github.com/mks-zakaria/agri-web/compare/v1.1.1...v1.2.0) (2026-06-21)
 
 
