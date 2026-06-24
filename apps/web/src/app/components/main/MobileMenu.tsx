@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   Flex,
@@ -41,6 +41,7 @@ import Image from 'next/image';
 import logo from '../../public/logo.png';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import api from '@agri/api-client/api';
+import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import { FaBell, FaSeedling, FaWater } from 'react-icons/fa';
 import { WiDaySunny } from 'react-icons/wi';
@@ -66,16 +67,16 @@ const MobileMenu = () => {
   const cancelRef = useRef<HTMLButtonElement>(null);
   const [username, setUsername] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleLogout = () => {
-    localStorage.clear();
     onClose();
-    router.push('/login');
+    // Revoke the session everywhere (best-effort), clear local state, then
+    // full-navigate to the identity gateway login (NEXT_PUBLIC_LOGIN_PATH).
+    logoutEverywhere();
   };
 
   useEffect(() => {

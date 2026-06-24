@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   Flex,
@@ -25,6 +24,7 @@ import { FaCog } from 'react-icons/fa';
 import { IoLogOut } from 'react-icons/io5';
 import Image from 'next/image';
 import api from '@agri/api-client/api';
+import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import logo from '../../public/logo.png';
 import NavbarNotificationsButton from '@/app/components/main/NavbarNotificationsButton';
@@ -33,7 +33,6 @@ import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 const HEADER_H = '64px';
 
 const BigMenu = () => {
-  const router = useRouter();
   const { colorMode, toggleColorMode } = useColorMode();
   const { hoverColor, headerBarBg, headerBarBorder, textColor } =
     useColorModeStyles();
@@ -48,8 +47,9 @@ const BigMenu = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.clear();
-    router.push('/login');
+    // Revoke the session everywhere (best-effort), clear local state, then
+    // full-navigate to the identity gateway login (NEXT_PUBLIC_LOGIN_PATH).
+    logoutEverywhere();
   };
 
   return (

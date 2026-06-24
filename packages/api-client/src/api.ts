@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { hydrateSsoSession } from './hydrateSsoSession';
+import { clearSsoSession } from './clearSsoSession';
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || 'https://back.agrogo-datafarm.com';
@@ -40,8 +41,9 @@ api.interceptors.response.use(
       requestUrl.includes('/auth/token');
 
     if (error.response && error.response.status === 401 && !isAuthEndpoint) {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      // Clear local tokens AND the shared SSO cookie; otherwise the redirect
+      // below loops forever as the gateway cookie re-hydrates the dead session.
+      clearSsoSession();
       // Login route differs per app (web: /login, admin: /admin/login).
       // NEXT_PUBLIC_LOGIN_PATH overrides; default keeps the farmer app's path.
       window.location.href = process.env.NEXT_PUBLIC_LOGIN_PATH || '/login';
