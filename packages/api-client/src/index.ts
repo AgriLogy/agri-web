@@ -9,6 +9,7 @@ export * from './checkAuthTokens';
 export * from './clearSsoSession';
 export * from './index';
 export * from './loginApiError';
+export * from './logoutEverywhere';
 export * from './managerAffirmationApi';
 export * from './notificationDecisionEngine';
 export * from './notificationDeliveryRate';

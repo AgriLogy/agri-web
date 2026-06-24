@@ -24,7 +24,7 @@ import { WiDaySunny } from 'react-icons/wi';
 import { GiGrapes, GiValve } from 'react-icons/gi';
 import { IoLogOut } from 'react-icons/io5';
 import { FaBell, FaCog, FaHome, FaWater } from 'react-icons/fa';
-import { clearSsoSession } from '@agri/api-client/clearSsoSession';
+import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 
 const Sidebar = () => {
@@ -41,11 +41,10 @@ const Sidebar = () => {
   const t = useTranslations();
 
   const handleLogout = () => {
-    clearSsoSession();
     onClose();
-    // Full navigation (not router.push) so we can cross origin to the
-    // identity gateway login when NEXT_PUBLIC_LOGIN_PATH points there.
-    window.location.href = process.env.NEXT_PUBLIC_LOGIN_PATH || '/login';
+    // Revoke the session everywhere (best-effort), clear local state, then
+    // full-navigate to the identity gateway login (NEXT_PUBLIC_LOGIN_PATH).
+    logoutEverywhere();
   };
 
   const navItems: {

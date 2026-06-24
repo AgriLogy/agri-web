@@ -41,7 +41,7 @@ import Image from 'next/image';
 import logo from '../../public/logo.png';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import api from '@agri/api-client/api';
-import { clearSsoSession } from '@agri/api-client/clearSsoSession';
+import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import { FaBell, FaSeedling, FaWater } from 'react-icons/fa';
 import { WiDaySunny } from 'react-icons/wi';
@@ -73,11 +73,10 @@ const MobileMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleLogout = () => {
-    clearSsoSession();
     onClose();
-    // Full navigation (not router.push) so we can cross origin to the
-    // identity gateway login when NEXT_PUBLIC_LOGIN_PATH points there.
-    window.location.href = process.env.NEXT_PUBLIC_LOGIN_PATH || '/login';
+    // Revoke the session everywhere (best-effort), clear local state, then
+    // full-navigate to the identity gateway login (NEXT_PUBLIC_LOGIN_PATH).
+    logoutEverywhere();
   };
 
   useEffect(() => {

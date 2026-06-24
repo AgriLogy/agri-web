@@ -24,7 +24,7 @@ import { FaCog } from 'react-icons/fa';
 import { IoLogOut } from 'react-icons/io5';
 import Image from 'next/image';
 import api from '@agri/api-client/api';
-import { clearSsoSession } from '@agri/api-client/clearSsoSession';
+import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import logo from '../../public/logo.png';
 import NavbarNotificationsButton from '@/app/components/main/NavbarNotificationsButton';
@@ -47,10 +47,9 @@ const BigMenu = () => {
   }, []);
 
   const handleLogout = () => {
-    clearSsoSession();
-    // Full navigation (not router.push) so we can cross origin to the
-    // identity gateway login when NEXT_PUBLIC_LOGIN_PATH points there.
-    window.location.href = process.env.NEXT_PUBLIC_LOGIN_PATH || '/login';
+    // Revoke the session everywhere (best-effort), clear local state, then
+    // full-navigate to the identity gateway login (NEXT_PUBLIC_LOGIN_PATH).
+    logoutEverywhere();
   };
 
   return (
