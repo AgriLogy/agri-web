@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/mks-zakaria/agri-web/compare/v1.2.2...v1.3.0) (2026-06-24)
+
+
+### Features
+
+* **sso:** clear shared cookie on logout and 401 to enable real single logout ([#12](https://github.com/mks-zakaria/agri-web/issues/12)) ([76959c1](https://github.com/mks-zakaria/agri-web/commit/76959c1d49650bf448aeb07e4f1007a8e203992a))
+
 ## [1.2.2](https://github.com/mks-zakaria/agri-web/compare/v1.2.1...v1.2.2) (2026-06-22)
 
 ## [1.2.1](https://github.com/mks-zakaria/agri-web/compare/v1.2.0...v1.2.1) (2026-06-22)
