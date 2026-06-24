@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   Flex,
@@ -41,6 +41,7 @@ import Image from 'next/image';
 import logo from '../../public/logo.png';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import api from '@agri/api-client/api';
+import { clearSsoSession } from '@agri/api-client/clearSsoSession';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import { FaBell, FaSeedling, FaWater } from 'react-icons/fa';
 import { WiDaySunny } from 'react-icons/wi';
@@ -66,16 +67,17 @@ const MobileMenu = () => {
   const cancelRef = useRef<HTMLButtonElement>(null);
   const [username, setUsername] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleLogout = () => {
-    localStorage.clear();
+    clearSsoSession();
     onClose();
-    router.push('/login');
+    // Full navigation (not router.push) so we can cross origin to the
+    // identity gateway login when NEXT_PUBLIC_LOGIN_PATH points there.
+    window.location.href = process.env.NEXT_PUBLIC_LOGIN_PATH || '/login';
   };
 
   useEffect(() => {

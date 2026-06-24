@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   Flex,
@@ -24,6 +24,7 @@ import { WiDaySunny } from 'react-icons/wi';
 import { GiGrapes, GiValve } from 'react-icons/gi';
 import { IoLogOut } from 'react-icons/io5';
 import { FaBell, FaCog, FaHome, FaWater } from 'react-icons/fa';
+import { clearSsoSession } from '@agri/api-client/clearSsoSession';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 
 const Sidebar = () => {
@@ -36,14 +37,15 @@ const Sidebar = () => {
   } = useColorModeStyles();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations();
 
   const handleLogout = () => {
-    localStorage.clear();
+    clearSsoSession();
     onClose();
-    router.push('/login');
+    // Full navigation (not router.push) so we can cross origin to the
+    // identity gateway login when NEXT_PUBLIC_LOGIN_PATH points there.
+    window.location.href = process.env.NEXT_PUBLIC_LOGIN_PATH || '/login';
   };
 
   const navItems: {
