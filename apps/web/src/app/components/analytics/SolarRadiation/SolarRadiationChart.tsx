@@ -38,6 +38,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const SolarRadiationChart = ({
   data,
@@ -176,14 +177,14 @@ const SolarRadiationChart = ({
               dataKey="solar_radiation"
               name={`${t('sensors.solar_radiation')} (${solarUnit})`}
               hide={!showArea}
-              stroke="#f6c90e"
-              fill="#f6c90e"
+              stroke={colorForSensor('solar_radiation')}
+              fill={colorForSensor('solar_radiation')}
               fillOpacity={0.38}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#f6c90e')}
+              activeDot={activeDotForSeries(colorForSensor('solar_radiation'))}
               isAnimationActive={false}
             />
           </AreaChart>

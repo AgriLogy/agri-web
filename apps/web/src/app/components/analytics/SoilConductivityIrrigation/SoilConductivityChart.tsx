@@ -46,6 +46,7 @@ import {
   yAxisLabelInsideLeft,
   yAxisLabelInsideRight,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const SoilConductivityChart = ({
   lowData,
@@ -264,12 +265,12 @@ const SoilConductivityChart = ({
               dataKey="ec_low"
               name={`${t('analytics.soilConductivity.lowProbe')} (${ecUnit})`}
               hide={!activeLines.ec_low}
-              stroke="#1E88E5"
+              stroke={colorForSensor('ec_low')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#1E88E5')}
+              activeDot={activeDotForSeries(colorForSensor('ec_low'))}
             />
 
             <Line
@@ -278,12 +279,12 @@ const SoilConductivityChart = ({
               dataKey="ec_high"
               name={`${t('analytics.soilConductivity.highProbe')} (${ecUnit})`}
               hide={!activeLines.ec_high}
-              stroke="#2BB673"
+              stroke={colorForSensor('ec_high')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#2BB673')}
+              activeDot={activeDotForSeries(colorForSensor('ec_high'))}
             />
 
             <Bar
@@ -292,7 +293,7 @@ const SoilConductivityChart = ({
               name={`${t('analytics.soilConductivity.irrigation')} (${flowUnit})`}
               {...defaultBarProps}
               hide={!activeLines.water_flow}
-              fill="#00B0FF"
+              fill={colorForSensor('water_flow_irrigation')}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               fillOpacity={0.75}
             />

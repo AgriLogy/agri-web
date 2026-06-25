@@ -38,6 +38,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const EcWaterChart = ({
   data,
@@ -177,12 +178,12 @@ const EcWaterChart = ({
               dataKey="water_ec"
               name={t('analytics.waterEc.legendName', { unit: ecUnit })}
               hide={!showLine}
-              stroke="#82ca9d"
+              stroke={colorForSensor('water_ec')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#82ca9d')}
+              activeDot={activeDotForSeries(colorForSensor('water_ec'))}
               isAnimationActive={false}
             />
           </LineChart>

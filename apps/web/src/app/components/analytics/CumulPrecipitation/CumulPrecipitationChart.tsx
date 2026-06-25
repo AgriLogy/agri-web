@@ -49,6 +49,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { chartSeries } from '@agri/ui';
 
 /** Sum raw API values per bucket, then apply lecture calibration once (PDF: v = a×raw+b). */
 function aggregateCalibratedPrecip(data: SensorData[], period: string) {
@@ -250,7 +251,9 @@ const CumulPrecipitationChart = ({
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               hide={!showBar}
-              fill={colorMode === 'dark' ? '#60a5fa' : '#3b82f6'}
+              fill={
+                colorMode === 'dark' ? chartSeries.rainDark : chartSeries.rain
+              }
             />
           </BarChart>
         </ResponsiveContainer>

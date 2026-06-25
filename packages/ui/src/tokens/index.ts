@@ -18,6 +18,9 @@ export {
   surface,
   text,
   border,
+  chart,
+  chartSeries,
+  chartWindRose,
 } from './colors';
 export { spacing } from './spacing';
 export {

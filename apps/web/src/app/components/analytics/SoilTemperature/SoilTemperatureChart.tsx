@@ -43,6 +43,7 @@ import {
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
 import { TemperaturePoint } from './SoilTemperatureMain';
+import { colorForSensor } from '@agri/ui';
 
 /** Normalized Y-axis space (catalog default for soil temperature). */
 const SOIL_TEMP_AXIS_UNIT = getCatalogDefaultUnit('soil_temp_low') || '°C';
@@ -263,12 +264,12 @@ const SoilTemperatureChart = ({
               type="monotone"
               dataKey="low"
               name={t('analytics.soilTemperature.seriesLow')}
-              stroke="#3182CE"
+              stroke={colorForSensor('low')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#3182CE')}
+              activeDot={activeDotForSeries(colorForSensor('low'))}
               hide={!showLow}
               isAnimationActive={false}
             />
@@ -276,12 +277,12 @@ const SoilTemperatureChart = ({
               type="monotone"
               dataKey="medium"
               name={t('analytics.soilTemperature.seriesMedium')}
-              stroke="#2F855A"
+              stroke={colorForSensor('medium')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#2F855A')}
+              activeDot={activeDotForSeries(colorForSensor('medium'))}
               hide={!showMedium}
               isAnimationActive={false}
             />
@@ -289,12 +290,12 @@ const SoilTemperatureChart = ({
               type="monotone"
               dataKey="high"
               name={t('analytics.soilTemperature.seriesHigh')}
-              stroke="#E53E3E"
+              stroke={colorForSensor('high')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#E53E3E')}
+              activeDot={activeDotForSeries(colorForSensor('high'))}
               hide={!showHigh}
               isAnimationActive={false}
             />

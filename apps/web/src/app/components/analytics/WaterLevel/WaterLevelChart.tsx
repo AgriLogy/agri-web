@@ -35,8 +35,9 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
-const STROKE = '#3182ce';
+const STROKE = colorForSensor('water_level');
 
 const WaterLevelChart = ({
   data,

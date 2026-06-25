@@ -38,6 +38,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const WaterPressureChart = ({
   data,
@@ -178,12 +179,12 @@ const WaterPressureChart = ({
               dataKey="water_pressure"
               name={`${t('analytics.waterPressure.pressureAxis')} (${pressureUnit})`}
               hide={!showLine}
-              stroke="#82ca9d"
+              stroke={colorForSensor('water_pressure')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#82ca9d')}
+              activeDot={activeDotForSeries(colorForSensor('water_pressure'))}
               isAnimationActive={false}
             />
           </LineChart>

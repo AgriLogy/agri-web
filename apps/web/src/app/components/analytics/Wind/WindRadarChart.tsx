@@ -27,6 +27,7 @@ import {
   CHART_PLOT_HEIGHT_TALL_PX,
   analyticsChartPanelLayoutProps,
 } from '@/app/utils/chartAxisConfig';
+import { chartWindRose } from '@agri/ui';
 
 // Helper: get pixel radius from scale value (Chart.js 4 radial scale)
 function getRadiusForValue(scale: any, value: number): number {
@@ -87,11 +88,11 @@ interface WindData {
 
 /** Bin edges in raw API space (catalog default m/s); labels follow unit overrides. */
 const SPEED_BINS_RAW = [
-  { min: 0, max: 2, color: '#7cb5ec' },
-  { min: 2, max: 4, color: '#434348' },
-  { min: 4, max: 6, color: '#90ed7d' },
-  { min: 6, max: 8, color: '#f7a35c' },
-  { min: 8, max: Infinity, color: '#8085e9' },
+  { min: 0, max: 2, color: chartWindRose[0] },
+  { min: 2, max: 4, color: chartWindRose[1] },
+  { min: 4, max: 6, color: chartWindRose[2] },
+  { min: 6, max: 8, color: chartWindRose[3] },
+  { min: 8, max: Infinity, color: chartWindRose[4] },
 ] as const;
 
 type SpeedBin = { label: string; min: number; max: number; color: string };

@@ -39,6 +39,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 export interface VPDDataPoint {
   timestamp: string;
@@ -194,10 +195,10 @@ const VPDChart = ({
                   ? t('analytics.vpd.legendNameWithUnit', { unit: vpdUnit })
                   : legendName
               }
-              stroke="#3182ce"
+              stroke={colorForSensor('vpd')}
               {...defaultLineProps}
               hide={!showVpd}
-              activeDot={activeDotForSeries('#3182ce')}
+              activeDot={activeDotForSeries(colorForSensor('vpd'))}
               isAnimationActive={false}
             />
           </LineChart>

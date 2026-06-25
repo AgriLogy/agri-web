@@ -48,11 +48,12 @@ import {
   yAxisLabelInsideLeft,
   yAxisLabelInsideRight,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor, chartSeries } from '@agri/ui';
 
 const MOISTURE_AXIS_UNIT = '%';
 
 /** Débit (eau) — même bleu pour trait, remplissage et hover */
-const WATER_FLOW_BLUE = '#2563eb';
+const WATER_FLOW_BLUE = colorForSensor('waterFlow');
 
 const WaterSoilChart = ({
   data,
@@ -346,7 +347,7 @@ const WaterSoilChart = ({
               stroke={WATER_FLOW_BLUE}
               strokeWidth={2.5}
               strokeOpacity={1}
-              fill="#416bdf"
+              fill={chartSeries.cobaltFill}
               fillOpacity={1}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -361,12 +362,12 @@ const WaterSoilChart = ({
               type="monotone"
               dataKey="soilLow"
               name={t('analytics.soilWater.seriesLow', { unit: humLowUnit })}
-              stroke="#ea580c"
+              stroke={colorForSensor('soilLow')}
               strokeWidth={2.5}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#ea580c')}
+              activeDot={activeDotForSeries(colorForSensor('soilLow'))}
               hide={!seriesVisible.soilLow}
             />
             <Line
@@ -374,12 +375,12 @@ const WaterSoilChart = ({
               type="monotone"
               dataKey="soilMedium"
               name={t('analytics.soilWater.seriesMedium', { unit: humMedUnit })}
-              stroke="#82ca9d"
+              stroke={colorForSensor('soilMedium')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#82ca9d')}
+              activeDot={activeDotForSeries(colorForSensor('soilMedium'))}
               hide={!seriesVisible.soilMedium}
             />
             <Line
@@ -387,12 +388,12 @@ const WaterSoilChart = ({
               type="monotone"
               dataKey="soilHigh"
               name={t('analytics.soilWater.seriesHigh', { unit: humHighUnit })}
-              stroke="#ffc658"
+              stroke={colorForSensor('soilHigh')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#ffc658')}
+              activeDot={activeDotForSeries(colorForSensor('soilHigh'))}
               hide={!seriesVisible.soilHigh}
             />
           </ComposedChart>

@@ -43,6 +43,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const NpkSizeChart = ({
   data,
@@ -279,13 +280,13 @@ const NpkSizeChart = ({
               dataKey="npk_n"
               name={`${data[0]?.nitrogen_courbe_name || t('sensors.npk_n')} (${unitN})`}
               hide={!activeLines.npk_n}
-              stroke={data[0]?.nitrogen_color || '#dba800'}
+              stroke={data[0]?.nitrogen_color || colorForSensor('npk_n')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
               activeDot={activeDotForSeries(
-                data[0]?.nitrogen_color || '#dba800'
+                data[0]?.nitrogen_color || colorForSensor('npk_n')
               )}
             />
             <Line
@@ -293,13 +294,13 @@ const NpkSizeChart = ({
               dataKey="npk_p"
               name={`${data[0]?.phosphorus_courbe_name || t('sensors.npk_p')} (${unitP})`}
               hide={!activeLines.npk_p}
-              stroke={data[0]?.phosphorus_color || '#00a86b'}
+              stroke={data[0]?.phosphorus_color || colorForSensor('npk_p')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
               activeDot={activeDotForSeries(
-                data[0]?.phosphorus_color || '#00a86b'
+                data[0]?.phosphorus_color || colorForSensor('npk_p')
               )}
             />
             <Line
@@ -307,13 +308,13 @@ const NpkSizeChart = ({
               dataKey="npk_k"
               name={`${data[0]?.potassium_courbe_name || t('sensors.npk_k')} (${unitK})`}
               hide={!activeLines.npk_k}
-              stroke={data[0]?.potassium_color || '#4682b4'}
+              stroke={data[0]?.potassium_color || colorForSensor('npk_k')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
               activeDot={activeDotForSeries(
-                data[0]?.potassium_color || '#4682b4'
+                data[0]?.potassium_color || colorForSensor('npk_k')
               )}
             />
           </LineChart>
