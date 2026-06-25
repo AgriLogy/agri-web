@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/mks-zakaria/agri-web/compare/v1.5.0...v1.6.0) (2026-06-25)
+
+
+### Features
+
+* **chatbot:** mock-first assistant with chat page + global slide-out ([#25](https://github.com/mks-zakaria/agri-web/issues/25)) ([bbfa7d4](https://github.com/mks-zakaria/agri-web/commit/bbfa7d443fd67f1807e033483fce610cfc0bb320)), closes [#24](https://github.com/mks-zakaria/agri-web/issues/24)
+
 # [1.5.0](https://github.com/mks-zakaria/agri-web/compare/v1.4.0...v1.5.0) (2026-06-25)
 
 
