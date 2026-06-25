@@ -676,7 +676,10 @@
       "overridePhoneHint": "Leave empty to use your profile contact.",
       "overrideEmail": "Custom email",
       "overrideEmailPlaceholder": "Use my default email",
-      "active": "Active"
+      "active": "Active",
+      "notificationZone": "Notification zone",
+      "notificationZonePlaceholder": "Optional — bind to a custom zone",
+      "notificationZoneHint": "Bind this alert to a custom notification zone instead of a farm zone."
     }
   },
   "analytics": {
@@ -1965,5 +1968,28 @@
       "zonePh": "Select a zone",
       "stage": "Stage"
     }
+  },
+  "notificationZones": {
+    "title": "Notification zones",
+    "create": "New zone",
+    "manage": "Manage notification zones",
+    "editTitle": "Edit notification zone",
+    "empty": "No notification zones yet. Create one to group sensors for alerts, independently of your farm zones.",
+    "inactive": "Inactive",
+    "active": "Active",
+    "noSensors": "No sensors assigned",
+    "name": "Name",
+    "description": "Description",
+    "sensors": "Sensors",
+    "sensorsHint": "Pick the (zone, sensor) streams this notification zone watches.",
+    "sensorsPlaceholder": "Select sensors…",
+    "noAvailableSensors": "No sensors with readings found",
+    "save": "Save",
+    "created": "Notification zone created",
+    "updated": "Notification zone updated",
+    "deleted": "Notification zone deleted",
+    "confirmDelete": "Delete this notification zone?",
+    "loadError": "Could not load notification zones",
+    "saveError": "Could not save. Please try again."
   }
 }

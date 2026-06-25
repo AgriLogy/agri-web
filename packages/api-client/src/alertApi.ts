@@ -18,6 +18,7 @@ export interface AlertRecord {
   threshold: number | null;
   sensor_key: string;
   zone: number | null;
+  notification_zone: number | null;
   is_active: boolean;
   last_triggered_at: string | null;
   created_at: string | null;
@@ -54,6 +55,7 @@ export interface AlertWritePayload {
   condition_nbr: number | string;
   sensor_key: string;
   zone?: number | null;
+  notification_zone?: number | null;
   is_active?: boolean;
   notify_email?: boolean;
   notify_whatsapp?: boolean;

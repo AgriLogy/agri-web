@@ -26,6 +26,7 @@ import {
   type SensorKeyOption,
 } from '@/app/utils/alertChoices';
 import api from '@agri/api-client/api';
+import { notificationZoneApi } from '@agri/api-client/notificationZoneApi';
 import { userProfileApi } from '@agri/api-client/userProfileApi';
 import AlertForm, { type AlertFormValues } from './AlertForm';
 
@@ -58,6 +59,9 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
   const [sensorKeys, setSensorKeys] =
     useState<SensorKeyOption[]>(DEFAULT_SENSOR_KEYS);
   const [zones, setZones] = useState<{ id: number; name: string }[]>([]);
+  const [notificationZones, setNotificationZones] = useState<
+    { id: number; name: string }[]
+  >([]);
   const [defaultContact, setDefaultContact] = useState<{
     phone?: string;
     email?: string;
@@ -86,6 +90,14 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
       .get<{ id: number; name: string }[]>('/zones')
       .then((r) => {
         if (Array.isArray(r.data)) setZones(r.data);
+      })
+      .catch(() => {});
+    void notificationZoneApi
+      .list()
+      .then((list) => {
+        if (Array.isArray(list)) {
+          setNotificationZones(list.map((z) => ({ id: z.id, name: z.name })));
+        }
       })
       .catch(() => {});
   }, [open]);
@@ -213,6 +225,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
         initial={editing}
         sensorKeys={sensorKeys}
         zones={zones}
+        notificationZones={notificationZones}
         defaultContact={defaultContact}
         onSubmit={handleSubmit}
       />

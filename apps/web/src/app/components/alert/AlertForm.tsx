@@ -26,6 +26,7 @@ export interface AlertFormValues {
   description?: string;
   sensor_key: string;
   zone?: number | null;
+  notification_zone?: number | null;
   condition: '>' | '<' | '=';
   condition_nbr: number;
   is_active: boolean;
@@ -41,6 +42,8 @@ export interface AlertFormProps {
   initial?: AlertRecord | null;
   sensorKeys: SensorKeyOption[];
   zones?: { id: number; name: string }[];
+  /** Custom notification zones the alert can bind to instead of a farm zone. */
+  notificationZones?: { id: number; name: string }[];
   /** The user's default contact, shown as placeholders for the overrides. */
   defaultContact?: { phone?: string; email?: string };
   onSubmit: (payload: AlertWritePayload) => Promise<void> | void;
@@ -52,6 +55,7 @@ const toFormValues = (alert: AlertRecord): AlertFormValues => ({
   description: alert.description ?? '',
   sensor_key: alert.sensor_key || 'temperature_weather',
   zone: alert.zone ?? null,
+  notification_zone: alert.notification_zone ?? null,
   condition: alert.condition,
   condition_nbr:
     alert.threshold ??
@@ -72,6 +76,7 @@ const DEFAULT_VALUES: AlertFormValues = {
   description: '',
   sensor_key: 'temperature_weather',
   zone: null,
+  notification_zone: null,
   condition: '>',
   condition_nbr: 30,
   is_active: true,
@@ -87,6 +92,7 @@ const AlertForm: React.FC<AlertFormProps> = ({
   initial,
   sensorKeys,
   zones = [],
+  notificationZones = [],
   defaultContact,
   onSubmit,
 }) => {
@@ -118,7 +124,9 @@ const AlertForm: React.FC<AlertFormProps> = ({
       condition: values.condition,
       condition_nbr: Number(values.condition_nbr),
       sensor_key: values.sensor_key,
-      zone: values.zone ?? null,
+      // An alert binds to a farm zone XOR a notification zone; the latter wins.
+      zone: values.notification_zone ? null : (values.zone ?? null),
+      notification_zone: values.notification_zone ?? null,
       is_active: values.is_active ?? true,
       notify_email: values.notify_email ?? true,
       notify_whatsapp: values.notify_whatsapp ?? false,
@@ -191,6 +199,27 @@ const AlertForm: React.FC<AlertFormProps> = ({
             allowClear
             placeholder={t('alertsPage.form.zonePlaceholder')}
             options={zones.map((z) => ({ value: z.id, label: z.name }))}
+          />
+        </Form.Item>
+      )}
+
+      {notificationZones.length > 0 && (
+        <Form.Item
+          name="notification_zone"
+          label={
+            <span className={styles.label}>
+              {t('alertsPage.form.notificationZone')}
+            </span>
+          }
+          tooltip={t('alertsPage.form.notificationZoneHint')}
+        >
+          <Select
+            allowClear
+            placeholder={t('alertsPage.form.notificationZonePlaceholder')}
+            options={notificationZones.map((z) => ({
+              value: z.id,
+              label: z.name,
+            }))}
           />
         </Form.Item>
       )}
