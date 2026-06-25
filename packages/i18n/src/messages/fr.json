@@ -676,7 +676,10 @@
       "overridePhoneHint": "Laissez vide pour utiliser le contact de votre profil.",
       "overrideEmail": "E-mail personnalisé",
       "overrideEmailPlaceholder": "Utiliser mon e-mail par défaut",
-      "active": "Active"
+      "active": "Active",
+      "notificationZone": "Zone de notification",
+      "notificationZonePlaceholder": "Optionnel — associer à une zone personnalisée",
+      "notificationZoneHint": "Associer cette alerte à une zone de notification personnalisée plutôt qu'à une parcelle."
     }
   },
   "analytics": {
@@ -1965,5 +1968,28 @@
       "zonePh": "Sélectionner une zone",
       "stage": "Stade"
     }
+  },
+  "notificationZones": {
+    "title": "Zones de notification",
+    "create": "Nouvelle zone",
+    "manage": "Gérer les zones de notification",
+    "editTitle": "Modifier la zone de notification",
+    "empty": "Aucune zone de notification. Créez-en une pour regrouper des capteurs pour les alertes, indépendamment de vos parcelles.",
+    "inactive": "Inactive",
+    "active": "Active",
+    "noSensors": "Aucun capteur assigné",
+    "name": "Nom",
+    "description": "Description",
+    "sensors": "Capteurs",
+    "sensorsHint": "Choisissez les flux (zone, capteur) surveillés par cette zone de notification.",
+    "sensorsPlaceholder": "Sélectionner des capteurs…",
+    "noAvailableSensors": "Aucun capteur avec des relevés",
+    "save": "Enregistrer",
+    "created": "Zone de notification créée",
+    "updated": "Zone de notification mise à jour",
+    "deleted": "Zone de notification supprimée",
+    "confirmDelete": "Supprimer cette zone de notification ?",
+    "loadError": "Impossible de charger les zones de notification",
+    "saveError": "Échec de l'enregistrement. Réessayez."
   }
 }

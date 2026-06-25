@@ -123,6 +123,7 @@ describe('AlertForm', () => {
       threshold: 20,
       sensor_key: 'soil_moisture_medium',
       zone: null,
+      notification_zone: null,
       is_active: false,
       last_triggered_at: null,
       created_at: null,
