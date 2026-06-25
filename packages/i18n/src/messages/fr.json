@@ -1074,6 +1074,18 @@
         "alerts": {
           "label": "Gestion des alertes",
           "description": "Consultation et gestion de toutes les alertes de votre exploitation"
+        },
+        "vannesPompes": {
+          "label": "Vannes et pompes",
+          "description": "État et commande des vannes et pompes d'irrigation"
+        },
+        "notifications": {
+          "label": "Notifications",
+          "description": "Configuration des alertes email et historique"
+        },
+        "settings": {
+          "label": "Paramètres",
+          "description": "Préférences du compte, capteurs et affichage"
         }
       },
       "pageContext": "Contexte de la page actuelle : {context}",
@@ -1084,7 +1096,24 @@
       "send": "Envoyer",
       "inputPlaceholder": "Posez votre question ou tapez /help...",
       "stopGeneration": "Arrêter la génération ×",
-      "inputHint": "Entrée pour envoyer, Maj+Entrée pour nouvelle ligne"
+      "inputHint": "Entrée pour envoyer, Maj+Entrée pour nouvelle ligne",
+      "tabLabel": "ASSISTANT",
+      "openAssistant": "Ouvrir l'assistant Agrilogy",
+      "newChat": "Nouvelle conversation",
+      "expand": "Ouvrir en pleine page",
+      "sitemap": {
+        "title": "📋 Pages de l'application",
+        "intro": "Voici les pages que vous pouvez consulter :"
+      },
+      "mock": {
+        "generic": "Je suis en mode démonstration pour l'instant — la connexion au moteur d'IA n'est pas encore activée. Essayez la commande /sitemap pour afficher le plan du site."
+      },
+      "history": {
+        "empty": "Aucune conversation pour le moment. Démarrez-en une !",
+        "show": "Historique",
+        "hide": "Masquer l'historique",
+        "delete": "Supprimer la conversation"
+      }
     },
     "googleMapWeather": {
       "title": "Exploitation & secteurs",

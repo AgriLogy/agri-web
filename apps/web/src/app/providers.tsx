@@ -20,6 +20,8 @@ import { theme } from '@agri/ui';
 import { antdTheme } from '@agri/ui';
 import PeriodicZoneNotificationScheduler from './components/main/PeriodicZoneNotificationScheduler';
 import ImpersonationBanner from './components/main/ImpersonationBanner';
+import { ChatProvider } from './components/agryChatBot/ChatContext';
+import { ChatDock } from './components/agryChatBot/ChatDock';
 import { dirFor, type Locale } from '@agri/i18n';
 
 const antdLocales: Record<Locale, AntdLocale> = {
@@ -104,9 +106,12 @@ export function Providers({
     <EmotionCacheProvider>
       <ChakraProvider theme={chakraTheme}>
         <ThemedAntdProvider locale={locale} dir={dir}>
-          <ImpersonationBanner />
-          <PeriodicZoneNotificationScheduler />
-          {children}
+          <ChatProvider>
+            <ImpersonationBanner />
+            <PeriodicZoneNotificationScheduler />
+            {children}
+            <ChatDock />
+          </ChatProvider>
         </ThemedAntdProvider>
       </ChakraProvider>
     </EmotionCacheProvider>
