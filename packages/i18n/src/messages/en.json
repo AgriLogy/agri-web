@@ -23,7 +23,6 @@
     "soilData": "Soil data",
     "station": "Weather station",
     "plantData": "Plant data",
-    "cropCalendar": "Crop calendar",
     "waterStation": "Water station",
     "valvesPumps": "Valves & pumps",
     "alerts": "Alerts",
@@ -36,7 +35,8 @@
     "profile": "Profile",
     "navigation": "Navigation",
     "accountMenu": "Account menu",
-    "openMenu": "Open menu"
+    "openMenu": "Open menu",
+    "cropCalendar": "Crop calendar"
   },
   "logout": {
     "signOut": "Sign out",
@@ -1850,6 +1850,43 @@
     "banner": "Viewing as {user} — read-only",
     "exit": "Exit",
     "loading": "Opening session…"
+  },
+  "irrigationAutomation": {
+    "simBannerTitle": "Simulation mode",
+    "simBannerBody": "Commands are recorded but not sent to hardware yet.",
+    "manualTitle": "Manual control",
+    "noZones": "No zones configured.",
+    "open": "Open",
+    "close": "Close",
+    "programsTitle": "Scheduled programs",
+    "name": "Name",
+    "zone": "Zone",
+    "startTime": "Start time",
+    "durationMin": "Duration (min)",
+    "addProgram": "Add program",
+    "deleteProgram": "Delete program",
+    "programError": "Could not save the program.",
+    "historyTitle": "Command history",
+    "noCommands": "No commands yet.",
+    "action": "Action",
+    "source": "Source",
+    "statusCol": "Status",
+    "time": "Time",
+    "commandSent": {
+      "open": "Open command sent",
+      "close": "Close command sent"
+    },
+    "commandError": "Command failed.",
+    "status": {
+      "pending": "Pending",
+      "simulated": "Simulated",
+      "sent": "Sent",
+      "failed": "Failed"
+    },
+    "src": {
+      "manual": "Manual",
+      "scheduled": "Scheduled"
+    }
   },
   "cropCalendar": {
     "title": "Crop calendar (Kc)",
