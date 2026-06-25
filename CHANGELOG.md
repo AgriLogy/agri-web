@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/mks-zakaria/agri-web/compare/v1.9.0...v1.10.0) (2026-06-25)
+
+
+### Features
+
+* **chatbot:** render per-intent data cards + make /clear wipe the thread ([#33](https://github.com/mks-zakaria/agri-web/issues/33)) ([44a9438](https://github.com/mks-zakaria/agri-web/commit/44a9438426b81df162abc3dfefc2ddd0db4c208f)), closes [#29](https://github.com/mks-zakaria/agri-web/issues/29)
+
 # [1.9.0](https://github.com/mks-zakaria/agri-web/compare/v1.8.0...v1.9.0) (2026-06-25)
 
 
