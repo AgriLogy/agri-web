@@ -35,7 +35,8 @@
     "profile": "Profil",
     "navigation": "Navigation",
     "accountMenu": "Menu compte",
-    "openMenu": "Ouvrir le menu"
+    "openMenu": "Ouvrir le menu",
+    "cropCalendar": "Calendrier cultural"
   },
   "logout": {
     "signOut": "Se déconnecter",
@@ -1662,7 +1663,12 @@
     "weather": {
       "title": "Météo",
       "feelsLike": "Température ressentie",
-      "today": "Auj."
+      "today": "Auj.",
+      "changeLocation": "Changer de lieu",
+      "searchPlaceholder": "Rechercher une ville…",
+      "resetStation": "Lieu de la station",
+      "noResults": "Aucun résultat",
+      "searching": "Recherche…"
     }
   },
   "station": {
@@ -1880,6 +1886,42 @@
     "src": {
       "manual": "Manuel",
       "scheduled": "Planifié"
+    }
+  },
+  "cropCalendar": {
+    "title": "Calendrier cultural (Kc)",
+    "subtitle": "Définissez vos cultures et leurs coefficients culturaux (Kc) par stade de croissance.",
+    "allZones": "Toutes les zones",
+    "newCrop": "Nouvelle culture",
+    "editCrop": "Modifier la culture",
+    "save": "Enregistrer",
+    "saved": "Culture enregistrée",
+    "saveError": "Échec de l'enregistrement",
+    "deleted": "Culture supprimée",
+    "deleteError": "Échec de la suppression",
+    "loadError": "Échec du chargement",
+    "empty": "Aucune culture définie",
+    "noStages": "Aucun stade",
+    "addStage": "Ajouter un stade",
+    "confirmDelete": "Supprimer cette culture ?",
+    "yes": "Oui",
+    "no": "Non",
+    "edit": "Modifier",
+    "col": {
+      "crop": "Culture",
+      "plant": "Plante",
+      "zone": "Zone",
+      "stages": "Stades (Kc)",
+      "actions": "Actions"
+    },
+    "field": {
+      "crop": "Nom de la culture",
+      "cropPh": "ex. Tomate 2026",
+      "plant": "Plante",
+      "plantPh": "ex. Tomate",
+      "zone": "Zone",
+      "zonePh": "Sélectionner une zone",
+      "stage": "Stade"
     }
   }
 }

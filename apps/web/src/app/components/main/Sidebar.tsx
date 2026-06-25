@@ -23,7 +23,13 @@ import { FaSeedling } from 'react-icons/fa6';
 import { WiDaySunny } from 'react-icons/wi';
 import { GiGrapes, GiValve } from 'react-icons/gi';
 import { IoLogOut } from 'react-icons/io5';
-import { FaBell, FaCog, FaHome, FaWater } from 'react-icons/fa';
+import {
+  FaBell,
+  FaCog,
+  FaHome,
+  FaRegCalendarAlt,
+  FaWater,
+} from 'react-icons/fa';
 import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 
@@ -56,6 +62,11 @@ const Sidebar = () => {
     { href: '/soil', icon: FaSeedling, label: t('nav.soilData') },
     { href: '/station', icon: WiDaySunny, label: t('nav.station') },
     { href: '/plant', icon: GiGrapes, label: t('nav.plantData') },
+    {
+      href: '/crop-calendar',
+      icon: FaRegCalendarAlt,
+      label: t('nav.cropCalendar'),
+    },
     { href: '/water', icon: FaWater, label: t('nav.waterStation') },
     { href: '/vannes-pompes', icon: GiValve, label: t('nav.valvesPumps') },
     { href: '/notifications', icon: FaBell, label: t('nav.notifications') },

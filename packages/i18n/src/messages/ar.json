@@ -35,7 +35,8 @@
     "profile": "الملف الشخصي",
     "navigation": "التنقل",
     "accountMenu": "قائمة الحساب",
-    "openMenu": "فتح القائمة"
+    "openMenu": "فتح القائمة",
+    "cropCalendar": "التقويم الزراعي"
   },
   "logout": {
     "signOut": "تسجيل الخروج",
@@ -1662,7 +1663,12 @@
     "weather": {
       "title": "الطقس",
       "feelsLike": "الإحساس الحراري",
-      "today": "اليوم"
+      "today": "اليوم",
+      "changeLocation": "تغيير الموقع",
+      "searchPlaceholder": "ابحث عن مدينة…",
+      "resetStation": "موقع المحطة",
+      "noResults": "لا توجد نتائج",
+      "searching": "جارٍ البحث…"
     }
   },
   "station": {
@@ -1880,6 +1886,42 @@
     "src": {
       "manual": "يدوي",
       "scheduled": "مجدول"
+    }
+  },
+  "cropCalendar": {
+    "title": "التقويم الزراعي (Kc)",
+    "subtitle": "حدّد محاصيلك ومعاملاتها الزراعية (Kc) حسب مرحلة النمو.",
+    "allZones": "كل المناطق",
+    "newCrop": "محصول جديد",
+    "editCrop": "تعديل المحصول",
+    "save": "حفظ",
+    "saved": "تم حفظ المحصول",
+    "saveError": "فشل الحفظ",
+    "deleted": "تم حذف المحصول",
+    "deleteError": "فشل الحذف",
+    "loadError": "فشل التحميل",
+    "empty": "لا توجد محاصيل",
+    "noStages": "لا مراحل",
+    "addStage": "إضافة مرحلة",
+    "confirmDelete": "حذف هذا المحصول؟",
+    "yes": "نعم",
+    "no": "لا",
+    "edit": "تعديل",
+    "col": {
+      "crop": "المحصول",
+      "plant": "النبات",
+      "zone": "المنطقة",
+      "stages": "المراحل (Kc)",
+      "actions": "إجراءات"
+    },
+    "field": {
+      "crop": "اسم المحصول",
+      "cropPh": "مثال: طماطم 2026",
+      "plant": "النبات",
+      "plantPh": "مثال: طماطم",
+      "zone": "المنطقة",
+      "zonePh": "اختر منطقة",
+      "stage": "المرحلة"
     }
   }
 }
