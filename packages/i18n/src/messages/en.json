@@ -1662,7 +1662,12 @@
     "weather": {
       "title": "Weather",
       "feelsLike": "Feels like",
-      "today": "Today"
+      "today": "Today",
+      "changeLocation": "Change location",
+      "searchPlaceholder": "Search a city…",
+      "resetStation": "Station location",
+      "noResults": "No results",
+      "searching": "Searching…"
     }
   },
   "station": {
