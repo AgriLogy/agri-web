@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import ElectrovannesList from './ElectrovannesDashboardCard';
+import PompesList from './PompesDashboardCard';
 import GoogleMapWeather from '../GoogleMapWeather';
 import WeatherDashboard from './WeatherDashboard';
 import RecentNotificationsCard from './RecentNotificationsCard';
@@ -46,6 +47,9 @@ const MainContent = () => {
         </Card>
         <Card>
           <ElectrovannesList />
+        </Card>
+        <Card>
+          <PompesList />
         </Card>
       </SimpleGrid>
     </Box>

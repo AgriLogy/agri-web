@@ -11,7 +11,19 @@ import {
 import SensorLeafLastData from './SensorLeafLastData';
 import SensorLeafChart from './SensorLeafChart';
 import api from '@agri/api-client/api';
+import { getSensorEndpointSpec } from '@agri/sensor-catalog';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';
+
+const leafMoistureSpec = getSensorEndpointSpec('leaf_moisture');
+const leafTemperatureSpec = getSensorEndpointSpec('leaf_temperature');
+const LEAF_MOISTURE_PATH =
+  leafMoistureSpec?.kind === 'single'
+    ? leafMoistureSpec.path
+    : '/sensors/leafmoisture';
+const LEAF_TEMPERATURE_PATH =
+  leafTemperatureSpec?.kind === 'single'
+    ? leafTemperatureSpec.path
+    : '/sensors/leaftemperature';
 
 type SensorData = {
   timestamp: string;
@@ -36,14 +48,14 @@ const SensorLeafMain = ({
     const fetchData = async () => {
       try {
         const [moistureRes, temperatureRes] = await Promise.all([
-          api.get('api/sensors/leafmoisture/', {
+          api.get(LEAF_MOISTURE_PATH, {
             params: {
               start_date: startDate,
               end_date: endDate,
               zone: selectedZone,
             },
           }),
-          api.get('api/sensors/leaftemperature/', {
+          api.get(LEAF_TEMPERATURE_PATH, {
             params: {
               start_date: startDate,
               end_date: endDate,

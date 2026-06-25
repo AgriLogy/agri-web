@@ -627,7 +627,6 @@
     },
     "main": {
       "loadError": "Impossible de charger les alertes.",
-      "limitReached": "Limite atteinte : supprimez une alerte pour en créer une autre (max {max}).",
       "deleteSuccess": "Alerte supprimée.",
       "deleteError": "Échec de la suppression.",
       "toggleError": "Impossible de changer le statut.",
@@ -1559,7 +1558,9 @@
       "recentNotifications": "Notifications récentes",
       "recentNotificationsEmpty": "Aucune notification récente",
       "viewAll": "Tout voir",
-      "electrovannesAvailable": "Électrovannes disponibles"
+      "electrovannesAvailable": "Électrovannes disponibles",
+      "pompesAvailable": "Pompes disponibles",
+      "pompesEmpty": "Aucune pompe configurée"
     },
     "electrovanCard": {
       "devEui": "DevEUI",
@@ -1569,6 +1570,11 @@
       "status": "Statut",
       "activated": "Activé",
       "deactivated": "Désactivé"
+    },
+    "pumpCard": {
+      "status": "État",
+      "running": "En marche",
+      "stopped": "Arrêtée"
     },
     "statusIndicators": {
       "title": "Indicateurs d'état du système",
@@ -1850,6 +1856,9 @@
     "banner": "Affichage en tant que {user} — lecture seule",
     "exit": "Quitter",
     "loading": "Ouverture de la session…"
+  },
+  "managerAffirmation": {
+    "banner": "Vous avez {count, plural, one {# demande} other {# demandes}} en attente de décision de votre responsable."
   },
   "irrigationAutomation": {
     "simBannerTitle": "Mode simulation",
