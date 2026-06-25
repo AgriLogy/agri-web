@@ -5,11 +5,11 @@
  * `getConfig().dispatch_enabled` to show a simulation banner.
  */
 import api from './api';
-
-export interface ZoneOption {
-  id: number;
-  name: string;
-}
+// ZoneOption ({ id, name }) is defined once in kcApi and re-exported here so
+// subpath consumers of this module keep working while the package barrel
+// (index.ts) sees a single canonical declaration (no duplicate-export clash).
+import type { ZoneOption } from './kcApi';
+export type { ZoneOption };
 
 export interface IrrigationProgram {
   id: number;
