@@ -27,6 +27,8 @@ export interface MockResult {
   command?: string;
 }
 
+import type { ChatEngine } from './types';
+
 /** Normalize for matching: lowercase, trim, strip a leading slash. */
 const norm = (s: string) => s.trim().toLowerCase();
 
@@ -76,6 +78,23 @@ export function routeMockReply(latest: string): MockResult {
 
   return { replyKey: 'misc.chatbot.mock.generic', stream: true };
 }
+
+/**
+ * `ChatEngine` adapter over `routeMockReply` — lets ChatContext treat the mock
+ * and the real backend uniformly. Kept as the offline/dev fallback behind
+ * `NEXT_PUBLIC_ASSISTANT_MOCK`.
+ */
+export const mockEngine: ChatEngine = {
+  async respond({ message }) {
+    const r = routeMockReply(message);
+    return {
+      replyKey: r.replyKey,
+      values: r.values,
+      card: r.card,
+      stream: r.stream,
+    };
+  },
+};
 
 /**
  * Simulate streaming a fully-resolved reply string to `onChunk`. For command

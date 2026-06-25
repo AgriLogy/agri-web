@@ -1116,7 +1116,41 @@
         "show": "History",
         "hide": "Hide history",
         "delete": "Delete conversation"
-      }
+      },
+      "alertsCard": {
+        "intro": "Here are your active alerts:"
+      },
+      "commandsCard": {
+        "intro": "Here are the available commands:"
+      },
+      "statusCard": {
+        "intro": "Here is your farm's current status:"
+      },
+      "weatherCard": {
+        "intro": "Here are the current weather conditions:"
+      },
+      "zonesCard": {
+        "intro": "Here are your zones:"
+      },
+      "soilCard": {
+        "intro": "Here is your soil status:"
+      },
+      "plantCard": {
+        "intro": "Here is your plant status:"
+      },
+      "waterCard": {
+        "intro": "Here is your water & irrigation status:"
+      },
+      "trendCard": {
+        "intro": "Here is the recent trend:"
+      },
+      "irrigationCard": {
+        "intro": "Here is my irrigation advice:"
+      },
+      "notificationsCard": {
+        "intro": "Here are your recent notifications:"
+      },
+      "cleared": "Conversation cleared."
     },
     "googleMapWeather": {
       "title": "Farm & sectors",
