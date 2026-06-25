@@ -20,6 +20,7 @@ import React, {
 } from 'react';
 import { useTranslations } from 'next-intl';
 import { loadConversations, saveConversations } from './chatHistoryStorage';
+import { isClearCommand } from './chatMap';
 import { mockEngine, streamReply } from './mockEngine';
 import { realEngine } from './realEngine';
 import {
@@ -151,10 +152,34 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     [t]
   );
 
+  // `/clear` — wipe the active thread locally + best-effort on the server,
+  // leaving a single localized confirmation. No-op when no thread is active.
+  const clearActiveThread = useCallback(() => {
+    const targetId = activeId;
+    if (!targetId) return;
+    const now = new Date();
+    const confirm: Message = {
+      id: uuid(),
+      role: 'assistant',
+      content: t('misc.chatbot.cleared'),
+      timestamp: now,
+    };
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === targetId ? { ...c, messages: [confirm], updatedAt: now } : c
+      )
+    );
+    if (!USE_MOCK) removeConversation(targetId);
+  }, [activeId, t]);
+
   const sendMessage = useCallback(
     (raw: string) => {
       const text = raw.trim();
       if (!text || streaming) return;
+      if (isClearCommand(text)) {
+        clearActiveThread();
+        return;
+      }
 
       const now = new Date();
       const userMsg: Message = {
@@ -261,7 +286,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
           setStreaming(false);
         });
     },
-    [activeId, streaming, patchLastMessage, resolveReplyText]
+    [activeId, streaming, patchLastMessage, resolveReplyText, clearActiveThread]
   );
 
   const stop = useCallback(() => {

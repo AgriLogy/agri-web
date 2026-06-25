@@ -1150,7 +1150,10 @@
       "notificationsCard": {
         "intro": "Voici vos notifications récentes :"
       },
-      "cleared": "Conversation effacée."
+      "cleared": "Conversation effacée.",
+      "dataCard": {
+        "empty": "Aucune donnée à afficher."
+      }
     },
     "googleMapWeather": {
       "title": "Exploitation & secteurs",

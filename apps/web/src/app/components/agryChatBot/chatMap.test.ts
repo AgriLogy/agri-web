@@ -2,6 +2,8 @@ import {
   mapChatResponse,
   messagesToJSON,
   conversationFromDTO,
+  dataCardFor,
+  isClearCommand,
 } from './chatMap';
 import type { Message } from './types';
 
@@ -142,5 +144,117 @@ describe('conversationFromDTO', () => {
     expect(conv.messages[1].role).toBe('assistant');
     expect(conv.messages[2].id).toBe('srv-2');
     expect(conv.messages[2].content).toBe('');
+  });
+});
+
+describe('dataCardFor', () => {
+  const base = {
+    intent: 'smalltalk',
+    reply_key: null,
+    reply: null,
+    tool: null,
+    data: null,
+  };
+
+  it('returns the sitemap card for the sitemap intent', () => {
+    expect(dataCardFor({ ...base, intent: 'sitemap' })).toEqual({
+      type: 'sitemap',
+    });
+  });
+
+  it('maps an alerts payload to an alerts card', () => {
+    const card = dataCardFor({
+      ...base,
+      intent: 'active_alerts',
+      data: {
+        alerts: [
+          {
+            name: 'Heat',
+            zone: 'Z1',
+            condition: '>',
+            threshold: 30,
+            severity: 'warning',
+          },
+        ],
+      },
+    });
+    expect(card).toEqual({
+      type: 'alerts',
+      items: [
+        {
+          name: 'Heat',
+          zone: 'Z1',
+          condition: '>',
+          threshold: 30,
+          severity: 'warning',
+        },
+      ],
+    });
+  });
+
+  it('maps a metrics payload (null value tolerated)', () => {
+    const card = dataCardFor({
+      ...base,
+      intent: 'weather',
+      data: {
+        metrics: [
+          { label: 'Temp', value: 21.5, unit: '°C' },
+          { key: 'rh', value: null },
+        ],
+      },
+    });
+    expect(card).toEqual({
+      type: 'metrics',
+      items: [
+        { label: 'Temp', value: 21.5, unit: '°C' },
+        { label: 'rh', value: null },
+      ],
+    });
+  });
+
+  it('maps a notifications payload', () => {
+    const card = dataCardFor({
+      ...base,
+      intent: 'notifications',
+      data: {
+        notifications: [
+          { title: 'Irrigation', message: 'sol 30 %', date: '2026-01-01' },
+        ],
+      },
+    });
+    expect(card).toEqual({
+      type: 'notifications',
+      items: [{ title: 'Irrigation', message: 'sol 30 %', date: '2026-01-01' }],
+    });
+  });
+
+  it('maps an error payload', () => {
+    expect(
+      dataCardFor({ ...base, intent: 'water', data: { error: 'boom' } })
+    ).toEqual({ type: 'error', message: 'boom' });
+  });
+
+  it('returns undefined for an unrecognised / empty payload', () => {
+    expect(
+      dataCardFor({ ...base, intent: 'soil', data: null })
+    ).toBeUndefined();
+    expect(
+      dataCardFor({ ...base, intent: 'soil', data: { foo: 1 } })
+    ).toBeUndefined();
+  });
+});
+
+describe('isClearCommand', () => {
+  it('matches the slash form and fr/ar phrases', () => {
+    expect(isClearCommand('/clear')).toBe(true);
+    expect(isClearCommand('  CLEAR ')).toBe(true);
+    expect(isClearCommand('effacer')).toBe(true);
+    expect(isClearCommand('مسح')).toBe(true);
+  });
+
+  it('does not match ordinary messages', () => {
+    expect(isClearCommand('clear the field?')).toBe(false);
+    expect(isClearCommand('/sitemap')).toBe(false);
+    expect(isClearCommand('hello')).toBe(false);
   });
 });
