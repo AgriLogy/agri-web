@@ -13,7 +13,9 @@ const STORAGE_KEY = 'agrilogy_chat_history';
 const isBrowser = () => typeof window !== 'undefined';
 
 /** Dates are stored as ISO strings; revive them on load. */
-function reviveMessage(raw: Omit<Message, 'timestamp'> & { timestamp: string }): Message {
+function reviveMessage(
+  raw: Omit<Message, 'timestamp'> & { timestamp: string }
+): Message {
   return { ...raw, timestamp: new Date(raw.timestamp) };
 }
 

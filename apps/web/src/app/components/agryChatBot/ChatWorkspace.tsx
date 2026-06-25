@@ -9,7 +9,12 @@ import type { Conversation } from './types';
 
 const PlusIcon = ({ size = 15 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    <path
+      d="M12 5v14M5 12h14"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -82,7 +87,13 @@ const HistoryList = ({ onPick }: { onPick?: () => void }) => {
 
       <Box flex={1} minH={0} overflowY="auto" px="8px" pb="8px">
         {conversations.length === 0 ? (
-          <Text fontSize="12px" color={emptyColor} textAlign="center" mt="20px" px="10px">
+          <Text
+            fontSize="12px"
+            color={emptyColor}
+            textAlign="center"
+            mt="20px"
+            px="10px"
+          >
             {t('misc.chatbot.history.empty')}
           </Text>
         ) : (
@@ -172,7 +183,13 @@ export const ChatWorkspace = () => {
 
   if (isMobile) {
     return (
-      <Flex direction="column" h="100%" minH={0} bg={surface} position="relative">
+      <Flex
+        direction="column"
+        h="100%"
+        minH={0}
+        bg={surface}
+        position="relative"
+      >
         <Flex
           align="center"
           justify="space-between"

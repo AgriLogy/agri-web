@@ -140,7 +140,8 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
 
         {messages.map((msg, i) => {
           const isLast = i === messages.length - 1;
-          const showTyping = isLast && isTypingIndicator && msg.role === 'assistant';
+          const showTyping =
+            isLast && isTypingIndicator && msg.role === 'assistant';
 
           if (msg.card?.type === 'sitemap') {
             return (
@@ -184,7 +185,11 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
           }
 
           return (
-            <AgrilogyMessageBubble key={msg.id} message={msg} isTyping={showTyping} />
+            <AgrilogyMessageBubble
+              key={msg.id}
+              message={msg}
+              isTyping={showTyping}
+            />
           );
         })}
         <div ref={endRef} />
@@ -248,7 +253,9 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
             justifyContent="center"
             opacity={canSend ? 1 : 0.35}
             transition="background 0.15s, transform 0.15s"
-            _hover={canSend ? { bg: sendHoverBg, transform: 'scale(1.05)' } : {}}
+            _hover={
+              canSend ? { bg: sendHoverBg, transform: 'scale(1.05)' } : {}
+            }
             _active={canSend ? { transform: 'scale(0.95)' } : {}}
             disabled={!canSend}
             aria-label={t('misc.chatbot.send')}
