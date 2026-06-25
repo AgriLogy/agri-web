@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/mks-zakaria/agri-web/compare/v1.6.0...v1.7.0) (2026-06-25)
+
+
+### Features
+
+* **notifications:** custom notification zones UI + real SMS toggle ([#27](https://github.com/mks-zakaria/agri-web/issues/27)) ([80473da](https://github.com/mks-zakaria/agri-web/commit/80473daa8c46cb50cdcc100b8bcfe0cc8a8d3f14)), closes [#57](https://github.com/mks-zakaria/agri-web/issues/57)
+
 # [1.6.0](https://github.com/mks-zakaria/agri-web/compare/v1.5.0...v1.6.0) (2026-06-25)
 
 
