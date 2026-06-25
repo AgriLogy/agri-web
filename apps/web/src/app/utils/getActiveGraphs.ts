@@ -19,6 +19,7 @@ export interface ActiveGraphResponse {
   water_pressure_status: boolean;
   water_ph_status: boolean;
   water_ec_status: boolean;
+  water_level_status: boolean;
   leaf_sensor_status: boolean;
   fruit_size_status: boolean;
   large_fruit_diameter_status: boolean;

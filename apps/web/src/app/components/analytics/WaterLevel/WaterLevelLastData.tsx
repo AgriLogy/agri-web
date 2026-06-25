@@ -40,10 +40,10 @@ const Row = ({
 
 const WaterLevelLastData = ({
   data,
-  basin,
+  basin = {},
 }: {
   data: SensorData[];
-  basin: BasinGeometry;
+  basin?: BasinGeometry;
 }) => {
   const t = useTranslations();
   useUnitOverridesRevision();
