@@ -1,3 +1,12 @@
+# [1.4.0](https://github.com/mks-zakaria/agri-web/compare/v1.3.0...v1.4.0) (2026-06-25)
+
+
+### Features
+
+* **crop-calendar:** port Kc crop-calendar farmer feature from agri-front ([#16](https://github.com/mks-zakaria/agri-web/issues/16)) ([e8ee241](https://github.com/mks-zakaria/agri-web/commit/e8ee241df5f3213ecbcc50c30fdd8a7069b2a037))
+* **irrigation:** port irrigation-automation farmer feature from agri-front ([#18](https://github.com/mks-zakaria/agri-web/issues/18)) ([7d651a7](https://github.com/mks-zakaria/agri-web/commit/7d651a78ef75cdd50800bce186f5d0084c6d4133))
+* **weather:** port weather location picker from agri-front ([#15](https://github.com/mks-zakaria/agri-web/issues/15)) ([1c58226](https://github.com/mks-zakaria/agri-web/commit/1c5822622ab2b6cfb0141736cccacf79222ba86a))
+
 # [1.3.0](https://github.com/mks-zakaria/agri-web/compare/v1.2.2...v1.3.0) (2026-06-24)
 
 
