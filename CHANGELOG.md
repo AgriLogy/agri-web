@@ -1,3 +1,16 @@
+# [1.5.0](https://github.com/mks-zakaria/agri-web/compare/v1.4.0...v1.5.0) (2026-06-25)
+
+
+### Bug Fixes
+
+* **api-client:** dedupe ZoneOption so the package barrel doesn't collide ([#23](https://github.com/mks-zakaria/agri-web/issues/23)) ([ed3cad9](https://github.com/mks-zakaria/agri-web/commit/ed3cad98511a4c45a205f8ea6470d6b45868fce6))
+* carried-over farmer fixes from agrilogy-front backlog ([#22](https://github.com/mks-zakaria/agri-web/issues/22)) ([51212fb](https://github.com/mks-zakaria/agri-web/commit/51212fb1798a3b530f79fd0e4f19eb752c23f868))
+
+
+### Features
+
+* **notifications:** load Kc protocol from saved crop calendar ([#19](https://github.com/mks-zakaria/agri-web/issues/19)) ([e7a56f8](https://github.com/mks-zakaria/agri-web/commit/e7a56f8f7cc89b105c5f45be1305a3a34873c505))
+
 # [1.4.0](https://github.com/mks-zakaria/agri-web/compare/v1.3.0...v1.4.0) (2026-06-25)
 
 
