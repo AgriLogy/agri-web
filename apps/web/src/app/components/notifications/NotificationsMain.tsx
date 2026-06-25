@@ -1,26 +1,8 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Box,
-  Button,
-  SimpleGrid,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
-import { AddIcon, BellIcon } from '@chakra-ui/icons';
+import { App, Button, Col, Modal, Row } from 'antd';
+import { PlusOutlined, BellOutlined } from '@ant-design/icons';
 import Notification from '../notifications/Notification';
 import axiosInstance from '@agri/api-client/api';
 import {
@@ -45,12 +27,11 @@ import {
 
 const NotificationsMain: React.FC = () => {
   const t = useTranslations();
-  const toast = useToast();
-  const deleteCancelRef = useRef<HTMLButtonElement>(null);
+  const { message } = App.useApp();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { refresh: refreshBell } = useNotificationBellCounts();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [configureInitialZoneId, setConfigureInitialZoneId] = useState<
     number | undefined
   >(undefined);
@@ -63,6 +44,9 @@ const NotificationsMain: React.FC = () => {
   );
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
 
   const stripConfigureParamsFromUrl = () => {
     if (searchParams.get('zoneId') || searchParams.get('configId')) {
@@ -166,7 +150,8 @@ const NotificationsMain: React.FC = () => {
       setConfigureInitialZoneId(id);
     }
     onOpen();
-  }, [searchParams, onOpen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const openConfigure = () => {
     setConfigureIntent('create');
@@ -205,27 +190,24 @@ const NotificationsMain: React.FC = () => {
     deleteNotificationConfigById(id);
     setNotifications(readNotificationsFromCache() as any[]);
     void refreshBell();
-    toast({
-      title: t('notifications.main.deletedToastTitle'),
-      description: t('notifications.main.deletedToastDescription'),
-      status: 'success',
-      duration: 4000,
-      isClosable: true,
+    message.success({
+      content: `${t('notifications.main.deletedToastTitle')} — ${t('notifications.main.deletedToastDescription')}`,
+      duration: 4,
     });
   };
 
   if (loading) return <EmptyBox variant="loading" />;
 
   return (
-    <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
+    <div style={{ padding: 16 }}>
       <PageInfoBar
         title={t('notifications.main.title')}
         subtitle={t('notifications.main.subtitle')}
         actions={
           <Button
-            colorScheme="brand"
-            leftIcon={<AddIcon />}
-            size="sm"
+            type="primary"
+            icon={<PlusOutlined />}
+            size="small"
             onClick={openConfigure}
             data-testid="add-zone-notif"
           >
@@ -234,15 +216,12 @@ const NotificationsMain: React.FC = () => {
         }
       />
 
-      <SimpleGrid
-        spacing={{ base: 3, md: 4 }}
-        columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-      >
+      <Row gutter={[16, 16]}>
         {notifications.map((notification) => {
           const zid = notificationRowZoneId(notification);
           const rowCfgId = resolveStoredNotificationConfigId(notification);
           return (
-            <Box key={notification.id}>
+            <Col key={notification.id} xs={24} sm={12} md={8} lg={6}>
               <Notification
                 id={notification.id}
                 notification={{
@@ -264,88 +243,54 @@ const NotificationsMain: React.FC = () => {
                     : undefined
                 }
               />
-            </Box>
+            </Col>
           );
         })}
-      </SimpleGrid>
+      </Row>
 
       <Modal
-        isOpen={isOpen}
-        onClose={closeConfigureModal}
-        size="6xl"
-        scrollBehavior="inside"
-        blockScrollOnMount={false}
-      >
-        <ModalOverlay bg="blackAlpha.400" backdropFilter="blur(4px)" />
-        <ModalContent
-          borderRadius="xl"
-          mx={{ base: 2, md: 4 }}
-          maxW="min(1200px, 100vw - 16px)"
-        >
-          <ModalHeader
-            display="flex"
-            alignItems="center"
-            gap={2}
-            fontSize="lg"
-            pb={1}
-          >
-            <BellIcon color="primary.400" />
+        open={isOpen}
+        onCancel={closeConfigureModal}
+        footer={null}
+        destroyOnHidden
+        width="min(1200px, 100vw - 16px)"
+        title={
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <BellOutlined />
             {configureIntent === 'edit'
               ? t('notifications.main.editModalTitle')
               : t('notifications.main.newModalTitle')}
-          </ModalHeader>
-          <ModalCloseButton borderRadius="full" onClick={closeConfigureModal} />
-          <ModalBody pb={6}>
-            {isOpen && (
-              <ZoneNotificationConfigureForm
-                key={`${configureIntent}-${configureInitialZoneId ?? 'z'}-${configureConfigId ?? 'new'}`}
-                intent={configureIntent}
-                initialZoneId={configureInitialZoneId ?? null}
-                initialConfigId={configureConfigId ?? null}
-                onClose={closeConfigureModal}
-                onSaved={() => {
-                  syncNotificationsFromCache();
-                  void refreshBell();
-                  refetchNotifications();
-                }}
-              />
-            )}
-          </ModalBody>
-        </ModalContent>
+          </span>
+        }
+      >
+        {isOpen && (
+          <ZoneNotificationConfigureForm
+            key={`${configureIntent}-${configureInitialZoneId ?? 'z'}-${configureConfigId ?? 'new'}`}
+            intent={configureIntent}
+            initialZoneId={configureInitialZoneId ?? null}
+            initialConfigId={configureConfigId ?? null}
+            onClose={closeConfigureModal}
+            onSaved={() => {
+              syncNotificationsFromCache();
+              void refreshBell();
+              refetchNotifications();
+            }}
+          />
+        )}
       </Modal>
 
-      <AlertDialog
-        isOpen={deleteConfigId != null}
-        leastDestructiveRef={deleteCancelRef}
-        onClose={() => setDeleteConfigId(null)}
+      <Modal
+        open={deleteConfigId != null}
+        onCancel={() => setDeleteConfigId(null)}
+        onOk={confirmDeleteNotificationConfig}
+        okText={t('notifications.main.delete')}
+        cancelText={t('notifications.main.cancel')}
+        okButtonProps={{ danger: true }}
+        title={t('notifications.main.deleteDialogTitle')}
       >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              {t('notifications.main.deleteDialogTitle')}
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              {t('notifications.main.deleteDialogBody')}
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button
-                ref={deleteCancelRef}
-                onClick={() => setDeleteConfigId(null)}
-              >
-                {t('notifications.main.cancel')}
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={confirmDeleteNotificationConfig}
-                ml={3}
-              >
-                {t('notifications.main.delete')}
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-    </Box>
+        {t('notifications.main.deleteDialogBody')}
+      </Modal>
+    </div>
   );
 };
 
