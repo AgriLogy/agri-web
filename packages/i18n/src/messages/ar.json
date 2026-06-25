@@ -1844,5 +1844,42 @@
     "banner": "العرض باسم {user} — قراءة فقط",
     "exit": "خروج",
     "loading": "جارٍ فتح الجلسة…"
+  },
+  "irrigationAutomation": {
+    "simBannerTitle": "وضع المحاكاة",
+    "simBannerBody": "يتم تسجيل الأوامر ولكن لا تُرسل إلى العتاد بعد.",
+    "manualTitle": "التحكم اليدوي",
+    "noZones": "لا توجد مناطق مُعدّة.",
+    "open": "فتح",
+    "close": "إغلاق",
+    "programsTitle": "البرامج المجدولة",
+    "name": "الاسم",
+    "zone": "المنطقة",
+    "startTime": "وقت البدء",
+    "durationMin": "المدة (دقيقة)",
+    "addProgram": "إضافة برنامج",
+    "deleteProgram": "حذف البرنامج",
+    "programError": "تعذّر حفظ البرنامج.",
+    "historyTitle": "سجل الأوامر",
+    "noCommands": "لا توجد أوامر بعد.",
+    "action": "الإجراء",
+    "source": "المصدر",
+    "statusCol": "الحالة",
+    "time": "الوقت",
+    "commandSent": {
+      "open": "تم إرسال أمر الفتح",
+      "close": "تم إرسال أمر الإغلاق"
+    },
+    "commandError": "فشل الأمر.",
+    "status": {
+      "pending": "قيد الانتظار",
+      "simulated": "محاكاة",
+      "sent": "أُرسل",
+      "failed": "فشل"
+    },
+    "src": {
+      "manual": "يدوي",
+      "scheduled": "مجدول"
+    }
   }
 }

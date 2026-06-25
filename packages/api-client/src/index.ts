@@ -7,6 +7,7 @@ export * from './alertApi';
 export * from './api';
 export * from './checkAuthTokens';
 export * from './clearSsoSession';
+export * from './irrigationAutomationApi';
 export * from './index';
 export * from './loginApiError';
 export * from './logoutEverywhere';

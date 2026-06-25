@@ -30,6 +30,7 @@ import { ChartSection } from '@/app/components/layout/ChartSection';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import ValveSchematic from '@/app/components/vannes-pompes/ValveSchematic';
 import PumpSchematic from '@/app/components/vannes-pompes/PumpSchematic';
+import IrrigationAutomationPanel from '@/app/components/vannes-pompes/IrrigationAutomationPanel';
 import {
   dispatchVannesPompesUpdated,
   loadVannesPompesFromStorage,
@@ -144,6 +145,8 @@ const VannesPompesMain = () => {
           </HStack>
         }
       />
+
+      <IrrigationAutomationPanel />
 
       <VStack spacing={{ base: 3, md: 4 }} align="stretch" minW={0}>
         <ChartSection>

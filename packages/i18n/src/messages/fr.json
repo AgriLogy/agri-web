@@ -1844,5 +1844,42 @@
     "banner": "Affichage en tant que {user} — lecture seule",
     "exit": "Quitter",
     "loading": "Ouverture de la session…"
+  },
+  "irrigationAutomation": {
+    "simBannerTitle": "Mode simulation",
+    "simBannerBody": "Les commandes sont enregistrées mais pas encore envoyées au matériel.",
+    "manualTitle": "Commande manuelle",
+    "noZones": "Aucune zone configurée.",
+    "open": "Ouvrir",
+    "close": "Fermer",
+    "programsTitle": "Programmes planifiés",
+    "name": "Nom",
+    "zone": "Zone",
+    "startTime": "Heure de début",
+    "durationMin": "Durée (min)",
+    "addProgram": "Ajouter un programme",
+    "deleteProgram": "Supprimer le programme",
+    "programError": "Impossible d'enregistrer le programme.",
+    "historyTitle": "Historique des commandes",
+    "noCommands": "Aucune commande pour l'instant.",
+    "action": "Action",
+    "source": "Source",
+    "statusCol": "Statut",
+    "time": "Heure",
+    "commandSent": {
+      "open": "Commande d'ouverture envoyée",
+      "close": "Commande de fermeture envoyée"
+    },
+    "commandError": "Échec de la commande.",
+    "status": {
+      "pending": "En attente",
+      "simulated": "Simulé",
+      "sent": "Envoyé",
+      "failed": "Échoué"
+    },
+    "src": {
+      "manual": "Manuel",
+      "scheduled": "Planifié"
+    }
   }
 }
