@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/mks-zakaria/agri-web/compare/v1.10.0...v1.11.0) (2026-06-25)
+
+
+### Features
+
+* **water:** wire the water-level section into the Water page ([#35](https://github.com/mks-zakaria/agri-web/issues/35)) ([712ccf9](https://github.com/mks-zakaria/agri-web/commit/712ccf9af3f54ae893fa10bf37e18618e99f52ce))
+
 # [1.10.0](https://github.com/mks-zakaria/agri-web/compare/v1.9.0...v1.10.0) (2026-06-25)
 
 
