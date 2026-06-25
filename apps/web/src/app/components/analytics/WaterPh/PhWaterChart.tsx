@@ -38,6 +38,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const PhWaterChart = ({
   data,
@@ -177,12 +178,12 @@ const PhWaterChart = ({
               dataKey="water_ph"
               name={`${t('units.ph')} (${phUnit})`}
               hide={!showLine}
-              stroke="#82ca9d"
+              stroke={colorForSensor('water_ph')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#82ca9d')}
+              activeDot={activeDotForSeries(colorForSensor('water_ph'))}
               isAnimationActive={false}
             />
           </LineChart>

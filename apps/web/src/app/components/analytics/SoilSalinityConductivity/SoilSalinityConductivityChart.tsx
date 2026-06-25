@@ -40,6 +40,7 @@ import {
   yAxisLabelInsideLeft,
   yAxisLabelInsideRight,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 type Props = {
   salinityData: SensorData[];
@@ -239,13 +240,15 @@ const SoilSalinityConductivityChart = ({
               dataKey="soil_salinity"
               name={`${chartData[0]?.salinity_courbe_name ?? t('analytics.soilSalinityConductivity.salinity')} (${salinityUnit})`}
               hide={!activeLines.soil_salinity}
-              stroke={chartData[0]?.salinity_color || '#dba800'}
+              stroke={
+                chartData[0]?.salinity_color || colorForSensor('soil_salinity')
+              }
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
               activeDot={activeDotForSeries(
-                chartData[0]?.salinity_color || '#dba800'
+                chartData[0]?.salinity_color || colorForSensor('soil_salinity')
               )}
             />
 
@@ -255,13 +258,17 @@ const SoilSalinityConductivityChart = ({
               dataKey="soil_conductivity"
               name={`${chartData[0]?.conductivity_courbe_name ?? t('analytics.soilSalinityConductivity.conductivity')} (${conductivityUnit})`}
               hide={!activeLines.soil_conductivity}
-              stroke={chartData[0]?.conductivity_color || '#00a86b'}
+              stroke={
+                chartData[0]?.conductivity_color ||
+                colorForSensor('soil_conductivity')
+              }
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
               activeDot={activeDotForSeries(
-                chartData[0]?.conductivity_color || '#00a86b'
+                chartData[0]?.conductivity_color ||
+                  colorForSensor('soil_conductivity')
               )}
             />
           </LineChart>

@@ -39,6 +39,7 @@ import {
   yAxisLabelInsideLeft,
   yAxisLabelInsideRight,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 type SensorData = { timestamp: string; value: number };
 
@@ -217,12 +218,12 @@ const SensorLeafChart = ({
               dataKey="leaf_temperature"
               name={`${t('sensors.leaf_temperature')} (${tempUnit})`}
               hide={!activeLines.leaf_temperature}
-              stroke="#ff7300"
+              stroke={colorForSensor('leaf_temperature')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#ff7300')}
+              activeDot={activeDotForSeries(colorForSensor('leaf_temperature'))}
             />
             <Line
               yAxisId="right"
@@ -230,12 +231,12 @@ const SensorLeafChart = ({
               dataKey="leaf_moisture"
               name={`${t('sensors.leaf_moisture')} (${moistureUnit})`}
               hide={!activeLines.leaf_moisture}
-              stroke="#007aff"
+              stroke={colorForSensor('leaf_moisture')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#007aff')}
+              activeDot={activeDotForSeries(colorForSensor('leaf_moisture'))}
             />
           </LineChart>
         </ResponsiveContainer>

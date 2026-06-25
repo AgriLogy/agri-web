@@ -38,6 +38,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const WaterFlowChart = ({
   data,
@@ -177,12 +178,12 @@ const WaterFlowChart = ({
               dataKey="water_flow"
               name={`${t('sensors.water_flow')} (${flowUnit})`}
               hide={!showLine}
-              stroke="#82ca9d"
+              stroke={colorForSensor('water_flow')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#82ca9d')}
+              activeDot={activeDotForSeries(colorForSensor('water_flow'))}
               isAnimationActive={false}
             />
           </LineChart>

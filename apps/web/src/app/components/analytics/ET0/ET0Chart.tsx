@@ -37,6 +37,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 interface Et0Data {
   timestamp: string;
@@ -225,7 +226,7 @@ const EC0Chart = ({
               dataKey="et0_sensor"
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
-              fill="#3182ce"
+              fill={colorForSensor('et0_sensor')}
               name={t('analytics.et0Chart.seriesSensor', { unit: et0Unit })}
               hide={!seriesVisible.et0_sensor}
             />
@@ -233,7 +234,7 @@ const EC0Chart = ({
               dataKey="et0_calculated"
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
-              fill="#e53e3e"
+              fill={colorForSensor('et0_calculated')}
               name={t('analytics.et0Chart.seriesCalculated', { unit: et0Unit })}
               hide={!seriesVisible.et0_calculated}
             />

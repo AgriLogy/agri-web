@@ -40,6 +40,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const FruitSizeChart = ({
   data,
@@ -182,7 +183,7 @@ const FruitSizeChart = ({
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               hide={!showBar}
-              fill="#82ca9d"
+              fill={colorForSensor('fruit_size')}
               activeBar={<Rectangle fill="gold" stroke="purple" />}
               isAnimationActive={false}
             />

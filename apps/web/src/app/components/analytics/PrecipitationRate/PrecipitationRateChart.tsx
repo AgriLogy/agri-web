@@ -40,6 +40,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { chartSeries } from '@agri/ui';
 
 const PrecipitationRateChart = ({
   data,
@@ -194,7 +195,9 @@ const PrecipitationRateChart = ({
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               hide={!showBar}
-              fill={colorMode === 'dark' ? '#60a5fa' : '#3b82f6'}
+              fill={
+                colorMode === 'dark' ? chartSeries.rainDark : chartSeries.rain
+              }
               activeBar={<Rectangle fill="gold" stroke="purple" />}
               isAnimationActive={false}
             />

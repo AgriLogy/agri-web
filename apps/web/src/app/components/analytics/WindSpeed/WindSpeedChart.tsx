@@ -38,6 +38,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const WindSpeedChart = ({
   data,
@@ -174,12 +175,12 @@ const WindSpeedChart = ({
               dataKey="wind_speed"
               name={`${t('sensors.wind_speed')} (${windUnit})`}
               hide={!showLine}
-              stroke="#82ca9d"
+              stroke={colorForSensor('wind_speed')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#82ca9d')}
+              activeDot={activeDotForSeries(colorForSensor('wind_speed'))}
               isAnimationActive={false}
             />
           </LineChart>

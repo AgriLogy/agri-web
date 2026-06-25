@@ -39,6 +39,7 @@ import {
   yAxisLabelInsideLeft,
   yAxisLabelInsideRight,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 // Point de rosée (Magnus/Tetens) — "Les modifications" #15. RH clamped 1–100%.
 const DEW_A = 17.625;
@@ -258,12 +259,12 @@ const TempuratureHumidtyChart = ({
               name={t('analytics.weatherTempHumidity.temperatureSeries', {
                 unit: tempUnit,
               })}
-              stroke="#D69E2E"
+              stroke={colorForSensor('temperature')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#D69E2E')}
+              activeDot={activeDotForSeries(colorForSensor('temperature'))}
               hide={!seriesVisible.temperature}
             />
             <Line
@@ -273,12 +274,12 @@ const TempuratureHumidtyChart = ({
               name={t('analytics.weatherTempHumidity.humiditySeries', {
                 unit: humUnit,
               })}
-              stroke="#2C7A7B"
+              stroke={colorForSensor('humidity')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#2C7A7B')}
+              activeDot={activeDotForSeries(colorForSensor('humidity'))}
               hide={!seriesVisible.humidity}
             />
             <Line
@@ -288,14 +289,14 @@ const TempuratureHumidtyChart = ({
               name={t('analytics.weatherTempHumidity.dewPointSeries', {
                 unit: tempUnit,
               })}
-              stroke="#6366f1"
+              stroke={colorForSensor('dew_point')}
               strokeWidth={2}
               strokeDasharray="5 4"
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
               connectNulls
-              activeDot={activeDotForSeries('#6366f1')}
+              activeDot={activeDotForSeries(colorForSensor('dew_point'))}
               hide={!seriesVisible.dew_point}
             />
           </LineChart>

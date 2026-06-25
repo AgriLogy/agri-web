@@ -38,6 +38,7 @@ import {
   analyticsChartPanelLayoutProps,
   yAxisLabelInsideLeft,
 } from '@/app/utils/chartAxisConfig';
+import { colorForSensor } from '@agri/ui';
 
 const PhSoilChart = ({
   data,
@@ -177,12 +178,12 @@ const PhSoilChart = ({
               dataKey="soil_ph"
               name={t('analytics.phSoil.seriesName', { unit: phUnit })}
               hide={!showLine}
-              stroke="#82ca9d"
+              stroke={colorForSensor('soil_ph')}
               strokeWidth={2.25}
               strokeLinecap="round"
               strokeLinejoin="round"
               dot={false}
-              activeDot={activeDotForSeries('#82ca9d')}
+              activeDot={activeDotForSeries(colorForSensor('soil_ph'))}
               isAnimationActive={false}
             />
           </LineChart>
