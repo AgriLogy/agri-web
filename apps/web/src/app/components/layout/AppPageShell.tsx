@@ -4,6 +4,7 @@ import { Box, Grid, GridItem } from '@chakra-ui/react';
 import Header from '@/app/components/main/Header';
 import Navbar from '@/app/components/main/Sidebar';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import ManagerAffirmationBanner from '@/app/components/main/ManagerAffirmationBanner';
 
 export type AppPageShellProps = {
   children: React.ReactNode;
@@ -81,6 +82,7 @@ export function AppPageShell({
           overflowX="hidden"
           sx={{ WebkitOverflowScrolling: 'touch' }}
         >
+          <ManagerAffirmationBanner />
           {children}
         </Box>
       </GridItem>

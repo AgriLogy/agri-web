@@ -627,7 +627,6 @@
     },
     "main": {
       "loadError": "تعذّر تحميل التنبيهات.",
-      "limitReached": "تم بلوغ الحد: احذف تنبيهًا لإنشاء آخر (الحد الأقصى {max}).",
       "deleteSuccess": "تم حذف التنبيه.",
       "deleteError": "فشل الحذف.",
       "toggleError": "تعذّر تغيير الحالة.",
@@ -1559,7 +1558,9 @@
       "recentNotifications": "أحدث الإشعارات",
       "recentNotificationsEmpty": "لا توجد إشعارات حديثة",
       "viewAll": "عرض الكل",
-      "electrovannesAvailable": "الصمامات الكهربائية المتاحة"
+      "electrovannesAvailable": "الصمامات الكهربائية المتاحة",
+      "pompesAvailable": "المضخات المتاحة",
+      "pompesEmpty": "لا توجد مضخات مهيأة"
     },
     "electrovanCard": {
       "devEui": "DevEUI",
@@ -1569,6 +1570,11 @@
       "status": "الحالة",
       "activated": "مُفعَّل",
       "deactivated": "مُعطَّل"
+    },
+    "pumpCard": {
+      "status": "الحالة",
+      "running": "قيد التشغيل",
+      "stopped": "متوقفة"
     },
     "statusIndicators": {
       "title": "مؤشرات حالة النظام",
@@ -1850,6 +1856,9 @@
     "banner": "العرض باسم {user} — قراءة فقط",
     "exit": "خروج",
     "loading": "جارٍ فتح الجلسة…"
+  },
+  "managerAffirmation": {
+    "banner": "لديك {count, plural, one {طلب واحد} other {# طلبات}} في انتظار قرار المسؤول."
   },
   "irrigationAutomation": {
     "simBannerTitle": "وضع المحاكاة",

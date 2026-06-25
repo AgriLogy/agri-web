@@ -31,8 +31,6 @@ import { useIsMobile } from '@/app/hooks/useIsMobile';
 import AlertCreateDrawer from './AlertCreateDrawer';
 import styles from './AlertMain.module.scss';
 
-const ALERT_LIMIT = 10;
-
 const AlertMain: React.FC = () => {
   const t = useTranslations();
   const { message } = App.useApp();
@@ -86,10 +84,6 @@ const AlertMain: React.FC = () => {
   }, []);
 
   const openCreate = () => {
-    if (alerts.length >= ALERT_LIMIT) {
-      message.warning(t('alertsPage.main.limitReached', { max: ALERT_LIMIT }));
-      return;
-    }
     setEditing(null);
     setDrawerOpen(true);
   };

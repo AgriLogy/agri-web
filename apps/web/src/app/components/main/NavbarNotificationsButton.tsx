@@ -531,7 +531,7 @@ const NavbarNotificationsButton: React.FC = () => {
           position="absolute"
           bottom="-4px"
           right="-2px"
-          colorScheme="green"
+          colorScheme="red"
           borderRadius="full"
           fontSize="0.7em"
           minW="1.6em"

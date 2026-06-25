@@ -627,7 +627,6 @@
     },
     "main": {
       "loadError": "Unable to load alerts.",
-      "limitReached": "Limit reached: delete an alert to create another one (max {max}).",
       "deleteSuccess": "Alert deleted.",
       "deleteError": "Failed to delete.",
       "toggleError": "Unable to change the status.",
@@ -1559,7 +1558,9 @@
       "recentNotifications": "Recent notifications",
       "recentNotificationsEmpty": "No recent notifications",
       "viewAll": "View all",
-      "electrovannesAvailable": "Available solenoid valves"
+      "electrovannesAvailable": "Available solenoid valves",
+      "pompesAvailable": "Available pumps",
+      "pompesEmpty": "No pumps configured"
     },
     "electrovanCard": {
       "devEui": "DevEUI",
@@ -1569,6 +1570,11 @@
       "status": "Status",
       "activated": "Activated",
       "deactivated": "Deactivated"
+    },
+    "pumpCard": {
+      "status": "Status",
+      "running": "Running",
+      "stopped": "Stopped"
     },
     "statusIndicators": {
       "title": "System status indicators",
@@ -1850,6 +1856,9 @@
     "banner": "Viewing as {user} — read-only",
     "exit": "Exit",
     "loading": "Opening session…"
+  },
+  "managerAffirmation": {
+    "banner": "You have {count, plural, one {# request} other {# requests}} awaiting your manager's decision."
   },
   "irrigationAutomation": {
     "simBannerTitle": "Simulation mode",
