@@ -1074,6 +1074,18 @@
         "alerts": {
           "label": "إدارة التنبيهات",
           "description": "عرض وإدارة جميع تنبيهات مزرعتك"
+        },
+        "vannesPompes": {
+          "label": "الصمامات والمضخات",
+          "description": "حالة وتحكم صمامات ومضخات الري"
+        },
+        "notifications": {
+          "label": "الإشعارات",
+          "description": "إعداد تنبيهات البريد الإلكتروني والسجل"
+        },
+        "settings": {
+          "label": "الإعدادات",
+          "description": "تفضيلات الحساب والمستشعرات والعرض"
         }
       },
       "pageContext": "سياق الصفحة الحالية: {context}",
@@ -1084,7 +1096,24 @@
       "send": "إرسال",
       "inputPlaceholder": "اطرح سؤالك أو اكتب /help...",
       "stopGeneration": "إيقاف التوليد ×",
-      "inputHint": "Enter للإرسال، Shift+Enter لسطر جديد"
+      "inputHint": "Enter للإرسال، Shift+Enter لسطر جديد",
+      "tabLabel": "المساعد",
+      "openAssistant": "فتح مساعد Agrilogy",
+      "newChat": "محادثة جديدة",
+      "expand": "فتح بملء الصفحة",
+      "sitemap": {
+        "title": "📋 صفحات التطبيق",
+        "intro": "إليك الصفحات التي يمكنك تصفّحها:"
+      },
+      "mock": {
+        "generic": "أنا في وضع العرض التجريبي حاليًا — لم يتم تفعيل محرك الذكاء الاصطناعي بعد. جرّب الأمر /sitemap لعرض خريطة الموقع."
+      },
+      "history": {
+        "empty": "لا توجد محادثات بعد. ابدأ واحدة!",
+        "show": "السجل",
+        "hide": "إخفاء السجل",
+        "delete": "حذف المحادثة"
+      }
     },
     "googleMapWeather": {
       "title": "المزرعة والقطاعات",

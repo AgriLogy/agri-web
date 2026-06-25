@@ -1074,6 +1074,18 @@
         "alerts": {
           "label": "Alert management",
           "description": "View and manage all of your farm's alerts"
+        },
+        "vannesPompes": {
+          "label": "Valves & pumps",
+          "description": "Status and control of irrigation valves and pumps"
+        },
+        "notifications": {
+          "label": "Notifications",
+          "description": "Email alert configuration and history"
+        },
+        "settings": {
+          "label": "Settings",
+          "description": "Account, sensor and display preferences"
         }
       },
       "pageContext": "Current page context: {context}",
@@ -1084,7 +1096,24 @@
       "send": "Send",
       "inputPlaceholder": "Ask your question or type /help...",
       "stopGeneration": "Stop generation ×",
-      "inputHint": "Enter to send, Shift+Enter for a new line"
+      "inputHint": "Enter to send, Shift+Enter for a new line",
+      "tabLabel": "ASSISTANT",
+      "openAssistant": "Open the Agrilogy assistant",
+      "newChat": "New conversation",
+      "expand": "Open full page",
+      "sitemap": {
+        "title": "📋 App pages",
+        "intro": "Here are the pages you can navigate to:"
+      },
+      "mock": {
+        "generic": "I'm in demo mode for now — the AI engine isn't wired up yet. Try the /sitemap command to see the site map."
+      },
+      "history": {
+        "empty": "No conversations yet. Start one!",
+        "show": "History",
+        "hide": "Hide history",
+        "delete": "Delete conversation"
+      }
     },
     "googleMapWeather": {
       "title": "Farm & sectors",
