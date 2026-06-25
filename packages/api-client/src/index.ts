@@ -5,6 +5,7 @@ export * from './adminUserApi';
 export * from './adminZoneApi';
 export * from './alertApi';
 export * from './api';
+export * from './assistantApi';
 export * from './checkAuthTokens';
 export * from './clearSsoSession';
 export * from './irrigationAutomationApi';

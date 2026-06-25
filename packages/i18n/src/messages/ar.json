@@ -1116,7 +1116,41 @@
         "show": "السجل",
         "hide": "إخفاء السجل",
         "delete": "حذف المحادثة"
-      }
+      },
+      "alertsCard": {
+        "intro": "إليك تنبيهاتك النشطة:"
+      },
+      "commandsCard": {
+        "intro": "إليك الأوامر المتاحة:"
+      },
+      "statusCard": {
+        "intro": "إليك الحالة الحالية لمزرعتك:"
+      },
+      "weatherCard": {
+        "intro": "إليك أحوال الطقس الحالية:"
+      },
+      "zonesCard": {
+        "intro": "إليك مناطقك:"
+      },
+      "soilCard": {
+        "intro": "إليك حالة التربة:"
+      },
+      "plantCard": {
+        "intro": "إليك حالة النباتات:"
+      },
+      "waterCard": {
+        "intro": "إليك حالة المياه والري:"
+      },
+      "trendCard": {
+        "intro": "إليك الاتجاه الأخير:"
+      },
+      "irrigationCard": {
+        "intro": "إليك نصيحتي بشأن الري:"
+      },
+      "notificationsCard": {
+        "intro": "إليك إشعاراتك الأخيرة:"
+      },
+      "cleared": "تم مسح المحادثة."
     },
     "googleMapWeather": {
       "title": "المزرعة والقطاعات",

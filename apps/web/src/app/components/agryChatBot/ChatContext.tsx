@@ -4,9 +4,10 @@
  * global right-edge slide-out consume this one context, so conversation
  * history stays unified no matter where you type.
  *
- * Replies come from the mock engine today; swapping in a real backend means
- * changing `mockEngine` + `chatHistoryStorage` only — this context's API is
- * the seam.
+ * Replies come from a pluggable `ChatEngine`: the real agri-api assistant
+ * (`/assistant/chat`) by default, or the local `mockEngine` when
+ * `NEXT_PUBLIC_ASSISTANT_MOCK` is set (offline/dev). localStorage stays the
+ * source of truth for history; `chatSync` mirrors it to the server best-effort.
  */
 import React, {
   createContext,
@@ -19,8 +20,14 @@ import React, {
 } from 'react';
 import { useTranslations } from 'next-intl';
 import { loadConversations, saveConversations } from './chatHistoryStorage';
-import { routeMockReply, streamReply } from './mockEngine';
-import type { ChatCard, Conversation, Message } from './types';
+import { mockEngine, streamReply } from './mockEngine';
+import { realEngine } from './realEngine';
+import {
+  pullConversations,
+  pushConversation,
+  removeConversation,
+} from './chatSync';
+import type { ChatCard, Conversation, EngineReply, Message } from './types';
 
 interface ChatContextValue {
   conversations: Conversation[];
@@ -36,6 +43,12 @@ interface ChatContextValue {
 
 const ChatContext = createContext<ChatContextValue | null>(null);
 
+// Real backend by default; the mock stays available for offline/dev behind a flag.
+const USE_MOCK =
+  process.env.NEXT_PUBLIC_ASSISTANT_MOCK === '1' ||
+  process.env.NEXT_PUBLIC_ASSISTANT_MOCK === 'true';
+const engine = USE_MOCK ? mockEngine : realEngine;
+
 const uuid = () =>
   typeof crypto !== 'undefined' && crypto.randomUUID
     ? crypto.randomUUID()
@@ -48,17 +61,31 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [streaming, setStreaming] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const hydrated = useRef(false);
+  // Latest conversations, for the best-effort server push without re-subscribing.
+  const conversationsRef = useRef<Conversation[]>([]);
 
-  // Hydrate from localStorage once on mount (client only).
+  // Hydrate from localStorage once on mount (client only). On a fresh device
+  // (no local history) pull the user's server-side threads; never clobber
+  // existing local state with the server.
   useEffect(() => {
     const loaded = loadConversations();
     setConversations(loaded);
     setActiveId(loaded[0]?.id ?? null);
     hydrated.current = true;
+    if (!USE_MOCK && loaded.length === 0) {
+      pullConversations().then((server) => {
+        if (server.length > 0) {
+          setConversations(server);
+          setActiveId((cur) => cur ?? server[0]?.id ?? null);
+        }
+      });
+    }
   }, []);
 
-  // Persist whenever conversations change (after hydration).
+  // Persist whenever conversations change (after hydration). Keep the ref in
+  // sync so the post-stream server push reads the committed state.
   useEffect(() => {
+    conversationsRef.current = conversations;
     if (hydrated.current) saveConversations(conversations);
   }, [conversations]);
 
@@ -79,6 +106,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
 
   const deleteConversation = useCallback(
     (id: string) => {
+      if (!USE_MOCK) removeConversation(id);
       setConversations((prev) => {
         const next = prev.filter((c) => c.id !== id);
         if (id === activeId) setActiveId(next[0]?.id ?? null);
@@ -101,6 +129,26 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       );
     },
     []
+  );
+
+  // Resolve an engine reply to display text: literal LLM text, else the
+  // localized i18n key (guarded so an unknown key degrades to the generic
+  // placeholder instead of throwing / leaking the raw key).
+  const resolveReplyText = useCallback(
+    (reply: EngineReply): string => {
+      if (reply.text) return reply.text;
+      const key = reply.replyKey || 'misc.chatbot.mock.generic';
+      const hasFn = (t as unknown as { has?: (k: string) => boolean }).has;
+      if (typeof hasFn === 'function' && !hasFn.call(t, key)) {
+        return t('misc.chatbot.mock.generic');
+      }
+      try {
+        return t(key, reply.values);
+      } catch {
+        return t('misc.chatbot.mock.generic');
+      }
+    },
+    [t]
   );
 
   const sendMessage = useCallback(
@@ -150,10 +198,6 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       });
       if (!activeId) setActiveId(convId);
 
-      // Route + stream the mock reply.
-      const result = routeMockReply(text);
-      const replyText = t(result.replyKey, result.values);
-      const card: ChatCard | undefined = result.card;
       const targetId = convId as string;
 
       abortRef.current?.abort();
@@ -161,25 +205,39 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       abortRef.current = controller;
       setStreaming(true);
 
-      streamReply(
-        replyText,
-        (chunk) =>
-          patchLastMessage(targetId, (m) =>
-            m.role === 'assistant' ? { ...m, content: m.content + chunk } : m
-          ),
-        controller.signal,
-        { instant: !result.stream }
-      )
-        .then(() => {
-          if (card) {
+      // Ask the engine, then stream the resolved reply into the assistant bubble.
+      engine
+        .respond({ message: text, signal: controller.signal })
+        .then((reply) => {
+          if (controller.signal.aborted) return;
+          if (reply.isError) {
             patchLastMessage(targetId, (m) =>
-              m.role === 'assistant' ? { ...m, card } : m
+              m.role === 'assistant' ? { ...m, isError: true } : m
             );
           }
+          const replyText = resolveReplyText(reply);
+          const card: ChatCard | undefined = reply.card;
+          return streamReply(
+            replyText,
+            (chunk) =>
+              patchLastMessage(targetId, (m) =>
+                m.role === 'assistant'
+                  ? { ...m, content: m.content + chunk }
+                  : m
+              ),
+            controller.signal,
+            { instant: !reply.stream }
+          ).then(() => {
+            if (card) {
+              patchLastMessage(targetId, (m) =>
+                m.role === 'assistant' ? { ...m, card } : m
+              );
+            }
+          });
         })
         .finally(() => {
-          // Drop a never-filled assistant bubble if the send was aborted early.
           if (controller.signal.aborted) {
+            // Drop a never-filled assistant bubble if the send was aborted.
             setConversations((prev) =>
               prev.map((c) => {
                 if (c.id !== targetId) return c;
@@ -190,11 +248,20 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
                 return c;
               })
             );
+          } else if (!USE_MOCK) {
+            // Mirror the finished thread to the server (best-effort) once the
+            // streamed state has committed.
+            setTimeout(() => {
+              const conv = conversationsRef.current.find(
+                (c) => c.id === targetId
+              );
+              if (conv) pushConversation(conv);
+            }, 0);
           }
           setStreaming(false);
         });
     },
-    [activeId, streaming, t, patchLastMessage]
+    [activeId, streaming, patchLastMessage, resolveReplyText]
   );
 
   const stop = useCallback(() => {

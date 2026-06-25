@@ -1116,7 +1116,41 @@
         "show": "Historique",
         "hide": "Masquer l'historique",
         "delete": "Supprimer la conversation"
-      }
+      },
+      "alertsCard": {
+        "intro": "Voici vos alertes actives :"
+      },
+      "commandsCard": {
+        "intro": "Voici les commandes disponibles :"
+      },
+      "statusCard": {
+        "intro": "Voici l'état actuel de votre exploitation :"
+      },
+      "weatherCard": {
+        "intro": "Voici les conditions météo actuelles :"
+      },
+      "zonesCard": {
+        "intro": "Voici vos zones :"
+      },
+      "soilCard": {
+        "intro": "Voici l'état de votre sol :"
+      },
+      "plantCard": {
+        "intro": "Voici l'état de vos plantes :"
+      },
+      "waterCard": {
+        "intro": "Voici l'état de votre eau et de votre irrigation :"
+      },
+      "trendCard": {
+        "intro": "Voici la tendance récente :"
+      },
+      "irrigationCard": {
+        "intro": "Voici mes conseils d'irrigation :"
+      },
+      "notificationsCard": {
+        "intro": "Voici vos notifications récentes :"
+      },
+      "cleared": "Conversation effacée."
     },
     "googleMapWeather": {
       "title": "Exploitation & secteurs",
