@@ -7,9 +7,39 @@ export type ChatErrorCode =
   | 'internal'
   | 'network';
 
-/** Structured attachment rendered beneath an assistant message (e.g. the
- *  sitemap card produced by the `/sitemap` command). */
-export type ChatCard = { type: 'sitemap' };
+/** A single labelled reading in a metrics card. */
+export interface ChatMetricItem {
+  label: string;
+  value: number | string | null;
+  unit?: string;
+  status?: string;
+}
+
+/** A single active-alert row. */
+export interface ChatAlertItem {
+  name: string;
+  zone?: string | null;
+  condition?: string | null;
+  threshold?: number | null;
+  severity?: string;
+}
+
+/** A single recent-notification row. */
+export interface ChatNotificationItem {
+  title: string;
+  message?: string;
+  date?: string | null;
+}
+
+/** Structured attachment rendered beneath an assistant message: the sitemap
+ *  card (`/sitemap`), or a per-intent data card built from the assistant
+ *  backend's tool result (`POST /assistant/chat` → `data`). */
+export type ChatCard =
+  | { type: 'sitemap' }
+  | { type: 'metrics'; items: ChatMetricItem[] }
+  | { type: 'alerts'; items: ChatAlertItem[] }
+  | { type: 'notifications'; items: ChatNotificationItem[] }
+  | { type: 'error'; message: string };
 
 export interface Message {
   id: string;

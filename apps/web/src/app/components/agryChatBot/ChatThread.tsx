@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Box, Flex, Text, Textarea, useColorModeValue } from '@chakra-ui/react';
 import { AgrilogyMessageBubble } from './MessageBubble';
 import { SitemapCard } from './SitemapCard';
+import { DataCard } from './DataCard';
 import { useChat } from './ChatContext';
 
 const SendIcon = () => (
@@ -143,7 +144,7 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
           const showTyping =
             isLast && isTypingIndicator && msg.role === 'assistant';
 
-          if (msg.card?.type === 'sitemap') {
+          if (msg.card) {
             return (
               <Box
                 key={msg.id}
@@ -166,7 +167,11 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
                   borderColor={asstBubbleBorder}
                   borderRadius="12px 12px 12px 4px"
                 >
-                  <SitemapCard onNavigate={onNavigate} />
+                  {msg.card.type === 'sitemap' ? (
+                    <SitemapCard onNavigate={onNavigate} />
+                  ) : (
+                    <DataCard card={msg.card} />
+                  )}
                 </Box>
                 <Text
                   fontSize="10px"
