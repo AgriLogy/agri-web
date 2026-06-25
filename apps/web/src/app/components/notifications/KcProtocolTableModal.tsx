@@ -17,6 +17,7 @@ import {
   ModalOverlay,
   NumberInput,
   NumberInputField,
+  Select,
   Switch,
   Table,
   TableContainer,
@@ -26,6 +27,7 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 import { ChevronLeftIcon } from '@chakra-ui/icons';
@@ -36,6 +38,7 @@ import {
   type KcProtocolStageRow,
   defaultKcProtocolStages,
 } from '@agri/api-client/zoneNotificationConfigStorage';
+import { kcApi, type Kc, type KcPeriod } from '@agri/api-client/kcApi';
 
 export type KcProtocolTableModalProps = {
   isOpen: boolean;
@@ -50,6 +53,29 @@ export type KcProtocolTableModalProps = {
 
 function cloneStages(rows: KcProtocolStageRow[]): KcProtocolStageRow[] {
   return rows.map((r) => ({ ...r }));
+}
+
+/** Inclusive day-span between two ISO yyyy-mm-dd dates (min 1). */
+function durationDaysBetween(startISO: string, endISO: string): number {
+  const start = new Date(startISO).getTime();
+  const end = new Date(endISO).getTime();
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) return 0;
+  return Math.max(1, Math.round((end - start) / 86_400_000) + 1);
+}
+
+/**
+ * Maps a saved crop-calendar Kc (periods carry a single kc_value + date range)
+ * onto the notification Kc protocol rows (start/end Kc + duration in days).
+ */
+function stagesFromSavedCrop(periods: KcPeriod[]): KcProtocolStageRow[] {
+  return periods.map((p) => ({
+    stageName: p.period_name,
+    durationDays: durationDaysBetween(p.start_date, p.end_date),
+    kcStart: p.kc_value,
+    kcEnd: p.kc_value,
+    amountMm: 0,
+    active: true,
+  }));
 }
 
 const emptyRow = (): KcProtocolStageRow => ({
@@ -73,6 +99,9 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
     useColorModeStyles();
   const [protocolName, setProtocolName] = useState('');
   const [stages, setStages] = useState<KcProtocolStageRow[]>([]);
+  const [savedCrops, setSavedCrops] = useState<Kc[]>([]);
+  const [selectedCropId, setSelectedCropId] = useState<string>('');
+  const toast = useToast();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -82,7 +111,40 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
         ? cloneStages(initialStages)
         : cloneStages(defaultKcProtocolStages())
     );
+    setSelectedCropId('');
   }, [isOpen, initialProtocolName, initialStages]);
+
+  // Load the caller's saved crops so their Kc-per-stage can seed the table.
+  useEffect(() => {
+    if (!isOpen) return;
+    let cancelled = false;
+    kcApi
+      .list()
+      .then((list) => {
+        if (!cancelled) setSavedCrops(list);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        toast({
+          status: 'error',
+          description: t('notifications.kcTable.loadFromCropError'),
+          duration: 4000,
+          isClosable: true,
+        });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, t, toast]);
+
+  const handleLoadFromCrop = (cropId: string) => {
+    setSelectedCropId(cropId);
+    if (!cropId) return;
+    const crop = savedCrops.find((c) => String(c.id) === cropId);
+    if (!crop || crop.periods.length === 0) return;
+    setProtocolName(crop.name?.trim() || crop.plant_name?.trim() || '');
+    setStages(stagesFromSavedCrop(crop.periods));
+  };
 
   const totalDurationDays = useMemo(() => {
     return stages.reduce((acc, row) => {
@@ -149,6 +211,29 @@ const KcProtocolTableModal: React.FC<KcProtocolTableModalProps> = ({
           <ModalCloseButton borderRadius="full" />
         </ModalHeader>
         <ModalBody py={4}>
+          <FormControl mb={4} maxW="md">
+            <FormLabel fontSize="sm" color={textColor}>
+              {t('notifications.kcTable.loadFromCropLabel')}
+            </FormLabel>
+            <Select
+              value={selectedCropId}
+              onChange={(e) => handleLoadFromCrop(e.target.value)}
+              placeholder={
+                savedCrops.length === 0
+                  ? t('notifications.kcTable.loadFromCropEmpty')
+                  : t('notifications.kcTable.loadFromCropPlaceholder')
+              }
+              borderRadius="lg"
+              isDisabled={savedCrops.length === 0}
+            >
+              {savedCrops.map((c) => (
+                <option key={c.id} value={String(c.id)}>
+                  {c.name} ({c.periods.length})
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+
           <FormControl mb={4} maxW="md">
             <FormLabel fontSize="sm" color={textColor}>
               {t('notifications.kcTable.protocolNameLabel')}
