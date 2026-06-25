@@ -1538,7 +1538,9 @@
       "saveButton": "Enregistrer",
       "saved": "Contact mis à jour",
       "saveFailed": "Échec de l'enregistrement",
-      "loading": "Chargement…"
+      "loading": "Chargement…",
+      "notifLanguageLabel": "Langue des notifications",
+      "notifLanguageHelp": "Langue de vos e-mails de notification (indépendante de la langue de l'application)."
     },
     "technicians": {
       "add": "Ajouter un technicien",

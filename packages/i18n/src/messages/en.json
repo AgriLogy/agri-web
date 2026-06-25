@@ -1538,7 +1538,9 @@
       "saveButton": "Save",
       "saved": "Contact updated",
       "saveFailed": "Save failed",
-      "loading": "Loading…"
+      "loading": "Loading…",
+      "notifLanguageLabel": "Notification language",
+      "notifLanguageHelp": "Language of your notification emails (separate from the app interface language)."
     },
     "technicians": {
       "add": "Add a technician",

@@ -7,13 +7,17 @@ import {
   FormHelperText,
   FormLabel,
   Input,
+  Select,
   Text,
   VStack,
   useToast,
 } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
-import { userProfileApi } from '@agri/api-client/userProfileApi';
+import {
+  userProfileApi,
+  type NotificationLanguage,
+} from '@agri/api-client/userProfileApi';
 
 /**
  * Self-service editor for the user's default alert contact (phone + email).
@@ -26,6 +30,7 @@ const DefaultContactSection = () => {
   const { mutedTextColor } = useColorModeStyles();
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [language, setLanguage] = useState<NotificationLanguage>('fr');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -35,6 +40,7 @@ const DefaultContactSection = () => {
       .then((p) => {
         setPhone(p.phone_number || '');
         setEmail(p.email || '');
+        setLanguage(p.preferred_language === 'ar' ? 'ar' : 'fr');
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -46,9 +52,11 @@ const DefaultContactSection = () => {
       const updated = await userProfileApi.update({
         phone_number: phone.trim(),
         email: email.trim(),
+        preferred_language: language,
       });
       setPhone(updated.phone_number || '');
       setEmail(updated.email || '');
+      setLanguage(updated.preferred_language === 'ar' ? 'ar' : 'fr');
       toast({
         title: t('settings.contact.saved'),
         status: 'success',
@@ -91,6 +99,20 @@ const DefaultContactSection = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+      </FormControl>
+      <FormControl>
+        <FormLabel>{t('settings.contact.notifLanguageLabel')}</FormLabel>
+        <Select
+          value={language}
+          onChange={(e) => setLanguage(e.target.value === 'ar' ? 'ar' : 'fr')}
+          maxW="240px"
+        >
+          <option value="fr">Français</option>
+          <option value="ar">العربية</option>
+        </Select>
+        <FormHelperText>
+          {t('settings.contact.notifLanguageHelp')}
+        </FormHelperText>
       </FormControl>
       <Button
         size="sm"
