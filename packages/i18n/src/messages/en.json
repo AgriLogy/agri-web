@@ -23,6 +23,7 @@
     "soilData": "Soil data",
     "station": "Weather station",
     "plantData": "Plant data",
+    "cropCalendar": "Crop calendar",
     "waterStation": "Water station",
     "valvesPumps": "Valves & pumps",
     "alerts": "Alerts",
@@ -1844,5 +1845,41 @@
     "banner": "Viewing as {user} — read-only",
     "exit": "Exit",
     "loading": "Opening session…"
+  },
+  "cropCalendar": {
+    "title": "Crop calendar (Kc)",
+    "subtitle": "Define your crops and their crop coefficients (Kc) per growth stage.",
+    "allZones": "All zones",
+    "newCrop": "New crop",
+    "editCrop": "Edit crop",
+    "save": "Save",
+    "saved": "Crop saved",
+    "saveError": "Failed to save",
+    "deleted": "Crop deleted",
+    "deleteError": "Failed to delete",
+    "loadError": "Failed to load",
+    "empty": "No crops defined",
+    "noStages": "No stages",
+    "addStage": "Add stage",
+    "confirmDelete": "Delete this crop?",
+    "yes": "Yes",
+    "no": "No",
+    "edit": "Edit",
+    "col": {
+      "crop": "Crop",
+      "plant": "Plant",
+      "zone": "Zone",
+      "stages": "Stages (Kc)",
+      "actions": "Actions"
+    },
+    "field": {
+      "crop": "Crop name",
+      "cropPh": "e.g. Tomato 2026",
+      "plant": "Plant",
+      "plantPh": "e.g. Tomato",
+      "zone": "Zone",
+      "zonePh": "Select a zone",
+      "stage": "Stage"
+    }
   }
 }

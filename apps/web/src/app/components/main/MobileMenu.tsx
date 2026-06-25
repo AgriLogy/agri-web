@@ -43,7 +43,7 @@ import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import api from '@agri/api-client/api';
 import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
-import { FaBell, FaSeedling, FaWater } from 'react-icons/fa';
+import { FaBell, FaRegCalendarAlt, FaSeedling, FaWater } from 'react-icons/fa';
 import { WiDaySunny } from 'react-icons/wi';
 import { GiGrapes, GiValve } from 'react-icons/gi';
 import NavbarNotificationsButton from '@/app/components/main/NavbarNotificationsButton';
@@ -102,6 +102,11 @@ const MobileMenu = () => {
     { href: '/soil', label: t('nav.soilData'), icon: <FaSeedling /> },
     { href: '/station', label: t('nav.station'), icon: <WiDaySunny /> },
     { href: '/plant', label: t('nav.plantData'), icon: <GiGrapes /> },
+    {
+      href: '/crop-calendar',
+      label: t('nav.cropCalendar'),
+      icon: <FaRegCalendarAlt />,
+    },
     { href: '/water', label: t('nav.waterStation'), icon: <FaWater /> },
     { href: '/vannes-pompes', label: t('nav.valvesPumps'), icon: <GiValve /> },
     { href: '/alerts', label: t('nav.alerts'), icon: <FaBell /> },

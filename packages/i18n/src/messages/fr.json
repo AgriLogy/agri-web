@@ -23,6 +23,7 @@
     "soilData": "Données du sol",
     "station": "Station météo",
     "plantData": "Données des plantes",
+    "cropCalendar": "Calendrier cultural",
     "waterStation": "Station d'eau",
     "valvesPumps": "Vannes et pompes",
     "alerts": "Alertes",
@@ -1844,5 +1845,41 @@
     "banner": "Affichage en tant que {user} — lecture seule",
     "exit": "Quitter",
     "loading": "Ouverture de la session…"
+  },
+  "cropCalendar": {
+    "title": "Calendrier cultural (Kc)",
+    "subtitle": "Définissez vos cultures et leurs coefficients culturaux (Kc) par stade de croissance.",
+    "allZones": "Toutes les zones",
+    "newCrop": "Nouvelle culture",
+    "editCrop": "Modifier la culture",
+    "save": "Enregistrer",
+    "saved": "Culture enregistrée",
+    "saveError": "Échec de l'enregistrement",
+    "deleted": "Culture supprimée",
+    "deleteError": "Échec de la suppression",
+    "loadError": "Échec du chargement",
+    "empty": "Aucune culture définie",
+    "noStages": "Aucun stade",
+    "addStage": "Ajouter un stade",
+    "confirmDelete": "Supprimer cette culture ?",
+    "yes": "Oui",
+    "no": "Non",
+    "edit": "Modifier",
+    "col": {
+      "crop": "Culture",
+      "plant": "Plante",
+      "zone": "Zone",
+      "stages": "Stades (Kc)",
+      "actions": "Actions"
+    },
+    "field": {
+      "crop": "Nom de la culture",
+      "cropPh": "ex. Tomate 2026",
+      "plant": "Plante",
+      "plantPh": "ex. Tomate",
+      "zone": "Zone",
+      "zonePh": "Sélectionner une zone",
+      "stage": "Stade"
+    }
   }
 }

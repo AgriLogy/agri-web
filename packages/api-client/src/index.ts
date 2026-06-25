@@ -8,6 +8,7 @@ export * from './api';
 export * from './checkAuthTokens';
 export * from './clearSsoSession';
 export * from './index';
+export * from './kcApi';
 export * from './loginApiError';
 export * from './logoutEverywhere';
 export * from './managerAffirmationApi';
