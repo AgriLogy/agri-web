@@ -1662,7 +1662,12 @@
     "weather": {
       "title": "الطقس",
       "feelsLike": "الإحساس الحراري",
-      "today": "اليوم"
+      "today": "اليوم",
+      "changeLocation": "تغيير الموقع",
+      "searchPlaceholder": "ابحث عن مدينة…",
+      "resetStation": "موقع المحطة",
+      "noResults": "لا توجد نتائج",
+      "searching": "جارٍ البحث…"
     }
   },
   "station": {

@@ -17,6 +17,7 @@ export * from './notificationDispatch';
 export * from './notificationsCacheStorage';
 export * from './technicianApi';
 export * from './userProfileApi';
+export * from './weatherLocationStorage';
 export * from './zoneNotificationConfigStorage';
 export * from './zoneNotificationTemplate';
 export { default as api } from './api';

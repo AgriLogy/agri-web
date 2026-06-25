@@ -1662,7 +1662,12 @@
     "weather": {
       "title": "Météo",
       "feelsLike": "Température ressentie",
-      "today": "Auj."
+      "today": "Auj.",
+      "changeLocation": "Changer de lieu",
+      "searchPlaceholder": "Rechercher une ville…",
+      "resetStation": "Lieu de la station",
+      "noResults": "Aucun résultat",
+      "searching": "Recherche…"
     }
   },
   "station": {
