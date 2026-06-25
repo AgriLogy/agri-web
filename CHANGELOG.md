@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/mks-zakaria/agri-web/compare/v1.8.0...v1.9.0) (2026-06-25)
+
+
+### Features
+
+* **settings:** notification-language selector (fr/ar) ([#31](https://github.com/mks-zakaria/agri-web/issues/31)) ([7b97b00](https://github.com/mks-zakaria/agri-web/commit/7b97b006653b5f0d1e4c3238bedf6b89bd77d5ef)), closes [#256](https://github.com/mks-zakaria/agri-web/issues/256)
+
 # [1.8.0](https://github.com/mks-zakaria/agri-web/compare/v1.7.0...v1.8.0) (2026-06-25)
 
 
