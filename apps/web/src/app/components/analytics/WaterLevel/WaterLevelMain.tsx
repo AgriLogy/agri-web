@@ -13,14 +13,16 @@ import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';
 
 const WaterLevelMain = ({
   filters,
-  basin,
+  basin = {},
 }: {
   filters: {
     startDate: string;
     endDate: string;
     selectedZone: number | null;
   };
-  basin: BasinGeometry;
+  // Optional: when basin dimensions aren't available the section still renders
+  // the raw level + chart; the basin-fill/capacity viz only shows with geometry.
+  basin?: BasinGeometry;
 }) => {
   const { startDate, endDate, selectedZone } = filters;
   const [data, setData] = useState<SensorData[]>([]);

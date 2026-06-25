@@ -527,6 +527,7 @@
         "water_pressure_status": "Pression d’eau",
         "water_ph_status": "pH de l’eau",
         "water_ec_status": "EC de l’eau",
+        "water_level_status": "Niveau d’eau",
         "leaf_sensor_status": "Capteur foliaire",
         "fruit_size_status": "Taille des fruits",
         "large_fruit_diameter_status": "Diamètre des gros fruits",

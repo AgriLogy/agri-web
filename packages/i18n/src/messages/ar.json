@@ -527,6 +527,7 @@
         "water_pressure_status": "ضغط الماء",
         "water_ph_status": "الأس الهيدروجيني للماء",
         "water_ec_status": "ناقلية الماء",
+        "water_level_status": "مستوى الماء",
         "leaf_sensor_status": "مستشعر الأوراق",
         "fruit_size_status": "حجم الثمار",
         "large_fruit_diameter_status": "قطر الثمار الكبيرة",

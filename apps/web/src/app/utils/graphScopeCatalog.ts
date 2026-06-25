@@ -51,6 +51,7 @@ export const GRAPH_SCOPE_GROUPS: GraphScopeGroup[] = [
       'water_pressure_status',
       'water_ph_status',
       'water_ec_status',
+      'water_level_status',
     ],
   },
   {

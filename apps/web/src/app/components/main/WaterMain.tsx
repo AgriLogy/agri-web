@@ -18,6 +18,7 @@ import EcWaterMain from '../analytics/WaterEc/EcWaterMain';
 import WaterFlowMain from '../analytics/WaterFlow/WaterFlowMain';
 import PhWaterMain from '../analytics/WaterPh/PhWaterMain';
 import WaterPressureMain from '../analytics/WaterPressure/WaterPressureMain';
+import WaterLevelMain from '../analytics/WaterLevel/WaterLevelMain';
 
 const WaterMain = () => {
   const t = useTranslations();
@@ -85,6 +86,11 @@ const WaterMain = () => {
           {activeGraph?.water_ec_status && (
             <ChartSection>
               <EcWaterMain filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.water_level_status && (
+            <ChartSection>
+              <WaterLevelMain filters={filters} />
             </ChartSection>
           )}
           {activeGraph?.cumulative_precipitation_status && (
