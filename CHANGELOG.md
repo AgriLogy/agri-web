@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/mks-zakaria/agri-web/compare/v1.7.0...v1.8.0) (2026-06-25)
+
+
+### Features
+
+* **chatbot:** wire the assistant to the real /assistant backend ([#29](https://github.com/mks-zakaria/agri-web/issues/29)) ([3eb78ad](https://github.com/mks-zakaria/agri-web/commit/3eb78ad1af6cc75e78a5c8250e52990cc85d8a7e)), closes [#19](https://github.com/mks-zakaria/agri-web/issues/19) [#22](https://github.com/mks-zakaria/agri-web/issues/22) [#233](https://github.com/mks-zakaria/agri-web/issues/233)
+
 # [1.7.0](https://github.com/mks-zakaria/agri-web/compare/v1.6.0...v1.7.0) (2026-06-25)
 
 
