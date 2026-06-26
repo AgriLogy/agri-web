@@ -15,6 +15,7 @@ import { useAnalyticsHeader } from '@/app/components/layout/useAnalyticsHeader';
 
 import CumulPrecipitationMain from '../analytics/CumulPrecipitation/CumulPrecipitationMain';
 import ET0Main from '../analytics/ET0/ET0Main';
+import EtForecastMain from '../analytics/EtForecast/EtForecastMain';
 import PrecipitationRateMain from '../analytics/PrecipitationRate/PrecipitationRateMain';
 import SolarRadiationMain from '../analytics/SolarRadiation/SolarRadiationMain';
 import TempuratureHumidtyMain from '../analytics/WeatherTempuratureHumidty/TempuratureHumidtyMain';
@@ -95,6 +96,11 @@ const StationMain = () => {
           {activeGraph?.et0_status && (
             <ChartSection>
               <ET0Main filters={filters} />
+            </ChartSection>
+          )}
+          {activeGraph?.et0_status && (
+            <ChartSection>
+              <EtForecastMain filters={{ selectedZone }} />
             </ChartSection>
           )}
           {activeGraph?.wind_speed_status && (

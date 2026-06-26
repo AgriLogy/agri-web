@@ -1779,6 +1779,13 @@
     "et0": {
       "title": "ET₀ — évapotranspiration de référence"
     },
+    "etForecast": {
+      "title": "ET₀ — prévision sur 7 jours",
+      "summary": "Total {total} mm · pic {peak}",
+      "error": "Impossible de charger la prévision ET₀.",
+      "empty": "Sélectionnez une zone pour voir sa prévision ET₀.",
+      "unit": "Évapotranspiration de référence journalière (mm)"
+    },
     "dataTable": {
       "title": "Mesures — tableau détaillé",
       "exportCsv": "Exporter CSV"

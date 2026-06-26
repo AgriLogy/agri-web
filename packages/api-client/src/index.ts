@@ -4,6 +4,7 @@ export * from './adminSensorUnitsApi';
 export * from './adminUserApi';
 export * from './adminZoneApi';
 export * from './alertApi';
+export * from './etForecastApi';
 export * from './api';
 export * from './assistantApi';
 export * from './checkAuthTokens';
