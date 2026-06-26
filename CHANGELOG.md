@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/mks-zakaria/agri-web/compare/v1.11.0...v1.12.0) (2026-06-26)
+
+
+### Features
+
+* **weather:** 7-day ET0 forecast on the station page ([#37](https://github.com/mks-zakaria/agri-web/issues/37)) ([fd00fff](https://github.com/mks-zakaria/agri-web/commit/fd00fff7ae9265b8740928a922020257abb51727))
+
 # [1.11.0](https://github.com/mks-zakaria/agri-web/compare/v1.10.0...v1.11.0) (2026-06-25)
 
 
