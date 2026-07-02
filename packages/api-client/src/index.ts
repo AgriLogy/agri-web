@@ -25,3 +25,4 @@ export * from './weatherLocationStorage';
 export * from './zoneNotificationConfigStorage';
 export * from './zoneNotificationTemplate';
 export { default as api } from './api';
+export * from './feedbackApi';

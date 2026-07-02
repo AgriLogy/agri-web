@@ -2038,5 +2038,41 @@
     "confirmDelete": "Supprimer cette zone de notification ?",
     "loadError": "Impossible de charger les zones de notification",
     "saveError": "Échec de l'enregistrement. Réessayez."
+  },
+  "feedback": {
+    "trigger": "Signaler un problème",
+    "form": {
+      "label": "Que s'est-il passé ?",
+      "placeholder": "Les étapes, ce que vous attendiez, ce que vous avez vu…"
+    },
+    "media": {
+      "recordScreen": "Enregistrer l'écran",
+      "recordHint": "Capture votre écran — vous choisissez ce que vous partagez.",
+      "reRecord": "Réenregistrer",
+      "play": "Lire l'enregistrement",
+      "thumbnailAlt": "Aperçu de l'enregistrement",
+      "uploadFailed": "L'enregistrement n'a pas pu être envoyé. Soumettre sans ?",
+      "submitWithout": "Soumettre sans l'enregistrement"
+    },
+    "recording": {
+      "inProgress": "Enregistrement — {time}",
+      "hint": "Enregistrement de votre écran — vous avez choisi ce que vous partagez.",
+      "stop": "Arrêter l'enregistrement"
+    },
+    "actions": {
+      "submit": "Envoyer le signalement",
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "tryAgain": "Réessayer"
+    },
+    "success": {
+      "title": "Signalement envoyé — merci !",
+      "subtitle": "Nous l'examinerons et reviendrons vers vous si besoin."
+    },
+    "errors": {
+      "descriptionRequired": "Description requise",
+      "sendFailed": "Impossible d'envoyer votre signalement. Vérifiez votre connexion et réessayez — votre texte est conservé.",
+      "recordingUnsupported": "L'enregistrement d'écran n'est pas pris en charge par ce navigateur."
+    }
   }
 }
