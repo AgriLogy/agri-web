@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Divider,
+  Flex,
   HStack,
   IconButton,
   Popover,
@@ -39,7 +40,13 @@ const MAX_DESCRIPTION = 2000;
 const formatSeconds = (s: number) =>
   `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
-const ReportIssueButton: React.FC = () => {
+type Props = {
+  /** 'navbar' (default): ghost icon button. 'sidebar': rail row styled like
+   *  the sidebar nav items, with the popover opening to the right. */
+  variant?: 'navbar' | 'sidebar';
+};
+
+const ReportIssueButton: React.FC<Props> = ({ variant = 'navbar' }) => {
   const t = useTranslations('feedback');
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -417,22 +424,49 @@ const ReportIssueButton: React.FC = () => {
       isOpen={isOpen}
       onOpen={onOpen}
       onClose={state === 'recording' ? () => undefined : handleClose}
-      placement="bottom-end"
+      placement={variant === 'sidebar' ? 'right-end' : 'bottom-end'}
       closeOnBlur={false}
       isLazy
     >
-      <Tooltip label={t('trigger')} hasArrow openDelay={300}>
-        <Box display="inline-flex">
+      <Tooltip
+        label={t('trigger')}
+        hasArrow
+        openDelay={300}
+        placement={variant === 'sidebar' ? 'right' : 'bottom'}
+      >
+        <Box
+          display={variant === 'sidebar' ? 'block' : 'inline-flex'}
+          w={variant === 'sidebar' ? '100%' : undefined}
+        >
           <PopoverTrigger>
-            <IconButton
-              aria-label={t('trigger')}
-              icon={<FaBug />}
-              variant="ghost"
-              size="md"
-              borderRadius="xl"
-              _hover={{ bg: 'blackAlpha.50', color: hoverColor }}
-              _dark={{ _hover: { bg: 'whiteAlpha.100', color: hoverColor } }}
-            />
+            {variant === 'sidebar' ? (
+              <Flex
+                align="center"
+                justify="center"
+                h="44px"
+                w="100%"
+                borderRadius="lg"
+                cursor="pointer"
+                tabIndex={0}
+                role="button"
+                aria-label={t('trigger')}
+                transition="background 0.15s ease, color 0.15s ease"
+                _hover={{ color: hoverColor, bg: 'blackAlpha.50' }}
+                _dark={{ _hover: { bg: 'whiteAlpha.100' } }}
+              >
+                <FaBug size={20} aria-hidden />
+              </Flex>
+            ) : (
+              <IconButton
+                aria-label={t('trigger')}
+                icon={<FaBug />}
+                variant="ghost"
+                size="md"
+                borderRadius="xl"
+                _hover={{ bg: 'blackAlpha.50', color: hoverColor }}
+                _dark={{ _hover: { bg: 'whiteAlpha.100', color: hoverColor } }}
+              />
+            )}
           </PopoverTrigger>
         </Box>
       </Tooltip>
