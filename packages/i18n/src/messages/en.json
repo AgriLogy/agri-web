@@ -2038,5 +2038,41 @@
     "confirmDelete": "Delete this notification zone?",
     "loadError": "Could not load notification zones",
     "saveError": "Could not save. Please try again."
+  },
+  "feedback": {
+    "trigger": "Report an issue",
+    "form": {
+      "label": "What happened?",
+      "placeholder": "Steps, what you expected, what you saw…"
+    },
+    "media": {
+      "recordScreen": "Record screen",
+      "recordHint": "Captures your screen — you choose what to share.",
+      "reRecord": "Re-record",
+      "play": "Play recording",
+      "thumbnailAlt": "Recording preview",
+      "uploadFailed": "Recording couldn't be uploaded. Submit without it?",
+      "submitWithout": "Submit without recording"
+    },
+    "recording": {
+      "inProgress": "Recording — {time}",
+      "hint": "Recording your screen — you chose what to share.",
+      "stop": "Stop recording"
+    },
+    "actions": {
+      "submit": "Submit report",
+      "cancel": "Cancel",
+      "close": "Close",
+      "tryAgain": "Try again"
+    },
+    "success": {
+      "title": "Report sent — thanks!",
+      "subtitle": "We'll review it and follow up if we need more context."
+    },
+    "errors": {
+      "descriptionRequired": "Description required",
+      "sendFailed": "We couldn't send your report. Check your connection and try again — your text is still here.",
+      "recordingUnsupported": "Screen recording is not supported in this browser."
+    }
   }
 }

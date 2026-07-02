@@ -28,6 +28,7 @@ import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import logo from '../../public/logo.png';
 import NavbarNotificationsButton from '@/app/components/main/NavbarNotificationsButton';
+import ReportIssueButton from '@/app/components/main/ReportIssueButton';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 
 const HEADER_H = '64px';
@@ -88,6 +89,7 @@ const BigMenu = () => {
       >
         <LanguageSwitcher />
 
+        <ReportIssueButton />
         <NavbarNotificationsButton />
 
         <Divider orientation="vertical" h={6} borderColor={headerBarBorder} />
