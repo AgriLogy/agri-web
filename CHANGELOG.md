@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/mks-zakaria/agri-web/compare/v1.14.0...v1.15.0) (2026-07-02)
+
+
+### Features
+
+* **weather:** use-my-location button in the Météo location picker ([#43](https://github.com/mks-zakaria/agri-web/issues/43)) ([cf85f99](https://github.com/mks-zakaria/agri-web/commit/cf85f99abad45a9dab8d73ff1099bbd790f92017))
+
 # [1.14.0](https://github.com/mks-zakaria/agri-web/compare/v1.13.0...v1.14.0) (2026-07-02)
 
 
