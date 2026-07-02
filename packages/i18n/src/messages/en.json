@@ -1750,7 +1750,11 @@
       "searchPlaceholder": "Search a city…",
       "resetStation": "Station location",
       "noResults": "No results",
-      "searching": "Searching…"
+      "searching": "Searching…",
+      "useMyLocation": "Use my location",
+      "locating": "Locating…",
+      "geoDenied": "Location access was denied — allow it in your browser settings.",
+      "geoUnavailable": "Couldn't determine your location. Try again or search for your city."
     }
   },
   "station": {
