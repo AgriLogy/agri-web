@@ -434,7 +434,10 @@ const ReportIssueButton: React.FC<Props> = ({ variant = 'navbar' }) => {
         openDelay={300}
         placement={variant === 'sidebar' ? 'right' : 'bottom'}
       >
-        <Box display={variant === 'sidebar' ? 'block' : 'inline-flex'} w={variant === 'sidebar' ? '100%' : undefined}>
+        <Box
+          display={variant === 'sidebar' ? 'block' : 'inline-flex'}
+          w={variant === 'sidebar' ? '100%' : undefined}
+        >
           <PopoverTrigger>
             {variant === 'sidebar' ? (
               <Flex
