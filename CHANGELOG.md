@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/mks-zakaria/agri-web/compare/v1.13.0...v1.14.0) (2026-07-02)
+
+
+### Features
+
+* **feedback:** move Report-an-issue into the sidebar above logout ([#41](https://github.com/mks-zakaria/agri-web/issues/41)) ([e7c67d5](https://github.com/mks-zakaria/agri-web/commit/e7c67d50f2602dd1930a55ed0eb2a6ab3840bfef))
+
 # [1.13.0](https://github.com/mks-zakaria/agri-web/compare/v1.12.0...v1.13.0) (2026-07-02)
 
 
