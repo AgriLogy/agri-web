@@ -32,6 +32,7 @@ import {
   Sunrise,
   Sunset,
   MapPin,
+  LocateFixed,
 } from 'lucide-react';
 import {
   readWeatherLocation,
@@ -100,6 +101,8 @@ const WeatherDashboard = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GeoResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [geoError, setGeoError] = useState<string | null>(null);
 
   const bgColor = useColorModeValue('white', 'gray.800');
   const primaryText = useColorModeValue('gray.900', 'white');
@@ -217,6 +220,41 @@ const WeatherDashboard = () => {
     setResults([]);
   };
 
+  // Browser geolocation → anchor the forecast to the device's position.
+  // label stays null so the reverse-geocode effect resolves the city name.
+  const useMyLocation = () => {
+    setGeoError(null);
+    if (!('geolocation' in navigator)) {
+      setGeoError(t('shell.weather.geoUnavailable'));
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const loc: WeatherLocation = {
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+          label: null,
+        };
+        setLocation(loc);
+        writeWeatherLocation(loc);
+        setLocating(false);
+        setPickerOpen(false);
+        setQuery('');
+        setResults([]);
+      },
+      (err) => {
+        setLocating(false);
+        setGeoError(
+          err.code === err.PERMISSION_DENIED
+            ? t('shell.weather.geoDenied')
+            : t('shell.weather.geoUnavailable')
+        );
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+    );
+  };
+
   const toFahrenheit = (celsius: number) => (celsius * 9) / 5 + 32;
   const toMilesPerHour = (kmph: number) => kmph * 0.621371;
 
@@ -297,6 +335,23 @@ const WeatherDashboard = () => {
             >
               <PopoverArrow bg={bgColor} />
               <PopoverBody>
+                <Button
+                  size="xs"
+                  w="100%"
+                  mb={2}
+                  variant="outline"
+                  leftIcon={<Icon as={LocateFixed} boxSize="12px" />}
+                  isLoading={locating}
+                  loadingText={t('shell.weather.locating')}
+                  onClick={useMyLocation}
+                >
+                  {t('shell.weather.useMyLocation')}
+                </Button>
+                {geoError && (
+                  <Text fontSize="xs" color="red.400" px={1} mb={2}>
+                    {geoError}
+                  </Text>
+                )}
                 <Input
                   size="sm"
                   autoFocus
