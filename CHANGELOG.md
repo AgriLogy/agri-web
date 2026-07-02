@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/mks-zakaria/agri-web/compare/v1.12.0...v1.13.0) (2026-07-02)
+
+
+### Features
+
+* **feedback:** Report-an-issue popover with screen recording ([#39](https://github.com/mks-zakaria/agri-web/issues/39)) ([f9d6928](https://github.com/mks-zakaria/agri-web/commit/f9d69287693dd65f74696ce929896fd091d6c9ac))
+
 # [1.12.0](https://github.com/mks-zakaria/agri-web/compare/v1.11.0...v1.12.0) (2026-06-26)
 
 
