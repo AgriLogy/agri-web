@@ -1754,7 +1754,36 @@
       "useMyLocation": "Use my location",
       "locating": "Locating…",
       "geoDenied": "Location access was denied — allow it in your browser settings.",
-      "geoUnavailable": "Couldn't determine your location. Try again or search for your city."
+      "geoUnavailable": "Couldn't determine your location. Try again or search for your city.",
+      "details": {
+        "title": "Weather details",
+        "open": "Details",
+        "now": "Right now",
+        "uvIndex": "UV index",
+        "uv": {
+          "low": "Low",
+          "moderate": "Moderate",
+          "high": "High",
+          "veryHigh": "Very high",
+          "extreme": "Extreme"
+        },
+        "precipProb": "Rain chance",
+        "windGusts": "Wind / gusts",
+        "dewPoint": "Dew point",
+        "pressure": "Pressure",
+        "cloudCover": "Cloud cover",
+        "et0Today": "ET₀ today",
+        "soilTemp": "Soil temp (6 cm)",
+        "soilMoisture": "Soil moisture",
+        "humidity": "Humidity",
+        "next24h": "Next 24 hours",
+        "week": "7-day outlook",
+        "day": "Day",
+        "minMax": "Min / Max",
+        "rain": "Rain",
+        "gusts": "Gusts",
+        "source": "Forecast data: Open-Meteo"
+      }
     }
   },
   "station": {

@@ -1754,7 +1754,36 @@
       "useMyLocation": "Utiliser ma position",
       "locating": "Localisation…",
       "geoDenied": "Accès à la position refusé — autorisez-le dans les réglages du navigateur.",
-      "geoUnavailable": "Impossible de déterminer votre position. Réessayez ou cherchez votre ville."
+      "geoUnavailable": "Impossible de déterminer votre position. Réessayez ou cherchez votre ville.",
+      "details": {
+        "title": "Détails météo",
+        "open": "Détails",
+        "now": "En ce moment",
+        "uvIndex": "Indice UV",
+        "uv": {
+          "low": "Faible",
+          "moderate": "Modéré",
+          "high": "Élevé",
+          "veryHigh": "Très élevé",
+          "extreme": "Extrême"
+        },
+        "precipProb": "Risque de pluie",
+        "windGusts": "Vent / rafales",
+        "dewPoint": "Point de rosée",
+        "pressure": "Pression",
+        "cloudCover": "Couverture nuageuse",
+        "et0Today": "ET₀ aujourd'hui",
+        "soilTemp": "Temp. du sol (6 cm)",
+        "soilMoisture": "Humidité du sol",
+        "humidity": "Humidité",
+        "next24h": "Prochaines 24 h",
+        "week": "Perspectives 7 jours",
+        "day": "Jour",
+        "minMax": "Min / Max",
+        "rain": "Pluie",
+        "gusts": "Rafales",
+        "source": "Données de prévision : Open-Meteo"
+      }
     }
   },
   "station": {

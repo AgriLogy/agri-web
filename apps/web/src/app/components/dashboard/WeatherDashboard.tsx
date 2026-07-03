@@ -41,26 +41,11 @@ import {
   type WeatherLocation,
 } from '@agri/api-client/weatherLocationStorage';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import WeatherDetailsModal, {
+  OPEN_METEO_PARAMS,
+  type WeatherData,
+} from '@/app/components/dashboard/WeatherDetailsModal';
 import Loading from '../common/Loading';
-
-interface WeatherData {
-  current: {
-    time: string;
-    temperature_2m: number;
-    relative_humidity_2m: number;
-    apparent_temperature: number;
-    weather_code: number;
-    wind_speed_10m: number;
-  };
-  daily: {
-    time: string[];
-    weather_code: number[];
-    temperature_2m_max: number[];
-    temperature_2m_min: number[];
-    sunrise: string[];
-    sunset: string[];
-  };
-}
 
 interface GeoResult {
   id: number;
@@ -101,6 +86,7 @@ const WeatherDashboard = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GeoResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [locating, setLocating] = useState(false);
   const [geoError, setGeoError] = useState<string | null>(null);
 
@@ -126,7 +112,7 @@ const WeatherDashboard = () => {
     const fetchWeather = async () => {
       try {
         const response = await fetch(
-          `https://api.open-meteo.com/v1/forecast/?latitude=${location.lat}&longitude=${location.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&temperature_unit=celsius`
+          `https://api.open-meteo.com/v1/forecast/?latitude=${location.lat}&longitude=${location.lon}&${OPEN_METEO_PARAMS}`
         );
         const data = await response.json();
         if (!cancelled) setWeatherData(data);
@@ -437,11 +423,29 @@ const WeatherDashboard = () => {
           >
             °F
           </Text>
+          <Button
+            size="xs"
+            variant="ghost"
+            color={secondaryText}
+            onClick={() => setDetailsOpen(true)}
+            _hover={{ color: primaryText }}
+          >
+            {t('shell.weather.details.open')}
+          </Button>
         </HStack>
       </HStack>
 
-      {/* Current Weather */}
-      <VStack spacing={1} mb={4} textAlign="center">
+      {/* Current Weather — click for the full farmer view */}
+      <VStack
+        spacing={1}
+        mb={4}
+        textAlign="center"
+        cursor="pointer"
+        role="button"
+        aria-label={t('shell.weather.details.open')}
+        onClick={() => setDetailsOpen(true)}
+        _hover={{ opacity: 0.85 }}
+      >
         <HStack spacing={3}>
           {getWeatherIcon(current.weather_code)}
           <Text fontSize="3xl" fontWeight="light" color={primaryText}>
@@ -529,6 +533,7 @@ const WeatherDashboard = () => {
           <Box
             _hover={{ cursor: 'pointer', borderColor: hoverColor }}
             key={date}
+            onClick={() => setDetailsOpen(true)}
             bg={bgColor}
             p={2}
             textAlign="center"
@@ -564,6 +569,13 @@ const WeatherDashboard = () => {
           </Box>
         ))}
       </SimpleGrid>
+      <WeatherDetailsModal
+        isOpen={detailsOpen}
+        onClose={() => setDetailsOpen(false)}
+        data={weatherData}
+        cityName={cityName}
+        useImperial={useImperial}
+      />
     </Box>
   );
 };
