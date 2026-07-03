@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/mks-zakaria/agri-web/compare/v1.15.0...v1.16.0) (2026-07-03)
+
+
+### Features
+
+* **weather:** farmer weather center modal (UV, rain, wind, ET0, soil) ([#45](https://github.com/mks-zakaria/agri-web/issues/45)) ([9853b13](https://github.com/mks-zakaria/agri-web/commit/9853b138de68f5cb43089e706a666c8257b5ca64))
+
 # [1.15.0](https://github.com/mks-zakaria/agri-web/compare/v1.14.0...v1.15.0) (2026-07-02)
 
 
