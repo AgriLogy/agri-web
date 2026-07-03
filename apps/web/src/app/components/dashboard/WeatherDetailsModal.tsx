@@ -13,7 +13,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import {
   Badge,
   Box,
-  Grid,
   HStack,
   Icon,
   Modal,
