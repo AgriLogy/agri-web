@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/mks-zakaria/agri-web/compare/v1.16.0...v1.17.0) (2026-07-05)
+
+
+### Features
+
+* **weather:** label the ET₀ forecast data source on the graph ([#46](https://github.com/mks-zakaria/agri-web/issues/46)) ([#47](https://github.com/mks-zakaria/agri-web/issues/47)) ([4dbb11a](https://github.com/mks-zakaria/agri-web/commit/4dbb11a44b97b00a461c63bcaf02401f406dc0d1))
+
 # [1.16.0](https://github.com/mks-zakaria/agri-web/compare/v1.15.0...v1.16.0) (2026-07-03)
 
 
