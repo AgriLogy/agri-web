@@ -21,6 +21,14 @@ const LOCALE_TAG: Record<string, string> = {
   en: 'en-GB',
 };
 
+// Human-friendly names for the real forecast providers; "mock" is translated
+// to a "demo model" label so the graph never presents synthetic values as a
+// live weather feed.
+const PROVIDER_LABEL: Record<string, string> = {
+  openweather: 'OpenWeather',
+  'open-meteo': 'Open-Meteo',
+};
+
 const EtForecastMain = ({
   filters,
 }: {
@@ -31,6 +39,7 @@ const EtForecastMain = ({
   const { selectedZone } = filters;
 
   const [days, setDays] = useState<EtForecastDay[]>([]);
+  const [provider, setProvider] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -48,7 +57,10 @@ const EtForecastMain = ({
     setError(false);
     getEtForecast(selectedZone, 7)
       .then((res) => {
-        if (active) setDays(res.days);
+        if (active) {
+          setDays(res.days);
+          setProvider(res.provider);
+        }
       })
       .catch(() => {
         if (active) setError(true);
@@ -153,6 +165,16 @@ const EtForecastMain = ({
       <Text fontSize="xs" color="gray.400" mt={2}>
         {t('station.etForecast.unit')}
       </Text>
+      {provider && (
+        <Text fontSize="xs" color="gray.400" mt={0.5}>
+          {t('station.etForecast.source', {
+            provider:
+              provider === 'mock'
+                ? t('station.etForecast.providerMock')
+                : (PROVIDER_LABEL[provider] ?? provider),
+          })}
+        </Text>
+      )}
     </Box>
   );
 };
