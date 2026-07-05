@@ -1817,7 +1817,9 @@
       "summary": "Total {total} mm · peak {peak}",
       "error": "Could not load the ET₀ forecast.",
       "empty": "Select a zone to see its ET₀ forecast.",
-      "unit": "Daily reference evapotranspiration (mm)"
+      "unit": "Daily reference evapotranspiration (mm)",
+      "source": "Values from the weather forecast · source: {provider}",
+      "providerMock": "demo model"
     },
     "dataTable": {
       "title": "Measurements — detailed table",
