@@ -1,3 +1,10 @@
+## [1.19.1](https://github.com/mks-zakaria/agri-web/compare/v1.19.0...v1.19.1) (2026-07-06)
+
+
+### Bug Fixes
+
+* **weather:** pass the farmer's picked location to the Open-Meteo ET₀ calls ([#52](https://github.com/mks-zakaria/agri-web/issues/52)) ([#53](https://github.com/mks-zakaria/agri-web/issues/53)) ([378d691](https://github.com/mks-zakaria/agri-web/commit/378d69139f4dfbade5da982a78081d3e39f724d4))
+
 # [1.19.0](https://github.com/mks-zakaria/agri-web/compare/v1.18.0...v1.19.0) (2026-07-06)
 
 
