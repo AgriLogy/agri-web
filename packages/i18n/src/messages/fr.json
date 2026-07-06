@@ -870,7 +870,8 @@
       "noData": "Aucune donnée disponible",
       "yAxisLabel": "ET₀ ({unit})",
       "seriesSensor": "ET₀ capteur ({unit})",
-      "seriesCalculated": "ET₀ calculé ({unit})"
+      "seriesCalculated": "ET₀ calculé ({unit})",
+      "seriesOpenMeteo": "ET₀ Open-Meteo ({unit})"
     },
     "et0LastData": {
       "heading": "Évapotranspiration de référence (ET₀)",

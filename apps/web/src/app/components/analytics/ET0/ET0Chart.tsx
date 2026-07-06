@@ -1,8 +1,9 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import {
-  BarChart,
+  ComposedChart,
   Bar,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -48,10 +49,12 @@ interface Et0Data {
 const EC0Chart = ({
   weatherData,
   calculatedData,
+  openMeteoData = [],
   loading,
 }: {
   weatherData: Et0Data[];
   calculatedData: Et0Data[];
+  openMeteoData?: Et0Data[];
   loading: boolean;
 }) => {
   const t = useTranslations();
@@ -68,36 +71,44 @@ const EC0Chart = ({
     const calibrate = (v: number | null | undefined) =>
       v != null && Number.isFinite(v) ? calibrateChartValue('et0', v) : null;
 
-    const rowsByTimestamp = new Map<
-      string,
-      { name: string; et0_sensor: number | null; et0_calculated: number | null }
-    >();
+    type Row = {
+      name: string;
+      et0_sensor: number | null;
+      et0_calculated: number | null;
+      et0_openmeteo: number | null;
+    };
+    const rowsByTimestamp = new Map<string, Row>();
+    const rowFor = (timestamp: string): Row => {
+      let row = rowsByTimestamp.get(timestamp);
+      if (!row) {
+        row = {
+          name: timestamp,
+          et0_sensor: null,
+          et0_calculated: null,
+          et0_openmeteo: null,
+        };
+        rowsByTimestamp.set(timestamp, row);
+      }
+      return row;
+    };
 
     for (const item of weatherData) {
-      rowsByTimestamp.set(item.timestamp, {
-        name: item.timestamp,
-        et0_sensor: calibrate(item.value),
-        et0_calculated: null,
-      });
+      rowFor(item.timestamp).et0_sensor = calibrate(item.value);
     }
     for (const item of calculatedData) {
-      const existing = rowsByTimestamp.get(item.timestamp);
-      if (existing) {
-        existing.et0_calculated = calibrate(item.value);
-      } else {
-        rowsByTimestamp.set(item.timestamp, {
-          name: item.timestamp,
-          et0_sensor: null,
-          et0_calculated: calibrate(item.value),
-        });
-      }
+      rowFor(item.timestamp).et0_calculated = calibrate(item.value);
+    }
+    // Open-Meteo is a daily reference (one point per day, stamped at noon) —
+    // it lands on its own rows and is drawn as a connecting line.
+    for (const item of openMeteoData) {
+      rowFor(item.timestamp).et0_openmeteo = calibrate(item.value);
     }
 
     const merged = Array.from(rowsByTimestamp.values()).sort((a, b) =>
       a.name.localeCompare(b.name)
     );
     return addTimeMsToChartRows(merged, 'name');
-  }, [weatherData, calculatedData, unitRev]);
+  }, [weatherData, calculatedData, openMeteoData, unitRev]);
 
   const textColor = useColorModeValue('gray.800', 'gray.200');
   const { axis, tickFill, grid } = useChartAxisColors();
@@ -111,11 +122,14 @@ const EC0Chart = ({
   const [seriesVisible, setSeriesVisible] = useState({
     et0_sensor: true,
     et0_calculated: true,
+    et0_openmeteo: true,
   });
 
   const handleLegendClick = (e: ChartLegendPayloadEntry) => {
     const k = e.dataKey;
-    if (k !== 'et0_sensor' && k !== 'et0_calculated') return;
+    if (k !== 'et0_sensor' && k !== 'et0_calculated' && k !== 'et0_openmeteo') {
+      return;
+    }
     setSeriesVisible((p) => ({ ...p, [k]: !p[k as keyof typeof p] }));
   };
 
@@ -135,9 +149,12 @@ const EC0Chart = ({
 
   const handleDownloadData = () => {
     const csv =
-      'timestamp,et0_sensor,et0_calculated\n' +
+      'timestamp,et0_sensor,et0_calculated,et0_openmeteo\n' +
       chartData
-        .map((d) => `${d.name},${d.et0_sensor ?? ''},${d.et0_calculated ?? ''}`)
+        .map(
+          (d) =>
+            `${d.name},${d.et0_sensor ?? ''},${d.et0_calculated ?? ''},${d.et0_openmeteo ?? ''}`
+        )
         .join('\n');
 
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -151,7 +168,9 @@ const EC0Chart = ({
 
   const et0Unit = resolveAxisUnit(
     'et0',
-    weatherData[0]?.default_unit ?? calculatedData[0]?.default_unit
+    weatherData[0]?.default_unit ??
+      calculatedData[0]?.default_unit ??
+      openMeteoData[0]?.default_unit
   );
 
   return (
@@ -193,7 +212,7 @@ const EC0Chart = ({
         height={CHART_PLOT_HEIGHT_PX}
       >
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
+          <ComposedChart
             data={chartData}
             margin={{
               top: 10,
@@ -238,7 +257,19 @@ const EC0Chart = ({
               name={t('analytics.et0Chart.seriesCalculated', { unit: et0Unit })}
               hide={!seriesVisible.et0_calculated}
             />
-          </BarChart>
+            <Line
+              type="monotone"
+              dataKey="et0_openmeteo"
+              stroke={colorForSensor('et0_openmeteo')}
+              strokeWidth={2}
+              dot={{ r: 3 }}
+              activeDot={{ r: 4 }}
+              connectNulls
+              isAnimationActive={false}
+              name={t('analytics.et0Chart.seriesOpenMeteo', { unit: et0Unit })}
+              hide={!seriesVisible.et0_openmeteo}
+            />
+          </ComposedChart>
         </ResponsiveContainer>
       </ChartStateView>
     </Box>

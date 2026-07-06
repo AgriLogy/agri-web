@@ -870,7 +870,8 @@
       "noData": "لا توجد بيانات متاحة",
       "yAxisLabel": "ET₀ ({unit})",
       "seriesSensor": "ET₀ المستشعر ({unit})",
-      "seriesCalculated": "ET₀ المحسوب ({unit})"
+      "seriesCalculated": "ET₀ المحسوب ({unit})",
+      "seriesOpenMeteo": "ET₀ Open-Meteo ({unit})"
     },
     "et0LastData": {
       "heading": "التبخر النتحي المرجعي (ET₀)",

@@ -35,6 +35,7 @@ const ET0Main = ({
 
   const [weatherData, setWeatherData] = useState<ET0Data[]>([]);
   const [calculatedData, setCalculatedData] = useState<ET0Data[]>([]);
+  const [openMeteoData, setOpenMeteoData] = useState<ET0Data[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,13 +52,17 @@ const ET0Main = ({
     const fetchCalculated = api.get<ET0Data[]>('/sensors/et0calculated', {
       params,
     });
+    // Real Open-Meteo daily reference ET₀ over the same range — best-effort, so
+    // a failure here must not blank the whole chart.
+    const fetchOpenMeteo = api
+      .get<ET0Data[]>('/weather/et0-series', { params })
+      .catch(() => ({ data: [] as ET0Data[] }));
 
-    Promise.all([fetchWeather, fetchCalculated])
-      .then(([weatherRes, calculatedRes]) => {
+    Promise.all([fetchWeather, fetchCalculated, fetchOpenMeteo])
+      .then(([weatherRes, calculatedRes, openMeteoRes]) => {
         setWeatherData(weatherRes.data);
         setCalculatedData(calculatedRes.data);
-        console.log('weatherRes:', weatherRes.data);
-        console.log('calculatedRes:', calculatedRes.data);
+        setOpenMeteoData(openMeteoRes.data);
       })
       .catch((err) => {
         console.error('Failed to fetch ET0 sensor data:', err);
@@ -84,6 +89,7 @@ const ET0Main = ({
                 <ET0Chart
                   weatherData={sortedWeather.slice(startIdx, endIdx + 1)}
                   calculatedData={calculated}
+                  openMeteoData={openMeteoData}
                   loading={loading}
                 />
                 <ChartDateRangeDragger
