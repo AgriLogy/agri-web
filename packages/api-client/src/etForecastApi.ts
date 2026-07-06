@@ -33,13 +33,24 @@ export interface EtForecastResponse {
   days: EtForecastDay[];
 }
 
-/** Fetch the N-day ET0 forecast for a zone (default 7, backend clamps to 14). */
+/**
+ * Fetch the N-day ET0 forecast for a zone (default 7, backend clamps to 14).
+ *
+ * Pass `coords` (the farmer's picked weather location) so the backend can query
+ * Open-Meteo — most accounts have no server-side lat/lon, so without this the
+ * real reference curve stays empty.
+ */
 export async function getEtForecast(
   zoneId: number,
-  days = 7
+  days = 7,
+  coords?: { lat: number; lon: number }
 ): Promise<EtForecastResponse> {
   const res = await api.get<EtForecastResponse>('/weather/et-forecast', {
-    params: { zone_id: zoneId, days },
+    params: {
+      zone_id: zoneId,
+      days,
+      ...(coords ? { lat: coords.lat, lon: coords.lon } : {}),
+    },
   });
   return res.data;
 }
