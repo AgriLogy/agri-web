@@ -11,7 +11,11 @@ import {
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { getEtForecast, type EtForecastDay } from '@agri/api-client';
+import {
+  getEtForecast,
+  readWeatherLocation,
+  type EtForecastDay,
+} from '@agri/api-client';
 import { maxEtMm, peakEtDay, totalEtMm } from '@/app/lib/etForecast';
 
 const LOCALE_TAG: Record<string, string> = {
@@ -56,7 +60,14 @@ const EtForecastMain = ({
     let active = true;
     setLoading(true);
     setError(false);
-    getEtForecast(selectedZone, 7)
+    // Anchor Open-Meteo to the farmer's picked weather location (client-side);
+    // the backend falls back to account/zone coordinates when it's unset.
+    const loc = readWeatherLocation();
+    getEtForecast(
+      selectedZone,
+      7,
+      loc ? { lat: loc.lat, lon: loc.lon } : undefined
+    )
       .then((res) => {
         if (active) {
           setDays(res.days);

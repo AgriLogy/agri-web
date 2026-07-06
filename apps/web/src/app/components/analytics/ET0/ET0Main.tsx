@@ -8,6 +8,7 @@ import {
   useFrequencySeries,
 } from '../../common/ChartFrequencyContext';
 import api from '@agri/api-client/api';
+import { readWeatherLocation } from '@agri/api-client';
 import ET0LastData from './ET0LastData';
 import ET0Chart from './ET0Chart';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';
@@ -53,9 +54,15 @@ const ET0Main = ({
       params,
     });
     // Real Open-Meteo daily reference ET₀ over the same range — best-effort, so
-    // a failure here must not blank the whole chart.
+    // a failure here must not blank the whole chart. Anchor it to the farmer's
+    // picked weather location (client-side); the backend falls back to
+    // account/zone coordinates when it's unset.
+    const loc = readWeatherLocation();
+    const seriesParams = loc
+      ? { ...params, lat: loc.lat, lon: loc.lon }
+      : params;
     const fetchOpenMeteo = api
-      .get<ET0Data[]>('/weather/et0-series', { params })
+      .get<ET0Data[]>('/weather/et0-series', { params: seriesParams })
       .catch(() => ({ data: [] as ET0Data[] }));
 
     Promise.all([fetchWeather, fetchCalculated, fetchOpenMeteo])
