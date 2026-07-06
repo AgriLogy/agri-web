@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/mks-zakaria/agri-web/compare/v1.18.0...v1.19.0) (2026-07-06)
+
+
+### Features
+
+* **weather:** plot the Open-Meteo reference line on the ET₀ chart ([#50](https://github.com/mks-zakaria/agri-web/issues/50)) ([#51](https://github.com/mks-zakaria/agri-web/issues/51)) ([2d456f5](https://github.com/mks-zakaria/agri-web/commit/2d456f573b86b9e458fd8159b9051c7389f95f7e))
+
 # [1.18.0](https://github.com/mks-zakaria/agri-web/compare/v1.17.0...v1.18.0) (2026-07-06)
 
 
