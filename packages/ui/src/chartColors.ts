@@ -76,6 +76,7 @@ export const SENSOR_SERIES_COLORS = {
   // ET0
   et0_sensor: chartSeries.blue,
   et0_calculated: chartSeries.red,
+  et0_openmeteo: chartSeries.orange,
 
   // Soil salinity / conductivity defaults
   soil_salinity: chartSeries.mustard,
