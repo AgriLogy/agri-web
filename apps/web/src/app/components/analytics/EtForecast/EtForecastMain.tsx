@@ -123,7 +123,7 @@ const EtForecastMain = ({
   // curve share ONE vertical axis (`chartMax`) so they're directly comparable —
   // Open-Meteo values often exceed the placeholder bars, so we scale to both.
   const openMeteo = days.map((d) =>
-    typeof d.et0_openmeteo_mm === 'number' ? d.et0_openmeteo_mm : null,
+    typeof d.et0_openmeteo_mm === 'number' ? d.et0_openmeteo_mm : null
   );
   const hasCurve = openMeteo.some((v) => v != null);
   const chartMax =
@@ -192,7 +192,7 @@ const EtForecastMain = ({
             {days.map((d) => {
               const heightPct = Math.max(
                 6,
-                Math.round((d.et0_mm / chartMax) * 100),
+                Math.round((d.et0_mm / chartMax) * 100)
               );
               return (
                 <Box
