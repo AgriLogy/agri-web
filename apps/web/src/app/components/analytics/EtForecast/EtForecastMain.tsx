@@ -6,7 +6,6 @@ import {
   HStack,
   Spinner,
   Text,
-  VStack,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
@@ -45,6 +44,8 @@ const EtForecastMain = ({
 
   const barColor = useColorModeValue('teal.400', 'teal.300');
   const cardBg = useColorModeValue('gray.50', 'whiteAlpha.100');
+  // Raw CSS colours (not Chakra tokens) — the curve is a native <svg> stroke.
+  const curveStroke = useColorModeValue('#DD6B20', '#F6AD55'); // orange.500 / .300
 
   useEffect(() => {
     if (selectedZone == null) {
@@ -112,12 +113,36 @@ const EtForecastMain = ({
     );
   }
 
-  const max = maxEtMm(days);
   const peak = peakEtDay(days);
   const weekdayFmt = new Intl.DateTimeFormat(LOCALE_TAG[locale] ?? 'en-GB', {
     weekday: 'short',
     day: 'numeric',
   });
+
+  // The real Open-Meteo reference ET₀ per day (null when unavailable). Bars and
+  // curve share ONE vertical axis (`chartMax`) so they're directly comparable —
+  // Open-Meteo values often exceed the placeholder bars, so we scale to both.
+  const openMeteo = days.map((d) =>
+    typeof d.et0_openmeteo_mm === 'number' ? d.et0_openmeteo_mm : null,
+  );
+  const hasCurve = openMeteo.some((v) => v != null);
+  const chartMax =
+    Math.max(maxEtMm(days), ...openMeteo.map((v) => v ?? 0)) || 1;
+
+  const n = days.length;
+  const curvePoints = days
+    .map((d, i) => {
+      const v = openMeteo[i];
+      if (v == null) return null;
+      const x = ((i + 0.5) / n) * 100;
+      const y = (1 - v / chartMax) * 100;
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
+    })
+    .filter((p): p is string => p !== null)
+    .join(' ');
+
+  const rowSpacing = { base: 1.5, md: 3 };
+  const cellProps = { flex: '1', minW: '44px' } as const;
 
   return (
     <Box>
@@ -130,38 +155,110 @@ const EtForecastMain = ({
           })}
         </Text>
       </Flex>
-      <HStack align="flex-end" spacing={{ base: 1.5, md: 3 }} overflowX="auto">
-        {days.map((d) => {
-          const heightPct = Math.max(6, Math.round((d.et0_mm / max) * 100));
-          return (
-            <VStack key={d.date} spacing={1} minW="44px" flex="1">
-              <Text fontSize="xs" color="gray.500" aria-hidden>
-                {d.et0_mm.toFixed(1)}
-              </Text>
-              <Box
-                w="full"
-                bg={cardBg}
-                borderRadius="md"
-                h="96px"
-                display="flex"
-                alignItems="flex-end"
-                overflow="hidden"
-              >
+
+      {hasCurve && (
+        <HStack spacing={4} mb={2} fontSize="xs" color="gray.500" wrap="wrap">
+          <HStack spacing={1.5}>
+            <Box w="10px" h="10px" bg={barColor} borderRadius="sm" />
+            <Text>{t('station.etForecast.legendComputed')}</Text>
+          </HStack>
+          <HStack spacing={1.5}>
+            <Box w="16px" borderTopWidth="2px" borderColor={curveStroke} />
+            <Text>{t('station.etForecast.legendOpenMeteo')}</Text>
+          </HStack>
+        </HStack>
+      )}
+
+      <Box overflowX="auto">
+        {/* value row */}
+        <HStack align="flex-end" spacing={rowSpacing} minW="308px">
+          {days.map((d) => (
+            <Text
+              key={d.date}
+              {...cellProps}
+              fontSize="xs"
+              color="gray.500"
+              textAlign="center"
+              aria-hidden
+            >
+              {d.et0_mm.toFixed(1)}
+            </Text>
+          ))}
+        </HStack>
+
+        {/* bar band + Open-Meteo curve overlay */}
+        <Box position="relative" h="96px" minW="308px">
+          <HStack align="flex-end" spacing={rowSpacing} h="100%">
+            {days.map((d) => {
+              const heightPct = Math.max(
+                6,
+                Math.round((d.et0_mm / chartMax) * 100),
+              );
+              return (
                 <Box
-                  w="full"
-                  bg={barColor}
-                  h={`${heightPct}%`}
-                  borderTopRadius="sm"
-                  title={`${d.date}: ${d.et0_mm} mm`}
-                />
-              </Box>
-              <Text fontSize="xs" textAlign="center" noOfLines={1}>
-                {weekdayFmt.format(new Date(d.date))}
-              </Text>
-            </VStack>
-          );
-        })}
-      </HStack>
+                  key={d.date}
+                  {...cellProps}
+                  h="100%"
+                  bg={cardBg}
+                  borderRadius="md"
+                  display="flex"
+                  alignItems="flex-end"
+                  overflow="hidden"
+                >
+                  <Box
+                    w="full"
+                    bg={barColor}
+                    h={`${heightPct}%`}
+                    borderTopRadius="sm"
+                    title={`${d.date}: ${d.et0_mm} mm`}
+                  />
+                </Box>
+              );
+            })}
+          </HStack>
+          {hasCurve && (
+            <svg
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                pointerEvents: 'none',
+                overflow: 'visible',
+              }}
+              aria-hidden
+            >
+              <polyline
+                points={curvePoints}
+                fill="none"
+                stroke={curveStroke}
+                strokeWidth={2}
+                vectorEffect="non-scaling-stroke"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
+            </svg>
+          )}
+        </Box>
+
+        {/* weekday row */}
+        <HStack spacing={rowSpacing} mt={1} minW="308px">
+          {days.map((d) => (
+            <Text
+              key={d.date}
+              {...cellProps}
+              fontSize="xs"
+              textAlign="center"
+              noOfLines={1}
+            >
+              {weekdayFmt.format(new Date(d.date))}
+            </Text>
+          ))}
+        </HStack>
+      </Box>
+
       <Text fontSize="xs" color="gray.400" mt={2}>
         {t('station.etForecast.unit')}
       </Text>
