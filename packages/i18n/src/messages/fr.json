@@ -1819,7 +1819,9 @@
       "empty": "Sélectionnez une zone pour voir sa prévision ET₀.",
       "unit": "Évapotranspiration de référence journalière (mm)",
       "source": "Valeurs issues de la prévision météo · source : {provider}",
-      "providerMock": "modèle de démonstration"
+      "providerMock": "modèle de démonstration",
+      "legendComputed": "ET₀ calculée",
+      "legendOpenMeteo": "Open-Meteo (référence)"
     },
     "dataTable": {
       "title": "Mesures — tableau détaillé",

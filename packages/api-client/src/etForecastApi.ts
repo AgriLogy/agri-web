@@ -14,14 +14,22 @@ import api from './api';
 export interface EtForecastDay {
   /** ISO date, e.g. "2026-07-01". */
   date: string;
-  /** Reference ET0 for the day, mm. */
+  /** Reference ET0 for the day, mm (bars — our computed FAO-56). */
   et0_mm: number;
+  /**
+   * Open-Meteo's own published FAO-56 reference ET0 for the day, mm — drives
+   * the real reference curve. `null` when Open-Meteo was unreachable/disabled
+   * or the user has no lat/lon.
+   */
+  et0_openmeteo_mm?: number | null;
 }
 
 export interface EtForecastResponse {
   zone_id: number;
-  /** Which provider served this — "mock" until a real one is wired. */
+  /** Which provider served the bars — "mock" until a real one is wired. */
   provider: string;
+  /** Provider behind the reference curve — always "open-meteo". */
+  reference_provider?: string;
   days: EtForecastDay[];
 }
 

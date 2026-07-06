@@ -1819,7 +1819,9 @@
       "empty": "Select a zone to see its ET₀ forecast.",
       "unit": "Daily reference evapotranspiration (mm)",
       "source": "Values from the weather forecast · source: {provider}",
-      "providerMock": "demo model"
+      "providerMock": "demo model",
+      "legendComputed": "Computed ET₀",
+      "legendOpenMeteo": "Open-Meteo (reference)"
     },
     "dataTable": {
       "title": "Measurements — detailed table",
