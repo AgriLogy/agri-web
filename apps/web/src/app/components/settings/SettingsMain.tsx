@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import ProfileSection from '@/app/components/settings/ProfileSection';
 import DefaultContactSection from '@/app/components/settings/DefaultContactSection';
 import TechniciansSection from '@/app/components/settings/TechniciansSection';
 import FarmSettingsSection from '@/app/components/settings/FarmSettingsSection';
@@ -15,6 +16,7 @@ import SensorReadingsSettings from '@/app/components/settings/SensorReadingsSett
 import SuperAdminUsersSettings from '@/app/components/settings/SuperAdminUsersSettings';
 
 type SettingsTab =
+  | 'profile'
   | 'farms'
   | 'contact'
   | 'technicians'
@@ -24,6 +26,7 @@ type SettingsTab =
   | 'groups';
 
 const TAB_KEYS: SettingsTab[] = [
+  'profile',
   'farms',
   'contact',
   'technicians',
@@ -34,6 +37,7 @@ const TAB_KEYS: SettingsTab[] = [
 ];
 
 const TAB_LABEL_KEY: Record<SettingsTab, string> = {
+  profile: 'settings.main.tabProfile',
   farms: 'settings.main.tabFarms',
   contact: 'settings.main.tabContact',
   technicians: 'settings.main.tabTechnicians',
@@ -101,6 +105,7 @@ const SettingsMain = () => {
         py={{ base: 3, md: 4 }}
         minW={0}
       >
+        {activeTab === 'profile' && <ProfileSection />}
         {activeTab === 'readings' && <SensorReadingsSettings />}
         {activeTab === 'farms' && <FarmSettingsSection />}
         {activeTab === 'contact' && <DefaultContactSection />}
