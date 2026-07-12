@@ -1822,7 +1822,9 @@
       "source": "Valeurs issues de la prévision météo · source : {provider}",
       "providerMock": "modèle de démonstration",
       "legendComputed": "ET₀ calculée",
-      "legendOpenMeteo": "Open-Meteo (référence)"
+      "legendOpenMeteo": "Open-Meteo (référence)",
+      "peakBadge": "Pic",
+      "referenceShort": "réf {value}"
     },
     "dataTable": {
       "title": "Mesures — tableau détaillé",

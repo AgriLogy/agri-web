@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Badge,
   Box,
   Flex,
   HStack,
@@ -25,7 +26,7 @@ const LOCALE_TAG: Record<string, string> = {
 };
 
 // Human-friendly names for the real forecast providers; "mock" is translated
-// to a "demo model" label so the graph never presents synthetic values as a
+// to a "demo model" label so the strip never presents synthetic values as a
 // live weather feed.
 const PROVIDER_LABEL: Record<string, string> = {
   openweather: 'OpenWeather',
@@ -47,9 +48,12 @@ const EtForecastMain = ({
   const [error, setError] = useState(false);
 
   const barColor = useColorModeValue('teal.400', 'teal.300');
-  const cardBg = useColorModeValue('gray.50', 'whiteAlpha.100');
-  // Raw CSS colours (not Chakra tokens) — the curve is a native <svg> stroke.
-  const curveStroke = useColorModeValue('#DD6B20', '#F6AD55'); // orange.500 / .300
+  const peakBarColor = useColorModeValue('orange.400', 'orange.300');
+  const trackBg = useColorModeValue('gray.100', 'whiteAlpha.100');
+  const peakRowBg = useColorModeValue('orange.50', 'whiteAlpha.50');
+  // Raw CSS colour (not a Chakra token) — the reference tick is a native
+  // absolutely-positioned marker over the bar track.
+  const refTick = useColorModeValue('#DD6B20', '#F6AD55'); // orange.500 / .300
 
   useEffect(() => {
     if (selectedZone == null) {
@@ -125,35 +129,22 @@ const EtForecastMain = ({
   }
 
   const peak = peakEtDay(days);
-  const weekdayFmt = new Intl.DateTimeFormat(LOCALE_TAG[locale] ?? 'en-GB', {
-    weekday: 'short',
+  const localeTag = LOCALE_TAG[locale] ?? 'en-GB';
+  const weekdayFmt = new Intl.DateTimeFormat(localeTag, { weekday: 'short' });
+  const dateFmt = new Intl.DateTimeFormat(localeTag, {
     day: 'numeric',
+    month: 'short',
   });
 
-  // The real Open-Meteo reference ET₀ per day (null when unavailable). Bars and
-  // curve share ONE vertical axis (`chartMax`) so they're directly comparable —
-  // Open-Meteo values often exceed the placeholder bars, so we scale to both.
+  // Bars and the Open-Meteo reference tick share ONE horizontal axis
+  // (`chartMax`) so a day's computed ET₀ and its published FAO-56 reference are
+  // directly comparable within the same row.
   const openMeteo = days.map((d) =>
     typeof d.et0_openmeteo_mm === 'number' ? d.et0_openmeteo_mm : null
   );
-  const hasCurve = openMeteo.some((v) => v != null);
+  const hasReference = openMeteo.some((v) => v != null);
   const chartMax =
     Math.max(maxEtMm(days), ...openMeteo.map((v) => v ?? 0)) || 1;
-
-  const n = days.length;
-  const curvePoints = days
-    .map((d, i) => {
-      const v = openMeteo[i];
-      if (v == null) return null;
-      const x = ((i + 0.5) / n) * 100;
-      const y = (1 - v / chartMax) * 100;
-      return `${x.toFixed(2)},${y.toFixed(2)}`;
-    })
-    .filter((p): p is string => p !== null)
-    .join(' ');
-
-  const rowSpacing = { base: 1.5, md: 3 };
-  const cellProps = { flex: '1', minW: '44px' } as const;
 
   return (
     <Box>
@@ -162,115 +153,125 @@ const EtForecastMain = ({
         <Text fontSize="sm" color="gray.500">
           {t('station.etForecast.summary', {
             total: totalEtMm(days),
-            peak: peak ? weekdayFmt.format(new Date(peak.date)) : '—',
+            peak: peak ? dateFmt.format(new Date(peak.date)) : '—',
           })}
         </Text>
       </Flex>
 
-      {hasCurve && (
-        <HStack spacing={4} mb={2} fontSize="xs" color="gray.500" wrap="wrap">
+      {hasReference && (
+        <HStack spacing={4} mb={3} fontSize="xs" color="gray.500" wrap="wrap">
           <HStack spacing={1.5}>
             <Box w="10px" h="10px" bg={barColor} borderRadius="sm" />
             <Text>{t('station.etForecast.legendComputed')}</Text>
           </HStack>
           <HStack spacing={1.5}>
-            <Box w="16px" borderTopWidth="2px" borderColor={curveStroke} />
+            <Box w="2px" h="12px" bg={refTick} borderRadius="full" />
             <Text>{t('station.etForecast.legendOpenMeteo')}</Text>
           </HStack>
         </HStack>
       )}
 
-      <Box overflowX="auto">
-        {/* value row */}
-        <HStack align="flex-end" spacing={rowSpacing} minW="308px">
-          {days.map((d) => (
-            <Text
+      {/* One row per forecast day — a horizontal bar list (design #18):
+          weekday · date · ET₀ bar · value, with the Open-Meteo reference as a
+          tick over the same track. */}
+      <Box>
+        {days.map((d, i) => {
+          const isPeak = peak != null && d.date === peak.date;
+          const widthPct = Math.max(4, Math.round((d.et0_mm / chartMax) * 100));
+          const ref = openMeteo[i];
+          const refPct =
+            ref != null
+              ? Math.min(100, Math.max(0, (ref / chartMax) * 100))
+              : null;
+          const when = new Date(d.date);
+          return (
+            <Flex
               key={d.date}
-              {...cellProps}
-              fontSize="xs"
-              color="gray.500"
-              textAlign="center"
-              aria-hidden
+              align="center"
+              gap={{ base: 2, md: 3 }}
+              py={2}
+              px={{ base: 1, md: 2 }}
+              borderRadius="md"
+              bg={isPeak ? peakRowBg : undefined}
             >
-              {d.et0_mm.toFixed(1)}
-            </Text>
-          ))}
-        </HStack>
+              {/* day label */}
+              <Box minW={{ base: '58px', md: '72px' }}>
+                <Text fontSize="sm" fontWeight="semibold" lineHeight="short">
+                  {weekdayFmt.format(when)}
+                </Text>
+                <Text fontSize="xs" color="gray.500" lineHeight="short">
+                  {dateFmt.format(when)}
+                </Text>
+              </Box>
 
-        {/* bar band + Open-Meteo curve overlay */}
-        <Box position="relative" h="96px" minW="308px">
-          <HStack align="flex-end" spacing={rowSpacing} h="100%">
-            {days.map((d) => {
-              const heightPct = Math.max(
-                6,
-                Math.round((d.et0_mm / chartMax) * 100)
-              );
-              return (
+              {/* peak badge */}
+              <Box minW={{ base: '0', md: '44px' }}>
+                {isPeak && (
+                  <Badge
+                    colorScheme="orange"
+                    fontSize="0.6rem"
+                    textTransform="none"
+                  >
+                    {t('station.etForecast.peakBadge')}
+                  </Badge>
+                )}
+              </Box>
+
+              {/* bar track */}
+              <Box
+                flex="1"
+                minW={0}
+                position="relative"
+                h="16px"
+                bg={trackBg}
+                borderRadius="full"
+                title={`${d.date}: ${d.et0_mm} mm`}
+              >
                 <Box
-                  key={d.date}
-                  {...cellProps}
-                  h="100%"
-                  bg={cardBg}
-                  borderRadius="md"
-                  display="flex"
-                  alignItems="flex-end"
-                  overflow="hidden"
-                >
+                  position="absolute"
+                  insetStart={0}
+                  top={0}
+                  bottom={0}
+                  w={`${widthPct}%`}
+                  bg={isPeak ? peakBarColor : barColor}
+                  borderRadius="full"
+                />
+                {refPct != null && (
                   <Box
-                    w="full"
-                    bg={barColor}
-                    h={`${heightPct}%`}
-                    borderTopRadius="sm"
-                    title={`${d.date}: ${d.et0_mm} mm`}
+                    position="absolute"
+                    top="-2px"
+                    bottom="-2px"
+                    insetStart={`${refPct}%`}
+                    w="2px"
+                    bg={refTick}
+                    borderRadius="full"
+                    title={`Open-Meteo: ${ref} mm`}
                   />
-                </Box>
-              );
-            })}
-          </HStack>
-          {hasCurve && (
-            <svg
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                pointerEvents: 'none',
-                overflow: 'visible',
-              }}
-              aria-hidden
-            >
-              <polyline
-                points={curvePoints}
-                fill="none"
-                stroke={curveStroke}
-                strokeWidth={2}
-                vectorEffect="non-scaling-stroke"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              />
-            </svg>
-          )}
-        </Box>
+                )}
+              </Box>
 
-        {/* weekday row */}
-        <HStack spacing={rowSpacing} mt={1} minW="308px">
-          {days.map((d) => (
-            <Text
-              key={d.date}
-              {...cellProps}
-              fontSize="xs"
-              textAlign="center"
-              noOfLines={1}
-            >
-              {weekdayFmt.format(new Date(d.date))}
-            </Text>
-          ))}
-        </HStack>
+              {/* value */}
+              <Box minW={{ base: '56px', md: '68px' }} textAlign="end">
+                <Text fontSize="sm" fontWeight="bold" lineHeight="short">
+                  {d.et0_mm.toFixed(1)}
+                  <Text as="span" fontSize="xs" color="gray.500" ms={0.5}>
+                    mm
+                  </Text>
+                </Text>
+                {refPct != null && ref != null && (
+                  <Text fontSize="0.65rem" color="gray.500" lineHeight="short">
+                    {t('station.etForecast.referenceShort', {
+                      value: ref.toFixed(1),
+                    })}
+                  </Text>
+                )}
+              </Box>
+            </Flex>
+          );
+        })}
       </Box>
 
-      <Text fontSize="xs" color="gray.400" mt={2}>
+      <Text fontSize="xs" color="gray.400" mt={3}>
         {t('station.etForecast.unit')}
       </Text>
       {provider && (
