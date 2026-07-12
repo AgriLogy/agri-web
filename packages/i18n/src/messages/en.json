@@ -1119,6 +1119,13 @@
         "hide": "Hide history",
         "delete": "Delete conversation"
       },
+      "voice": {
+        "start": "Speak your question",
+        "stop": "Stop dictation",
+        "listening": "Listening…",
+        "permissionDenied": "Microphone access denied. Allow it in your browser settings to use voice input.",
+        "genericError": "Voice input isn't available right now. Please try again or type your message."
+      },
       "alertsCard": {
         "intro": "Here are your active alerts:"
       },
