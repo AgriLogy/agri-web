@@ -1,3 +1,12 @@
+# [1.20.0](https://github.com/mks-zakaria/agri-web/compare/v1.19.1...v1.20.0) (2026-07-12)
+
+
+### Features
+
+* **chat:** voice input on the assistant composer (Web Speech API) ([#56](https://github.com/mks-zakaria/agri-web/issues/56)) ([e945da2](https://github.com/mks-zakaria/agri-web/commit/e945da287a86b58f48430247c3bf79d53c0b35f8))
+* **settings:** add account profile tab for name, email, phone and password ([#54](https://github.com/mks-zakaria/agri-web/issues/54)) ([009c00a](https://github.com/mks-zakaria/agri-web/commit/009c00a185af5a7e197438244c8c974742468426))
+* **weather:** per-day card list for the 7-day ET0 forecast ([#55](https://github.com/mks-zakaria/agri-web/issues/55)) ([bfdbe64](https://github.com/mks-zakaria/agri-web/commit/bfdbe647d68b73a425343c305dde27fd361774ee))
+
 ## [1.19.1](https://github.com/mks-zakaria/agri-web/compare/v1.19.0...v1.19.1) (2026-07-06)
 
 
