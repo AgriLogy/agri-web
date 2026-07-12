@@ -93,9 +93,11 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
   const handleVoiceResult = useCallback(
     (transcript: string, _isFinal: boolean) => {
       const base = voiceBaseRef.current;
-      setInput(base && transcript ? `${base} ${transcript}` : base + transcript);
+      setInput(
+        base && transcript ? `${base} ${transcript}` : base + transcript
+      );
     },
-    [],
+    []
   );
 
   const handleVoiceError = useCallback(
@@ -111,7 +113,7 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
         isClosable: true,
       });
     },
-    [t, toast],
+    [t, toast]
   );
 
   const {
@@ -378,9 +380,7 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
                 transition="background 0.15s, transform 0.15s"
                 animation={listening ? `${micPulse} 1.4s infinite` : undefined}
                 _hover={
-                  streaming
-                    ? {}
-                    : { bg: listening ? micActiveBg : micHoverBg }
+                  streaming ? {} : { bg: listening ? micActiveBg : micHoverBg }
                 }
                 _active={streaming ? {} : { transform: 'scale(0.95)' }}
                 disabled={streaming}

@@ -81,7 +81,7 @@ export function useSpeechRecognition({
       recognitionRef.current?.abort();
       recognitionRef.current = null;
     },
-    [],
+    []
   );
 
   const stop = useCallback(() => {
