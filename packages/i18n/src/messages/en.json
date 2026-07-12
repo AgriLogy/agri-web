@@ -1858,7 +1858,9 @@
       "source": "Values from the weather forecast · source: {provider}",
       "providerMock": "demo model",
       "legendComputed": "Computed ET₀",
-      "legendOpenMeteo": "Open-Meteo (reference)"
+      "legendOpenMeteo": "Open-Meteo (reference)",
+      "peakBadge": "Peak",
+      "referenceShort": "ref {value}"
     },
     "dataTable": {
       "title": "Measurements — detailed table",
