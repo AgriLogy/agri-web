@@ -1119,6 +1119,13 @@
         "hide": "Masquer l'historique",
         "delete": "Supprimer la conversation"
       },
+      "voice": {
+        "start": "Dictez votre question",
+        "stop": "Arrêter la dictée",
+        "listening": "Écoute en cours…",
+        "permissionDenied": "Accès au microphone refusé. Autorisez-le dans les paramètres de votre navigateur pour utiliser la saisie vocale.",
+        "genericError": "La saisie vocale n'est pas disponible pour le moment. Réessayez ou saisissez votre message."
+      },
       "alertsCard": {
         "intro": "Voici vos alertes actives :"
       },
