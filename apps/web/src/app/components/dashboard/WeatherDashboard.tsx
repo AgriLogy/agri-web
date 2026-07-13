@@ -14,14 +14,7 @@ import {
   HStack,
   Icon,
   Flex,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  PopoverArrow,
-  Input,
   Button,
-  Spinner,
 } from '@chakra-ui/react';
 import {
   Cloud,
@@ -31,13 +24,9 @@ import {
   Droplets,
   Sunrise,
   Sunset,
-  MapPin,
-  LocateFixed,
 } from 'lucide-react';
 import {
   readWeatherLocation,
-  writeWeatherLocation,
-  clearWeatherLocation,
   type WeatherLocation,
 } from '@agri/api-client/weatherLocationStorage';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
@@ -45,16 +34,8 @@ import WeatherDetailsModal, {
   OPEN_METEO_PARAMS,
   type WeatherData,
 } from '@/app/components/dashboard/WeatherDetailsModal';
+import WeatherLocationPicker from '@/app/components/weather/WeatherLocationPicker';
 import Loading from '../common/Loading';
-
-interface GeoResult {
-  id: number;
-  name: string;
-  latitude: number;
-  longitude: number;
-  country?: string;
-  admin1?: string;
-}
 
 const localeTag = (locale: string): string =>
   locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
@@ -80,22 +61,12 @@ const WeatherDashboard = () => {
   const [location, setLocation] = useState<WeatherLocation>(DEFAULT_LOCATION);
   const [loading, setLoading] = useState(true);
   const [useImperial, setUseImperial] = useState(false);
-
-  // Location-picker state.
-  const [pickerOpen, setPickerOpen] = useState(false);
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<GeoResult[]>([]);
-  const [searching, setSearching] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [locating, setLocating] = useState(false);
-  const [geoError, setGeoError] = useState<string | null>(null);
 
   const bgColor = useColorModeValue('white', 'gray.800');
   const primaryText = useColorModeValue('gray.900', 'white');
   const secondaryText = useColorModeValue('gray.600', 'gray.400');
   const tableBg = useColorModeValue('white', 'gray.800');
-  const popoverBorder = useColorModeValue('gray.200', 'gray.600');
-  const resultHoverBg = useColorModeValue('gray.100', 'gray.700');
   const p = useBreakpointValue({ base: 2, md: 4 });
   const { hoverColor } = useColorModeStyles();
 
@@ -160,87 +131,6 @@ const WeatherDashboard = () => {
     };
   }, [location.lat, location.lon, location.label, locale]);
 
-  // Debounced city search via open-meteo's keyless geocoding API.
-  useEffect(() => {
-    const q = query.trim();
-    if (q.length < 2) {
-      setResults([]);
-      setSearching(false);
-      return;
-    }
-    setSearching(true);
-    const handle = setTimeout(async () => {
-      try {
-        const res = await fetch(
-          `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=${geoLang(locale)}&format=json`
-        );
-        const data = await res.json();
-        setResults(Array.isArray(data?.results) ? data.results : []);
-      } catch {
-        setResults([]);
-      } finally {
-        setSearching(false);
-      }
-    }, 350);
-    return () => clearTimeout(handle);
-  }, [query, locale]);
-
-  const pickLocation = (r: GeoResult) => {
-    const loc: WeatherLocation = {
-      lat: r.latitude,
-      lon: r.longitude,
-      label: r.name,
-    };
-    setLocation(loc);
-    writeWeatherLocation(loc);
-    setPickerOpen(false);
-    setQuery('');
-    setResults([]);
-  };
-
-  const resetLocation = () => {
-    setLocation(DEFAULT_LOCATION);
-    clearWeatherLocation();
-    setPickerOpen(false);
-    setQuery('');
-    setResults([]);
-  };
-
-  // Browser geolocation → anchor the forecast to the device's position.
-  // label stays null so the reverse-geocode effect resolves the city name.
-  const useMyLocation = () => {
-    setGeoError(null);
-    if (!('geolocation' in navigator)) {
-      setGeoError(t('shell.weather.geoUnavailable'));
-      return;
-    }
-    setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const loc: WeatherLocation = {
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude,
-          label: null,
-        };
-        setLocation(loc);
-        writeWeatherLocation(loc);
-        setLocating(false);
-        setPickerOpen(false);
-        setQuery('');
-        setResults([]);
-      },
-      (err) => {
-        setLocating(false);
-        setGeoError(
-          err.code === err.PERMISSION_DENIED
-            ? t('shell.weather.geoDenied')
-            : t('shell.weather.geoUnavailable')
-        );
-      },
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
-    );
-  };
-
   const toFahrenheit = (celsius: number) => (celsius * 9) / 5 + 32;
   const toMilesPerHour = (kmph: number) => kmph * 0.621371;
 
@@ -288,119 +178,7 @@ const WeatherDashboard = () => {
           <Text color="app.text" fontSize="lg" fontWeight="bold">
             {t('shell.weather.title')}
           </Text>
-          <Popover
-            isOpen={pickerOpen}
-            onOpen={() => setPickerOpen(true)}
-            onClose={() => setPickerOpen(false)}
-            placement="bottom-start"
-            isLazy
-          >
-            <PopoverTrigger>
-              <Button
-                variant="ghost"
-                size="xs"
-                px={1}
-                py={0}
-                h="auto"
-                minH="20px"
-                fontWeight="normal"
-                color={secondaryText}
-                leftIcon={<Icon as={MapPin} boxSize="13px" />}
-                _hover={{ color: primaryText, bg: 'transparent' }}
-                aria-label={t('shell.weather.changeLocation')}
-              >
-                {cityName || t('shell.weather.changeLocation')}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              w="250px"
-              bg={bgColor}
-              borderColor={popoverBorder}
-              boxShadow="lg"
-              _focus={{ outline: 'none' }}
-            >
-              <PopoverArrow bg={bgColor} />
-              <PopoverBody>
-                <Button
-                  size="xs"
-                  w="100%"
-                  mb={2}
-                  variant="outline"
-                  leftIcon={<Icon as={LocateFixed} boxSize="12px" />}
-                  isLoading={locating}
-                  loadingText={t('shell.weather.locating')}
-                  onClick={useMyLocation}
-                >
-                  {t('shell.weather.useMyLocation')}
-                </Button>
-                {geoError && (
-                  <Text fontSize="xs" color="red.400" px={1} mb={2}>
-                    {geoError}
-                  </Text>
-                )}
-                <Input
-                  size="sm"
-                  autoFocus
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder={t('shell.weather.searchPlaceholder')}
-                  mb={2}
-                />
-                {searching && (
-                  <HStack spacing={2} px={1} py={1}>
-                    <Spinner size="xs" color="primary.500" />
-                    <Text fontSize="xs" color={secondaryText}>
-                      {t('shell.weather.searching')}
-                    </Text>
-                  </HStack>
-                )}
-                {!searching &&
-                  query.trim().length >= 2 &&
-                  results.length === 0 && (
-                    <Text fontSize="xs" color={secondaryText} px={1} py={1}>
-                      {t('shell.weather.noResults')}
-                    </Text>
-                  )}
-                <VStack
-                  align="stretch"
-                  spacing={0}
-                  maxH="190px"
-                  overflowY="auto"
-                >
-                  {results.map((r) => (
-                    <Box
-                      as="button"
-                      type="button"
-                      key={r.id}
-                      textAlign="start"
-                      px={2}
-                      py="6px"
-                      borderRadius="md"
-                      _hover={{ bg: resultHoverBg }}
-                      onClick={() => pickLocation(r)}
-                    >
-                      <Text fontSize="sm" color={primaryText} noOfLines={1}>
-                        {r.name}
-                      </Text>
-                      <Text fontSize="xs" color={secondaryText} noOfLines={1}>
-                        {[r.admin1, r.country].filter(Boolean).join(', ')}
-                      </Text>
-                    </Box>
-                  ))}
-                </VStack>
-                <Button
-                  variant="link"
-                  size="xs"
-                  mt={2}
-                  colorScheme="brand"
-                  leftIcon={<Icon as={MapPin} boxSize="12px" />}
-                  onClick={resetLocation}
-                >
-                  {t('shell.weather.resetStation')}
-                </Button>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
+          <WeatherLocationPicker size="xs" onChange={setLocation} />
         </VStack>
         <HStack spacing={2}>
           <Text

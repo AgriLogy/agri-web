@@ -8,7 +8,10 @@ import {
   useFrequencySeries,
 } from '../../common/ChartFrequencyContext';
 import api from '@agri/api-client/api';
-import { readWeatherLocation } from '@agri/api-client';
+import {
+  readWeatherLocation,
+  WEATHER_LOCATION_UPDATED_EVENT,
+} from '@agri/api-client';
 import ET0LastData from './ET0LastData';
 import ET0Chart from './ET0Chart';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';
@@ -38,6 +41,16 @@ const ET0Main = ({
   const [calculatedData, setCalculatedData] = useState<ET0Data[]>([]);
   const [openMeteoData, setOpenMeteoData] = useState<ET0Data[]>([]);
   const [loading, setLoading] = useState(true);
+  // Bumped when the picked weather location changes so the Open-Meteo
+  // reference series re-fetches against the new coordinates.
+  const [locationVersion, setLocationVersion] = useState(0);
+
+  useEffect(() => {
+    const bump = () => setLocationVersion((v) => v + 1);
+    window.addEventListener(WEATHER_LOCATION_UPDATED_EVENT, bump);
+    return () =>
+      window.removeEventListener(WEATHER_LOCATION_UPDATED_EVENT, bump);
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -75,7 +88,7 @@ const ET0Main = ({
         console.error('Failed to fetch ET0 sensor data:', err);
       })
       .finally(() => setLoading(false));
-  }, [startDate, endDate, selectedZone]);
+  }, [startDate, endDate, selectedZone, locationVersion]);
 
   const { series: sortedWeather, timeline } = useFrequencySeries(weatherData);
   const calculated = useBucketed(calculatedData);
