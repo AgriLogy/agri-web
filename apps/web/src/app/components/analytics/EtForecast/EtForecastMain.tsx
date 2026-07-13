@@ -15,9 +15,11 @@ import { useLocale, useTranslations } from 'next-intl';
 import {
   getEtForecast,
   readWeatherLocation,
+  WEATHER_LOCATION_UPDATED_EVENT,
   type EtForecastDay,
 } from '@agri/api-client';
 import { maxEtMm, peakEtDay, totalEtMm } from '@/app/lib/etForecast';
+import WeatherLocationPicker from '@/app/components/weather/WeatherLocationPicker';
 
 const LOCALE_TAG: Record<string, string> = {
   fr: 'fr-FR',
@@ -46,6 +48,9 @@ const EtForecastMain = ({
   const [provider, setProvider] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  // Bumped whenever the picked weather location changes so the forecast
+  // re-fetches against the new coordinates.
+  const [locationVersion, setLocationVersion] = useState(0);
 
   const barColor = useColorModeValue('teal.400', 'teal.300');
   const peakBarColor = useColorModeValue('orange.400', 'orange.300');
@@ -54,6 +59,15 @@ const EtForecastMain = ({
   // Raw CSS colour (not a Chakra token) — the reference tick is a native
   // absolutely-positioned marker over the bar track.
   const refTick = useColorModeValue('#DD6B20', '#F6AD55'); // orange.500 / .300
+
+  // Re-fetch when the shared weather location changes (from this card's picker
+  // or any other consumer, e.g. the weather dashboard).
+  useEffect(() => {
+    const bump = () => setLocationVersion((v) => v + 1);
+    window.addEventListener(WEATHER_LOCATION_UPDATED_EVENT, bump);
+    return () =>
+      window.removeEventListener(WEATHER_LOCATION_UPDATED_EVENT, bump);
+  }, []);
 
   useEffect(() => {
     if (selectedZone == null) {
@@ -87,16 +101,23 @@ const EtForecastMain = ({
     return () => {
       active = false;
     };
-  }, [selectedZone]);
+  }, [selectedZone, locationVersion]);
 
   const title = t('station.etForecast.title');
+
+  // Title + inline location picker — kept visible in every state so the farmer
+  // can re-anchor the forecast even while it's loading, empty, or errored.
+  const titleRow = (
+    <Box mb={2}>
+      <Text fontWeight="bold">{title}</Text>
+      <WeatherLocationPicker size="xs" />
+    </Box>
+  );
 
   if (loading) {
     return (
       <Box>
-        <Text fontWeight="bold" mb={2}>
-          {title}
-        </Text>
+        {titleRow}
         <Spinner size="sm" />
       </Box>
     );
@@ -105,9 +126,7 @@ const EtForecastMain = ({
   if (error) {
     return (
       <Box>
-        <Text fontWeight="bold" mb={2}>
-          {title}
-        </Text>
+        {titleRow}
         <Text color="red.400" fontSize="sm">
           {t('station.etForecast.error')}
         </Text>
@@ -118,9 +137,7 @@ const EtForecastMain = ({
   if (days.length === 0) {
     return (
       <Box>
-        <Text fontWeight="bold" mb={2}>
-          {title}
-        </Text>
+        {titleRow}
         <Text fontSize="sm" color="gray.500">
           {t('station.etForecast.empty')}
         </Text>
@@ -148,8 +165,11 @@ const EtForecastMain = ({
 
   return (
     <Box>
-      <Flex justify="space-between" align="baseline" mb={3} wrap="wrap" gap={2}>
-        <Text fontWeight="bold">{title}</Text>
+      <Flex justify="space-between" align="start" mb={3} wrap="wrap" gap={2}>
+        <Box>
+          <Text fontWeight="bold">{title}</Text>
+          <WeatherLocationPicker size="xs" />
+        </Box>
         <Text fontSize="sm" color="gray.500">
           {t('station.etForecast.summary', {
             total: totalEtMm(days),
