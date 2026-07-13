@@ -1,3 +1,5 @@
+## [1.20.1](https://github.com/mks-zakaria/agri-web/compare/v1.20.0...v1.20.1) (2026-07-13)
+
 # [1.20.0](https://github.com/mks-zakaria/agri-web/compare/v1.19.1...v1.20.0) (2026-07-12)
 
 
