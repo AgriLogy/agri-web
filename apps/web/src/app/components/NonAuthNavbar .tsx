@@ -20,7 +20,7 @@ const NonAuthNavbar = () => {
       top={0}
       zIndex={10}
     >
-      <Image src={logo} alt="Agrilogy" height={50} priority />
+      <Image src={logo} alt="Agrogo" height={50} priority />
       <Spacer />
       <IconButton
         aria-label={

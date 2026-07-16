@@ -18,7 +18,7 @@ export function LoginCard({ title, subtitle, children }: LoginCardProps) {
   return (
     <section className={styles.card} aria-labelledby="login-title">
       <div className={styles.brand}>
-        <Image src={logo} alt="Agrilogy" height={44} priority />
+        <Image src={logo} alt="Agrogo" height={44} priority />
       </div>
       <div className={styles.accent} aria-hidden="true" />
       <header className={styles.header}>

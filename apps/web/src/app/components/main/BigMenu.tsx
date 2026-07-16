@@ -74,7 +74,7 @@ const BigMenu = () => {
           height={40}
           width={140}
           src={logo}
-          alt="Agrilogy"
+          alt="Agrogo"
           priority
           style={{ objectFit: 'contain' }}
         />

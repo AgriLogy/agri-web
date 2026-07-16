@@ -10,9 +10,9 @@ import { chakraColorModeConfig } from '@agri/ui';
 import { dirFor, type Locale } from '../i18n/config';
 
 export const metadata: Metadata = {
-  title: 'Agrilogy',
+  title: 'Agrogo',
   description:
-    'Agrilogy is an innovative agriculture automation solution designed to enhance productivity, sustainability, and efficiency in farming. By utilizing smart technology and data-driven insights, Agrilogy optimizes irrigation, crop monitoring, and supply chain management, empowering farmers to achieve higher yields and reduce costs while promoting eco-friendly practices.',
+    'Agrogo is an innovative agriculture automation solution designed to enhance productivity, sustainability, and efficiency in farming. By utilizing smart technology and data-driven insights, Agrogo optimizes irrigation, crop monitoring, and supply chain management, empowering farmers to achieve higher yields and reduce costs while promoting eco-friendly practices.',
 };
 
 export default async function RootLayout({
