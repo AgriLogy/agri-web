@@ -1,0 +1,20 @@
+name: Auto Assign
+
+# Thin caller into AgriLogy/shared-workflows@v1: assigns newly opened
+# issues and PRs to mks-zakaria (the shared workflow's default assignee).
+# The trigger types below are part of the shared workflow's contract (it
+# reads this event's payload).
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  run:
+    uses: AgriLogy/shared-workflows/.github/workflows/auto-assign.yml@v1
