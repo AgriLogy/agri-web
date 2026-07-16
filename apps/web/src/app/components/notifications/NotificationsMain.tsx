@@ -11,6 +11,7 @@ import {
   NOTIFICATIONS_CACHE_UPDATED_EVENT,
   notificationRowZoneId,
   readNotificationsFromCache,
+  removeNotificationFromCacheById,
   writeNotificationsToCache,
 } from '@agri/api-client/notificationsCacheStorage';
 import EmptyBox from '../common/EmptyBox';
@@ -19,7 +20,6 @@ import { useNotificationBellCounts } from '@/app/hooks/useNotificationBellCounts
 import ZoneNotificationConfigureForm from '@/app/components/notifications/ZoneNotificationConfigureForm';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  deleteNotificationConfigById,
   getNotificationConfigById,
   getNotificationConfigsForZone,
   resolveStoredNotificationConfigId,
@@ -38,7 +38,7 @@ const NotificationsMain: React.FC = () => {
   const [configureConfigId, setConfigureConfigId] = useState<
     string | undefined
   >(undefined);
-  const [deleteConfigId, setDeleteConfigId] = useState<string | null>(null);
+  const [deleteNotifId, setDeleteNotifId] = useState<number | null>(null);
   const [configureIntent, setConfigureIntent] = useState<'create' | 'edit'>(
     'create'
   );
@@ -150,7 +150,6 @@ const NotificationsMain: React.FC = () => {
       setConfigureInitialZoneId(id);
     }
     onOpen();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const openConfigure = () => {
@@ -183,11 +182,11 @@ const NotificationsMain: React.FC = () => {
     onOpen();
   };
 
-  const confirmDeleteNotificationConfig = () => {
-    if (deleteConfigId == null) return;
-    const id = deleteConfigId;
-    setDeleteConfigId(null);
-    deleteNotificationConfigById(id);
+  const confirmDeleteNotification = () => {
+    if (deleteNotifId == null) return;
+    const id = deleteNotifId;
+    setDeleteNotifId(null);
+    removeNotificationFromCacheById(id);
     setNotifications(readNotificationsFromCache() as any[]);
     void refreshBell();
     message.success({
@@ -247,8 +246,8 @@ const NotificationsMain: React.FC = () => {
                   zid != null ? () => openEditZone(zid, rowCfgId) : undefined
                 }
                 onDeleteZone={
-                  zid != null && rowCfgId
-                    ? () => setDeleteConfigId(rowCfgId)
+                  notification.id != null
+                    ? () => setDeleteNotifId(notification.id)
                     : undefined
                 }
               />
@@ -289,9 +288,9 @@ const NotificationsMain: React.FC = () => {
       </Modal>
 
       <Modal
-        open={deleteConfigId != null}
-        onCancel={() => setDeleteConfigId(null)}
-        onOk={confirmDeleteNotificationConfig}
+        open={deleteNotifId != null}
+        onCancel={() => setDeleteNotifId(null)}
+        onOk={confirmDeleteNotification}
         okText={t('notifications.main.delete')}
         cancelText={t('notifications.main.cancel')}
         okButtonProps={{ danger: true }}

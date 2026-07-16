@@ -1206,12 +1206,12 @@
       "addZoneNotification": "Ajouter une notification de zone",
       "editModalTitle": "Modifier la notification de zone",
       "newModalTitle": "Nouvelle notification de zone",
-      "deleteDialogTitle": "Supprimer cette notification de zone ?",
-      "deleteDialogBody": "La configuration de ce secteur est effacée sur cet appareil et les lignes locales liées disparaissent de la liste. Les autres notifications de la même zone ne sont pas modifiées.",
+      "deleteDialogTitle": "Supprimer cette notification ?",
+      "deleteDialogBody": "Cette notification est retirée de la liste sur cet appareil. La zone et ses autres notifications ne sont pas modifiées.",
       "cancel": "Annuler",
       "delete": "Supprimer",
       "deletedToastTitle": "Notification supprimée",
-      "deletedToastDescription": "La configuration locale de ce secteur a été effacée sur cet appareil."
+      "deletedToastDescription": "La notification a été retirée de la liste."
     },
     "detail": {
       "greeting": "Bonjour {name}",
@@ -1776,11 +1776,11 @@
       "detailTitle": "Détail de la notification",
       "modify": "Modifier la notification",
       "delete": "Supprimer la notification",
-      "deleteConfirmTitle": "Supprimer cette notification de zone ?",
-      "deleteConfirmBody": "La configuration de ce secteur (seuils, fréquence, canaux) sera effacée de cet appareil et les lignes locales liées retirées de la liste. Les autres notifications de la même zone ne sont pas modifiées.",
+      "deleteConfirmTitle": "Supprimer cette notification ?",
+      "deleteConfirmBody": "Cette notification est retirée de la liste sur cet appareil. La zone et ses autres notifications ne sont pas modifiées.",
       "deleteConfirmOk": "Supprimer",
       "deletedToastTitle": "Notification supprimée",
-      "deletedToastBody": "Configuration effacée et entrées locales retirées de la liste sur cet appareil."
+      "deletedToastBody": "La notification a été retirée de la liste."
     },
     "adminMenu": {
       "logoAlt": "Logo Agrilogy",
