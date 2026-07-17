@@ -4,6 +4,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Badge, Box, Button, Divider, HStack, Text } from '@chakra-ui/react';
 import { useLocale, useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import { useZoneLiveMetrics } from '@/app/hooks/useZoneLiveMetrics';
+import { definedMetrics } from '@agri/api-client/zoneLiveMetricsApi';
 import {
   evaluateV1NotificationDecision,
   logDecisionToConsole,
@@ -86,6 +88,15 @@ const Notification: React.FC<NotificationProps> = ({
   );
 
   const zoneId = notification.zone_id;
+
+  // Fill the card's placeholder metrics with the zone's real latest readings
+  // (weather / soil / ET₀). Falls back to the notification's own values, then
+  // to the "—" template, when a sensor has no data.
+  const liveMetrics = useZoneLiveMetrics(zoneId, true);
+  const n = liveMetrics
+    ? { ...notification, ...definedMetrics(liveMetrics) }
+    : notification;
+
   const [configRev, setConfigRev] = useState(0);
 
   useEffect(() => {
@@ -140,8 +151,8 @@ const Notification: React.FC<NotificationProps> = ({
     const kc = config?.kc ?? 1;
     const thresholds = thresholdsFromConfig(config);
     const result = evaluateV1NotificationDecision({
-      et0Mm: parseNumericSensor(notification.ET0),
-      soilHumidityPct: parseNumericSensor(notification.soil_humidity),
+      et0Mm: parseNumericSensor(n.ET0),
+      soilHumidityPct: parseNumericSensor(n.soil_humidity),
       kc,
       thresholds,
     });
@@ -149,8 +160,8 @@ const Notification: React.FC<NotificationProps> = ({
     setEngineResult(result);
   }, [
     id,
-    notification.ET0,
-    notification.soil_humidity,
+    n.ET0,
+    n.soil_humidity,
     zoneId,
     config?.kc,
     config?.criticalThresholdPct,
@@ -238,10 +249,10 @@ const Notification: React.FC<NotificationProps> = ({
           🌡️ {t('notifications.card.temperature')}
         </Text>
         <Text>
-          • {t('time.yesterday')} : {notification.yesterday_temperature} °C
+          • {t('time.yesterday')} : {n.yesterday_temperature} °C
         </Text>
         <Text>
-          • {t('time.today')} : {notification.today_temperature} °C
+          • {t('time.today')} : {n.today_temperature} °C
         </Text>
       </Box>
 
@@ -250,10 +261,10 @@ const Notification: React.FC<NotificationProps> = ({
           💧 {t('notifications.card.humidity')}
         </Text>
         <Text>
-          • {t('time.yesterday')} : {notification.yesterday_humidity} %
+          • {t('time.yesterday')} : {n.yesterday_humidity} %
         </Text>
         <Text>
-          • {t('time.today')} : {notification.today_humidity} %
+          • {t('time.today')} : {n.today_humidity} %
         </Text>
       </Box>
 
@@ -261,7 +272,7 @@ const Notification: React.FC<NotificationProps> = ({
         <Text fontWeight="bold" fontSize="md">
           🔎 ET0
         </Text>
-        <Text>{notification.ET0} mm</Text>
+        <Text>{n.ET0} mm</Text>
       </Box>
 
       <Box mt={3}>
@@ -269,15 +280,13 @@ const Notification: React.FC<NotificationProps> = ({
           🌱 {t('notifications.card.soil')}
         </Text>
         <Text>
-          • {t('notifications.card.humidityLabel')} :{' '}
-          {notification.soil_humidity} %
+          • {t('notifications.card.humidityLabel')} : {n.soil_humidity} %
         </Text>
         <Text>
-          • {t('notifications.card.temperatureLabel')} :{' '}
-          {notification.soil_temperature} °C
+          • {t('notifications.card.temperatureLabel')} : {n.soil_temperature} °C
         </Text>
         <Text>
-          • {t('units.ph')} : {notification.soil_ph}
+          • {t('units.ph')} : {n.soil_ph}
         </Text>
       </Box>
 

@@ -16,6 +16,8 @@ import {
 import { useLocale, useTranslations } from 'next-intl';
 import api from '@agri/api-client/api';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import { useZoneLiveMetrics } from '@/app/hooks/useZoneLiveMetrics';
+import { definedMetrics } from '@agri/api-client/zoneLiveMetricsApi';
 import {
   evaluateV1NotificationDecision,
   parseNumericSensor,
@@ -147,6 +149,14 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
   const [userSalutation, setUserSalutation] = useState<string>('');
 
   const zoneId = notification.zone_id;
+
+  // Fill placeholder metrics with the zone's real latest readings; fall back to
+  // the notification's own values, then "—", when a sensor has no data.
+  const liveMetrics = useZoneLiveMetrics(zoneId, true);
+  const n = liveMetrics
+    ? { ...notification, ...definedMetrics(liveMetrics) }
+    : notification;
+
   const [configRev, setConfigRev] = useState(0);
 
   useEffect(() => {
@@ -205,16 +215,16 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
     const kc = config?.kc ?? 1;
     const thresholds = thresholdsFromConfig(config);
     const result = evaluateV1NotificationDecision({
-      et0Mm: parseNumericSensor(notification.ET0),
-      soilHumidityPct: parseNumericSensor(notification.soil_humidity),
+      et0Mm: parseNumericSensor(n.ET0),
+      soilHumidityPct: parseNumericSensor(n.soil_humidity),
       kc,
       thresholds,
     });
     setEngineResult(result);
   }, [
     id,
-    notification.ET0,
-    notification.soil_humidity,
+    n.ET0,
+    n.soil_humidity,
     notification.template_summary,
     zoneId,
     notification.notification_config_id,
@@ -356,21 +366,21 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
         <Row
           icon={FaThermometerHalf}
           label={t('notifications.detail.avgAirTempYesterday')}
-          value={`${notification.yesterday_temperature} °C`}
+          value={`${n.yesterday_temperature} °C`}
           boldValue
           textColor={textColor}
         />
         <Row
           icon={FaTint}
           label={t('notifications.detail.avgAirHumidityYesterday')}
-          value={`${notification.yesterday_humidity} %`}
+          value={`${n.yesterday_humidity} %`}
           boldValue
           textColor={textColor}
         />
         <Row
           icon={FaSun}
           label={t('notifications.detail.evaporatedWaterYesterday')}
-          value={`${notification.ET0} mm`}
+          value={`${n.ET0} mm`}
           boldValue
           textColor={textColor}
         />
@@ -401,14 +411,14 @@ const NotificationDetailFrench: React.FC<NotificationDetailFrenchProps> = ({
         <Row
           icon={FaSeedling}
           label={t('notifications.detail.currentSoilHumidity')}
-          value={`${notification.soil_humidity} %`}
+          value={`${n.soil_humidity} %`}
           boldValue
           textColor={textColor}
         />
         <Row
           icon={FaThermometerHalf}
           label={t('notifications.detail.currentSoilTemp')}
-          value={`${notification.soil_temperature} °C`}
+          value={`${n.soil_temperature} °C`}
           boldValue
           textColor={textColor}
         />
