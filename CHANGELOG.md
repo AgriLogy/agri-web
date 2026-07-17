@@ -1,3 +1,17 @@
+# [1.22.0](https://github.com/AgriLogy/agri-web/compare/v1.21.0...v1.22.0) (2026-07-17)
+
+
+### Bug Fixes
+
+* **notifications:** delete only the selected notification, not the whole config ([#71](https://github.com/AgriLogy/agri-web/issues/71)) ([e224e1e](https://github.com/AgriLogy/agri-web/commit/e224e1ef77b5d9cfc69cc411e5d1f549465f518e)), closes [#63](https://github.com/AgriLogy/agri-web/issues/63)
+
+
+### Features
+
+* **brand:** rebrand Agrilogy to Agrogo (logo + wordmark) ([#70](https://github.com/AgriLogy/agri-web/issues/70)) ([f44c9f5](https://github.com/AgriLogy/agri-web/commit/f44c9f5a67d494e5796d41f3b81b35954067118f)), closes [#68](https://github.com/AgriLogy/agri-web/issues/68)
+* **map:** show each sector's sensor count in its label ([#76](https://github.com/AgriLogy/agri-web/issues/76)) ([8a43124](https://github.com/AgriLogy/agri-web/commit/8a4312405bb188df6ab9d4b91c007eac7facb495)), closes [#66](https://github.com/AgriLogy/agri-web/issues/66)
+* **notifications:** show real zone readings on the cards instead of '—' ([#72](https://github.com/AgriLogy/agri-web/issues/72)) ([193c57a](https://github.com/AgriLogy/agri-web/commit/193c57a21430d1ba408a5836c1e2b51d1aa0fdc7)), closes [#61](https://github.com/AgriLogy/agri-web/issues/61)
+
 # [1.21.0](https://github.com/mks-zakaria/agri-web/compare/v1.20.1...v1.21.0) (2026-07-13)
 
 
