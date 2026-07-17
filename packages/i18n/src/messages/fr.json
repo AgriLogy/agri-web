@@ -1009,6 +1009,7 @@
       "sensorAdded": "Capteur « {name} »",
       "zoneNamed": "Zone « {zone} »",
       "outOfDrawnZone": "Hors zone tracée",
+      "sectorSensorCount": "{count, plural, one {# capteur} other {# capteurs}}",
       "zoneLabel": "Zone : {zone}",
       "outOfZone": "Hors zone",
       "sectorsAndSensorsSaved": "Secteurs et capteurs enregistrés",
