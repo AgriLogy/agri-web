@@ -46,7 +46,7 @@
   "auth": {
     "signIn": "Sign in",
     "title": "Sign in",
-    "subtitle": "Access your Agrilogy dashboard",
+    "subtitle": "Access your Agrogo dashboard",
     "username": "Username",
     "password": "Password",
     "usernamePlaceholder": "Your username",
@@ -1045,8 +1045,8 @@
       "bottomHint": "Hover over a sensor for the tooltip. Sectors (shape, name) and sensors are saved automatically in this browser; “{save}” shows a confirmation."
     },
     "chatbot": {
-      "welcome": "Hello! I'm your Agrilogy assistant. Ask me about your fields, sensors, crop health, or your farm's performance. Type /help to see the available pages.",
-      "systemPrompt": "You are Agrilogy's built-in assistant, an agricultural intelligence platform.\nYour sole mission is to help users navigate and understand the data available in the Agrilogy application: dashboard, soil data, weather station, plant monitoring, water data, and alert management.\n\nABSOLUTE RULE: If the question does not directly concern the Agrilogy application or agriculture related to the platform's data, you MUST refuse. Reply only: \"I am only available to answer questions related to the Agrilogy application. Type /help to see the available pages.\" Do not give any off-topic information, even partial. Do not apologize at length, do not offer off-topic alternatives.\n\nAlways reply in English. Be concise and practical.",
+      "welcome": "Hello! I'm your Agrogo assistant. Ask me about your fields, sensors, crop health, or your farm's performance. Type /help to see the available pages.",
+      "systemPrompt": "You are Agrogo's built-in assistant, an agricultural intelligence platform.\nYour sole mission is to help users navigate and understand the data available in the Agrogo application: dashboard, soil data, weather station, plant monitoring, water data, and alert management.\n\nABSOLUTE RULE: If the question does not directly concern the Agrogo application or agriculture related to the platform's data, you MUST refuse. Reply only: \"I am only available to answer questions related to the Agrogo application. Type /help to see the available pages.\" Do not give any off-topic information, even partial. Do not apologize at length, do not offer off-topic alternatives.\n\nAlways reply in English. Be concise and practical.",
       "error": {
         "timeout": "The request timed out. Please try again.",
         "overloaded": "The server is busy. Please try again in a moment.",
@@ -1054,7 +1054,7 @@
         "internal": "An error occurred. Please try again.",
         "network": "Network error. Check your connection and try again."
       },
-      "availablePagesTitle": "📋 Pages available on Agrilogy:",
+      "availablePagesTitle": "📋 Pages available on Agrogo:",
       "route": {
         "dashboard": {
           "label": "Dashboard",
@@ -1094,7 +1094,7 @@
         }
       },
       "pageContext": "Current page context: {context}",
-      "assistantName": "Agrilogy Assistant",
+      "assistantName": "Agrogo Assistant",
       "statusStreaming": "In progress...",
       "statusReady": "Ready",
       "close": "Close",
@@ -1103,7 +1103,7 @@
       "stopGeneration": "Stop generation ×",
       "inputHint": "Enter to send, Shift+Enter for a new line",
       "tabLabel": "ASSISTANT",
-      "openAssistant": "Open the Agrilogy assistant",
+      "openAssistant": "Open the Agrogo assistant",
       "newChat": "New conversation",
       "expand": "Open full page",
       "sitemap": {
@@ -1275,12 +1275,12 @@
       "selectZone": "Please select a zone",
       "missingConfigId": "Missing configuration identifier",
       "zoneNumber": "Zone {id}",
-      "outboundSubject": "Agrilogy — notification configuration {name}",
+      "outboundSubject": "Agrogo — notification configuration {name}",
       "outboundMessage": "The zone notification threshold configuration has been saved. The accepted channels will be used server-side when available.",
       "savedChanges": "Changes saved",
       "savedConfig": "Configuration saved",
       "noZoneForAccount": "No zone is available for this account.",
-      "noZoneHint": "First create or assign a plot / zone in Agrilogy, then come back to configure a notification.",
+      "noZoneHint": "First create or assign a plot / zone in Agrogo, then come back to configure a notification.",
       "zoneParamsTitle": "Zone settings",
       "editHint": "Saving updates this notification (sector, thresholds and channels) for the selected zone.",
       "createHint": "A single zone can group several sectors: create one notification per sector for distinct thresholds and tracking. A short confirmation message is added to the list the first time you save this configuration.",
@@ -1783,7 +1783,7 @@
       "deletedToastBody": "Configuration erased and local entries removed from the list on this device."
     },
     "adminMenu": {
-      "logoAlt": "Agrilogy logo",
+      "logoAlt": "Agrogo logo",
       "toggleDarkAria": "Toggle dark mode"
     },
     "weather": {

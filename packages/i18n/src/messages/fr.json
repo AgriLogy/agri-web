@@ -46,7 +46,7 @@
   "auth": {
     "signIn": "Connexion",
     "title": "Se connecter",
-    "subtitle": "Accédez à votre tableau de bord Agrilogy",
+    "subtitle": "Accédez à votre tableau de bord Agrogo",
     "username": "Nom d'utilisateur",
     "password": "Mot de passe",
     "usernamePlaceholder": "Votre nom d'utilisateur",
@@ -1045,8 +1045,8 @@
       "bottomHint": "Survolez un capteur pour l'info-bulle. Secteurs (forme, nom) et capteurs sont enregistrés automatiquement dans ce navigateur ; « {save} » affiche une confirmation."
     },
     "chatbot": {
-      "welcome": "Bonjour ! Je suis votre assistant Agrilogy. Posez-moi vos questions sur vos champs, capteurs, santé des cultures ou performance de votre exploitation. Tapez /help pour voir les pages disponibles.",
-      "systemPrompt": "Tu es l'assistant intégré d'Agrilogy, une plateforme d'intelligence agricole.\nTa seule mission est d'aider les utilisateurs à naviguer et comprendre les données disponibles dans l'application Agrilogy : tableau de bord, données sol, station météo, suivi des plantes, données eau, et gestion des alertes.\n\nRÈGLE ABSOLUE : Si la question ne concerne pas directement l'application Agrilogy ou l'agriculture en lien avec les données de la plateforme, tu DOIS refuser. Réponds uniquement : \"Je suis uniquement disponible pour répondre aux questions liées à l'application Agrilogy. Tapez /help pour voir les pages disponibles.\" Ne donne aucune information hors sujet, même partielle. Ne t'excuse pas longuement, ne propose pas d'alternatives hors-sujet.\n\nRéponds toujours en français. Sois concis et pratique.",
+      "welcome": "Bonjour ! Je suis votre assistant Agrogo. Posez-moi vos questions sur vos champs, capteurs, santé des cultures ou performance de votre exploitation. Tapez /help pour voir les pages disponibles.",
+      "systemPrompt": "Tu es l'assistant intégré d'Agrogo, une plateforme d'intelligence agricole.\nTa seule mission est d'aider les utilisateurs à naviguer et comprendre les données disponibles dans l'application Agrogo : tableau de bord, données sol, station météo, suivi des plantes, données eau, et gestion des alertes.\n\nRÈGLE ABSOLUE : Si la question ne concerne pas directement l'application Agrogo ou l'agriculture en lien avec les données de la plateforme, tu DOIS refuser. Réponds uniquement : \"Je suis uniquement disponible pour répondre aux questions liées à l'application Agrogo. Tapez /help pour voir les pages disponibles.\" Ne donne aucune information hors sujet, même partielle. Ne t'excuse pas longuement, ne propose pas d'alternatives hors-sujet.\n\nRéponds toujours en français. Sois concis et pratique.",
       "error": {
         "timeout": "La requête a expiré. Veuillez réessayer.",
         "overloaded": "Le serveur est occupé. Veuillez réessayer dans un moment.",
@@ -1054,7 +1054,7 @@
         "internal": "Une erreur s'est produite. Veuillez réessayer.",
         "network": "Erreur réseau. Vérifiez votre connexion et réessayez."
       },
-      "availablePagesTitle": "📋 Pages disponibles sur Agrilogy :",
+      "availablePagesTitle": "📋 Pages disponibles sur Agrogo :",
       "route": {
         "dashboard": {
           "label": "Tableau de bord",
@@ -1094,7 +1094,7 @@
         }
       },
       "pageContext": "Contexte de la page actuelle : {context}",
-      "assistantName": "Assistant Agrilogy",
+      "assistantName": "Assistant Agrogo",
       "statusStreaming": "En cours...",
       "statusReady": "Prêt",
       "close": "Fermer",
@@ -1103,7 +1103,7 @@
       "stopGeneration": "Arrêter la génération ×",
       "inputHint": "Entrée pour envoyer, Maj+Entrée pour nouvelle ligne",
       "tabLabel": "ASSISTANT",
-      "openAssistant": "Ouvrir l'assistant Agrilogy",
+      "openAssistant": "Ouvrir l'assistant Agrogo",
       "newChat": "Nouvelle conversation",
       "expand": "Ouvrir en pleine page",
       "sitemap": {
@@ -1275,12 +1275,12 @@
       "selectZone": "Veuillez sélectionner une zone",
       "missingConfigId": "Identifiant de configuration manquant",
       "zoneNumber": "Zone {id}",
-      "outboundSubject": "Agrilogy — configuration notification {name}",
+      "outboundSubject": "Agrogo — configuration notification {name}",
       "outboundMessage": "La configuration des seuils de notification de zone a été enregistrée. Les canaux acceptés seront utilisés côté serveur lorsque disponibles.",
       "savedChanges": "Modifications enregistrées",
       "savedConfig": "Configuration enregistrée",
       "noZoneForAccount": "Aucune zone n'est disponible pour ce compte.",
-      "noZoneHint": "Créez ou assignez d'abord une parcelle / zone côté Agrilogy, puis revenez configurer une notification.",
+      "noZoneHint": "Créez ou assignez d'abord une parcelle / zone côté Agrogo, puis revenez configurer une notification.",
       "zoneParamsTitle": "Paramètres zone",
       "editHint": "Enregistrer met à jour cette notification (secteur, seuils et canaux) pour la zone sélectionnée.",
       "createHint": "Une même zone peut regrouper plusieurs secteurs : créez une notification par secteur pour des seuils et un suivi distincts. Un court message de confirmation est ajouté à la liste la première fois que vous enregistrez cette configuration.",
@@ -1783,7 +1783,7 @@
       "deletedToastBody": "Configuration effacée et entrées locales retirées de la liste sur cet appareil."
     },
     "adminMenu": {
-      "logoAlt": "Logo Agrilogy",
+      "logoAlt": "Logo Agrogo",
       "toggleDarkAria": "Basculer le mode sombre"
     },
     "weather": {
