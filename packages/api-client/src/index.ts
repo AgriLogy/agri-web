@@ -17,6 +17,7 @@ export * from './logoutEverywhere';
 export * from './managerAffirmationApi';
 export * from './notificationDecisionEngine';
 export * from './notificationDeliveryRate';
+export * from './myDevicesApi';
 export * from './notificationDispatch';
 export * from './notificationsCacheStorage';
 export * from './technicianApi';
