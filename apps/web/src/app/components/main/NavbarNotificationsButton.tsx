@@ -54,11 +54,11 @@ import {
   normalizeApiNotificationsList,
   NOTIFICATIONS_CACHE_UPDATED_EVENT,
   readNotificationsFromCache,
+  removeNotificationFromCacheById,
   writeNotificationsToCache,
 } from '@agri/api-client/notificationsCacheStorage';
 import { useNotificationBellCounts } from '@/app/hooks/useNotificationBellCounts';
 import {
-  deleteNotificationConfigById,
   getNotificationConfigById,
   resolveStoredNotificationConfigId,
 } from '@agri/api-client/zoneNotificationConfigStorage';
@@ -201,9 +201,9 @@ const NavbarNotificationsButton: React.FC = () => {
     ? resolveStoredNotificationConfigId(detailRow)
     : undefined;
 
-  const [deleteTargetConfigId, setDeleteTargetConfigId] = useState<
-    string | null
-  >(null);
+  const [deleteTargetNotifId, setDeleteTargetNotifId] = useState<number | null>(
+    null
+  );
 
   const goModifyZoneNotification = useCallback(() => {
     closeDetail();
@@ -218,10 +218,10 @@ const NavbarNotificationsButton: React.FC = () => {
     }
   }, [closeDetail, detailConfigId, detailZoneId, router]);
 
-  const confirmDeleteZoneNotification = useCallback(() => {
-    if (deleteTargetConfigId == null) return;
-    deleteNotificationConfigById(deleteTargetConfigId);
-    setDeleteTargetConfigId(null);
+  const confirmDeleteNotification = useCallback(() => {
+    if (deleteTargetNotifId == null) return;
+    removeNotificationFromCacheById(deleteTargetNotifId);
+    setDeleteTargetNotifId(null);
     closeDetail();
     void refresh();
     toast({
@@ -231,7 +231,7 @@ const NavbarNotificationsButton: React.FC = () => {
       duration: 4000,
       isClosable: true,
     });
-  }, [closeDetail, deleteTargetConfigId, refresh, toast]);
+  }, [closeDetail, deleteTargetNotifId, refresh, toast]);
 
   useEffect(() => {
     const sync = () => {
@@ -477,13 +477,13 @@ const NavbarNotificationsButton: React.FC = () => {
               >
                 {t('shell.notifications.modify')}
               </Button>
-              {detailConfigId ? (
+              {detailProps?.id != null ? (
                 <Button
                   size="sm"
                   colorScheme="red"
                   variant="outline"
                   borderRadius="lg"
-                  onClick={() => setDeleteTargetConfigId(detailConfigId)}
+                  onClick={() => setDeleteTargetNotifId(detailProps.id)}
                   w={{ base: 'full', sm: 'auto' }}
                 >
                   {t('shell.notifications.delete')}
@@ -495,9 +495,9 @@ const NavbarNotificationsButton: React.FC = () => {
       </Modal>
 
       <AlertDialog
-        isOpen={deleteTargetConfigId != null}
+        isOpen={deleteTargetNotifId != null}
         leastDestructiveRef={deleteCancelRef}
-        onClose={() => setDeleteTargetConfigId(null)}
+        onClose={() => setDeleteTargetNotifId(null)}
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
@@ -510,13 +510,13 @@ const NavbarNotificationsButton: React.FC = () => {
             <AlertDialogFooter>
               <Button
                 ref={deleteCancelRef}
-                onClick={() => setDeleteTargetConfigId(null)}
+                onClick={() => setDeleteTargetNotifId(null)}
               >
                 {t('shell.admin.cancel')}
               </Button>
               <Button
                 colorScheme="red"
-                onClick={confirmDeleteZoneNotification}
+                onClick={confirmDeleteNotification}
                 ml={3}
               >
                 {t('shell.notifications.deleteConfirmOk')}

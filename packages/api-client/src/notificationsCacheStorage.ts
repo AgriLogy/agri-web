@@ -7,6 +7,10 @@ const SUPPRESSED_ZONE_IDS_KEY = 'agrilogy_suppressed_zone_notification_ids_v1';
 const SUPPRESSED_CONFIG_IDS_KEY =
   'agrilogy_suppressed_notification_config_ids_v1';
 
+/** Individual notification row IDs the user deleted, so an API re-fetch does not revive them. */
+const SUPPRESSED_NOTIFICATION_IDS_KEY =
+  'agrilogy_suppressed_notification_ids_v1';
+
 /** Fired when the notification cache changes locally (prepend / mark read / periodic). */
 export const NOTIFICATIONS_CACHE_UPDATED_EVENT =
   'agrilogy-notifications-cache-updated';
@@ -146,6 +150,37 @@ function writeSuppressedConfigIds(ids: Set<string>): void {
   }
 }
 
+function readSuppressedNotificationIds(): Set<number> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const raw = localStorage.getItem(SUPPRESSED_NOTIFICATION_IDS_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return new Set(
+      Array.isArray(arr)
+        ? arr
+            .map((x) => (typeof x === 'number' ? x : Number(x)))
+            .filter(
+              (x): x is number => typeof x === 'number' && Number.isFinite(x)
+            )
+        : []
+    );
+  } catch {
+    return new Set();
+  }
+}
+
+function writeSuppressedNotificationIds(ids: Set<number>): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(
+      SUPPRESSED_NOTIFICATION_IDS_KEY,
+      JSON.stringify([...ids])
+    );
+  } catch {
+    /* ignore */
+  }
+}
+
 /** When present on a cached row, ties the entry to a stored zone notification config (secteur). */
 export function notificationRowConfigId(row: unknown): string | undefined {
   if (!row || typeof row !== 'object') return undefined;
@@ -218,13 +253,48 @@ export function notificationRowZoneId(row: unknown): number | undefined {
 function applySuppressedZoneFilter(rows: unknown[]): unknown[] {
   const suppressedZones = readSuppressedZoneIds();
   const suppressedConfigs = readSuppressedConfigIds();
-  if (suppressedZones.size === 0 && suppressedConfigs.size === 0) return rows;
+  const suppressedNotifs = readSuppressedNotificationIds();
+  if (
+    suppressedZones.size === 0 &&
+    suppressedConfigs.size === 0 &&
+    suppressedNotifs.size === 0
+  )
+    return rows;
   return rows.filter((r) => {
+    const nid = (r as { id?: number } | null)?.id;
+    if (typeof nid === 'number' && suppressedNotifs.has(nid)) return false;
     const cid = notificationRowConfigId(r);
     if (cid != null && suppressedConfigs.has(cid)) return false;
     const z = notificationRowZoneId(r);
     return z == null || !suppressedZones.has(z);
   });
+}
+
+/** Hide a single notification (by row id) the user deleted, so an API re-fetch does not bring it back. */
+export function suppressNotificationId(notificationId: number): void {
+  if (typeof notificationId !== 'number' || !Number.isFinite(notificationId))
+    return;
+  const s = readSuppressedNotificationIds();
+  s.add(notificationId);
+  writeSuppressedNotificationIds(s);
+}
+
+/**
+ * Remove ONE notification from the cache by its row id. Deletes only that card —
+ * the zone / notification config and every other notification stay intact.
+ */
+export function removeNotificationFromCacheById(notificationId: number): void {
+  if (typeof notificationId !== 'number' || !Number.isFinite(notificationId))
+    return;
+  suppressNotificationId(notificationId);
+  const rows = readNotificationsFromCache();
+  const filtered = rows.filter(
+    (r) => (r as { id?: number } | null)?.id !== notificationId
+  );
+  if (filtered.length !== rows.length) {
+    writeNotificationsToCache(filtered);
+  }
+  notifyNotificationsCacheChanged();
 }
 
 /** Remove cached rows generated for a given notification configuration (local id on row). */
