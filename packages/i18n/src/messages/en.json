@@ -1009,6 +1009,7 @@
       "sensorAdded": "Sensor “{name}”",
       "zoneNamed": "Zone “{zone}”",
       "outOfDrawnZone": "Outside drawn zone",
+      "sectorSensorCount": "{count, plural, one {# sensor} other {# sensors}}",
       "zoneLabel": "Zone: {zone}",
       "outOfZone": "Outside zone",
       "sectorsAndSensorsSaved": "Sectors and sensors saved",

@@ -1009,6 +1009,7 @@
       "sensorAdded": "المستشعر «{name}»",
       "zoneNamed": "المنطقة «{zone}»",
       "outOfDrawnZone": "خارج المنطقة المرسومة",
+      "sectorSensorCount": "{count, plural, one {مستشعر واحد} other {# مستشعرات}}",
       "zoneLabel": "المنطقة: {zone}",
       "outOfZone": "خارج المنطقة",
       "sectorsAndSensorsSaved": "تم حفظ القطاعات والمستشعرات",

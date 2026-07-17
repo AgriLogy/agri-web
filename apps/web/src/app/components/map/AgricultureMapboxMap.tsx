@@ -60,6 +60,7 @@ import {
   sensorTypeColorMatchExpression,
   sensorTypeI18nKey,
 } from '@/app/utils/sensorTypes';
+import { sensorCountsBySector } from '@/app/utils/sectorSensorCounts';
 
 const AGRICULTURE_MAP_STYLE = 'mapbox://styles/mapbox/satellite-streets-v12';
 const LABEL_SOURCE_ID = 'agrilogy-sector-labels';
@@ -125,9 +126,17 @@ function ringCentroid(
 }
 
 function buildLabelFeatures(
-  fc: FarmSectorFeatureCollection
+  fc: FarmSectorFeatureCollection,
+  counts?: Map<string, number>,
+  formatSuffix?: (n: number) => string
 ): GeoJSON.Feature[] {
   const out: GeoJSON.Feature[] = [];
+  // Compose "Secteur 1 · 3 capteurs" when the sector has placed sensors, so
+  // each drawn zone shows its name AND its data (sensor count) on the map.
+  const labelFor = (name: string): string => {
+    const n = counts?.get(name) ?? 0;
+    return n > 0 && formatSuffix ? `${name}${formatSuffix(n)}` : name;
+  };
   for (const f of fc.features) {
     const g = f.geometry;
     const halo =
@@ -145,7 +154,7 @@ function buildLabelFeatures(
         'Secteur';
       out.push({
         type: 'Feature',
-        properties: { name, halo },
+        properties: { name: labelFor(name), halo },
         geometry: { type: 'Point', coordinates: centroid },
       });
     } else if (g.type === 'MultiPolygon') {
@@ -160,7 +169,7 @@ function buildLabelFeatures(
           'Secteur';
         out.push({
           type: 'Feature',
-          properties: { name, halo },
+          properties: { name: labelFor(name), halo },
           geometry: { type: 'Point', coordinates: centroid },
         });
       }
@@ -169,12 +178,20 @@ function buildLabelFeatures(
   return out;
 }
 
-function syncLabelLayer(map: mapboxgl.Map, fc: FarmSectorFeatureCollection) {
+function syncLabelLayer(
+  map: mapboxgl.Map,
+  fc: FarmSectorFeatureCollection,
+  counts?: Map<string, number>,
+  formatSuffix?: (n: number) => string
+) {
   const src = map.getSource(LABEL_SOURCE_ID) as
     | mapboxgl.GeoJSONSource
     | undefined;
   if (!src) return;
-  src.setData({ type: 'FeatureCollection', features: buildLabelFeatures(fc) });
+  src.setData({
+    type: 'FeatureCollection',
+    features: buildLabelFeatures(fc, counts, formatSuffix),
+  });
 }
 
 function reassignSensorZones(
@@ -313,6 +330,14 @@ export default function AgricultureMapboxMap({
   >(null);
 
   const t = useTranslations();
+  // Stable handle to the current translator for imperative map callbacks
+  // (sector label composition) that must not churn on every render.
+  const tRef = useRef(t);
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
+  const sectorCountSuffix = (n: number): string =>
+    ` · ${tRef.current('misc.map.sectorSensorCount', { count: n })}`;
   const toast = useToast();
   const { colorMode } = useColorMode();
   const toolbarBg = useColorModeValue('whiteAlpha.900', 'blackAlpha.600');
@@ -322,7 +347,12 @@ export default function AgricultureMapboxMap({
     const map = mapRef.current;
     const draw = drawRef.current;
     if (!map || !draw) return;
-    syncLabelLayer(map, draw.getAll() as FarmSectorFeatureCollection);
+    syncLabelLayer(
+      map,
+      draw.getAll() as FarmSectorFeatureCollection,
+      sensorCountsBySector(sensorsFcRef.current.features),
+      sectorCountSuffix
+    );
   }, []);
 
   useEffect(() => {
@@ -469,8 +499,13 @@ export default function AgricultureMapboxMap({
       );
       ensureSectorColorsOnDraw(d);
       const sectorsForLookup = d.getAll().features;
-      syncLabelLayer(m, d.getAll() as FarmSectorFeatureCollection);
       reassignSensorZones(sensorsFcRef.current, sectorsForLookup);
+      syncLabelLayer(
+        m,
+        d.getAll() as FarmSectorFeatureCollection,
+        sensorCountsBySector(sensorsFcRef.current.features),
+        sectorCountSuffix
+      );
       (m.getSource(FARM_SENSORS_SOURCE_ID) as mapboxgl.GeoJSONSource).setData(
         sensorsFcRef.current
       );
