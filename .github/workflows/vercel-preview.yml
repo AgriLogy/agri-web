@@ -1,8 +1,8 @@
 name: Vercel Preview
 
 # Build and deploy a Vercel Preview for every PR to main, then comment the URL
-# so changes are reviewable on a live deployment before merge. Production still
-# ships from main via the manual `vercel --prod` flow — this only adds previews.
+# so changes are reviewable on a live deployment before merge. Production
+# auto-deploys from main via vercel-production.yml — this only adds PR previews.
 #
 # The Vercel org/project IDs are identifiers (not secrets) and are inlined so the
 # only required setup is a single repo secret: VERCEL_TOKEN (a Vercel access
