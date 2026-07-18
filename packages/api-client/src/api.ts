@@ -2,8 +2,19 @@ import axios from 'axios';
 import { hydrateSsoSession } from './hydrateSsoSession';
 import { clearSsoSession } from './clearSsoSession';
 
+const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL;
+const DEFAULT_API_URL = 'https://back.agrogo-datafarm.com';
+// The API base MUST be an absolute http(s) URL in production. A relative value
+// (e.g. the local-dev "/api-proxy" same-origin proxy path, which next.config
+// rewrites only when PROXY_API_TARGET is set) would resolve against the app's
+// own origin in prod and 404 every request. So: keep whatever is configured in
+// development (the proxy path is intentional there), but in production ignore a
+// non-absolute value and fall back to the backend URL.
 export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://back.agrogo-datafarm.com';
+  RAW_API_URL &&
+  (/^https?:\/\//i.test(RAW_API_URL) || process.env.NODE_ENV === 'development')
+    ? RAW_API_URL
+    : DEFAULT_API_URL;
 //  "http://localhost:8000";
 
 if (process.env.NODE_ENV === 'development') {
