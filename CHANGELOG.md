@@ -1,3 +1,10 @@
+## [1.22.2](https://github.com/AgriLogy/agri-web/compare/v1.22.1...v1.22.2) (2026-07-18)
+
+
+### Bug Fixes
+
+* **api-client:** force absolute API base URL in production ([#81](https://github.com/AgriLogy/agri-web/issues/81)) ([9c5e678](https://github.com/AgriLogy/agri-web/commit/9c5e6783dc3a421a1993123126b51d14f00655f0))
+
 ## [1.22.1](https://github.com/AgriLogy/agri-web/compare/v1.22.0...v1.22.1) (2026-07-18)
 
 # [1.22.0](https://github.com/AgriLogy/agri-web/compare/v1.21.0...v1.22.0) (2026-07-17)
