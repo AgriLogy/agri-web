@@ -35,7 +35,6 @@ import {
   FaBolt,
   FaChartLine,
   FaClock,
-  FaCloud,
   FaCubes,
   FaEnvelopeOpenText,
   FaFan,
@@ -957,23 +956,6 @@ const ZoneNotificationConfigureForm: React.FC<
                   </option>
                   <option value="calculated">
                     {t('notifications.configForm.et0LocalCalc')}
-                  </option>
-                </Select>
-              </FormControl>
-
-              <FormControl>
-                <LabelWithIcon icon={FaCloud} labelColor={textColor}>
-                  {t('notifications.configForm.precipitationLabel')}
-                </LabelWithIcon>
-                <Select
-                  value={form.precipSource}
-                  onChange={(e) => update('precipSource', e.target.value)}
-                >
-                  <option value="sensor">
-                    {t('notifications.configForm.precipSensor')}
-                  </option>
-                  <option value="station">
-                    {t('notifications.configForm.precipStation')}
                   </option>
                 </Select>
               </FormControl>

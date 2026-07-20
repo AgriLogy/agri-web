@@ -33,6 +33,7 @@ import {
   SENSOR_CATALOG,
   getAllSensorsCatalog,
   getCustomSensorsCatalog,
+  isDeviceHealthSensor,
   saveCustomSensorsCatalog,
   type SensorCatalogItem,
 } from '@/app/utils/sensorCatalog';
@@ -86,7 +87,11 @@ const SensorDirectorySettings = () => {
   const [editDraft, setEditDraft] = useState<SensorInstanceOverride>({});
 
   useEffect(() => {
-    setCatalog(getAllSensorsCatalog(true));
+    setCatalog(
+      getAllSensorsCatalog(true).filter(
+        (item) => !isDeviceHealthSensor(item.key)
+      )
+    );
     setOverrides(loadSensorInstanceOverrides());
   }, []);
 
@@ -172,7 +177,9 @@ const SensorDirectorySettings = () => {
 
     const custom = getCustomSensorsCatalog();
     saveCustomSensorsCatalog([...custom, nextItem]);
-    setCatalog(getAllSensorsCatalog());
+    setCatalog(
+      getAllSensorsCatalog().filter((item) => !isDeviceHealthSensor(item.key))
+    );
     setOpenAdd(false);
     setForm({ readingLabel: '', typeLabel: '', key: '', defaultUnit: '' });
     toast({

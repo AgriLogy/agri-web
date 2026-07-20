@@ -39,6 +39,7 @@ import {
   getReadingLabelOptions,
   getTypeLabelOptions,
   getUnitSelectOptions,
+  isDeviceHealthSensor,
 } from '@/app/utils/sensorCatalog';
 import {
   composeCalibrationWithUnitChange,
@@ -80,33 +81,37 @@ function mergeSelectOptions(options: string[], current: string): string[] {
 }
 
 function getDefaultRows(): UnitSettingRow[] {
-  return getAllSensorsCatalog(false).map((item) => {
-    const spec = getDefaultCalibrationForSensorKey(item.key);
-    return {
-      key: item.key,
-      readingLabel: item.readingLabel,
-      typeLabel: item.typeLabel,
-      unit: item.defaultUnit,
-      scaleA: spec.scaleA,
-      offsetB: spec.offsetB,
-      lastValue: '—',
-    };
-  });
+  return getAllSensorsCatalog(false)
+    .filter((item) => !isDeviceHealthSensor(item.key))
+    .map((item) => {
+      const spec = getDefaultCalibrationForSensorKey(item.key);
+      return {
+        key: item.key,
+        readingLabel: item.readingLabel,
+        typeLabel: item.typeLabel,
+        unit: item.defaultUnit,
+        scaleA: spec.scaleA,
+        offsetB: spec.offsetB,
+        lastValue: '—',
+      };
+    });
 }
 
 function getMountedRows(): UnitSettingRow[] {
-  return getAllSensorsCatalog(true).map((item) => {
-    const spec = getDefaultCalibrationForSensorKey(item.key);
-    return {
-      key: item.key,
-      readingLabel: item.readingLabel,
-      typeLabel: item.typeLabel,
-      unit: item.defaultUnit,
-      scaleA: spec.scaleA,
-      offsetB: spec.offsetB,
-      lastValue: '—',
-    };
-  });
+  return getAllSensorsCatalog(true)
+    .filter((item) => !isDeviceHealthSensor(item.key))
+    .map((item) => {
+      const spec = getDefaultCalibrationForSensorKey(item.key);
+      return {
+        key: item.key,
+        readingLabel: item.readingLabel,
+        typeLabel: item.typeLabel,
+        unit: item.defaultUnit,
+        scaleA: spec.scaleA,
+        offsetB: spec.offsetB,
+        lastValue: '—',
+      };
+    });
 }
 
 function loadRows(): UnitSettingRow[] {
