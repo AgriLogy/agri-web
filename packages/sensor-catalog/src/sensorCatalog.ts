@@ -268,6 +268,19 @@ export const SENSOR_CATALOG: SensorCatalogItem[] = [
   },
 ];
 
+/**
+ * Device-health signals (battery, radio signal) — carried in the catalog with
+ * `category: 'sensor'` but they are NOT field readings. They must be excluded
+ * from the Réglages → Lectures / sensor-directory lists (a battery is not a
+ * sensor the farmer configures). Backed by separate agri-api models
+ * (BatterySensor / SignalSensor), not the sensor spec table.
+ */
+export const DEVICE_HEALTH_SENSOR_KEYS = ['battery', 'signal'] as const;
+
+export function isDeviceHealthSensor(key: string): boolean {
+  return (DEVICE_HEALTH_SENSOR_KEYS as readonly string[]).includes(key);
+}
+
 export function getCustomSensorsCatalog(): SensorCatalogItem[] {
   if (typeof window === 'undefined') return [];
   const raw = localStorage.getItem(CUSTOM_SENSORS_KEY);
