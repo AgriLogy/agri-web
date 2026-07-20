@@ -1,3 +1,10 @@
+## [1.22.3](https://github.com/AgriLogy/agri-web/compare/v1.22.2...v1.22.3) (2026-07-20)
+
+
+### Bug Fixes
+
+* **settings:** drop duplicate precipitation source + hide battery/signal from sensor lists ([#83](https://github.com/AgriLogy/agri-web/issues/83)) ([5b107ed](https://github.com/AgriLogy/agri-web/commit/5b107ed037a195d695ec42adb962b7ecf436747b))
+
 ## [1.22.2](https://github.com/AgriLogy/agri-web/compare/v1.22.1...v1.22.2) (2026-07-18)
 
 
