@@ -24,6 +24,7 @@ const PlantMain = () => {
     selectedZone,
     setSelectedZone,
     zoneName,
+    sectorName,
     range,
     setRange,
     frequency,
@@ -37,6 +38,7 @@ const PlantMain = () => {
       <PageInfoBar
         title={t('shell.plant.title')}
         subtitle={pageSubtitle({
+          sectorName,
           zoneName,
           startDate: range.startDate,
           endDate: range.endDate,

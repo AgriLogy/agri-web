@@ -1649,7 +1649,8 @@
       "range": "من {start} إلى {end}"
     },
     "zoneSelect": {
-      "label": "اختر منطقة"
+      "label": "اختر منطقة",
+      "unassigned": "غير مُعيّنة"
     },
     "chartDateRange": {
       "preset24h": "آخر 24 ساعة",

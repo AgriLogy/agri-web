@@ -1649,7 +1649,8 @@
       "range": "du {start} au {end}"
     },
     "zoneSelect": {
-      "label": "Sélectionner une zone"
+      "label": "Sélectionner une zone",
+      "unassigned": "Sans secteur"
     },
     "chartDateRange": {
       "preset24h": "24 dernières heures",

@@ -15,13 +15,16 @@ const FORMAT = 'D MMMM YYYY';
  * callers keep working.
  */
 export function pageSubtitle(args: {
+  sectorName?: string | null;
   zoneName?: string | null;
   startDate?: string | null;
   endDate?: string | null;
   t?: (key: string, values?: Record<string, string>) => string;
 }): string | undefined {
-  const { zoneName, startDate, endDate, t } = args;
+  const { sectorName, zoneName, startDate, endDate, t } = args;
   const parts: string[] = [];
+  // "Sector · Zone · du … au …" (sector omitted when the zone is unassigned).
+  if (sectorName) parts.push(sectorName);
   if (zoneName) parts.push(zoneName);
   if (startDate && endDate) {
     const start = dayjs(startDate);
