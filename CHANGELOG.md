@@ -1,3 +1,10 @@
+# [1.23.0](https://github.com/AgriLogy/agri-web/compare/v1.22.3...v1.23.0) (2026-07-21)
+
+
+### Features
+
+* **farm:** farm visualization page (sectors -> zones -> captors) ([#85](https://github.com/AgriLogy/agri-web/issues/85)) ([9f202c8](https://github.com/AgriLogy/agri-web/commit/9f202c8355fa5162bb2238013f7455a1eba64b6a)), closes [#84](https://github.com/AgriLogy/agri-web/issues/84)
+
 ## [1.22.3](https://github.com/AgriLogy/agri-web/compare/v1.22.2...v1.22.3) (2026-07-20)
 
 
