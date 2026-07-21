@@ -1,11 +1,11 @@
 'use client';
 
 /**
- * Farm visualization — a read-only schematic of the farm as simple shapes:
- * sector rectangles → zone boxes → captors (sensors) inside each. Captors are
- * shown for sensors configured on the zone OR with recent data; hovering a
- * captor reveals its last-received time. Clicking a zone opens its soil charts.
- * Includes a light "organise zones into sectors" manager.
+ * Farm visualization — a read-only 2D schematic of the farm as nested shapes:
+ * sector rectangles → zone rectangles → a compact grid of captor dots. A dot's
+ * colour is its freshness (green <24h, amber stale, grey none); hovering shows
+ * the sensor name + last-received time. Clicking a zone opens its soil charts.
+ * A light manager lets you create sectors and assign zones.
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -28,7 +28,6 @@ import {
   ModalHeader,
   ModalOverlay,
   SimpleGrid,
-  Spinner,
   Text,
   Tooltip,
   useDisclosure,
@@ -38,37 +37,22 @@ import {
 } from '@chakra-ui/react';
 import { FaPen, FaPlus, FaTrash } from 'react-icons/fa';
 import { farmApi, type Captor, type FarmSectorNode } from '@agri/api-client';
+import Loading from '@/app/components/common/Loading';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 
 const RECENT_MS = 24 * 60 * 60 * 1000; // "fresh" if a reading arrived within 24h
-
-function useCaptorStatus() {
-  const t = useTranslations();
-  return useCallback(
-    (c: Captor): { color: string; tip: string } => {
-      if (!c.last_received) {
-        return { color: 'gray.400', tip: t('farm.captor.noData') };
-      }
-      const age = Date.now() - new Date(c.last_received).getTime();
-      const when = new Date(c.last_received).toLocaleString();
-      return {
-        color: age <= RECENT_MS ? 'green.400' : 'orange.400',
-        tip: t('farm.captor.lastReceived', { when }),
-      };
-    },
-    [t]
-  );
-}
 
 export default function FarmPage() {
   const t = useTranslations();
   const router = useRouter();
   const toast = useToast();
-  const captorStatus = useCaptorStatus();
   const { bgColor, borderColor, mutedTextColor } = useColorModeStyles();
 
   const [data, setData] = useState<FarmSectorNode[] | null>(null);
   const [loading, setLoading] = useState(true);
+  // Captured once (impure Date.now() is fine in a useState initializer) so the
+  // freshness check stays render-pure. 24h granularity — mount-time is fine.
+  const [now] = useState(() => Date.now());
   const [newName, setNewName] = useState('');
   const [editing, setEditing] = useState<{ id: number; name: string } | null>(
     null
@@ -101,6 +85,19 @@ export default function FarmPage() {
 
   const sensorLabel = (key: string) =>
     t.has(`sensors.${key}`) ? t(`sensors.${key}`) : key.replace(/_/g, ' ');
+
+  const captorDot = (c: Captor): { color: string; tip: string } => {
+    const name = sensorLabel(c.sensor_key);
+    if (!c.last_received) {
+      return { color: 'gray.400', tip: `${name} · ${t('farm.captor.noData')}` };
+    }
+    const age = now - new Date(c.last_received).getTime();
+    const when = new Date(c.last_received).toLocaleString();
+    return {
+      color: age <= RECENT_MS ? 'green.400' : 'orange.400',
+      tip: `${name} · ${t('farm.captor.lastReceived', { when })}`,
+    };
+  };
 
   const createSector = async () => {
     const name = newName.trim();
@@ -144,13 +141,55 @@ export default function FarmPage() {
     }
   };
 
-  if (loading && !data) {
-    return (
-      <Flex justify="center" align="center" minH="60vh">
-        <Spinner size="xl" />
+  const zoneBox = (zone: FarmSectorNode['zones'][number]) => (
+    <Box
+      key={zone.zone_id}
+      borderWidth="1px"
+      borderColor={borderColor}
+      borderRadius="lg"
+      p={3}
+      cursor="pointer"
+      transition="all 0.15s"
+      _hover={{ borderColor: 'brand.400', shadow: 'sm' }}
+      onClick={() => router.push(`/soil?zone=${zone.zone_id}`)}
+    >
+      <Flex justify="space-between" align="baseline" mb={2} gap={2}>
+        <Text fontWeight="bold" noOfLines={1}>
+          {zone.zone_name}
+        </Text>
+        <Text fontSize="xs" color={mutedTextColor} flexShrink={0}>
+          {t('farm.captorCount', { count: zone.captors.length })}
+        </Text>
       </Flex>
-    );
-  }
+      {zone.captors.length === 0 ? (
+        <Text fontSize="xs" color={mutedTextColor}>
+          {t('farm.noCaptors')}
+        </Text>
+      ) : (
+        <Wrap spacing={2}>
+          {zone.captors.map((c) => {
+            const { color, tip } = captorDot(c);
+            return (
+              <WrapItem key={c.sensor_key}>
+                <Tooltip label={tip} hasArrow openDelay={150}>
+                  <Box
+                    w="14px"
+                    h="14px"
+                    borderRadius="full"
+                    bg={color}
+                    borderWidth="1px"
+                    borderColor="blackAlpha.200"
+                  />
+                </Tooltip>
+              </WrapItem>
+            );
+          })}
+        </Wrap>
+      )}
+    </Box>
+  );
+
+  if (loading && !data) return <Loading />;
 
   return (
     <Box p={{ base: 3, md: 6 }}>
@@ -162,45 +201,44 @@ export default function FarmPage() {
       </Text>
 
       {/* Create-sector bar */}
-      <HStack mb={5} maxW="420px">
+      <Flex mb={5} gap={3} maxW="520px" align="center">
         <Input
           placeholder={t('farm.newSectorPlaceholder')}
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && createSector()}
-          size="sm"
         />
         <Button
           leftIcon={<FaPlus />}
-          size="sm"
-          colorScheme="green"
+          colorScheme="brand"
           onClick={createSector}
+          flexShrink={0}
         >
           {t('farm.addSector')}
         </Button>
-      </HStack>
+      </Flex>
 
       <Flex direction="column" gap={5}>
         {(data ?? []).map((sector) => (
           <Box
             key={sector.sector_id ?? 'unassigned'}
             borderWidth="2px"
-            borderColor={sector.sector_id === null ? 'gray.300' : 'green.300'}
+            borderColor={sector.sector_id === null ? 'gray.300' : 'brand.300'}
             borderRadius="xl"
             bg={bgColor}
             p={4}
           >
-            <Flex justify="space-between" align="center" mb={3}>
-              <Heading size="md">
+            <Flex justify="space-between" align="center" mb={3} gap={2}>
+              <Heading size="md" noOfLines={1}>
                 {sector.sector_name ?? t('farm.unassigned')}{' '}
                 <Text as="span" fontSize="sm" color={mutedTextColor}>
                   ({sector.zones.length})
                 </Text>
               </Heading>
               {sector.sector_id !== null && (
-                <HStack>
+                <HStack flexShrink={0}>
                   <Button
-                    size="xs"
+                    size="sm"
                     leftIcon={<FaPen />}
                     variant="outline"
                     onClick={() =>
@@ -211,7 +249,7 @@ export default function FarmPage() {
                   </Button>
                   <IconButton
                     aria-label={t('farm.deleteSector')}
-                    size="xs"
+                    size="sm"
                     variant="ghost"
                     colorScheme="red"
                     icon={<FaTrash />}
@@ -226,59 +264,8 @@ export default function FarmPage() {
                 {t('farm.noZones')}
               </Text>
             ) : (
-              <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={3}>
-                {sector.zones.map((zone) => (
-                  <Box
-                    key={zone.zone_id}
-                    borderWidth="1px"
-                    borderColor={borderColor}
-                    borderRadius="lg"
-                    p={3}
-                    cursor="pointer"
-                    _hover={{ borderColor: 'green.400', shadow: 'sm' }}
-                    onClick={() => router.push(`/soil?zone=${zone.zone_id}`)}
-                  >
-                    <Text fontWeight="bold" mb={2} noOfLines={1}>
-                      {zone.zone_name}
-                    </Text>
-                    {zone.captors.length === 0 ? (
-                      <Text fontSize="xs" color={mutedTextColor}>
-                        {t('farm.noCaptors')}
-                      </Text>
-                    ) : (
-                      <Wrap spacing={1}>
-                        {zone.captors.map((c) => {
-                          const { color, tip } = captorStatus(c);
-                          return (
-                            <WrapItem key={c.sensor_key}>
-                              <Tooltip label={tip} hasArrow>
-                                <HStack
-                                  spacing={1}
-                                  px={2}
-                                  py={0.5}
-                                  borderWidth="1px"
-                                  borderColor={borderColor}
-                                  borderRadius="full"
-                                  fontSize="xs"
-                                >
-                                  <Box
-                                    w={2}
-                                    h={2}
-                                    borderRadius="full"
-                                    bg={color}
-                                  />
-                                  <Text noOfLines={1}>
-                                    {sensorLabel(c.sensor_key)}
-                                  </Text>
-                                </HStack>
-                              </Tooltip>
-                            </WrapItem>
-                          );
-                        })}
-                      </Wrap>
-                    )}
-                  </Box>
-                ))}
+              <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={3}>
+                {sector.zones.map(zoneBox)}
               </SimpleGrid>
             )}
           </Box>
@@ -317,7 +304,7 @@ export default function FarmPage() {
             <Button variant="ghost" mr={3} onClick={onClose}>
               {t('farm.cancel')}
             </Button>
-            <Button colorScheme="green" onClick={saveAssign}>
+            <Button colorScheme="brand" onClick={saveAssign}>
               {t('farm.save')}
             </Button>
           </ModalFooter>

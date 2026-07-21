@@ -2179,6 +2179,7 @@
     "captor": {
       "noData": "لم تُستلم أي بيانات",
       "lastReceived": "آخر استلام: {when}"
-    }
+    },
+    "captorCount": "{count} مستشعر"
   }
 }

@@ -2179,6 +2179,7 @@
     "captor": {
       "noData": "Aucune donnée reçue",
       "lastReceived": "Dernière donnée : {when}"
-    }
+    },
+    "captorCount": "{count, plural, =0 {aucun capteur} one {# capteur} other {# capteurs}}"
   }
 }
