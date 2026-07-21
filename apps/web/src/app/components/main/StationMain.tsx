@@ -31,6 +31,7 @@ const StationMain = () => {
     selectedZone,
     setSelectedZone,
     zoneName,
+    sectorName,
     range,
     setRange,
     frequency,
@@ -51,6 +52,7 @@ const StationMain = () => {
       <PageInfoBar
         title={t('shell.station.title')}
         subtitle={pageSubtitle({
+          sectorName,
           zoneName,
           startDate: range.startDate,
           endDate: range.endDate,

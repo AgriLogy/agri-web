@@ -27,6 +27,7 @@ const WaterMain = () => {
     selectedZone,
     setSelectedZone,
     zoneName,
+    sectorName,
     range,
     setRange,
     frequency,
@@ -40,6 +41,7 @@ const WaterMain = () => {
       <PageInfoBar
         title={t('shell.water.title')}
         subtitle={pageSubtitle({
+          sectorName,
           zoneName,
           startDate: range.startDate,
           endDate: range.endDate,

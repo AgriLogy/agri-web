@@ -26,6 +26,8 @@ export type AnalyticsHeaderState = {
   selectedZone: number | null;
   setSelectedZone: (id: number) => void;
   zoneName: string | null;
+  /** The selected zone's sector name (User → Sector → Zone), or null. */
+  sectorName: string | null;
   range: ChartDateRange;
   setRange: (next: ChartDateRange) => void;
   /** Page-wide chart data frequency. Charts bucket+average themselves to it. */
@@ -72,6 +74,11 @@ export function useAnalyticsHeader(): AnalyticsHeaderState {
     [zones, selectedZone]
   );
 
+  const sectorName = useMemo(
+    () => zones.find((z) => z.id === selectedZone)?.sector_name ?? null,
+    [zones, selectedZone]
+  );
+
   const filters = useMemo(
     () => ({
       startDate: range.startDate,
@@ -86,6 +93,7 @@ export function useAnalyticsHeader(): AnalyticsHeaderState {
     selectedZone,
     setSelectedZone,
     zoneName,
+    sectorName,
     range,
     setRange,
     frequency,

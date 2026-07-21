@@ -27,6 +27,7 @@ const SoilMain = () => {
     selectedZone,
     setSelectedZone,
     zoneName,
+    sectorName,
     range,
     setRange,
     frequency,
@@ -40,6 +41,7 @@ const SoilMain = () => {
       <PageInfoBar
         title={t('shell.soil.title')}
         subtitle={pageSubtitle({
+          sectorName,
           zoneName,
           startDate: range.startDate,
           endDate: range.endDate,

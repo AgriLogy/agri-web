@@ -6,6 +6,9 @@ import { useTranslations } from 'next-intl';
 export type ZoneOption = {
   id: number;
   name: string;
+  /** Sector grouping (User → Sector → Zone). Null = unassigned. */
+  sector_id?: number | null;
+  sector_name?: string | null;
   /** Basin geometry (present only for zones with a level sensor). */
   basin_max_depth_m?: number | null;
   basin_area_m2?: number | null;
@@ -29,6 +32,20 @@ export function ZoneSelect({ zones, value, onChange, label }: ZoneSelectProps) {
   const [border] = useToken('colors', ['app.border']);
   const ariaLabel = label ?? t('shell.zoneSelect.label');
 
+  // Group zones under their sector (User → Sector → Zone). Only render optgroups
+  // when at least one zone is assigned, so an all-flat farm stays a plain list.
+  const hasSectors = zones.some((z) => z.sector_name);
+  const groups = new Map<string, ZoneOption[]>();
+  if (hasSectors) {
+    const unassigned = t('shell.zoneSelect.unassigned');
+    for (const z of zones) {
+      const key = z.sector_name ?? unassigned;
+      const arr = groups.get(key);
+      if (arr) arr.push(z);
+      else groups.set(key, [z]);
+    }
+  }
+
   return (
     <Select
       aria-label={ariaLabel}
@@ -45,11 +62,21 @@ export function ZoneSelect({ zones, value, onChange, label }: ZoneSelectProps) {
       _hover={{ borderColor: 'app.accent' }}
       _focus={{ borderColor: 'app.accent', boxShadow: 'none' }}
     >
-      {zones.map((zone) => (
-        <option key={zone.id} value={zone.id}>
-          {zone.name}
-        </option>
-      ))}
+      {hasSectors
+        ? [...groups.entries()].map(([sector, zs]) => (
+            <optgroup key={sector} label={sector}>
+              {zs.map((zone) => (
+                <option key={zone.id} value={zone.id}>
+                  {zone.name}
+                </option>
+              ))}
+            </optgroup>
+          ))
+        : zones.map((zone) => (
+            <option key={zone.id} value={zone.id}>
+              {zone.name}
+            </option>
+          ))}
     </Select>
   );
 }
