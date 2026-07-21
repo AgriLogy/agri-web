@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/AgriLogy/agri-web/compare/v1.23.0...v1.24.0) (2026-07-21)
+
+
+### Features
+
+* **header:** show sector in analytics headers + group zone picker by sector ([#87](https://github.com/AgriLogy/agri-web/issues/87)) ([f77bc3f](https://github.com/AgriLogy/agri-web/commit/f77bc3ff22a34c0cf2d6531312f664eda1894060)), closes [#86](https://github.com/AgriLogy/agri-web/issues/86)
+
 # [1.23.0](https://github.com/AgriLogy/agri-web/compare/v1.22.3...v1.23.0) (2026-07-21)
 
 
