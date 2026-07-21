@@ -36,7 +36,8 @@
     "navigation": "التنقل",
     "accountMenu": "قائمة الحساب",
     "openMenu": "فتح القائمة",
-    "cropCalendar": "التقويم الزراعي"
+    "cropCalendar": "التقويم الزراعي",
+    "farm": "مزرعتي"
   },
   "logout": {
     "signOut": "تسجيل الخروج",
@@ -2157,6 +2158,26 @@
       "descriptionRequired": "الوصف مطلوب",
       "sendFailed": "تعذّر إرسال بلاغك. تحقق من اتصالك وحاول مرة أخرى — النص محفوظ.",
       "recordingUnsupported": "تسجيل الشاشة غير مدعوم في هذا المتصفح."
+    }
+  },
+  "farm": {
+    "title": "مزرعتي",
+    "subtitle": "عرض تخطيطي لقطاعاتك ومناطقك وأجهزة الاستشعار.",
+    "newSectorPlaceholder": "اسم القطاع",
+    "addSector": "إضافة قطاع",
+    "unassigned": "غير مُعيّنة",
+    "assignZones": "المناطق",
+    "deleteSector": "حذف القطاع",
+    "noZones": "لا توجد مناطق في هذا القطاع.",
+    "noCaptors": "لا توجد أجهزة استشعار",
+    "assignTo": "مناطق «{name}»",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "loadError": "تعذّر تحميل المزرعة.",
+    "saveError": "فشل الحفظ.",
+    "captor": {
+      "noData": "لم تُستلم أي بيانات",
+      "lastReceived": "آخر استلام: {when}"
     }
   }
 }

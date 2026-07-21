@@ -36,7 +36,8 @@
     "navigation": "Navigation",
     "accountMenu": "Account menu",
     "openMenu": "Open menu",
-    "cropCalendar": "Crop calendar"
+    "cropCalendar": "Crop calendar",
+    "farm": "My farm"
   },
   "logout": {
     "signOut": "Sign out",
@@ -2157,6 +2158,26 @@
       "descriptionRequired": "Description required",
       "sendFailed": "We couldn't send your report. Check your connection and try again — your text is still here.",
       "recordingUnsupported": "Screen recording is not supported in this browser."
+    }
+  },
+  "farm": {
+    "title": "My farm",
+    "subtitle": "A schematic view of your sectors, zones and captors.",
+    "newSectorPlaceholder": "Sector name",
+    "addSector": "Add sector",
+    "unassigned": "Unassigned",
+    "assignZones": "Zones",
+    "deleteSector": "Delete sector",
+    "noZones": "No zones in this sector.",
+    "noCaptors": "No captors",
+    "assignTo": "Zones in “{name}”",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loadError": "Couldn't load the farm.",
+    "saveError": "Save failed.",
+    "captor": {
+      "noData": "No data received",
+      "lastReceived": "Last received: {when}"
     }
   }
 }

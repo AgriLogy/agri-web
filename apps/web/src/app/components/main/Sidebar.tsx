@@ -28,6 +28,7 @@ import {
   FaCog,
   FaHome,
   FaRegCalendarAlt,
+  FaThLarge,
   FaWater,
 } from 'react-icons/fa';
 import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
@@ -60,6 +61,7 @@ const Sidebar = () => {
     label: string;
   }[] = [
     { href: '/', icon: FaHome, label: t('nav.home') },
+    { href: '/farm', icon: FaThLarge, label: t('nav.farm') },
     { href: '/soil', icon: FaSeedling, label: t('nav.soilData') },
     { href: '/station', icon: WiDaySunny, label: t('nav.station') },
     { href: '/plant', icon: GiGrapes, label: t('nav.plantData') },
