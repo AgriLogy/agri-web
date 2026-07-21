@@ -36,7 +36,8 @@
     "navigation": "Navigation",
     "accountMenu": "Menu compte",
     "openMenu": "Ouvrir le menu",
-    "cropCalendar": "Calendrier cultural"
+    "cropCalendar": "Calendrier cultural",
+    "farm": "Ma ferme"
   },
   "logout": {
     "signOut": "Se déconnecter",
@@ -2157,6 +2158,26 @@
       "descriptionRequired": "Description requise",
       "sendFailed": "Impossible d'envoyer votre signalement. Vérifiez votre connexion et réessayez — votre texte est conservé.",
       "recordingUnsupported": "L'enregistrement d'écran n'est pas pris en charge par ce navigateur."
+    }
+  },
+  "farm": {
+    "title": "Ma ferme",
+    "subtitle": "Vue schématique de vos secteurs, zones et capteurs.",
+    "newSectorPlaceholder": "Nom du secteur",
+    "addSector": "Ajouter un secteur",
+    "unassigned": "Non assignées",
+    "assignZones": "Zones",
+    "deleteSector": "Supprimer le secteur",
+    "noZones": "Aucune zone dans ce secteur.",
+    "noCaptors": "Aucun capteur",
+    "assignTo": "Zones du secteur « {name} »",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "loadError": "Impossible de charger la ferme.",
+    "saveError": "Échec de l'enregistrement.",
+    "captor": {
+      "noData": "Aucune donnée reçue",
+      "lastReceived": "Dernière donnée : {when}"
     }
   }
 }
