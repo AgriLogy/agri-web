@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import type { IconType } from 'react-icons';
 import {
   Box,
@@ -64,6 +64,11 @@ import api from '@agri/api-client/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import { fetchLastSensorSample } from '@/app/utils/fetchSensorLastValue';
 import {
+  notificationZoneApi,
+  NOTIFICATION_ZONES_UPDATED_EVENT,
+  type NotificationZone,
+} from '@agri/api-client/notificationZoneApi';
+import {
   saveZoneNotificationConfig,
   getNotificationConfigById,
   getNotificationConfigsForZone,
@@ -96,6 +101,7 @@ const defaultConfig = (
 ): ZoneNotificationConfig => ({
   configId,
   zoneId,
+  notificationZoneId: null,
   secteurLabel: '',
   notificationName: '',
   soilType: 'light',
@@ -206,6 +212,52 @@ function pickInitialZoneId(
   return zones[0]?.id;
 }
 
+type FarmZone = { id: number; name: string };
+
+/** One entry of the Zone dropdown: a farm zone or a custom notification zone. */
+type ZoneChoice = {
+  /** Dropdown token — `farm:<id>` or `notif:<id>` (the two id spaces overlap). */
+  value: string;
+  label: string;
+  kind: 'farm' | 'notification';
+  /** Farm zone the sensor reads and outbound dispatch resolve to. */
+  zoneId: number;
+  /** Set only for custom notification zones. */
+  notificationZoneId: number | null;
+};
+
+/**
+ * Farm zone a custom notification zone reads from: the first assigned sensor's
+ * source zone, falling back to the first farm zone of the account.
+ */
+function resolveSourceZoneId(zone: NotificationZone, farmZones: FarmZone[]) {
+  const fromSensors = zone.sensors.find((s) => s.source_zone != null);
+  if (fromSensors?.source_zone != null) return fromSensors.source_zone;
+  return farmZones[0]?.id ?? 0;
+}
+
+function buildZoneChoices(
+  farmZones: FarmZone[],
+  notificationZones: NotificationZone[]
+): ZoneChoice[] {
+  return [
+    ...farmZones.map<ZoneChoice>((z) => ({
+      value: `farm:${z.id}`,
+      label: z.name,
+      kind: 'farm',
+      zoneId: z.id,
+      notificationZoneId: null,
+    })),
+    ...notificationZones.map<ZoneChoice>((z) => ({
+      value: `notif:${z.id}`,
+      label: z.name,
+      kind: 'notification',
+      zoneId: resolveSourceZoneId(z, farmZones),
+      notificationZoneId: z.id,
+    })),
+  ];
+}
+
 function LabelWithIcon({
   icon,
   children,
@@ -288,7 +340,10 @@ const ZoneNotificationConfigureForm: React.FC<
     onClose: onKcTableClose,
   } = useDisclosure();
 
-  const [zones, setZones] = useState<{ id: number; name: string }[]>([]);
+  const [zones, setZones] = useState<FarmZone[]>([]);
+  const [notificationZones, setNotificationZones] = useState<
+    NotificationZone[]
+  >([]);
   const [zoneId, setZoneId] = useState<number>(0);
   const [form, setForm] = useState<ZoneNotificationConfig | null>(null);
   const [nameError, setNameError] = useState(false);
@@ -299,9 +354,24 @@ const ZoneNotificationConfigureForm: React.FC<
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await api.get<{ id: number; name: string }[]>('/zones');
+        // Farm zones and the user's custom notification zones (the ones created
+        // on /notification-zones) both feed the Zone dropdown. The custom list
+        // is best-effort: a failure there must not hide the farm zones.
+        const [res, custom] = await Promise.all([
+          api.get<FarmZone[]>('/zones'),
+          notificationZoneApi.list().catch((k) => {
+            logOptionalApiFailure(
+              'ZoneNotificationConfigure: notification zones',
+              k
+            );
+            return [] as NotificationZone[];
+          }),
+        ]);
         const z = res.data || [];
         setZones(z);
+        setNotificationZones(
+          Array.isArray(custom) ? custom.filter((c) => c.is_active) : []
+        );
         if (z.length > 0) {
           let cfgId = initialConfigId?.trim() ?? '';
 
@@ -383,6 +453,29 @@ const ZoneNotificationConfigureForm: React.FC<
     void load();
   }, [initialZoneId, initialConfigId, intent, toast]);
 
+  // A zone created on /notification-zones must show up in the picker without a
+  // reload: refresh the custom-zone list whenever the manager reports a change.
+  useEffect(() => {
+    const refresh = () => {
+      void notificationZoneApi
+        .list()
+        .then((list) =>
+          setNotificationZones(
+            Array.isArray(list) ? list.filter((c) => c.is_active) : []
+          )
+        )
+        .catch((k) =>
+          logOptionalApiFailure(
+            'ZoneNotificationConfigure: notification zones refresh',
+            k
+          )
+        );
+    };
+    window.addEventListener(NOTIFICATION_ZONES_UPDATED_EVENT, refresh);
+    return () =>
+      window.removeEventListener(NOTIFICATION_ZONES_UPDATED_EVENT, refresh);
+  }, []);
+
   // VPD is read from the captor, never typed by the user. Pull the latest
   // `/sensors/vpd` sample for the selected zone and mirror it into the form so
   // the saved config + decision engine use the real sensor value.
@@ -406,6 +499,28 @@ const ZoneNotificationConfigureForm: React.FC<
       cancelled = true;
     };
   }, [zoneId]);
+
+  const zoneChoices = useMemo(
+    () => buildZoneChoices(zones, notificationZones),
+    [zones, notificationZones]
+  );
+
+  const selectedNotificationZoneId = form?.notificationZoneId ?? null;
+
+  const selectedZoneValue = useMemo(() => {
+    if (
+      selectedNotificationZoneId != null &&
+      notificationZones.some((z) => z.id === selectedNotificationZoneId)
+    ) {
+      return `notif:${selectedNotificationZoneId}`;
+    }
+    return `farm:${zoneId}`;
+  }, [selectedNotificationZoneId, notificationZones, zoneId]);
+
+  const selectedZoneLabel = useMemo(
+    () => zoneChoices.find((c) => c.value === selectedZoneValue)?.label,
+    [zoneChoices, selectedZoneValue]
+  );
 
   const update = <K extends keyof ZoneNotificationConfig>(
     key: K,
@@ -446,7 +561,10 @@ const ZoneNotificationConfigureForm: React.FC<
     const resolvedZoneId = zones.some((z) => z.id === zoneId)
       ? zoneId
       : form.zoneId;
-    if (!zones.some((z) => z.id === resolvedZoneId)) {
+    if (
+      !zones.some((z) => z.id === resolvedZoneId) &&
+      form.notificationZoneId == null
+    ) {
       toast({
         title: t('notifications.configForm.selectZone'),
         status: 'warning',
@@ -481,6 +599,7 @@ const ZoneNotificationConfigureForm: React.FC<
     saveZoneNotificationConfig(toSave);
 
     const zoneLabel =
+      selectedZoneLabel ??
       zones.find((z) => z.id === toSave.zoneId)?.name ??
       t('notifications.configForm.zoneNumber', { id: toSave.zoneId });
 
@@ -620,22 +739,46 @@ const ZoneNotificationConfigureForm: React.FC<
                   {t('notifications.configForm.zoneLabel')}
                 </LabelWithIcon>
                 <Select
-                  value={zoneId}
+                  value={selectedZoneValue}
                   onChange={(e) => {
-                    const id = Number(e.target.value);
-                    setZoneId(id);
-                    setForm((f) =>
-                      f
-                        ? mergeZoneConfig(id, f)
-                        : mergeZoneConfig(id, undefined)
+                    const choice = zoneChoices.find(
+                      (c) => c.value === e.target.value
                     );
+                    if (!choice) return;
+                    setZoneId(choice.zoneId);
+                    setForm((f) => ({
+                      ...(f
+                        ? mergeZoneConfig(choice.zoneId, f)
+                        : mergeZoneConfig(choice.zoneId, undefined)),
+                      notificationZoneId: choice.notificationZoneId,
+                    }));
                   }}
+                  data-testid="notif-zone-select"
                 >
-                  {zones.map((z) => (
-                    <option key={z.id} value={z.id}>
-                      {z.name}
-                    </option>
-                  ))}
+                  <optgroup label={t('notifications.configForm.zoneGroupFarm')}>
+                    {zoneChoices
+                      .filter((c) => c.kind === 'farm')
+                      .map((c) => (
+                        <option key={c.value} value={c.value}>
+                          {c.label}
+                        </option>
+                      ))}
+                  </optgroup>
+                  {zoneChoices.some((c) => c.kind === 'notification') && (
+                    <optgroup
+                      label={t(
+                        'notifications.configForm.zoneGroupNotification'
+                      )}
+                    >
+                      {zoneChoices
+                        .filter((c) => c.kind === 'notification')
+                        .map((c) => (
+                          <option key={c.value} value={c.value}>
+                            {c.label}
+                          </option>
+                        ))}
+                    </optgroup>
+                  )}
                 </Select>
               </FormControl>
 

@@ -1287,6 +1287,8 @@
       "editHint": "Saving updates this notification (sector, thresholds and channels) for the selected zone.",
       "createHint": "A single zone can group several sectors: create one notification per sector for distinct thresholds and tracking. A short confirmation message is added to the list the first time you save this configuration.",
       "zoneLabel": "Zone",
+      "zoneGroupFarm": "Farm plots / zones",
+      "zoneGroupNotification": "Notification zones",
       "sectorLabel": "Sector (within the zone)",
       "sectorPlaceholder": "e.g. North sector, Plot B, Block 2…",
       "sectorHint": "Identifies the portion of the zone covered by this notification.",
@@ -2179,6 +2181,7 @@
     "captor": {
       "noData": "No data received",
       "lastReceived": "Last received: {when}"
-    }
+    },
+    "captorCount": "{count, plural, =0 {no captors} one {# captor} other {# captors}}"
   }
 }

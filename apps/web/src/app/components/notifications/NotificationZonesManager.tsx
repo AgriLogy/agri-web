@@ -19,6 +19,7 @@ import {
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useTranslations } from 'next-intl';
 import {
+  emitNotificationZonesUpdated,
   notificationZoneApi,
   type AvailableZoneSensors,
   type NotificationZone,
@@ -124,6 +125,7 @@ const NotificationZonesManager: React.FC = () => {
         message.success(t('notificationZones.created'));
       }
       setModalOpen(false);
+      emitNotificationZonesUpdated();
       await load();
     } catch {
       message.error(t('notificationZones.saveError'));
@@ -136,6 +138,7 @@ const NotificationZonesManager: React.FC = () => {
     try {
       await notificationZoneApi.remove(zone.id);
       message.success(t('notificationZones.deleted'));
+      emitNotificationZonesUpdated();
       await load();
     } catch {
       message.error(t('notificationZones.saveError'));

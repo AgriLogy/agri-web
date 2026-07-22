@@ -77,6 +77,12 @@ export interface ZoneNotificationConfig {
   /** Stable id for this notification setup (one secteur / sous-parcelle inside the zone). */
   configId: string;
   zoneId: number;
+  /**
+   * Custom notification zone (`/notification-zones`) this config targets, when
+   * the user picked one instead of a farm zone. `zoneId` still carries the farm
+   * zone the sensors / outbound dispatch resolve to.
+   */
+  notificationZoneId?: number | null;
   /** Secteur (or block) within the zone that this configuration applies to. */
   secteurLabel: string;
   notificationName: string;

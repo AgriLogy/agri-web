@@ -10,6 +10,19 @@
 
 import api from './api';
 
+/**
+ * Fired after a notification zone is created / updated / deleted so any open
+ * consumer (e.g. the zone picker of the notification form) refreshes its list
+ * without a page reload.
+ */
+export const NOTIFICATION_ZONES_UPDATED_EVENT =
+  'agrilogy-notification-zones-updated';
+
+export function emitNotificationZonesUpdated(): void {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent(NOTIFICATION_ZONES_UPDATED_EVENT));
+}
+
 export interface NotificationZoneSensor {
   id: number;
   sensor_key: string;
