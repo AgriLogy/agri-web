@@ -69,6 +69,11 @@ import {
   type NotificationZone,
 } from '@agri/api-client/notificationZoneApi';
 import {
+  buildZoneChoices,
+  encodeZoneChoiceValue,
+  type FarmZone,
+} from '@agri/api-client/zonePickerChoices';
+import {
   saveZoneNotificationConfig,
   getNotificationConfigById,
   getNotificationConfigsForZone,
@@ -210,52 +215,6 @@ function pickInitialZoneId(
     return initialZoneId;
   }
   return zones[0]?.id;
-}
-
-type FarmZone = { id: number; name: string };
-
-/** One entry of the Zone dropdown: a farm zone or a custom notification zone. */
-type ZoneChoice = {
-  /** Dropdown token — `farm:<id>` or `notif:<id>` (the two id spaces overlap). */
-  value: string;
-  label: string;
-  kind: 'farm' | 'notification';
-  /** Farm zone the sensor reads and outbound dispatch resolve to. */
-  zoneId: number;
-  /** Set only for custom notification zones. */
-  notificationZoneId: number | null;
-};
-
-/**
- * Farm zone a custom notification zone reads from: the first assigned sensor's
- * source zone, falling back to the first farm zone of the account.
- */
-function resolveSourceZoneId(zone: NotificationZone, farmZones: FarmZone[]) {
-  const fromSensors = zone.sensors.find((s) => s.source_zone != null);
-  if (fromSensors?.source_zone != null) return fromSensors.source_zone;
-  return farmZones[0]?.id ?? 0;
-}
-
-function buildZoneChoices(
-  farmZones: FarmZone[],
-  notificationZones: NotificationZone[]
-): ZoneChoice[] {
-  return [
-    ...farmZones.map<ZoneChoice>((z) => ({
-      value: `farm:${z.id}`,
-      label: z.name,
-      kind: 'farm',
-      zoneId: z.id,
-      notificationZoneId: null,
-    })),
-    ...notificationZones.map<ZoneChoice>((z) => ({
-      value: `notif:${z.id}`,
-      label: z.name,
-      kind: 'notification',
-      zoneId: resolveSourceZoneId(z, farmZones),
-      notificationZoneId: z.id,
-    })),
-  ];
 }
 
 function LabelWithIcon({
@@ -512,9 +471,9 @@ const ZoneNotificationConfigureForm: React.FC<
       selectedNotificationZoneId != null &&
       notificationZones.some((z) => z.id === selectedNotificationZoneId)
     ) {
-      return `notif:${selectedNotificationZoneId}`;
+      return encodeZoneChoiceValue('notification', selectedNotificationZoneId);
     }
-    return `farm:${zoneId}`;
+    return encodeZoneChoiceValue('farm', zoneId);
   }, [selectedNotificationZoneId, notificationZones, zoneId]);
 
   const selectedZoneLabel = useMemo(
