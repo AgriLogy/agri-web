@@ -11,6 +11,8 @@ module.exports = {
     '^@agri/sensor-catalog$':
       '<rootDir>/../../packages/sensor-catalog/src/index.ts',
     '^@agri/i18n$': '<rootDir>/../../packages/i18n/src/index.ts',
+    // next-intl ships ESM that jest's babel transform can't parse; stub it.
+    '^next-intl$': '<rootDir>/__mocks__/nextIntlMock.js',
     '\\.(scss|css)$': '<rootDir>/__mocks__/styleMock.js',
   },
   transform: {
