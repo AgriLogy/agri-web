@@ -1,11 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
-import { App, Button, Col, Modal, Row, Space } from 'antd';
+import { App, Button, Modal, Space } from 'antd';
 import { PlusOutlined, BellOutlined } from '@ant-design/icons';
-import Notification from '../notifications/Notification';
+import NotificationListItem from '../notifications/NotificationListItem';
+import EmptyBox from '../common/EmptyBox';
 import axiosInstance from '@agri/api-client/api';
 import {
+  markNotificationReadInCache,
   mergeNotificationsForStorage,
   normalizeApiNotificationsList,
   NOTIFICATIONS_CACHE_UPDATED_EVENT,
@@ -14,7 +16,6 @@ import {
   removeNotificationFromCacheById,
   writeNotificationsToCache,
 } from '@agri/api-client/notificationsCacheStorage';
-import EmptyBox from '../common/EmptyBox';
 import { useTranslations } from 'next-intl';
 import { useNotificationBellCounts } from '@/app/hooks/useNotificationBellCounts';
 import ZoneNotificationConfigureForm from '@/app/components/notifications/ZoneNotificationConfigureForm';
@@ -182,6 +183,11 @@ const NotificationsMain: React.FC = () => {
     onOpen();
   };
 
+  const markNotificationRead = (id: number) => {
+    markNotificationReadInCache(id);
+    void refreshBell();
+  };
+
   const confirmDeleteNotification = () => {
     if (deleteNotifId == null) return;
     const id = deleteNotifId;
@@ -224,13 +230,23 @@ const NotificationsMain: React.FC = () => {
         }
       />
 
-      <Row gutter={[16, 16]}>
-        {notifications.map((notification) => {
-          const zid = notificationRowZoneId(notification);
-          const rowCfgId = resolveStoredNotificationConfigId(notification);
-          return (
-            <Col key={notification.id} xs={24} sm={12} md={8} lg={6}>
-              <Notification
+      {notifications.length === 0 ? (
+        <EmptyBox variant="empty" text={t('notifications.list.empty')} />
+      ) : (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+            width: '100%',
+          }}
+        >
+          {notifications.map((notification) => {
+            const zid = notificationRowZoneId(notification);
+            const rowCfgId = resolveStoredNotificationConfigId(notification);
+            return (
+              <NotificationListItem
+                key={notification.id}
                 id={notification.id}
                 notification={{
                   ...notification.notification,
@@ -240,8 +256,9 @@ const NotificationsMain: React.FC = () => {
                   notification_name:
                     notification.notification?.notification_name,
                 }}
+                rawNested={notification.notification}
                 is_read={notification.is_read}
-                read_at={notification.read_at}
+                onOpen={() => markNotificationRead(notification.id)}
                 onEditZone={
                   zid != null ? () => openEditZone(zid, rowCfgId) : undefined
                 }
@@ -251,10 +268,10 @@ const NotificationsMain: React.FC = () => {
                     : undefined
                 }
               />
-            </Col>
-          );
-        })}
-      </Row>
+            );
+          })}
+        </div>
+      )}
 
       <Modal
         open={isOpen}

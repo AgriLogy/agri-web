@@ -1384,6 +1384,10 @@
         "week": "أسابيع"
       },
       "every": "{unit, select, minute {كل {amount} دقيقة} hour {كل {amount} ساعة} day {كل {amount} يوم} week {كل {amount} أسبوع} other {كل {amount}}}"
+    },
+    "list": {
+      "unread": "غير مقروء",
+      "empty": "لا توجد إشعارات بعد."
     }
   },
   "settings": {

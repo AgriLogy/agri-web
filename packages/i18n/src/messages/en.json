@@ -1384,6 +1384,10 @@
         "week": "weeks"
       },
       "every": "{unit, select, minute {every {amount} min} hour {every {amount} h} day {every {amount} d} week {every {amount} wk} other {every {amount}}}"
+    },
+    "list": {
+      "unread": "Unread",
+      "empty": "No notifications yet."
     }
   },
   "settings": {
