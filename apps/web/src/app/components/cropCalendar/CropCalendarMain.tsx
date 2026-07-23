@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Button as ChakraButton } from '@chakra-ui/react';
 import {
   App,
   Button,
@@ -17,6 +17,7 @@ import {
   Table,
   Tag,
 } from 'antd';
+import { FaPlus } from 'react-icons/fa';
 import type { ColumnsType } from 'antd/es/table';
 import {
   PlusOutlined,
@@ -211,9 +212,13 @@ const CropCalendarMain = () => {
               onChange={(v) => setZoneFilter(v)}
               options={zones.map((z) => ({ value: z.id, label: z.name }))}
             />
-            <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
+            <ChakraButton
+              colorScheme="brand"
+              leftIcon={<FaPlus />}
+              onClick={openCreate}
+            >
               {t('cropCalendar.newCrop')}
-            </Button>
+            </ChakraButton>
           </Space>
         }
       />

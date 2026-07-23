@@ -15,7 +15,6 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Flex,
-  Heading,
   Select,
   Tab,
   TabList,
@@ -28,6 +27,7 @@ import dayjs from 'dayjs';
 import { useTranslations } from 'next-intl';
 import api from '@agri/api-client/api';
 import { isoRangeFromDates } from '@agri/api-client/reportsModel';
+import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import {
   ChartDateRangeControl,
   type ChartDateRange,
@@ -68,14 +68,10 @@ const ReportsMain = () => {
 
   return (
     <Box p={{ base: 3, md: 5 }} maxW="1200px" mx="auto" w="100%">
-      <Box mb={4}>
-        <Heading as="h1" size="lg" mb={1}>
-          {t('reports.title')}
-        </Heading>
-        <Text fontSize="sm" color="app.text.muted" fontWeight="500">
-          {t('reports.subtitle')}
-        </Text>
-      </Box>
+      <PageInfoBar
+        title={t('reports.title')}
+        subtitle={t('reports.subtitle')}
+      />
 
       <Flex
         gap={3}
@@ -118,7 +114,7 @@ const ReportsMain = () => {
         </Flex>
       </Flex>
 
-      <Tabs colorScheme="teal" variant="enclosed" isLazy>
+      <Tabs colorScheme="brand" variant="enclosed" isLazy>
         <TabList>
           <Tab>{t('reports.tabAlerts')}</Tab>
           <Tab>{t('reports.tabDecisions')}</Tab>

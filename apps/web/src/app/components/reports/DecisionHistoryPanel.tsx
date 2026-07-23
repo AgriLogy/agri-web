@@ -269,6 +269,7 @@ export function DecisionHistoryPanel({
                       <Button
                         size="xs"
                         variant="outline"
+                        colorScheme="brand"
                         onClick={() => setExpanded(open ? null : key)}
                         rightIcon={open ? <FaChevronUp /> : <FaChevronDown />}
                         data-testid={`decision-details-${i}`}
@@ -319,6 +320,7 @@ export function DecisionHistoryPanel({
                           }
                           size="xs"
                           variant="ghost"
+                          colorScheme="brand"
                           icon={open ? <FaChevronUp /> : <FaChevronDown />}
                           onClick={() => setExpanded(open ? null : key)}
                           data-testid={`decision-details-${i}`}
