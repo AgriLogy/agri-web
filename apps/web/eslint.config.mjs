@@ -5,7 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 
 const config = [
   {
-    ignores: ['.next/**', 'out/**', 'build/**', 'node_modules/**'],
+    ignores: ['.next/**', 'out/**', 'build/**', 'node_modules/**', '__mocks__/**'],
   },
   ...nextCoreWebVitals,
   ...nextTypescript,
