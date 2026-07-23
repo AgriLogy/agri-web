@@ -1384,6 +1384,10 @@
         "week": "semaines"
       },
       "every": "{unit, select, minute {toutes les {amount} min} hour {toutes les {amount} h} day {tous les {amount} j} week {toutes les {amount} sem.} other {toutes les {amount}}}"
+    },
+    "list": {
+      "unread": "Non lu",
+      "empty": "Aucune notification pour le moment."
     }
   },
   "settings": {

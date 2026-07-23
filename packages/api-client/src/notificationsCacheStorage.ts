@@ -350,6 +350,27 @@ export function markAllNotificationsReadInCache(): void {
   writeNotificationsToCache(updated);
 }
 
+/** Mark a single notification row read (e.g. when its detail is opened). */
+export function markNotificationReadInCache(notificationId: number): void {
+  const rows = readNotificationsFromCache();
+  let changed = false;
+  const updated = rows.map((r) => {
+    if (
+      r &&
+      typeof r === 'object' &&
+      (r as CachedRow).id === notificationId &&
+      (r as CachedRow).is_read !== true
+    ) {
+      changed = true;
+      return { ...(r as Record<string, unknown>), is_read: true };
+    }
+    return r;
+  });
+  if (!changed) return;
+  writeNotificationsToCache(updated);
+  notifyNotificationsCacheChanged();
+}
+
 /** Keep locally generated rows (e.g. zone save confirmation) when syncing API data. */
 export function mergeNotificationsForStorage(apiRowsIfAny: unknown): unknown[] {
   const apiRows = normalizeApiNotificationsList(apiRowsIfAny);
