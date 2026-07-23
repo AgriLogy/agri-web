@@ -61,11 +61,16 @@ import {
   sensorTypeI18nKey,
 } from '@/app/utils/sensorTypes';
 import { sensorCountsBySector } from '@/app/utils/sectorSensorCounts';
+import { myDevicesApi, devicesToGeoJSON } from '@agri/api-client/myDevicesApi';
 
 const AGRICULTURE_MAP_STYLE = 'mapbox://styles/mapbox/satellite-streets-v12';
 const LABEL_SOURCE_ID = 'agrilogy-sector-labels';
 const LABEL_LAYER_ID = 'agrilogy-sector-labels-symbol';
 const SENSORS_HALO_LAYER_ID = 'agrilogy-sensors-halo';
+// Real registered devices, plotted at their captured GPS position (MAP-1),
+// distinct from the hand-placed captor icons above.
+const REGISTERED_DEVICES_SOURCE_ID = 'agrilogy-registered-devices';
+const REGISTERED_DEVICES_LAYER_ID = 'agrilogy-registered-devices-markers';
 
 /** Clone draw state, normalize secteur names, persist to localStorage (same rules as manual Enregistrer). */
 function normalizeAndPersistFarmSectorsFromDraw(
@@ -761,6 +766,58 @@ export default function AgricultureMapboxMap({
           'text-halo-color': ['coalesce', ['get', 'halo'], '#1a3d1a'],
           'text-halo-width': 2,
         },
+      });
+
+      // Registered devices: plot each of the caller's own devices at its
+      // captured GPS position. Read-only markers; failures (no auth / no
+      // devices / none with coordinates) simply leave the layer empty.
+      map.addSource(REGISTERED_DEVICES_SOURCE_ID, {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+      });
+      map.addLayer({
+        id: REGISTERED_DEVICES_LAYER_ID,
+        type: 'circle',
+        source: REGISTERED_DEVICES_SOURCE_ID,
+        paint: {
+          'circle-radius': 7,
+          'circle-color': '#2563eb',
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-width': 2,
+        },
+      });
+      myDevicesApi
+        .list()
+        .then((devices) => {
+          (
+            map.getSource(REGISTERED_DEVICES_SOURCE_ID) as
+              | mapboxgl.GeoJSONSource
+              | undefined
+          )?.setData(devicesToGeoJSON(devices));
+        })
+        .catch(() => {
+          /* not signed in / no devices — leave the device layer empty */
+        });
+      map.on('click', REGISTERED_DEVICES_LAYER_ID, (e) => {
+        const f = e.features?.[0];
+        if (!f) return;
+        const props = f.properties ?? {};
+        const [lng, lat] = (f.geometry as GeoJSON.Point).coordinates;
+        new mapboxgl.Popup({ offset: 12 })
+          .setLngLat([lng, lat])
+          .setHTML(
+            `<strong>${escapeHtml(String(props.name ?? ''))}</strong>` +
+              `<br/>${escapeHtml(String(props.serial ?? ''))}`
+          )
+          .addTo(map);
+      });
+      map.on('mouseenter', REGISTERED_DEVICES_LAYER_ID, () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+      map.on('mouseleave', REGISTERED_DEVICES_LAYER_ID, () => {
+        map.getCanvas().style.cursor = placingSensorTypeRef.current
+          ? 'crosshair'
+          : 'grab';
       });
 
       map.on('mouseenter', SENSORS_HALO_LAYER_ID, onSensorMouseEnter);
