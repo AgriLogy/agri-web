@@ -37,7 +37,8 @@
     "accountMenu": "قائمة الحساب",
     "openMenu": "فتح القائمة",
     "cropCalendar": "التقويم الزراعي",
-    "farm": "مزرعتي"
+    "farm": "مزرعتي",
+    "reports": "التقارير"
   },
   "logout": {
     "signOut": "تسجيل الخروج",
@@ -1093,6 +1094,10 @@
         "settings": {
           "label": "الإعدادات",
           "description": "تفضيلات الحساب والمستشعرات والعرض"
+        },
+        "reports": {
+          "label": "التقارير",
+          "description": "سجل التنبيهات وقرارات الري"
         }
       },
       "pageContext": "سياق الصفحة الحالية: {context}",
@@ -2267,5 +2272,75 @@
     "editRequiresEditor": "تحتاج إلى صلاحية محرّر لإجراء تعديلات.",
     "deleteRequiresAdmin": "تحتاج إلى صلاحية مدير للحذف.",
     "manageUsersRequiresAdmin": "تحتاج إلى صلاحية مدير لإدارة المستخدمين."
+  },
+  "reports": {
+    "title": "التقارير",
+    "subtitle": "سجل التنبيهات المُطلَقة وقرارات الري",
+    "tabAlerts": "التنبيهات",
+    "tabDecisions": "قرارات الري",
+    "dateLabel": "الفترة",
+    "zoneLabel": "المنطقة",
+    "allZones": "كل المناطق",
+    "zoneFallback": "المنطقة {id}",
+    "sensorLabel": "المستشعر",
+    "allSensors": "كل المستشعرات",
+    "sourceLabel": "المصدر",
+    "allSources": "كل المصادر",
+    "irrigateLabel": "الري",
+    "irrigateAll": "الكل",
+    "irrigateOnlyYes": "تم الري",
+    "irrigateOnlyNo": "بدون ري",
+    "colWhen": "متى",
+    "colRule": "القاعدة",
+    "colSensorZone": "المستشعر / المنطقة",
+    "colSensor": "المستشعر",
+    "colZone": "المنطقة",
+    "colCondition": "الشرط",
+    "colObservedVsThreshold": "المُقاس / العتبة",
+    "colChannels": "القنوات",
+    "colDecision": "القرار",
+    "colReason": "السبب",
+    "colSummary": "الملخص",
+    "inputsTitle": "الميزان المائي (المدخلات)",
+    "noInputs": "لا توجد بيانات إدخال",
+    "showDetails": "تفاصيل",
+    "hideDetails": "إخفاء",
+    "irrigateYes": "ري",
+    "irrigateNo": "بدون ري",
+    "loadingText": "جارٍ تحميل السجل…",
+    "emptyTitle": "لا شيء في هذه الفترة",
+    "emptyBody": "لا توجد سجلات مطابقة للمرشحات المحددة. وسّع الفترة أو غيّر المنطقة.",
+    "unavailableTitle": "السجل غير متاح",
+    "unavailableBody": "جداول السجل غير منشورة على هذه البيئة. أعد المحاولة بعد تطبيق الترحيل.",
+    "pageRange": "{from}–{to} من {total}",
+    "prev": "السابق",
+    "next": "التالي",
+    "conditionEnum": {
+      "lt": "أقل من",
+      "lte": "أقل من أو يساوي",
+      "gt": "أكبر من",
+      "gte": "أكبر من أو يساوي",
+      "eq": "يساوي",
+      "between": "بين"
+    },
+    "sourceEnum": {
+      "water_balance": "الميزان المائي",
+      "manual": "يدوي",
+      "scheduled": "مجدول",
+      "sensor": "مستشعر"
+    },
+    "reasonEnum": {
+      "soil_deficit": "عجز التربة",
+      "sufficient_moisture": "رطوبة كافية",
+      "rain_forecast": "توقع مطر",
+      "scheduled": "مجدول",
+      "manual": "يدوي"
+    },
+    "inputEnum": {
+      "et0_mm": "ET₀ (مم)",
+      "etc_mm": "ETc (مم)",
+      "dr_today_mm": "العجز المائي (مم)",
+      "soil_moisture_pct": "رطوبة التربة (%)"
+    }
   }
 }

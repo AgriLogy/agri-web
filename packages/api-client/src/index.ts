@@ -22,6 +22,8 @@ export * from './notificationDeliveryRate';
 export * from './myDevicesApi';
 export * from './notificationDispatch';
 export * from './notificationsCacheStorage';
+export * from './reportsApi';
+export * from './reportsModel';
 export * from './schemaAvailability';
 export * from './sensorCalibrationApi';
 export * from './sensorCalibrationModel';

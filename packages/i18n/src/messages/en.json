@@ -37,7 +37,8 @@
     "accountMenu": "Account menu",
     "openMenu": "Open menu",
     "cropCalendar": "Crop calendar",
-    "farm": "My farm"
+    "farm": "My farm",
+    "reports": "Reports"
   },
   "logout": {
     "signOut": "Sign out",
@@ -1093,6 +1094,10 @@
         "settings": {
           "label": "Settings",
           "description": "Account, sensor and display preferences"
+        },
+        "reports": {
+          "label": "Reports",
+          "description": "History of triggered alerts and irrigation decisions"
         }
       },
       "pageContext": "Current page context: {context}",
@@ -2267,5 +2272,75 @@
     "editRequiresEditor": "You need editor access to make changes.",
     "deleteRequiresAdmin": "You need admin access to delete.",
     "manageUsersRequiresAdmin": "You need admin access to manage users."
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "History of triggered alerts and irrigation decisions",
+    "tabAlerts": "Alerts",
+    "tabDecisions": "Irrigation decisions",
+    "dateLabel": "Period",
+    "zoneLabel": "Zone",
+    "allZones": "All zones",
+    "zoneFallback": "Zone {id}",
+    "sensorLabel": "Sensor",
+    "allSensors": "All sensors",
+    "sourceLabel": "Source",
+    "allSources": "All sources",
+    "irrigateLabel": "Irrigation",
+    "irrigateAll": "All",
+    "irrigateOnlyYes": "Irrigated",
+    "irrigateOnlyNo": "Not irrigated",
+    "colWhen": "When",
+    "colRule": "Rule",
+    "colSensorZone": "Sensor / Zone",
+    "colSensor": "Sensor",
+    "colZone": "Zone",
+    "colCondition": "Condition",
+    "colObservedVsThreshold": "Observed / Threshold",
+    "colChannels": "Channels",
+    "colDecision": "Decision",
+    "colReason": "Reason",
+    "colSummary": "Summary",
+    "inputsTitle": "Water balance (inputs)",
+    "noInputs": "No input data",
+    "showDetails": "Details",
+    "hideDetails": "Hide",
+    "irrigateYes": "Irrigate",
+    "irrigateNo": "Do not irrigate",
+    "loadingText": "Loading history…",
+    "emptyTitle": "Nothing in this period",
+    "emptyBody": "No records match the selected filters. Widen the period or change the zone.",
+    "unavailableTitle": "History unavailable",
+    "unavailableBody": "The history tables are not deployed on this environment. Try again once the migration is applied.",
+    "pageRange": "{from}–{to} of {total}",
+    "prev": "Previous",
+    "next": "Next",
+    "conditionEnum": {
+      "lt": "Less than",
+      "lte": "Less than or equal",
+      "gt": "Greater than",
+      "gte": "Greater than or equal",
+      "eq": "Equal to",
+      "between": "Between"
+    },
+    "sourceEnum": {
+      "water_balance": "Water balance",
+      "manual": "Manual",
+      "scheduled": "Scheduled",
+      "sensor": "Sensor"
+    },
+    "reasonEnum": {
+      "soil_deficit": "Soil deficit",
+      "sufficient_moisture": "Sufficient moisture",
+      "rain_forecast": "Rain forecast",
+      "scheduled": "Scheduled",
+      "manual": "Manual"
+    },
+    "inputEnum": {
+      "et0_mm": "ET₀ (mm)",
+      "etc_mm": "ETc (mm)",
+      "dr_today_mm": "Water deficit (mm)",
+      "soil_moisture_pct": "Soil moisture (%)"
+    }
   }
 }

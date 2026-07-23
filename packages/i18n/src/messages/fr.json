@@ -37,7 +37,8 @@
     "accountMenu": "Menu compte",
     "openMenu": "Ouvrir le menu",
     "cropCalendar": "Calendrier cultural",
-    "farm": "Ma ferme"
+    "farm": "Ma ferme",
+    "reports": "Rapports"
   },
   "logout": {
     "signOut": "Se déconnecter",
@@ -1093,6 +1094,10 @@
         "settings": {
           "label": "Paramètres",
           "description": "Préférences du compte, capteurs et affichage"
+        },
+        "reports": {
+          "label": "Rapports",
+          "description": "Historique des alertes déclenchées et des décisions d'irrigation"
         }
       },
       "pageContext": "Contexte de la page actuelle : {context}",
@@ -2267,5 +2272,75 @@
     "editRequiresEditor": "Un accès éditeur est requis pour modifier.",
     "deleteRequiresAdmin": "Un accès administrateur est requis pour supprimer.",
     "manageUsersRequiresAdmin": "Un accès administrateur est requis pour gérer les utilisateurs."
+  },
+  "reports": {
+    "title": "Rapports",
+    "subtitle": "Historique des alertes déclenchées et des décisions d'irrigation",
+    "tabAlerts": "Alertes",
+    "tabDecisions": "Décisions d'irrigation",
+    "dateLabel": "Période",
+    "zoneLabel": "Zone",
+    "allZones": "Toutes les zones",
+    "zoneFallback": "Zone {id}",
+    "sensorLabel": "Capteur",
+    "allSensors": "Tous les capteurs",
+    "sourceLabel": "Source",
+    "allSources": "Toutes les sources",
+    "irrigateLabel": "Irrigation",
+    "irrigateAll": "Toutes",
+    "irrigateOnlyYes": "Irriguées",
+    "irrigateOnlyNo": "Non irriguées",
+    "colWhen": "Quand",
+    "colRule": "Règle",
+    "colSensorZone": "Capteur / Zone",
+    "colSensor": "Capteur",
+    "colZone": "Zone",
+    "colCondition": "Condition",
+    "colObservedVsThreshold": "Observé / Seuil",
+    "colChannels": "Canaux",
+    "colDecision": "Décision",
+    "colReason": "Motif",
+    "colSummary": "Résumé",
+    "inputsTitle": "Bilan hydrique (entrées)",
+    "noInputs": "Aucune donnée d'entrée",
+    "showDetails": "Détails",
+    "hideDetails": "Masquer",
+    "irrigateYes": "Irriguer",
+    "irrigateNo": "Ne pas irriguer",
+    "loadingText": "Chargement de l'historique…",
+    "emptyTitle": "Aucun élément sur cette période",
+    "emptyBody": "Aucun enregistrement ne correspond aux filtres choisis. Élargissez la période ou changez de zone.",
+    "unavailableTitle": "Historique indisponible",
+    "unavailableBody": "Les tables d'historique ne sont pas déployées sur cet environnement. Réessayez une fois la migration appliquée.",
+    "pageRange": "{from}–{to} sur {total}",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "conditionEnum": {
+      "lt": "Inférieur à",
+      "lte": "Inférieur ou égal à",
+      "gt": "Supérieur à",
+      "gte": "Supérieur ou égal à",
+      "eq": "Égal à",
+      "between": "Entre"
+    },
+    "sourceEnum": {
+      "water_balance": "Bilan hydrique",
+      "manual": "Manuel",
+      "scheduled": "Programmé",
+      "sensor": "Capteur"
+    },
+    "reasonEnum": {
+      "soil_deficit": "Déficit du sol",
+      "sufficient_moisture": "Humidité suffisante",
+      "rain_forecast": "Pluie prévue",
+      "scheduled": "Programmé",
+      "manual": "Manuel"
+    },
+    "inputEnum": {
+      "et0_mm": "ET₀ (mm)",
+      "etc_mm": "ETc (mm)",
+      "dr_today_mm": "Déficit hydrique (mm)",
+      "soil_moisture_pct": "Humidité du sol (%)"
+    }
   }
 }

@@ -26,6 +26,7 @@ import { IoLogOut } from 'react-icons/io5';
 import {
   FaBell,
   FaCog,
+  FaFileAlt,
   FaHome,
   FaRegCalendarAlt,
   FaThLarge,
@@ -73,6 +74,7 @@ const Sidebar = () => {
     { href: '/water', icon: FaWater, label: t('nav.waterStation') },
     { href: '/vannes-pompes', icon: GiValve, label: t('nav.valvesPumps') },
     { href: '/notifications', icon: FaBell, label: t('nav.notifications') },
+    { href: '/reports', icon: FaFileAlt, label: t('nav.reports') },
     { href: '/settings', icon: FaCog, label: t('nav.settings') },
     { href: '/alerts', icon: MdWarningAmber, label: t('nav.alerts') },
   ];
