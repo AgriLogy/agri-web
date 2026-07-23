@@ -9,6 +9,7 @@ import PompesList from './PompesDashboardCard';
 import GoogleMapWeather from '../GoogleMapWeather';
 import WeatherDashboard from './WeatherDashboard';
 import RecentNotificationsCard from './RecentNotificationsCard';
+import SensorGroupsCard from './SensorGroupsCard';
 
 const Card = ({ children }: { children: React.ReactNode }) => (
   <Box
@@ -35,6 +36,13 @@ const MainContent = () => {
         title={t('shell.dashboard.title')}
         subtitle={t('shell.dashboard.subtitle')}
       />
+      {/* Sensors, grouped per the account's own groups (#95) — full width so
+          the collapsible blocks read as the page's index of sensors. */}
+      <Box mb={{ base: 3, md: 4 }}>
+        <Card>
+          <SensorGroupsCard />
+        </Card>
+      </Box>
       <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 3, md: 4 }}>
         <Card>
           <GoogleMapWeather />
