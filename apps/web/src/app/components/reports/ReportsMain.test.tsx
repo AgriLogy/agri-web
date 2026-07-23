@@ -37,6 +37,7 @@ jest.mock('@agri/api-client/api', () => ({
 // Stub the antd-based date control: a button that applies a fixed range, so we
 // can assert a date filter reaches the request without driving a calendar.
 jest.mock('@/app/components/layout/ChartDateRangeControl', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- require is required inside a hoisted jest.mock factory
   const R = require('react');
   return {
     __esModule: true,
