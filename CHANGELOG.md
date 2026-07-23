@@ -1,3 +1,20 @@
+# [1.25.0](https://github.com/AgriLogy/agri-web/compare/v1.24.0...v1.25.0) (2026-07-23)
+
+
+### Bug Fixes
+
+* **farm:** 2D captor-dot schematic + standard button + unified loader ([#89](https://github.com/AgriLogy/agri-web/issues/89)) ([fab8883](https://github.com/AgriLogy/agri-web/commit/fab88831f7fb717d697bb65d2897d886e0891159))
+* **lint:** exclude __mocks__ from eslint so CI is green ([#101](https://github.com/AgriLogy/agri-web/issues/101)) ([750f029](https://github.com/AgriLogy/agri-web/commit/750f0293d1ccb2f414146c96b79f9fe4a8541511))
+* **notifications:** offer the user's notification zones in the zone picker ([#92](https://github.com/AgriLogy/agri-web/issues/92)) ([33bafef](https://github.com/AgriLogy/agri-web/commit/33bafefa2a430fd2597b86039d660573ff154c07))
+* **test:** track the next-intl jest mock so the suite runs on a clean checkout ([#94](https://github.com/AgriLogy/agri-web/issues/94)) ([17ad009](https://github.com/AgriLogy/agri-web/commit/17ad0090e090a7cb9ba50b8258a13fafcf3a6fd3))
+
+
+### Features
+
+* **calibration:** per-sensor calibration editor ([#98](https://github.com/AgriLogy/agri-web/issues/98)) ([f213a64](https://github.com/AgriLogy/agri-web/commit/f213a64aa10c1ebbcf83d19b02ff6bdcc465c22f))
+* **groups:** persist sensor groups to the account and group the dashboard ([#96](https://github.com/AgriLogy/agri-web/issues/96)) ([9250a04](https://github.com/AgriLogy/agri-web/commit/9250a0466728ffd7419dc423086af09c3f84cb69))
+* **map:** plot registered devices at their real GPS location ([#75](https://github.com/AgriLogy/agri-web/issues/75)) ([2ecdf26](https://github.com/AgriLogy/agri-web/commit/2ecdf2660db52b2f6f98107cfafa2aa479c3bb50)), closes [#65](https://github.com/AgriLogy/agri-web/issues/65)
+
 # [1.24.0](https://github.com/AgriLogy/agri-web/compare/v1.23.0...v1.24.0) (2026-07-21)
 
 
