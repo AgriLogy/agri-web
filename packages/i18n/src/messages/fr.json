@@ -1287,6 +1287,8 @@
       "editHint": "Enregistrer met à jour cette notification (secteur, seuils et canaux) pour la zone sélectionnée.",
       "createHint": "Une même zone peut regrouper plusieurs secteurs : créez une notification par secteur pour des seuils et un suivi distincts. Un court message de confirmation est ajouté à la liste la première fois que vous enregistrez cette configuration.",
       "zoneLabel": "Zone",
+      "zoneGroupFarm": "Parcelles / zones de la ferme",
+      "zoneGroupNotification": "Zones de notification",
       "sectorLabel": "Secteur (dans la zone)",
       "sectorPlaceholder": "Ex. Secteur nord, Parcelle B, Bloc 2…",
       "sectorHint": "Identifie la portion de la zone couverte par cette notification.",
@@ -2179,6 +2181,7 @@
     "captor": {
       "noData": "Aucune donnée reçue",
       "lastReceived": "Dernière donnée : {when}"
-    }
+    },
+    "captorCount": "{count, plural, =0 {aucun capteur} one {# capteur} other {# capteurs}}"
   }
 }
