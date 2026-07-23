@@ -2260,5 +2260,12 @@
     "lastReceived": "Dernière donnée : {when}",
     "never": "Aucune donnée reçue",
     "alsoIn": "Aussi dans : {groups}"
+  },
+  "access": {
+    "forbiddenTitle": "Accès refusé",
+    "forbiddenBody": "Votre niveau d'accès ne permet pas cette action.",
+    "editRequiresEditor": "Un accès éditeur est requis pour modifier.",
+    "deleteRequiresAdmin": "Un accès administrateur est requis pour supprimer.",
+    "manageUsersRequiresAdmin": "Un accès administrateur est requis pour gérer les utilisateurs."
   }
 }

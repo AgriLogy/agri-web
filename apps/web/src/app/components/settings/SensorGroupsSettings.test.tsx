@@ -74,6 +74,19 @@ jest.mock('@agri/api-client/api', () => ({
   },
 }));
 
+// This suite exercises the group CRUD as an editing user; RBAC gating
+// (agri-web #99) is proven separately in AlertMain.rbac.test — here we grant
+// full access so the edit controls stay interactive.
+jest.mock('@/app/hooks/useAccessLevel', () => ({
+  useCan: () => ({
+    level: 'admin',
+    loading: false,
+    canEdit: true,
+    canDelete: true,
+    canManageUsers: true,
+  }),
+}));
+
 import SensorGroupsSettings from './SensorGroupsSettings';
 import {
   makeFakeSensorGroupServer,

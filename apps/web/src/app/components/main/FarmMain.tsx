@@ -39,6 +39,8 @@ import { FaPen, FaPlus, FaTrash } from 'react-icons/fa';
 import { farmApi, type Captor, type FarmSectorNode } from '@agri/api-client';
 import Loading from '@/app/components/common/Loading';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 
 const RECENT_MS = 24 * 60 * 60 * 1000; // "fresh" if a reading arrived within 24h
 
@@ -47,6 +49,7 @@ export default function FarmMain() {
   const router = useRouter();
   const toast = useToast();
   const { bgColor, borderColor, mutedTextColor } = useColorModeStyles();
+  const { canEdit, canDelete } = useCan();
 
   const [data, setData] = useState<FarmSectorNode[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -205,17 +208,24 @@ export default function FarmMain() {
         <Input
           placeholder={t('farm.newSectorPlaceholder')}
           value={newName}
+          isDisabled={!canEdit}
           onChange={(e) => setNewName(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && createSector()}
+          onKeyDown={(e) => e.key === 'Enter' && canEdit && createSector()}
         />
-        <Button
-          leftIcon={<FaPlus />}
-          colorScheme="brand"
-          onClick={createSector}
-          flexShrink={0}
+        <PermissionGate
+          blocked={!canEdit}
+          reason={t('access.editRequiresEditor')}
+          ui="chakra"
         >
-          {t('farm.addSector')}
-        </Button>
+          <Button
+            leftIcon={<FaPlus />}
+            colorScheme="brand"
+            onClick={createSector}
+            flexShrink={0}
+          >
+            {t('farm.addSector')}
+          </Button>
+        </PermissionGate>
       </Flex>
 
       <Flex direction="column" gap={5}>
@@ -237,24 +247,36 @@ export default function FarmMain() {
               </Heading>
               {sector.sector_id !== null && (
                 <HStack flexShrink={0}>
-                  <Button
-                    size="sm"
-                    leftIcon={<FaPen />}
-                    variant="outline"
-                    onClick={() =>
-                      openAssign(sector.sector_id!, sector.sector_name!)
-                    }
+                  <PermissionGate
+                    blocked={!canEdit}
+                    reason={t('access.editRequiresEditor')}
+                    ui="chakra"
                   >
-                    {t('farm.assignZones')}
-                  </Button>
-                  <IconButton
-                    aria-label={t('farm.deleteSector')}
-                    size="sm"
-                    variant="ghost"
-                    colorScheme="red"
-                    icon={<FaTrash />}
-                    onClick={() => removeSector(sector.sector_id!)}
-                  />
+                    <Button
+                      size="sm"
+                      leftIcon={<FaPen />}
+                      variant="outline"
+                      onClick={() =>
+                        openAssign(sector.sector_id!, sector.sector_name!)
+                      }
+                    >
+                      {t('farm.assignZones')}
+                    </Button>
+                  </PermissionGate>
+                  <PermissionGate
+                    blocked={!canDelete}
+                    reason={t('access.deleteRequiresAdmin')}
+                    ui="chakra"
+                  >
+                    <IconButton
+                      aria-label={t('farm.deleteSector')}
+                      size="sm"
+                      variant="ghost"
+                      colorScheme="red"
+                      icon={<FaTrash />}
+                      onClick={() => removeSector(sector.sector_id!)}
+                    />
+                  </PermissionGate>
                 </HStack>
               )}
             </Flex>

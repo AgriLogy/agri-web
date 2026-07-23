@@ -26,6 +26,8 @@ import {
 import { MdPowerSettingsNew } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 import { ChartSection } from '@/app/components/layout/ChartSection';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
 import ValveSchematic from '@/app/components/vannes-pompes/ValveSchematic';
@@ -51,6 +53,7 @@ function newId(prefix: string) {
 const VannesPompesMain = () => {
   const t = useTranslations();
   const { bg, textColor, borderColor } = useColorModeStyles();
+  const { canEdit } = useCan();
   const [vanes, setVanes] = useState<Vane[]>([]);
   const [pumps, setPumps] = useState<Pump[]>([]);
   const [hydrated, setHydrated] = useState(false);
@@ -123,17 +126,33 @@ const VannesPompesMain = () => {
         subtitle={`${t('shell.vannesPompes.vaneCount', { count: vanes.length })} · ${t('shell.vannesPompes.pumpCount', { count: pumps.length })}`}
         actions={
           <HStack flexWrap="wrap" gap={2}>
-            <Button colorScheme="brand" size="sm" onClick={addVaneModal.onOpen}>
-              {t('shell.vannesPompes.addVane')}
-            </Button>
-            <Button
-              colorScheme="brand"
-              variant="outline"
-              size="sm"
-              onClick={addPumpModal.onOpen}
+            <PermissionGate
+              blocked={!canEdit}
+              reason={t('access.editRequiresEditor')}
+              ui="chakra"
             >
-              {t('shell.vannesPompes.addPump')}
-            </Button>
+              <Button
+                colorScheme="brand"
+                size="sm"
+                onClick={addVaneModal.onOpen}
+              >
+                {t('shell.vannesPompes.addVane')}
+              </Button>
+            </PermissionGate>
+            <PermissionGate
+              blocked={!canEdit}
+              reason={t('access.editRequiresEditor')}
+              ui="chakra"
+            >
+              <Button
+                colorScheme="brand"
+                variant="outline"
+                size="sm"
+                onClick={addPumpModal.onOpen}
+              >
+                {t('shell.vannesPompes.addPump')}
+              </Button>
+            </PermissionGate>
             <Button
               as={NextLink}
               href="/vannes-pompes/schema"
@@ -171,6 +190,7 @@ const VannesPompesMain = () => {
                   vane={vane}
                   schematicLabel={String(index + 1)}
                   onToggle={() => toggleVane(vane.id)}
+                  canOperate={canEdit}
                   bg={bg}
                   borderColor={borderColor}
                 />
@@ -200,6 +220,7 @@ const VannesPompesMain = () => {
                   key={pump.id}
                   pump={pump}
                   onToggle={() => togglePump(pump.id)}
+                  canOperate={canEdit}
                   bg={bg}
                   borderColor={borderColor}
                 />
@@ -282,12 +303,14 @@ function VaneCard({
   vane,
   schematicLabel,
   onToggle,
+  canOperate,
   bg,
   borderColor,
 }: {
   vane: Vane;
   schematicLabel: string;
   onToggle: () => void;
+  canOperate: boolean;
   bg: string;
   borderColor: string;
 }) {
@@ -336,18 +359,24 @@ function VaneCard({
           </HStack>
         </VStack>
       </HStack>
-      <Button
-        mt={4}
-        w="100%"
-        leftIcon={<MdPowerSettingsNew />}
-        colorScheme={vane.active ? 'green' : 'red'}
-        variant={vane.active ? 'solid' : 'solid'}
-        onClick={onToggle}
+      <PermissionGate
+        blocked={!canOperate}
+        reason={t('access.editRequiresEditor')}
+        ui="chakra"
       >
-        {vane.active
-          ? t('shell.vannesPompes.deactivate')
-          : t('shell.vannesPompes.activate')}
-      </Button>
+        <Button
+          mt={4}
+          w="100%"
+          leftIcon={<MdPowerSettingsNew />}
+          colorScheme={vane.active ? 'green' : 'red'}
+          variant={vane.active ? 'solid' : 'solid'}
+          onClick={onToggle}
+        >
+          {vane.active
+            ? t('shell.vannesPompes.deactivate')
+            : t('shell.vannesPompes.activate')}
+        </Button>
+      </PermissionGate>
     </Box>
   );
 }
@@ -355,11 +384,13 @@ function VaneCard({
 function PumpCard({
   pump,
   onToggle,
+  canOperate,
   bg,
   borderColor,
 }: {
   pump: Pump;
   onToggle: () => void;
+  canOperate: boolean;
   bg: string;
   borderColor: string;
 }) {
@@ -400,17 +431,23 @@ function PumpCard({
           </HStack>
         </VStack>
       </HStack>
-      <Button
-        mt={4}
-        w="100%"
-        leftIcon={<MdPowerSettingsNew />}
-        colorScheme={pump.running ? 'orange' : 'green'}
-        onClick={onToggle}
+      <PermissionGate
+        blocked={!canOperate}
+        reason={t('access.editRequiresEditor')}
+        ui="chakra"
       >
-        {pump.running
-          ? t('shell.vannesPompes.stop')
-          : t('shell.vannesPompes.start')}
-      </Button>
+        <Button
+          mt={4}
+          w="100%"
+          leftIcon={<MdPowerSettingsNew />}
+          colorScheme={pump.running ? 'orange' : 'green'}
+          onClick={onToggle}
+        >
+          {pump.running
+            ? t('shell.vannesPompes.stop')
+            : t('shell.vannesPompes.start')}
+        </Button>
+      </PermissionGate>
     </Box>
   );
 }

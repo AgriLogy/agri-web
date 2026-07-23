@@ -26,12 +26,15 @@ import {
   GRAPH_SCOPE_GROUPS,
   graphKeyLabel,
 } from '@/app/utils/graphScopeCatalog';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 
 type ZoneOpt = { id: number; name: string };
 
 const TechniciansSection: React.FC = () => {
   const t = useTranslations();
   const { message } = App.useApp();
+  const { canManageUsers } = useCan();
   const [form] = Form.useForm();
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [zones, setZones] = useState<ZoneOpt[]>([]);
@@ -189,19 +192,38 @@ const TechniciansSection: React.FC = () => {
       key: 'actions',
       render: (_: unknown, row: Technician) => (
         <Space>
-          <Button size="small" onClick={() => openEditScope(row)}>
-            {t('settings.technicians.editScope')}
-          </Button>
-          <Button size="small" onClick={() => resetPw(row.id)}>
-            {t('settings.technicians.resetPw')}
-          </Button>
+          <PermissionGate
+            blocked={!canManageUsers}
+            reason={t('access.manageUsersRequiresAdmin')}
+            ui="antd"
+          >
+            <Button size="small" onClick={() => openEditScope(row)}>
+              {t('settings.technicians.editScope')}
+            </Button>
+          </PermissionGate>
+          <PermissionGate
+            blocked={!canManageUsers}
+            reason={t('access.manageUsersRequiresAdmin')}
+            ui="antd"
+          >
+            <Button size="small" onClick={() => resetPw(row.id)}>
+              {t('settings.technicians.resetPw')}
+            </Button>
+          </PermissionGate>
           <Popconfirm
             title={t('settings.technicians.confirmRevoke')}
+            disabled={!canManageUsers}
             onConfirm={() => revoke(row.id)}
           >
-            <Button size="small" danger>
-              {t('settings.technicians.revoke')}
-            </Button>
+            <PermissionGate
+              blocked={!canManageUsers}
+              reason={t('access.manageUsersRequiresAdmin')}
+              ui="antd"
+            >
+              <Button size="small" danger>
+                {t('settings.technicians.revoke')}
+              </Button>
+            </PermissionGate>
           </Popconfirm>
         </Space>
       ),
@@ -257,9 +279,15 @@ const TechniciansSection: React.FC = () => {
   return (
     <div>
       <Space style={{ marginBottom: 12 }}>
-        <Button type="primary" onClick={openCreate}>
-          {t('settings.technicians.add')}
-        </Button>
+        <PermissionGate
+          blocked={!canManageUsers}
+          reason={t('access.manageUsersRequiresAdmin')}
+          ui="antd"
+        >
+          <Button type="primary" onClick={openCreate}>
+            {t('settings.technicians.add')}
+          </Button>
+        </PermissionGate>
       </Space>
       <Table
         rowKey="id"

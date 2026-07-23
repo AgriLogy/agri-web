@@ -2260,5 +2260,12 @@
     "lastReceived": "آخر قراءة: {when}",
     "never": "لم تُستلم أي بيانات",
     "alsoIn": "أيضًا في: {groups}"
+  },
+  "access": {
+    "forbiddenTitle": "تم رفض الوصول",
+    "forbiddenBody": "لا يسمح مستوى وصولك بهذا الإجراء.",
+    "editRequiresEditor": "تحتاج إلى صلاحية محرّر لإجراء تعديلات.",
+    "deleteRequiresAdmin": "تحتاج إلى صلاحية مدير للحذف.",
+    "manageUsersRequiresAdmin": "تحتاج إلى صلاحية مدير لإدارة المستخدمين."
   }
 }

@@ -36,6 +36,8 @@ import {
 import { getAllSensorsCatalog } from '@/app/utils/sensorCatalog';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import { useSensorCalibration } from '@/app/hooks/useSensorCalibration';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 
 const EMPTY_DRAFT: CalibrationDraft = {
   scaleA: 1,
@@ -85,8 +87,12 @@ const SensorCalibrationSettings = () => {
   const [offsetText, setOffsetText] = useState('0');
   const [rawSample, setRawSample] = useState('');
   const [saving, setSaving] = useState(false);
+  const { canEdit } = useCan();
 
   const unavailable = availability === 'unavailable';
+  // Editing a calibration is an editor+ action (agri-web #99); a monitor may
+  // still read the coefficients and use the live preview.
+  const blockEdit = unavailable || saving || !canEdit;
 
   const sensorLabel = useCallback(
     (key: string) => (t.has(`sensors.${key}`) ? t(`sensors.${key}`) : key),
@@ -254,11 +260,7 @@ const SensorCalibrationSettings = () => {
           <AlertDescription fontSize="sm">
             {t('settings.calibration.loadError')}
           </AlertDescription>
-          <Button
-            size="xs"
-            ml="auto"
-            onClick={() => void reloadCalibration()}
-          >
+          <Button size="xs" ml="auto" onClick={() => void reloadCalibration()}>
             {t('settings.calibration.retry')}
           </Button>
         </Alert>
@@ -351,7 +353,7 @@ const SensorCalibrationSettings = () => {
                     {...selectProps}
                     aria-label={t('settings.calibration.unitLabel')}
                     value={draft.unit}
-                    disabled={unavailable || saving}
+                    disabled={blockEdit}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                       changeUnit(e.target.value)
                     }
@@ -382,7 +384,7 @@ const SensorCalibrationSettings = () => {
                     type="number"
                     step="any"
                     value={scaleText}
-                    isDisabled={unavailable || saving}
+                    isDisabled={blockEdit}
                     aria-label={t('settings.calibration.scaleLabel')}
                     onChange={(e) => {
                       setScaleText(e.target.value);
@@ -410,7 +412,7 @@ const SensorCalibrationSettings = () => {
                     type="number"
                     step="any"
                     value={offsetText}
-                    isDisabled={unavailable || saving}
+                    isDisabled={blockEdit}
                     aria-label={t('settings.calibration.offsetLabel')}
                     onChange={(e) => {
                       setOffsetText(e.target.value);
@@ -430,7 +432,7 @@ const SensorCalibrationSettings = () => {
                 <Switch
                   id="calibration-active"
                   isChecked={draft.isActive}
-                  isDisabled={unavailable || saving}
+                  isDisabled={blockEdit}
                   onChange={(e) =>
                     setDraft((prev) => ({
                       ...prev,
@@ -453,7 +455,7 @@ const SensorCalibrationSettings = () => {
                 <Input
                   size="sm"
                   value={draft.note}
-                  isDisabled={unavailable || saving}
+                  isDisabled={blockEdit}
                   placeholder={t('settings.calibration.notePlaceholder')}
                   onChange={(e) =>
                     setDraft((prev) => ({ ...prev, note: e.target.value }))
@@ -510,15 +512,21 @@ const SensorCalibrationSettings = () => {
               </Box>
 
               <Flex justify="flex-end">
-                <Button
-                  size="sm"
-                  colorScheme="brand"
-                  isLoading={saving}
-                  isDisabled={unavailable || draftError !== null}
-                  onClick={() => void save()}
+                <PermissionGate
+                  blocked={!canEdit}
+                  reason={t('access.editRequiresEditor')}
+                  ui="chakra"
                 >
-                  {t('settings.calibration.saveButton')}
-                </Button>
+                  <Button
+                    size="sm"
+                    colorScheme="brand"
+                    isLoading={saving}
+                    isDisabled={unavailable || draftError !== null}
+                    onClick={() => void save()}
+                  >
+                    {t('settings.calibration.saveButton')}
+                  </Button>
+                </PermissionGate>
               </Flex>
             </Box>
           )}

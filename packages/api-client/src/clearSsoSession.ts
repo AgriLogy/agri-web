@@ -19,6 +19,7 @@ export const clearSsoSession = (): void => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('isTechnician');
+  localStorage.removeItem('accessLevel');
   // Expire both the host-only and parent-domain variants so the cookie is gone
   // regardless of how it was scoped (prod = shared parent domain; dev = host).
   expireCookie();
