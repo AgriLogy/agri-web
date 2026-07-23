@@ -212,7 +212,9 @@ export function AlertHistoryPanel({
             <Tbody>
               {rows.map((row, i) => (
                 <Tr key={`${row.triggered_at}#${i}`}>
-                  <Td whiteSpace="nowrap">{formatTimestamp(row.triggered_at)}</Td>
+                  <Td whiteSpace="nowrap">
+                    {formatTimestamp(row.triggered_at)}
+                  </Td>
                   <Td>{row.alert_name}</Td>
                   <Td>
                     <Text>{sensorLabel(row.sensor_key)}</Text>

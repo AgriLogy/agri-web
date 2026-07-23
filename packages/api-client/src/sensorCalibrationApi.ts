@@ -71,9 +71,7 @@ const path = (deviceId: number, sensorKey: string) =>
 
 export const sensorCalibrationApi = {
   get: (deviceId: number, sensorKey: string): Promise<SensorCalibration> =>
-    api
-      .get<SensorCalibration>(path(deviceId, sensorKey))
-      .then((r) => r.data),
+    api.get<SensorCalibration>(path(deviceId, sensorKey)).then((r) => r.data),
 
   /** Upsert. 201 the first time, 200 afterwards — both resolve the same way. */
   save: (

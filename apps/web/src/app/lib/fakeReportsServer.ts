@@ -176,7 +176,10 @@ export function wireFakeReportsServer(
             if (typeof p.source === 'string' && row.source !== p.source) {
               return false;
             }
-            if (typeof p.irrigate === 'boolean' && row.irrigate !== p.irrigate) {
+            if (
+              typeof p.irrigate === 'boolean' &&
+              row.irrigate !== p.irrigate
+            ) {
               return false;
             }
             return true;

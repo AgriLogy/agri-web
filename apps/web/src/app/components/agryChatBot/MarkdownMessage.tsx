@@ -60,17 +60,38 @@ const components: Components = {
     </Link>
   ),
   h1: ({ children }) => (
-    <Text as="h1" fontSize="1.35em" fontWeight="700" mb="6px" mt="2px" _first={{ mt: 0 }}>
+    <Text
+      as="h1"
+      fontSize="1.35em"
+      fontWeight="700"
+      mb="6px"
+      mt="2px"
+      _first={{ mt: 0 }}
+    >
       {children}
     </Text>
   ),
   h2: ({ children }) => (
-    <Text as="h2" fontSize="1.2em" fontWeight="700" mb="6px" mt="2px" _first={{ mt: 0 }}>
+    <Text
+      as="h2"
+      fontSize="1.2em"
+      fontWeight="700"
+      mb="6px"
+      mt="2px"
+      _first={{ mt: 0 }}
+    >
       {children}
     </Text>
   ),
   h3: ({ children }) => (
-    <Text as="h3" fontSize="1.08em" fontWeight="700" mb="4px" mt="2px" _first={{ mt: 0 }}>
+    <Text
+      as="h3"
+      fontSize="1.08em"
+      fontWeight="700"
+      mb="4px"
+      mt="2px"
+      _first={{ mt: 0 }}
+    >
       {children}
     </Text>
   ),
@@ -138,7 +159,13 @@ const components: Components = {
     </Box>
   ),
   td: ({ children }) => (
-    <Box as="td" px="6px" py="3px" borderBottom="1px solid" borderColor="inherit">
+    <Box
+      as="td"
+      px="6px"
+      py="3px"
+      borderBottom="1px solid"
+      borderColor="inherit"
+    >
       {children}
     </Box>
   ),

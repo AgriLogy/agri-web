@@ -19,12 +19,12 @@ there via `NEXT_PUBLIC_ADMIN_URL`.
 
 ## 1. Prerequisites & first-time setup
 
-| Item           | Value                                                                    |
-| -------------- | ------------------------------------------------------------------------ |
-| Package mgr    | **npm** — single root `package-lock.json`; `packageManager: npm@11.12.1` |
-| Node           | No `engines` field in-repo. CI (`.github/workflows/*`) uses **Node 20**. |
-| Workspaces     | `apps/*`, `packages/*`                                                   |
-| Task runner    | Turborepo (`turbo.json`)                                                 |
+| Item        | Value                                                                    |
+| ----------- | ------------------------------------------------------------------------ |
+| Package mgr | **npm** — single root `package-lock.json`; `packageManager: npm@11.12.1` |
+| Node        | No `engines` field in-repo. CI (`.github/workflows/*`) uses **Node 20**. |
+| Workspaces  | `apps/*`, `packages/*`                                                   |
+| Task runner | Turborepo (`turbo.json`)                                                 |
 
 ```bash
 git clone git@github.com:AgriLogy/agri-web.git
@@ -41,18 +41,18 @@ Always run npm commands **from the repo root** — the root scripts delegate to 
 Canonical, annotated list: **`apps/web/.env.example`** (each entry names the file that
 reads it). Everything below is verified as actually referenced in code.
 
-| Variable                          | Read by                                              | Notes                                                                        |
-| --------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_API_URL`             | `packages/api-client/src/api.ts`                     | axios `baseURL`. Falls back to `https://back.agrogo-datafarm.com`.           |
-| `NEXT_PUBLIC_ADMIN_URL`           | `apps/web/src/app/login/LoginBox.tsx`                | Where staff logins are forwarded (the `agri-admin` deployment).              |
-| `NEXT_PUBLIC_LOGIN_PATH`          | `packages/api-client/src/api.ts` + logout handlers   | 401-interceptor target. Defaults to `/login`; full identity-gateway URL in prod. |
-| `NEXT_PUBLIC_SSO_COOKIE_DOMAIN`   | `packages/api-client/src/clearSsoSession.ts`         | `.agrogo-datafarm.com` in prod, **empty** locally.                          |
-| `NEXT_PUBLIC_SSO_COOKIE_NAME`     | `hydrateSsoSession.ts` / `clearSsoSession.ts`        | Defaults to `agrogo_sso`.                                                    |
-| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | `src/app/components/map/AgricultureMapboxMap.tsx`    | Map does not render without it.                                              |
-| `NEXT_PUBLIC_ASSISTANT_MOCK`      | `src/app/components/agryChatBot/ChatContext.tsx`     | `1`/`true` → offline mock chatbot engine.                                    |
-| `NEXT_PUBLIC_APP_VERSION`, `NEXT_PUBLIC_ENV` | `packages/api-client/src/feedbackApi.ts`  | Metadata attached to bug reports.                                            |
-| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | `feedbackApi.ts` | Screenshot upload for "report an issue"; feature degrades if unset.        |
-| `PROXY_API_TARGET`                | `apps/web/next.config.mjs`                           | **Local dev only.** Enables the `/api-proxy/:path*` rewrite. Leave UNSET in Vercel. |
+| Variable                                                                    | Read by                                            | Notes                                                                               |
+| --------------------------------------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`                                                       | `packages/api-client/src/api.ts`                   | axios `baseURL`. Falls back to `https://back.agrogo-datafarm.com`.                  |
+| `NEXT_PUBLIC_ADMIN_URL`                                                     | `apps/web/src/app/login/LoginBox.tsx`              | Where staff logins are forwarded (the `agri-admin` deployment).                     |
+| `NEXT_PUBLIC_LOGIN_PATH`                                                    | `packages/api-client/src/api.ts` + logout handlers | 401-interceptor target. Defaults to `/login`; full identity-gateway URL in prod.    |
+| `NEXT_PUBLIC_SSO_COOKIE_DOMAIN`                                             | `packages/api-client/src/clearSsoSession.ts`       | `.agrogo-datafarm.com` in prod, **empty** locally.                                  |
+| `NEXT_PUBLIC_SSO_COOKIE_NAME`                                               | `hydrateSsoSession.ts` / `clearSsoSession.ts`      | Defaults to `agrogo_sso`.                                                           |
+| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN`                                           | `src/app/components/map/AgricultureMapboxMap.tsx`  | Map does not render without it.                                                     |
+| `NEXT_PUBLIC_ASSISTANT_MOCK`                                                | `src/app/components/agryChatBot/ChatContext.tsx`   | `1`/`true` → offline mock chatbot engine.                                           |
+| `NEXT_PUBLIC_APP_VERSION`, `NEXT_PUBLIC_ENV`                                | `packages/api-client/src/feedbackApi.ts`           | Metadata attached to bug reports.                                                   |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | `feedbackApi.ts`                                   | Screenshot upload for "report an issue"; feature degrades if unset.                 |
+| `PROXY_API_TARGET`                                                          | `apps/web/next.config.mjs`                         | **Local dev only.** Enables the `/api-proxy/:path*` rewrite. Leave UNSET in Vercel. |
 
 > ⚠️ **The production API base must be an ABSOLUTE `http(s)` URL.** A relative value
 > (e.g. the local-dev `/api-proxy` path) baked into a production build resolves
@@ -96,7 +96,7 @@ Notes:
   inside `apps/web` — which typechecks the packages anyway via `transpilePackages` +
   direct TS imports.
 - Tests are **Jest + Testing Library** (`apps/web/jest.config.js`, `testMatch:
-  src/**/*.test.(ts|tsx)`), run with `--passWithNoTests`. Per `CLAUDE.md` the
+src/**/*.test.(ts|tsx)`), run with `--passWithNoTests`. Per `CLAUDE.md` the
   `AlertForm` suite fails on next-intl ESM — known, pre-existing.
 - `next-intl` is stubbed in Jest (`apps/web/__mocks__/nextIntlMock.js`). Keep testable
   logic in **pure, dependency-free modules** (`src/app/lib/`, `src/app/utils/`) — that
@@ -114,13 +114,13 @@ packages/{api-client,i18n,sensor-catalog,ui}
 docs/MONOREPO.md               # CI/CD + Vercel setup detail
 ```
 
-| Workspace                | Import as              | What belongs here                                                                                 |
-| ------------------------ | ---------------------- | ------------------------------------------------------------------------------------------------- |
-| `apps/web`               | `@/*`, `@component/*`  | Routes, feature components, hooks, page-level logic.                                               |
-| `packages/api-client`    | `@agri/api-client`     | The axios instance + JWT/SSO interceptors (`api.ts`) and every `*Api` wrapper + storage helpers.    |
-| `packages/i18n`          | `@agri/i18n`           | `locales`/`defaultLocale`/`isRtl`/`dirFor`, `getMessages`, and `src/messages/{fr,en,ar}.json`.      |
-| `packages/sensor-catalog`| `@agri/sensor-catalog` | Sensor catalog + canonical sensor-slug → API path table (`sensorApiPaths.ts`).                      |
-| `packages/ui`            | `@agri/ui`             | Design tokens, Chakra `theme`, `EmotionCache`, `antdTheme`, `colorModeConfig`, `chartColors`.       |
+| Workspace                 | Import as              | What belongs here                                                                                |
+| ------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------ |
+| `apps/web`                | `@/*`, `@component/*`  | Routes, feature components, hooks, page-level logic.                                             |
+| `packages/api-client`     | `@agri/api-client`     | The axios instance + JWT/SSO interceptors (`api.ts`) and every `*Api` wrapper + storage helpers. |
+| `packages/i18n`           | `@agri/i18n`           | `locales`/`defaultLocale`/`isRtl`/`dirFor`, `getMessages`, and `src/messages/{fr,en,ar}.json`.   |
+| `packages/sensor-catalog` | `@agri/sensor-catalog` | Sensor catalog + canonical sensor-slug → API path table (`sensorApiPaths.ts`).                   |
+| `packages/ui`             | `@agri/ui`             | Design tokens, Chakra `theme`, `EmotionCache`, `antdTheme`, `colorModeConfig`, `chartColors`.    |
 
 `apps/web/src/app` routes (App Router, one `page.tsx` each): `/` `alerts`
 `alerts/wind-speed` `chat` `crop-calendar` `farm` `login` `notification-zones`
@@ -252,10 +252,10 @@ every PR and push to `main`; all must be green.
 
 ## 7. Release & deploy
 
-| Branch / event      | What happens                                                                          |
-| ------------------- | -------------------------------------------------------------------------------------- |
-| PR → `main`         | `ci.yml` gate + `vercel-preview.yml` builds a **Vercel Preview** and comments the URL.  |
-| Push/merge to `main`| `release.yml` runs **semantic-release**; `vercel-production.yml` deploys **production**. |
+| Branch / event       | What happens                                                                             |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| PR → `main`          | `ci.yml` gate + `vercel-preview.yml` builds a **Vercel Preview** and comments the URL.   |
+| Push/merge to `main` | `release.yml` runs **semantic-release**; `vercel-production.yml` deploys **production**. |
 
 - semantic-release (`.releaserc.json`, branch `main`) bumps the root `package.json`,
   updates `CHANGELOG.md`, tags, and cuts a GitHub Release. Note the custom
@@ -278,7 +278,7 @@ every PR and push to `main`; all must be green.
 - **`PROXY_API_TARGET` must stay unset on Vercel**; the `/api-proxy` rewrite is
   local-dev only.
 - **SSR-sensitive hooks**: `useIsMobile()` uses Chakra's `useBreakpointValue(..., { ssr:
-  true })` on purpose — `ssr: false` reads `window` during the server render and throws.
+true })` on purpose — `ssr: false` reads `window` during the server render and throws.
   Don't "fix" it.
 - **next-intl + Jest**: next-intl ships ESM Jest's babel transform can't parse; it is
   mocked. Keep logic pure and dependency-free if you want it tested.

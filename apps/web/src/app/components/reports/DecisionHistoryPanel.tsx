@@ -252,7 +252,10 @@ export function DecisionHistoryPanel({
                   label: t('reports.colWhen'),
                   value: formatTimestamp(outcome.decidedAt),
                 },
-                { label: t('reports.colZone'), value: zoneName(outcome.zoneId) },
+                {
+                  label: t('reports.colZone'),
+                  value: zoneName(outcome.zoneId),
+                },
                 {
                   label: t('reports.colSummary'),
                   value: outcome.summary || '—',
@@ -332,7 +335,11 @@ export function DecisionHistoryPanel({
                       <Td>{outcome.summary || '—'}</Td>
                     </Tr>
                     <Tr>
-                      <Td colSpan={6} py={0} borderBottomWidth={open ? '1px' : 0}>
+                      <Td
+                        colSpan={6}
+                        py={0}
+                        borderBottomWidth={open ? '1px' : 0}
+                      >
                         <Collapse in={open} animateOpacity unmountOnExit>
                           <Box
                             py={4}

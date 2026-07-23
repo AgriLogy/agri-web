@@ -28,7 +28,9 @@ import type {
   ReportEnvelope,
 } from '@agri/api-client/reportsApi';
 
-const decision = (over: Partial<IrrigationDecision> = {}): IrrigationDecision => ({
+const decision = (
+  over: Partial<IrrigationDecision> = {}
+): IrrigationDecision => ({
   decided_at: '2026-07-20T06:00:00Z',
   zone_id: 5,
   source: 'water_balance',
@@ -55,7 +57,12 @@ describe('buildAlertEventParams', () => {
       offset: 0,
     });
     expect(
-      buildAlertEventParams({ start: '', end: null, zoneId: null, sensorKey: '  ' })
+      buildAlertEventParams({
+        start: '',
+        end: null,
+        zoneId: null,
+        sensorKey: '  ',
+      })
     ).toEqual({ limit: REPORTS_PAGE_SIZE, offset: 0 });
   });
 
@@ -85,17 +92,21 @@ describe('buildAlertEventParams', () => {
 
 describe('buildIrrigationDecisionParams', () => {
   it('sends source and both explicit irrigate values, but not the "both" case', () => {
-    expect(buildIrrigationDecisionParams({ source: 'manual', irrigate: true }))
-      .toEqual({ source: 'manual', irrigate: true, limit: REPORTS_PAGE_SIZE, offset: 0 });
+    expect(
+      buildIrrigationDecisionParams({ source: 'manual', irrigate: true })
+    ).toEqual({
+      source: 'manual',
+      irrigate: true,
+      limit: REPORTS_PAGE_SIZE,
+      offset: 0,
+    });
     expect(buildIrrigationDecisionParams({ irrigate: false }).irrigate).toBe(
       false
     );
     expect(
       'irrigate' in buildIrrigationDecisionParams({ irrigate: null })
     ).toBe(false);
-    expect(
-      'irrigate' in buildIrrigationDecisionParams({})
-    ).toBe(false);
+    expect('irrigate' in buildIrrigationDecisionParams({})).toBe(false);
   });
 });
 
@@ -140,7 +151,12 @@ describe('splitDecision — outcome ⟂ inputs', () => {
     const inputKeys = new Set(inputs.map((r) => r.key));
     // If the split were wrong (inputs spread onto the outcome), et0_mm etc.
     // would surface as outcome properties and volume_m3 would be missing.
-    for (const term of ['et0_mm', 'etc_mm', 'dr_today_mm', 'soil_moisture_pct']) {
+    for (const term of [
+      'et0_mm',
+      'etc_mm',
+      'dr_today_mm',
+      'soil_moisture_pct',
+    ]) {
       expect(term in outcome).toBe(false);
     }
     // …and the verdict fields must NOT appear among the input rows shown in the
@@ -182,7 +198,9 @@ describe('decisionInputRows', () => {
 describe('formatters are timezone-independent', () => {
   it('formatTimestamp slices the ISO string (UTC) and dashes null/garbage', () => {
     expect(formatTimestamp('2026-07-20T10:05:33Z')).toBe('2026-07-20 10:05');
-    expect(formatTimestamp('2026-07-20T10:05:33+04:00')).toBe('2026-07-20 10:05');
+    expect(formatTimestamp('2026-07-20T10:05:33+04:00')).toBe(
+      '2026-07-20 10:05'
+    );
     expect(formatTimestamp(null)).toBe('—');
     expect(formatTimestamp('not-a-date')).toBe('—');
   });
@@ -248,9 +266,9 @@ describe('reportViewState — empty vs degraded', () => {
   });
 
   it('is ready when rows are present', () => {
-    expect(
-      reportViewState(env({ results: [{}], count: 1 }), false)
-    ).toBe('ready');
+    expect(reportViewState(env({ results: [{}], count: 1 }), false)).toBe(
+      'ready'
+    );
   });
 });
 
@@ -264,7 +282,11 @@ describe('pagination math', () => {
 
   it('pageWindow is 1-based, inclusive and never overstates the last page', () => {
     expect(pageWindow(0, 50, 120)).toEqual({ from: 1, to: 50, total: 120 });
-    expect(pageWindow(100, 20, 120)).toEqual({ from: 101, to: 120, total: 120 });
+    expect(pageWindow(100, 20, 120)).toEqual({
+      from: 101,
+      to: 120,
+      total: 120,
+    });
     expect(pageWindow(0, 0, 0)).toEqual({ from: 0, to: 0, total: 0 });
   });
 });
