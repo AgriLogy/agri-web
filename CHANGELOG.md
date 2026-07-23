@@ -1,3 +1,10 @@
+## [1.26.5](https://github.com/AgriLogy/agri-web/compare/v1.26.4...v1.26.5) (2026-07-23)
+
+
+### Bug Fixes
+
+* **reports:** match the standard page width (drop the 1200px cap) ([#112](https://github.com/AgriLogy/agri-web/issues/112)) ([b87e54f](https://github.com/AgriLogy/agri-web/commit/b87e54f1eed7e1e3320a0636d9ca569249b1d254))
+
 ## [1.26.4](https://github.com/AgriLogy/agri-web/compare/v1.26.3...v1.26.4) (2026-07-23)
 
 ## [1.26.3](https://github.com/AgriLogy/agri-web/compare/v1.26.2...v1.26.3) (2026-07-23)
