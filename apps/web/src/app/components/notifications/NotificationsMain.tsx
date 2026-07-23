@@ -1,8 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
-import { App, Button, Modal, Space } from 'antd';
-import { PlusOutlined, BellOutlined } from '@ant-design/icons';
+import { App, Modal } from 'antd';
+import { BellOutlined } from '@ant-design/icons';
+import { Button, HStack } from '@chakra-ui/react';
+import { FaBell, FaPlus } from 'react-icons/fa';
 import NotificationListItem from '../notifications/NotificationListItem';
 import EmptyBox from '../common/EmptyBox';
 import axiosInstance from '@agri/api-client/api';
@@ -209,24 +211,26 @@ const NotificationsMain: React.FC = () => {
         title={t('notifications.main.title')}
         subtitle={t('notifications.main.subtitle')}
         actions={
-          <Space wrap>
+          <HStack spacing={2}>
             <Button
-              icon={<BellOutlined />}
-              size="small"
+              size="sm"
+              variant="outline"
+              colorScheme="brand"
+              leftIcon={<FaBell />}
               onClick={() => router.push('/notification-zones')}
             >
               {t('notificationZones.manage')}
             </Button>
             <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              size="small"
+              size="sm"
+              colorScheme="brand"
+              leftIcon={<FaPlus />}
               onClick={openConfigure}
               data-testid="add-zone-notif"
             >
               {t('notifications.main.addZoneNotification')}
             </Button>
-          </Space>
+          </HStack>
         }
       />
 
