@@ -1414,7 +1414,7 @@
       "fetchError": "Failed to load sensor colors."
     },
     "groups": {
-      "intro": "Group sensors to find them faster. Groups are stored locally on this device.",
+      "intro": "Group sensors to find them faster. Groups are saved to your account, so you get them on every device.",
       "newNameLabel": "New group name",
       "newNamePlaceholder": "e.g. Greenhouse A",
       "createButton": "Create a group",
@@ -1424,7 +1424,31 @@
       "sensorsInGroup": "Sensors in this group",
       "clickToRemove": "Click to remove",
       "emptySensors": "No sensors — add some below.",
-      "addSensorOption": "Add a sensor to the group…"
+      "addSensorOption": "Add a sensor to the group…",
+      "groupNameAria": "Group name",
+      "moveToOption": "Move to…",
+      "moveAria": "Move this sensor to another group",
+      "removeSensorAria": "Remove this sensor from the group",
+      "alsoIn": "Also in: {groups}",
+      "zoneUnknown": "Unknown zone",
+      "noAssignableSensors": "No sensor is attached to a registered device.",
+      "toastRenamed": "Group renamed",
+      "toastDeleted": "Group deleted",
+      "toastSensorAdded": "Sensor added to the group",
+      "toastSensorRemoved": "Sensor removed from the group",
+      "toastMoved": "Sensor moved",
+      "toastError": "Saving failed.",
+      "loadError": "Could not load your groups.",
+      "retry": "Retry",
+      "unavailableTitle": "Grouping is temporarily unavailable",
+      "unavailableBody": "The server cannot store sensor groups yet: the database update is not deployed. Nothing you already have is lost — try again once it has been applied.",
+      "importTitle": "Groups saved on this device",
+      "importBody": "{count, plural, one {# group created on this device is not linked to your account yet.} other {# groups created on this device are not linked to your account yet.}} Import them to get them everywhere. Nothing is deleted from this device.",
+      "importButton": "Import into my account",
+      "importDismiss": "Later",
+      "importDone": "Imported {groups} group(s) and {sensors} sensor(s)",
+      "importUnresolved": "{count} sensor(s) could not be matched automatically — add them by hand.",
+      "importFailed": "The import failed."
     },
     "users": {
       "intro": "Super-admin: create accounts with a user or administrator role, and choose which readings (sensors) they can see. Sensor preferences are stored locally; the API may ignore extra fields until the backend is adapted.",
@@ -2183,5 +2207,19 @@
       "lastReceived": "Last received: {when}"
     },
     "captorCount": "{count, plural, =0 {no captors} one {# captor} other {# captors}}"
+  },
+  "sensorGroups": {
+    "title": "Sensors by group",
+    "subtitle": "Your sensor groups, saved to your account.",
+    "ungrouped": "Ungrouped sensors",
+    "empty": "No sensor detected yet.",
+    "emptyGroup": "No sensor in this group.",
+    "loadError": "Could not load the sensor groups.",
+    "unavailableTitle": "Grouping is temporarily unavailable",
+    "unavailableBody": "Sensor grouping is not active on this server yet. All your sensors are still listed below.",
+    "sensorCount": "{count, plural, =0 {no sensor} one {# sensor} other {# sensors}}",
+    "lastReceived": "Last reading: {when}",
+    "never": "No reading received",
+    "alsoIn": "Also in: {groups}"
   }
 }

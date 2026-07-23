@@ -1414,7 +1414,7 @@
       "fetchError": "Échec du chargement des couleurs des capteurs."
     },
     "groups": {
-      "intro": "Regroupez des capteurs pour les retrouver plus vite. Les groupes sont enregistrés localement sur cet appareil.",
+      "intro": "Regroupez des capteurs pour les retrouver plus vite. Les groupes sont enregistrés sur votre compte : vous les retrouvez sur tous vos appareils.",
       "newNameLabel": "Nom du nouveau groupe",
       "newNamePlaceholder": "Ex. Serre A",
       "createButton": "Créer un groupe",
@@ -1424,7 +1424,31 @@
       "sensorsInGroup": "Capteurs dans ce groupe",
       "clickToRemove": "Cliquer pour retirer",
       "emptySensors": "Aucun capteur — ajoutez-en ci-dessous.",
-      "addSensorOption": "Ajouter un capteur au groupe…"
+      "addSensorOption": "Ajouter un capteur au groupe…",
+      "groupNameAria": "Nom du groupe",
+      "moveToOption": "Déplacer vers…",
+      "moveAria": "Déplacer ce capteur vers un autre groupe",
+      "removeSensorAria": "Retirer ce capteur du groupe",
+      "alsoIn": "Aussi dans : {groups}",
+      "zoneUnknown": "Zone inconnue",
+      "noAssignableSensors": "Aucun capteur rattaché à un équipement enregistré.",
+      "toastRenamed": "Groupe renommé",
+      "toastDeleted": "Groupe supprimé",
+      "toastSensorAdded": "Capteur ajouté au groupe",
+      "toastSensorRemoved": "Capteur retiré du groupe",
+      "toastMoved": "Capteur déplacé",
+      "toastError": "L’enregistrement a échoué.",
+      "loadError": "Impossible de charger vos groupes.",
+      "retry": "Réessayer",
+      "unavailableTitle": "Groupes temporairement indisponibles",
+      "unavailableBody": "Le serveur ne peut pas encore enregistrer les groupes de capteurs : la mise à jour de la base de données n’est pas déployée. Vos groupes existants ne sont pas perdus ; réessayez une fois la mise à jour appliquée.",
+      "importTitle": "Groupes enregistrés sur cet appareil",
+      "importBody": "{count, plural, one {# groupe créé sur cet appareil n’est pas encore lié à votre compte.} other {# groupes créés sur cet appareil ne sont pas encore liés à votre compte.}} Importez-les pour les retrouver partout. Rien n’est supprimé de cet appareil.",
+      "importButton": "Importer dans mon compte",
+      "importDismiss": "Plus tard",
+      "importDone": "{groups} groupe(s) et {sensors} capteur(s) importés",
+      "importUnresolved": "{count} capteur(s) n’ont pas pu être rattachés automatiquement — ajoutez-les à la main.",
+      "importFailed": "L’import a échoué."
     },
     "users": {
       "intro": "Super-admin : créez des comptes avec rôle utilisateur ou administrateur, et choisissez quelles lectures (capteurs) ils peuvent voir. Les préférences capteurs sont stockées localement ; l’API peut ignorer des champs supplémentaires jusqu’à adaptation backend.",
@@ -2183,5 +2207,19 @@
       "lastReceived": "Dernière donnée : {when}"
     },
     "captorCount": "{count, plural, =0 {aucun capteur} one {# capteur} other {# capteurs}}"
+  },
+  "sensorGroups": {
+    "title": "Capteurs par groupe",
+    "subtitle": "Vos groupes de capteurs, enregistrés sur votre compte.",
+    "ungrouped": "Capteurs non groupés",
+    "empty": "Aucun capteur détecté pour l’instant.",
+    "emptyGroup": "Aucun capteur dans ce groupe.",
+    "loadError": "Impossible de charger les groupes de capteurs.",
+    "unavailableTitle": "Groupes temporairement indisponibles",
+    "unavailableBody": "Le regroupement des capteurs n’est pas encore actif sur ce serveur. Vos capteurs restent tous listés ci-dessous.",
+    "sensorCount": "{count, plural, =0 {aucun capteur} one {# capteur} other {# capteurs}}",
+    "lastReceived": "Dernière donnée : {when}",
+    "never": "Aucune donnée reçue",
+    "alsoIn": "Aussi dans : {groups}"
   }
 }
