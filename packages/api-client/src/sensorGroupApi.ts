@@ -23,7 +23,11 @@
  */
 
 import api from './api';
-import { isSensorGroupsUnavailableError } from './sensorGroupModel';
+import {
+  classifyProbeError,
+  type SchemaAvailability,
+} from './schemaAvailability';
+import { SENSOR_GROUPS_MIGRATION } from './sensorGroupModel';
 
 /** One membership row: a sensor as it sits inside one group. */
 export interface SensorGroupSensor {
@@ -69,7 +73,7 @@ export interface GroupSensorInput {
  * Whether grouping can actually be persisted on this deployment.
  * `unknown` = not probed yet / the probe itself failed (offline, 5xx).
  */
-export type SensorGroupsAvailability = 'available' | 'unavailable' | 'unknown';
+export type SensorGroupsAvailability = SchemaAvailability;
 
 export const sensorGroupApi = {
   list: (): Promise<SensorGroup[]> =>
@@ -115,15 +119,10 @@ export const sensorGroupApi = {
     api
       .patch('/sensor-groups/0', {})
       .then((): SensorGroupsAvailability => 'available')
-      .catch((error: unknown): SensorGroupsAvailability => {
-        if (isSensorGroupsUnavailableError(error)) return 'unavailable';
-        const status = (error as { response?: { status?: number } })?.response
-          ?.status;
-        // A reply that reached the router at all (404 not-found, 403 read-only,
-        // 400 for another reason) proves the tables are there.
-        if (status === 404 || status === 403 || status === 400) {
-          return 'available';
-        }
-        return 'unknown';
-      }),
+      .catch((error: unknown): SensorGroupsAvailability =>
+        classifyProbeError(error, [
+          SENSOR_GROUPS_MIGRATION,
+          'analytics_sensorgroup',
+        ])
+      ),
 };

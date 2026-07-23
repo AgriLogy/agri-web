@@ -31,3 +31,6 @@ export * from './feedbackApi';
 export * from './farmApi';
 export * from './sensorGroupApi';
 export * from './sensorGroupModel';
+export * from './schemaAvailability';
+export * from './sensorCalibrationApi';
+export * from './sensorCalibrationModel';
