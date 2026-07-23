@@ -23,5 +23,6 @@ export const SITEMAP_ROUTES: SitemapRoute[] = [
   { path: '/vannes-pompes', key: 'vannesPompes', icon: '🚰' },
   { path: '/alerts', key: 'alerts', icon: '🔔' },
   { path: '/notifications', key: 'notifications', icon: '📩' },
+  { path: '/reports', key: 'reports', icon: '📄' },
   { path: '/settings', key: 'settings', icon: '⚙️' },
 ];

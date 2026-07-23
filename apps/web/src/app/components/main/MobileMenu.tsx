@@ -45,6 +45,7 @@ import { logoutEverywhere } from '@agri/api-client/logoutEverywhere';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import {
   FaBell,
+  FaFileAlt,
   FaRegCalendarAlt,
   FaSeedling,
   FaThLarge,
@@ -123,6 +124,7 @@ const MobileMenu = () => {
       label: t('nav.notifications'),
       icon: <BellIcon />,
     },
+    { href: '/reports', label: t('nav.reports'), icon: <FaFileAlt /> },
     { href: '/settings', label: t('nav.settings'), icon: <FaCog /> },
   ];
 
