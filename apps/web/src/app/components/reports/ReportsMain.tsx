@@ -67,7 +67,7 @@ const ReportsMain = () => {
   }, [range.startDate, range.endDate, zoneId]);
 
   return (
-    <Box p={{ base: 3, md: 5 }} maxW="1200px" mx="auto" w="100%">
+    <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
         title={t('reports.title')}
         subtitle={t('reports.subtitle')}
