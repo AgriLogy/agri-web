@@ -24,6 +24,8 @@ import {
   type AvailableZoneSensors,
   type NotificationZone,
 } from '@agri/api-client/notificationZoneApi';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 
 interface ZoneFormValues {
   name: string;
@@ -42,6 +44,7 @@ const decode = (token: string): { source_zone: number; sensor_key: string } => {
 const NotificationZonesManager: React.FC = () => {
   const t = useTranslations();
   const { message } = App.useApp();
+  const { canEdit, canDelete } = useCan();
   const [zones, setZones] = useState<NotificationZone[]>([]);
   const [available, setAvailable] = useState<AvailableZoneSensors[]>([]);
   const [loading, setLoading] = useState(true);
@@ -165,9 +168,15 @@ const NotificationZonesManager: React.FC = () => {
         <span style={{ fontWeight: 600, fontSize: 16 }}>
           {t('notificationZones.title')}
         </span>
-        <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-          {t('notificationZones.create')}
-        </Button>
+        <PermissionGate
+          blocked={!canEdit}
+          reason={t('access.editRequiresEditor')}
+          ui="antd"
+        >
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
+            {t('notificationZones.create')}
+          </Button>
+        </PermissionGate>
       </Space>
 
       {zones.length === 0 ? (
@@ -188,16 +197,35 @@ const NotificationZonesManager: React.FC = () => {
               }
               extra={
                 <Space>
-                  <Button
-                    size="small"
-                    icon={<EditOutlined />}
-                    onClick={() => openEdit(zone)}
-                  />
+                  <PermissionGate
+                    blocked={!canEdit}
+                    reason={t('access.editRequiresEditor')}
+                    ui="antd"
+                  >
+                    <Button
+                      size="small"
+                      icon={<EditOutlined />}
+                      onClick={() => openEdit(zone)}
+                      aria-label={t('notificationZones.editTitle')}
+                    />
+                  </PermissionGate>
                   <Popconfirm
                     title={t('notificationZones.confirmDelete')}
+                    disabled={!canDelete}
                     onConfirm={() => handleDelete(zone)}
                   >
-                    <Button size="small" danger icon={<DeleteOutlined />} />
+                    <PermissionGate
+                      blocked={!canDelete}
+                      reason={t('access.deleteRequiresAdmin')}
+                      ui="antd"
+                    >
+                      <Button
+                        size="small"
+                        danger
+                        icon={<DeleteOutlined />}
+                        aria-label={t('notificationZones.confirmDelete')}
+                      />
+                    </PermissionGate>
                   </Popconfirm>
                 </Space>
               }

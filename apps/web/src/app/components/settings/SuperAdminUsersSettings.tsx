@@ -24,6 +24,8 @@ import {
 } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 import api from '@agri/api-client/api';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 import { getAllSensorsCatalog } from '@/app/utils/sensorCatalog';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import {
@@ -45,6 +47,7 @@ const SuperAdminUsersSettings = () => {
   const toast = useToast();
   const { textColor, bgColor, borderColor, mutedTextColor } =
     useColorModeStyles();
+  const { canManageUsers } = useCan();
   const [users, setUsers] = useState<ListedUser[]>([]);
   const [loading, setLoading] = useState(true);
   const catalog = useMemo(() => getAllSensorsCatalog(true), []);
@@ -91,6 +94,9 @@ const SuperAdminUsersSettings = () => {
 
   const createUser = async (e: React.FormEvent) => {
     e.preventDefault();
+    // User management is admin-only (agri-web #99). The server enforces this
+    // too; the early return just avoids a doomed request from a keyboard submit.
+    if (!canManageUsers) return;
     const u = username.trim();
     const p = password;
     if (!u || !p) {
@@ -247,9 +253,15 @@ const SuperAdminUsersSettings = () => {
           ))}
         </SimpleGrid>
 
-        <Button type="submit" size="sm" colorScheme="brand">
-          {t('settings.users.createButton')}
-        </Button>
+        <PermissionGate
+          blocked={!canManageUsers}
+          reason={t('access.manageUsersRequiresAdmin')}
+          ui="chakra"
+        >
+          <Button type="submit" size="sm" colorScheme="brand">
+            {t('settings.users.createButton')}
+          </Button>
+        </PermissionGate>
       </Box>
 
       <Text fontWeight="bold" mb={2} color={textColor}>

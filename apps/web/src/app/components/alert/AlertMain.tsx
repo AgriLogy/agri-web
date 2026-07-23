@@ -16,6 +16,8 @@ import type { ColumnsType } from 'antd/es/table';
 import { useTranslations } from 'next-intl';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { alertApi, type AlertRecord } from '@agri/api-client/alertApi';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 import {
   ALERT_CHOICES,
   CONDITION_CHOICES,
@@ -35,6 +37,7 @@ const AlertMain: React.FC = () => {
   const t = useTranslations();
   const { message } = App.useApp();
   const isMobile = useIsMobile();
+  const { canEdit, canDelete } = useCan();
 
   const conditionLabel = (c: string) => {
     const choice = CONDITION_CHOICES.find((cc) => cc.value === c);
@@ -171,15 +174,20 @@ const AlertMain: React.FC = () => {
         render: (on: boolean, row) => (
           <Tooltip
             title={
-              on
-                ? t('alertsPage.main.deactivate')
-                : t('alertsPage.main.activate')
+              canEdit
+                ? on
+                  ? t('alertsPage.main.deactivate')
+                  : t('alertsPage.main.activate')
+                : t('access.editRequiresEditor')
             }
           >
             <Tag
               color={on ? 'green' : 'default'}
-              onClick={() => handleToggleActive(row)}
-              style={{ cursor: 'pointer' }}
+              onClick={canEdit ? () => handleToggleActive(row) : undefined}
+              style={{
+                cursor: canEdit ? 'pointer' : 'not-allowed',
+                opacity: canEdit ? 1 : 0.6,
+              }}
             >
               {on ? t('alertsPage.main.yes') : t('alertsPage.main.no')}
             </Tag>
@@ -192,33 +200,48 @@ const AlertMain: React.FC = () => {
         align: 'right',
         render: (_, row) => (
           <Space>
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => openEdit(row)}
-              aria-label={t('alertsPage.main.editAria', { name: row.name })}
+            <PermissionGate
+              blocked={!canEdit}
+              reason={t('access.editRequiresEditor')}
+              ui="antd"
             >
-              {t('alertsPage.main.edit')}
-            </Button>
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => openEdit(row)}
+                aria-label={t('alertsPage.main.editAria', { name: row.name })}
+              >
+                {t('alertsPage.main.edit')}
+              </Button>
+            </PermissionGate>
             <Popconfirm
               title={t('alertsPage.main.deleteConfirm')}
               okText={t('alertsPage.main.delete')}
               cancelText={t('alertsPage.main.cancel')}
+              disabled={!canDelete}
               onConfirm={() => handleDelete(row.id)}
             >
-              <Button
-                danger
-                icon={<DeleteOutlined />}
-                aria-label={t('alertsPage.main.deleteAria', { name: row.name })}
+              <PermissionGate
+                blocked={!canDelete}
+                reason={t('access.deleteRequiresAdmin')}
+                ui="antd"
               >
-                {t('alertsPage.main.delete')}
-              </Button>
+                <Button
+                  danger
+                  icon={<DeleteOutlined />}
+                  aria-label={t('alertsPage.main.deleteAria', {
+                    name: row.name,
+                  })}
+                >
+                  {t('alertsPage.main.delete')}
+                </Button>
+              </PermissionGate>
             </Popconfirm>
           </Space>
         ),
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sensorKeys, t]
+    [sensorKeys, t, canEdit, canDelete]
   );
 
   const sensorLabel = useCallback(
@@ -267,8 +290,12 @@ const AlertMain: React.FC = () => {
             value: (
               <Tag
                 color={row.is_active ? 'green' : 'default'}
-                onClick={() => handleToggleActive(row)}
-                style={{ cursor: 'pointer', marginInlineEnd: 0 }}
+                onClick={canEdit ? () => handleToggleActive(row) : undefined}
+                style={{
+                  cursor: canEdit ? 'pointer' : 'not-allowed',
+                  opacity: canEdit ? 1 : 0.6,
+                  marginInlineEnd: 0,
+                }}
               >
                 {row.is_active
                   ? t('alertsPage.main.yes')
@@ -279,34 +306,49 @@ const AlertMain: React.FC = () => {
         ],
         footer: (
           <Space>
-            <Button
-              size="small"
-              icon={<EditOutlined />}
-              onClick={() => openEdit(row)}
-              aria-label={t('alertsPage.main.editAria', { name: row.name })}
+            <PermissionGate
+              blocked={!canEdit}
+              reason={t('access.editRequiresEditor')}
+              ui="antd"
             >
-              {t('alertsPage.main.edit')}
-            </Button>
+              <Button
+                size="small"
+                icon={<EditOutlined />}
+                onClick={() => openEdit(row)}
+                aria-label={t('alertsPage.main.editAria', { name: row.name })}
+              >
+                {t('alertsPage.main.edit')}
+              </Button>
+            </PermissionGate>
             <Popconfirm
               title={t('alertsPage.main.deleteConfirm')}
               okText={t('alertsPage.main.delete')}
               cancelText={t('alertsPage.main.cancel')}
+              disabled={!canDelete}
               onConfirm={() => handleDelete(row.id)}
             >
-              <Button
-                size="small"
-                danger
-                icon={<DeleteOutlined />}
-                aria-label={t('alertsPage.main.deleteAria', { name: row.name })}
+              <PermissionGate
+                blocked={!canDelete}
+                reason={t('access.deleteRequiresAdmin')}
+                ui="antd"
               >
-                {t('alertsPage.main.delete')}
-              </Button>
+                <Button
+                  size="small"
+                  danger
+                  icon={<DeleteOutlined />}
+                  aria-label={t('alertsPage.main.deleteAria', {
+                    name: row.name,
+                  })}
+                >
+                  {t('alertsPage.main.delete')}
+                </Button>
+              </PermissionGate>
             </Popconfirm>
           </Space>
         ),
       })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [alerts, sensorKeys, t, sensorLabel]
+    [alerts, sensorKeys, t, sensorLabel, canEdit, canDelete]
   );
 
   return (
@@ -319,14 +361,20 @@ const AlertMain: React.FC = () => {
         title={t('alertsPage.main.pageTitle')}
         subtitle={t('alertsPage.main.pageSubtitle')}
         actions={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={openCreate}
-            data-testid="alert-create-button"
+          <PermissionGate
+            blocked={!canEdit}
+            reason={t('access.editRequiresEditor')}
+            ui="antd"
           >
-            {t('alertsPage.main.newAlert')}
-          </Button>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={openCreate}
+              data-testid="alert-create-button"
+            >
+              {t('alertsPage.main.newAlert')}
+            </Button>
+          </PermissionGate>
         }
       />
 

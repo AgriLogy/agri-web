@@ -5,6 +5,7 @@
  */
 
 import api from './api';
+import type { AccessLevel } from './accessLevel';
 
 export type NotificationLanguage = 'fr' | 'ar';
 
@@ -18,6 +19,12 @@ export interface UserProfile {
   last_name?: string;
   /** Language of the user's notification emails (distinct from the app UI locale). */
   preferred_language: NotificationLanguage;
+  /**
+   * RBAC tier this caller holds (agri-web #99). Optional so older API builds
+   * that predate the field degrade to the most restrictive tier client-side —
+   * see `normalizeAccessLevel`. NEVER a security decision; the server enforces.
+   */
+  access_level?: AccessLevel;
 }
 
 export interface ChangePasswordPayload {

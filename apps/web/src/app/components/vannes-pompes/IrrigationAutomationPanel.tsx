@@ -34,6 +34,8 @@ import {
 import { MdDelete, MdLockOpen, MdLock } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 import {
   irrigationAutomationApi as apiClient,
   type IrrigationProgram,
@@ -52,6 +54,7 @@ const IrrigationAutomationPanel = () => {
   const t = useTranslations();
   const toast = useToast();
   const { bg, textColor, borderColor } = useColorModeStyles();
+  const { canEdit, canDelete } = useCan();
 
   const [dispatchEnabled, setDispatchEnabled] = useState(false);
   const [zones, setZones] = useState<ZoneOption[]>([]);
@@ -212,24 +215,36 @@ const IrrigationAutomationPanel = () => {
               >
                 <Text fontWeight={600}>{z.name}</Text>
                 <HStack>
-                  <Button
-                    size="sm"
-                    colorScheme="green"
-                    leftIcon={<MdLockOpen />}
-                    isLoading={busyZone === z.id}
-                    onClick={() => sendCommand(z.id, 'open')}
+                  <PermissionGate
+                    blocked={!canEdit}
+                    reason={t('access.editRequiresEditor')}
+                    ui="chakra"
                   >
-                    {t('irrigationAutomation.open')}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    leftIcon={<MdLock />}
-                    isLoading={busyZone === z.id}
-                    onClick={() => sendCommand(z.id, 'close')}
+                    <Button
+                      size="sm"
+                      colorScheme="green"
+                      leftIcon={<MdLockOpen />}
+                      isLoading={busyZone === z.id}
+                      onClick={() => sendCommand(z.id, 'open')}
+                    >
+                      {t('irrigationAutomation.open')}
+                    </Button>
+                  </PermissionGate>
+                  <PermissionGate
+                    blocked={!canEdit}
+                    reason={t('access.editRequiresEditor')}
+                    ui="chakra"
                   >
-                    {t('irrigationAutomation.close')}
-                  </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      leftIcon={<MdLock />}
+                      isLoading={busyZone === z.id}
+                      onClick={() => sendCommand(z.id, 'close')}
+                    >
+                      {t('irrigationAutomation.close')}
+                    </Button>
+                  </PermissionGate>
                 </HStack>
               </Flex>
             ))}
@@ -264,17 +279,24 @@ const IrrigationAutomationPanel = () => {
               <HStack>
                 <Switch
                   isChecked={p.enabled}
+                  isDisabled={!canEdit}
                   onChange={() => toggleProgram(p)}
                   colorScheme="green"
                 />
-                <IconButton
-                  aria-label={t('irrigationAutomation.deleteProgram')}
-                  size="sm"
-                  variant="ghost"
-                  colorScheme="red"
-                  icon={<MdDelete />}
-                  onClick={() => removeProgram(p.id)}
-                />
+                <PermissionGate
+                  blocked={!canDelete}
+                  reason={t('access.deleteRequiresAdmin')}
+                  ui="chakra"
+                >
+                  <IconButton
+                    aria-label={t('irrigationAutomation.deleteProgram')}
+                    size="sm"
+                    variant="ghost"
+                    colorScheme="red"
+                    icon={<MdDelete />}
+                    onClick={() => removeProgram(p.id)}
+                  />
+                </PermissionGate>
               </HStack>
             </Flex>
           ))}
@@ -332,9 +354,15 @@ const IrrigationAutomationPanel = () => {
               onChange={(e) => setPDuration(e.target.value)}
             />
           </FormControl>
-          <Button size="sm" colorScheme="green" onClick={addProgram}>
-            {t('irrigationAutomation.addProgram')}
-          </Button>
+          <PermissionGate
+            blocked={!canEdit}
+            reason={t('access.editRequiresEditor')}
+            ui="chakra"
+          >
+            <Button size="sm" colorScheme="green" onClick={addProgram}>
+              {t('irrigationAutomation.addProgram')}
+            </Button>
+          </PermissionGate>
         </HStack>
       </Box>
 

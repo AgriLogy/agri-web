@@ -20,6 +20,7 @@ import { theme } from '@agri/ui';
 import { antdTheme } from '@agri/ui';
 import PeriodicZoneNotificationScheduler from './components/main/PeriodicZoneNotificationScheduler';
 import ImpersonationBanner from './components/main/ImpersonationBanner';
+import ForbiddenNotifier from './components/common/ForbiddenNotifier';
 import { ChatProvider } from './components/agryChatBot/ChatContext';
 import { ChatDock } from './components/agryChatBot/ChatDock';
 import { dirFor, type Locale } from '@agri/i18n';
@@ -80,6 +81,7 @@ function ThemedAntdProvider({
         message={{ maxCount: 3 }}
         notification={{ placement: dir === 'rtl' ? 'topLeft' : 'topRight' }}
       >
+        <ForbiddenNotifier />
         {children}
       </AntdApp>
     </AntdConfigProvider>

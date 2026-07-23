@@ -2260,5 +2260,12 @@
     "lastReceived": "Last reading: {when}",
     "never": "No reading received",
     "alsoIn": "Also in: {groups}"
+  },
+  "access": {
+    "forbiddenTitle": "Access denied",
+    "forbiddenBody": "Your access level doesn't permit this action.",
+    "editRequiresEditor": "You need editor access to make changes.",
+    "deleteRequiresAdmin": "You need admin access to delete.",
+    "manageUsersRequiresAdmin": "You need admin access to manage users."
   }
 }

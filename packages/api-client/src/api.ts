@@ -41,6 +41,15 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+/**
+ * Broadcast that the server refused a write for lack of privilege (agri-web
+ * #99). The API client is framework-agnostic, so it cannot render a toast
+ * itself; it emits a DOM event that a single UI listener turns into a readable
+ * message. Fired for every 403 so a tier that changed mid-session (a UI still
+ * showing controls it should not) surfaces the reason instead of a raw error.
+ */
+export const FORBIDDEN_EVENT = 'agri:forbidden';
+
 api.interceptors.response.use(
   (response) => {
     return response;
@@ -50,6 +59,18 @@ api.interceptors.response.use(
     const isAuthEndpoint =
       requestUrl.includes('/auth/sessions') ||
       requestUrl.includes('/auth/token');
+
+    if (
+      error.response &&
+      error.response.status === 403 &&
+      typeof window !== 'undefined'
+    ) {
+      window.dispatchEvent(
+        new CustomEvent(FORBIDDEN_EVENT, {
+          detail: { url: requestUrl, method: error.config?.method },
+        })
+      );
+    }
 
     if (error.response && error.response.status === 401 && !isAuthEndpoint) {
       // Clear local tokens AND the shared SSO cookie; otherwise the redirect

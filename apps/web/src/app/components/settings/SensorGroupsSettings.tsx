@@ -31,6 +31,8 @@ import {
 } from '@agri/api-client/sensorGroupModel';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import { useSensorGroups } from '@/app/hooks/useSensorGroups';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 import {
   loadSensorGroups,
   localGroupsImportHandled,
@@ -64,8 +66,12 @@ const SensorGroupsSettings = () => {
   const [busy, setBusy] = useState(false);
   const [importOffer, setImportOffer] = useState(false);
   const [nameDrafts, setNameDrafts] = useState<Record<number, string>>({});
+  const { canEdit, canDelete } = useCan();
 
   const unavailable = availability === 'unavailable';
+  // Editor+ may create/rename groups and add/move/remove members; only admin
+  // may delete a whole group outright (agri-web #99).
+  const blockEdit = unavailable || busy || !canEdit;
 
   const sensorLabel = useCallback(
     (key: string) => (t.has(`sensors.${key}`) ? t(`sensors.${key}`) : key),
@@ -328,7 +334,7 @@ const SensorGroupsSettings = () => {
               <Button
                 size="xs"
                 colorScheme="brand"
-                isDisabled={busy}
+                isDisabled={busy || !canEdit}
                 onClick={() => void runImport()}
               >
                 {t('settings.groups.importButton')}
@@ -349,20 +355,26 @@ const SensorGroupsSettings = () => {
           <Input
             size="sm"
             value={newName}
-            isDisabled={unavailable || busy}
+            isDisabled={blockEdit}
             onChange={(e) => setNewName(e.target.value)}
             placeholder={t('settings.groups.newNamePlaceholder')}
           />
         </FormControl>
-        <Button
-          size="sm"
-          leftIcon={<FaPlus />}
-          colorScheme="brand"
-          isDisabled={unavailable || busy || !newName.trim()}
-          onClick={() => void addGroup()}
+        <PermissionGate
+          blocked={!canEdit}
+          reason={t('access.editRequiresEditor')}
+          ui="chakra"
         >
-          {t('settings.groups.createButton')}
-        </Button>
+          <Button
+            size="sm"
+            leftIcon={<FaPlus />}
+            colorScheme="brand"
+            isDisabled={blockEdit || !newName.trim()}
+            onClick={() => void addGroup()}
+          >
+            {t('settings.groups.createButton')}
+          </Button>
+        </PermissionGate>
       </Flex>
 
       {!unavailable && groups.length === 0 && (
@@ -400,7 +412,7 @@ const SensorGroupsSettings = () => {
                   fontWeight="bold"
                   aria-label={t('settings.groups.groupNameAria')}
                   value={nameDrafts[groupId] ?? section.name ?? ''}
-                  isDisabled={busy}
+                  isDisabled={blockEdit}
                   onChange={(e) =>
                     setNameDrafts((d) => ({ ...d, [groupId]: e.target.value }))
                   }
@@ -412,15 +424,21 @@ const SensorGroupsSettings = () => {
                     if (e.key === 'Enter') e.currentTarget.blur();
                   }}
                 />
-                <IconButton
-                  aria-label={t('settings.groups.deleteGroupAria')}
-                  size="sm"
-                  icon={<FaTrash />}
-                  colorScheme="red"
-                  variant="ghost"
-                  isDisabled={busy}
-                  onClick={() => removeGroup(groupId)}
-                />
+                <PermissionGate
+                  blocked={!canDelete}
+                  reason={t('access.deleteRequiresAdmin')}
+                  ui="chakra"
+                >
+                  <IconButton
+                    aria-label={t('settings.groups.deleteGroupAria')}
+                    size="sm"
+                    icon={<FaTrash />}
+                    colorScheme="red"
+                    variant="ghost"
+                    isDisabled={busy}
+                    onClick={() => removeGroup(groupId)}
+                  />
+                </PermissionGate>
               </Flex>
 
               <Text fontSize="xs" color={mutedTextColor} mb={2}>
@@ -463,7 +481,7 @@ const SensorGroupsSettings = () => {
                       fontSize="sm"
                       aria-label={t('settings.groups.moveAria')}
                       value=""
-                      disabled={busy}
+                      disabled={blockEdit}
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                         const target = Number(e.target.value);
                         if (!target || sensor.membershipId == null) return;
@@ -494,7 +512,7 @@ const SensorGroupsSettings = () => {
                       variant="ghost"
                       colorScheme="red"
                       icon={<FaTrash />}
-                      isDisabled={busy}
+                      isDisabled={blockEdit}
                       onClick={() =>
                         sensor.membershipId != null &&
                         removeSensor(groupId, sensor.membershipId)
@@ -510,7 +528,7 @@ const SensorGroupsSettings = () => {
                   {...selectProps}
                   aria-label={t('settings.groups.addSensorOption')}
                   defaultValue=""
-                  disabled={busy || pickable.length === 0}
+                  disabled={blockEdit || pickable.length === 0}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                     if (e.target.value) addSensor(groupId, e.target.value);
                   }}

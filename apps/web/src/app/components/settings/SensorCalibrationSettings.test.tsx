@@ -72,6 +72,19 @@ jest.mock('@agri/api-client/api', () => ({
   },
 }));
 
+// This suite exercises the calibration CRUD as an editing user; RBAC gating
+// (agri-web #99) is proven separately in AlertMain.rbac.test — here we grant
+// full access so the edit controls stay interactive.
+jest.mock('@/app/hooks/useAccessLevel', () => ({
+  useCan: () => ({
+    level: 'admin',
+    loading: false,
+    canEdit: true,
+    canDelete: true,
+    canManageUsers: true,
+  }),
+}));
+
 import SensorCalibrationSettings from './SensorCalibrationSettings';
 import {
   makeFakeCalibrationServer,
@@ -95,7 +108,9 @@ const renderEditor = async () => {
   );
   await waitFor(() => expect(mockGet).toHaveBeenCalledWith(firstPath));
   await waitFor(() =>
-    expect(screen.queryByText(frMessages.common.loading)).not.toBeInTheDocument()
+    expect(
+      screen.queryByText(frMessages.common.loading)
+    ).not.toBeInTheDocument()
   );
   return utils;
 };
@@ -271,9 +286,9 @@ describe('SensorCalibrationSettings — changing the target unit', () => {
     await renderEditor();
     await selectTemperatureSensor();
 
-    const options = Array.from(
-      unitSelect().querySelectorAll('option')
-    ).map((option) => option.getAttribute('value'));
+    const options = Array.from(unitSelect().querySelectorAll('option')).map(
+      (option) => option.getAttribute('value')
+    );
     expect(options).toEqual(expect.arrayContaining(['°C', '°F', 'K']));
     expect(options).not.toContain('bar');
   });
