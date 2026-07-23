@@ -80,7 +80,13 @@ describe('AlertForm', () => {
       condition_nbr: 30.5,
       sensor_key: 'temperature_weather',
       zone: null,
+      notification_zone: null,
       is_active: true,
+      notify_email: true,
+      notify_whatsapp: false,
+      notify_sms: false,
+      override_phone: null,
+      override_email: null,
     });
   });
 
