@@ -1,5 +1,6 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
+import { MarkdownMessage } from './MarkdownMessage';
 import type { Message } from './types';
 
 // ── Typing bounce animation ────────────────────────────────────────────────
@@ -60,6 +61,11 @@ export const AgrilogyMessageBubble = ({
 
   const borderRadius = isUser ? '12px 12px 4px 12px' : '12px 12px 12px 4px';
 
+  // Assistant replies arrive as Markdown; render them formatted. User input
+  // and error strings stay literal (users shouldn't have their text parsed,
+  // and error strings aren't guaranteed to be valid markdown).
+  const renderMarkdown = !isTyping && !isUser && !message.isError;
+
   return (
     <Box
       display="flex"
@@ -81,7 +87,7 @@ export const AgrilogyMessageBubble = ({
         fontSize="13.5px"
         lineHeight="1.55"
         wordBreak="break-word"
-        whiteSpace="pre-wrap"
+        whiteSpace={renderMarkdown ? undefined : 'pre-wrap'}
       >
         {isTyping ? (
           /* Typing indicator */
@@ -99,6 +105,8 @@ export const AgrilogyMessageBubble = ({
               />
             ))}
           </Box>
+        ) : renderMarkdown ? (
+          <MarkdownMessage content={message.content} />
         ) : (
           message.content
         )}
