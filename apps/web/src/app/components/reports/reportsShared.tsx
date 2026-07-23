@@ -6,10 +6,11 @@
  * threads down.
  */
 
-import { Box, Button, Flex, HStack, Spinner, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Text } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 import type { ReportViewState } from '@agri/api-client/reportsModel';
 import { pageWindow } from '@agri/api-client/reportsModel';
+import EmptyBox from '@/app/components/common/EmptyBox';
 
 /** The date + zone filters both panels obey, resolved to the wire shape. */
 export interface SharedReportFilters {
@@ -36,21 +37,7 @@ export function ReportStateNotice({ state }: { state: ReportViewState }) {
   const t = useTranslations();
 
   if (state === 'loading') {
-    return (
-      <Flex
-        align="center"
-        justify="center"
-        direction="column"
-        gap={3}
-        minH="200px"
-        w="100%"
-      >
-        <Spinner size="lg" color="teal.500" thickness="3px" />
-        <Text fontSize="sm" color="app.text.muted">
-          {t('reports.loadingText')}
-        </Text>
-      </Flex>
-    );
+    return <EmptyBox variant="loading" text={t('reports.loadingText')} />;
   }
 
   if (state === 'unavailable') {
@@ -75,23 +62,11 @@ export function ReportStateNotice({ state }: { state: ReportViewState }) {
     );
   }
 
-  // empty
+  // empty — the app-canonical empty state (EmptyBox), wrapped so the
+  // degraded-vs-empty test hook stays addressable.
   return (
-    <Box
-      data-testid="reports-empty"
-      borderWidth="1px"
-      borderStyle="dashed"
-      borderColor="app.border"
-      borderRadius="lg"
-      p={6}
-      textAlign="center"
-    >
-      <Text fontWeight="700" mb={1}>
-        {t('reports.emptyTitle')}
-      </Text>
-      <Text fontSize="sm" color="app.text.muted">
-        {t('reports.emptyBody')}
-      </Text>
+    <Box data-testid="reports-empty" w="100%">
+      <EmptyBox variant="empty" text={t('reports.emptyBody')} />
     </Box>
   );
 }
@@ -133,6 +108,7 @@ export function ReportPager({
         <Button
           size="sm"
           variant="outline"
+          colorScheme="brand"
           onClick={onPrev}
           isDisabled={!canPrev}
         >
@@ -141,6 +117,7 @@ export function ReportPager({
         <Button
           size="sm"
           variant="outline"
+          colorScheme="brand"
           onClick={onNext}
           isDisabled={!canNext}
         >

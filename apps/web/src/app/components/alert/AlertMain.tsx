@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Button as ChakraButton } from '@chakra-ui/react';
 import {
   App,
   Button,
@@ -14,7 +14,8 @@ import {
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslations } from 'next-intl';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { FaPlus } from 'react-icons/fa';
 import { alertApi, type AlertRecord } from '@agri/api-client/alertApi';
 import { useCan } from '@/app/hooks/useAccessLevel';
 import { PermissionGate } from '@/app/components/common/PermissionGate';
@@ -364,16 +365,16 @@ const AlertMain: React.FC = () => {
           <PermissionGate
             blocked={!canEdit}
             reason={t('access.editRequiresEditor')}
-            ui="antd"
+            ui="chakra"
           >
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
+            <ChakraButton
+              colorScheme="brand"
+              leftIcon={<FaPlus />}
               onClick={openCreate}
               data-testid="alert-create-button"
             >
               {t('alertsPage.main.newAlert')}
-            </Button>
+            </ChakraButton>
           </PermissionGate>
         }
       />
