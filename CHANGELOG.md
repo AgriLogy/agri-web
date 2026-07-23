@@ -1,3 +1,15 @@
+# [1.26.0](https://github.com/AgriLogy/agri-web/compare/v1.25.0...v1.26.0) (2026-07-23)
+
+
+### Bug Fixes
+
+* **assistant:** render Markdown replies instead of raw markup ([#105](https://github.com/AgriLogy/agri-web/issues/105)) ([10b077a](https://github.com/AgriLogy/agri-web/commit/10b077a59441d2d760fce5d2ba90d1041f3894ea))
+
+
+### Features
+
+* **reports:** alert and irrigation history report view ([#103](https://github.com/AgriLogy/agri-web/issues/103)) ([bc85d8d](https://github.com/AgriLogy/agri-web/commit/bc85d8d1e96739ff963ad4a76fe23d2edc98c9f4))
+
 # [1.25.0](https://github.com/AgriLogy/agri-web/compare/v1.24.0...v1.25.0) (2026-07-23)
 
 
