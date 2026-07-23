@@ -1,3 +1,10 @@
+## [1.26.2](https://github.com/AgriLogy/agri-web/compare/v1.26.1...v1.26.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* **notifications:** replace the card grid with a clean list ([#108](https://github.com/AgriLogy/agri-web/issues/108)) ([09c05ed](https://github.com/AgriLogy/agri-web/commit/09c05edc5a4e6b1c39d121eeea47803ab0bf6ee0))
+
 ## [1.26.1](https://github.com/AgriLogy/agri-web/compare/v1.26.0...v1.26.1) (2026-07-23)
 
 # [1.26.0](https://github.com/AgriLogy/agri-web/compare/v1.25.0...v1.26.0) (2026-07-23)
