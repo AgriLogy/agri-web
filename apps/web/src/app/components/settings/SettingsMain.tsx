@@ -11,6 +11,7 @@ import DefaultContactSection from '@/app/components/settings/DefaultContactSecti
 import TechniciansSection from '@/app/components/settings/TechniciansSection';
 import FarmSettingsSection from '@/app/components/settings/FarmSettingsSection';
 import SensorDirectorySettings from '@/app/components/settings/SensorDirectorySettings';
+import SensorCalibrationSettings from '@/app/components/settings/SensorCalibrationSettings';
 import SensorGroupsSettings from '@/app/components/settings/SensorGroupsSettings';
 import SensorReadingsSettings from '@/app/components/settings/SensorReadingsSettings';
 import SuperAdminUsersSettings from '@/app/components/settings/SuperAdminUsersSettings';
@@ -23,6 +24,7 @@ type SettingsTab =
   | 'users'
   | 'sensors'
   | 'readings'
+  | 'calibration'
   | 'groups';
 
 const TAB_KEYS: SettingsTab[] = [
@@ -33,6 +35,7 @@ const TAB_KEYS: SettingsTab[] = [
   'users',
   'sensors',
   'readings',
+  'calibration',
   'groups',
 ];
 
@@ -44,6 +47,7 @@ const TAB_LABEL_KEY: Record<SettingsTab, string> = {
   users: 'settings.main.tabUsers',
   sensors: 'settings.main.tabSensors',
   readings: 'settings.main.tabReadings',
+  calibration: 'settings.main.tabCalibration',
   groups: 'settings.main.tabGroups',
 };
 
@@ -112,6 +116,7 @@ const SettingsMain = () => {
         {activeTab === 'technicians' && <TechniciansSection />}
         {activeTab === 'users' && <SuperAdminUsersSettings />}
         {activeTab === 'sensors' && <SensorDirectorySettings />}
+        {activeTab === 'calibration' && <SensorCalibrationSettings />}
         {activeTab === 'groups' && <SensorGroupsSettings />}
       </Box>
     </Box>

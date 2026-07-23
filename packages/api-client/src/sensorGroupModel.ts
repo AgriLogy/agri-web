@@ -15,6 +15,8 @@
  *      migration `f4b6d2e8c1a9` has not been applied.
  */
 
+import { isSchemaUnavailableError } from './schemaAvailability';
+
 import type { FarmSectorNode } from './farmApi';
 import type { MyDevice } from './myDevicesApi';
 import type { SensorGroup, SensorGroupSensor } from './sensorGroupApi';
@@ -250,14 +252,6 @@ export function buildSensorGroupSections(
 /** The agri-db revision that creates `analytics_sensorgroup`. */
 export const SENSOR_GROUPS_MIGRATION = 'f4b6d2e8c1a9';
 
-function errorDetail(error: unknown): string {
-  const data = (error as { response?: { data?: unknown } })?.response?.data;
-  if (typeof data === 'string') return data;
-  const detail = (data as { detail?: unknown })?.detail;
-  if (typeof detail === 'string') return detail;
-  return '';
-}
-
 /**
  * Does this rejection mean "the schema for sensor groups is not deployed"?
  *
@@ -265,16 +259,16 @@ function errorDetail(error: unknown): string {
  * writes with 400 and a `detail` naming the missing table AND the migration to
  * apply. Matching either marker keeps this working if the wording is reworded,
  * while an ordinary 400 (duplicate name, empty name) is left alone.
+ *
+ * The detection itself lives in `schemaAvailability.ts` — per-sensor
+ * calibration (agri-web #97) degrades in exactly the same way, so the
+ * mechanism is shared rather than written twice.
  */
 export function isSensorGroupsUnavailableError(error: unknown): boolean {
-  const status = (error as { response?: { status?: number } })?.response
-    ?.status;
-  if (status !== 400) return false;
-  const detail = errorDetail(error).toLowerCase();
-  return (
-    detail.includes(SENSOR_GROUPS_MIGRATION) ||
-    detail.includes('analytics_sensorgroup')
-  );
+  return isSchemaUnavailableError(error, [
+    SENSOR_GROUPS_MIGRATION,
+    'analytics_sensorgroup',
+  ]);
 }
 
 // ---------------------------------------------------------------------------
