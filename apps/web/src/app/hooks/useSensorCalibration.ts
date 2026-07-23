@@ -148,19 +148,21 @@ export function useSensorCalibration(): SensorCalibrationState {
           .probeAvailability(deviceId, sensorKey)
           .catch(() => 'unknown' as const)
       );
-      setCalibration(toCalibration(
-        {
-          device_id: deviceId,
-          sensor_key: sensorKey,
-          scale_a: 1,
-          offset_b: 0,
-          unit: '',
-          is_active: true,
-          note: null,
-          configured: false,
-        },
-        sensorKey
-      ));
+      setCalibration(
+        toCalibration(
+          {
+            device_id: deviceId,
+            sensor_key: sensorKey,
+            scale_a: 1,
+            offset_b: 0,
+            unit: '',
+            is_active: true,
+            note: null,
+            configured: false,
+          },
+          sensorKey
+        )
+      );
       setConfigured(false);
       const status = (err as { response?: { status?: number } })?.response
         ?.status;

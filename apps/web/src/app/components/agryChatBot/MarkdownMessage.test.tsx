@@ -39,7 +39,9 @@ describe('MarkdownMessage', () => {
 
   it('renders a `*` bullet list as real list items', () => {
     const { container } = wrap(
-      <MarkdownMessage content={'Résumé :\n\n* **29.1** % humidité\n* 21 °C température'} />
+      <MarkdownMessage
+        content={'Résumé :\n\n* **29.1** % humidité\n* 21 °C température'}
+      />
     );
     const items = container.querySelectorAll('li');
     expect(items).toHaveLength(2);
@@ -51,7 +53,9 @@ describe('MarkdownMessage', () => {
 
   it('renders an ordered list and a link', () => {
     const { container } = wrap(
-      <MarkdownMessage content={'1. Premier\n2. Second\n\n[docs](https://example.com)'} />
+      <MarkdownMessage
+        content={'1. Premier\n2. Second\n\n[docs](https://example.com)'}
+      />
     );
     expect(container.querySelector('ol')).toBeInTheDocument();
     expect(container.querySelectorAll('ol > li')).toHaveLength(2);
@@ -86,7 +90,10 @@ describe('AgrilogyMessageBubble', () => {
   it('renders an error message as literal text without crashing', () => {
     const { container } = wrap(
       <AgrilogyMessageBubble
-        message={makeMessage({ isError: true, content: 'Réseau indisponible **' })}
+        message={makeMessage({
+          isError: true,
+          content: 'Réseau indisponible **',
+        })}
       />
     );
     expect(container.textContent).toContain('Réseau indisponible **');

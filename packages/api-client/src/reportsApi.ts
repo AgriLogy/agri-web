@@ -126,8 +126,11 @@ export const reportsApi = {
     params: IrrigationDecisionQuery = {}
   ): Promise<ReportEnvelope<IrrigationDecision>> =>
     api
-      .get<ReportEnvelope<IrrigationDecision>>('/reports/irrigation-decisions', {
-        params,
-      })
+      .get<ReportEnvelope<IrrigationDecision>>(
+        '/reports/irrigation-decisions',
+        {
+          params,
+        }
+      )
       .then((r) => r.data),
 };

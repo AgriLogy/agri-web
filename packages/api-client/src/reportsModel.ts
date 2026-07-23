@@ -77,7 +77,8 @@ export function buildAlertEventParams(
   if (!isBlank(filters.start)) params.start = filters.start as string;
   if (!isBlank(filters.end)) params.end = filters.end as string;
   if (filters.zoneId != null) params.zone_id = filters.zoneId;
-  if (!isBlank(filters.sensorKey)) params.sensor_key = filters.sensorKey as string;
+  if (!isBlank(filters.sensorKey))
+    params.sensor_key = filters.sensorKey as string;
   return params;
 }
 
@@ -222,8 +223,7 @@ const EM_DASH = '—';
  */
 export function formatTimestamp(iso: string | null | undefined): string {
   if (!iso) return EM_DASH;
-  const match =
-    /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/.exec(iso.trim());
+  const match = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/.exec(iso.trim());
   if (!match) return EM_DASH;
   const [, y, mo, d, h, mi] = match;
   return `${y}-${mo}-${d} ${h}:${mi}`;
@@ -279,11 +279,13 @@ export function formatChannels(channels: string[] | null | undefined): string {
  */
 export function enumKeySegment(value: string | null | undefined): string {
   if (!value) return 'unknown';
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '') || 'unknown';
+  return (
+    value
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '') || 'unknown'
+  );
 }
 
 /**
@@ -293,7 +295,11 @@ export function enumKeySegment(value: string | null | undefined): string {
  */
 export function humanizeEnum(value: string | null | undefined): string {
   if (!value) return EM_DASH;
-  const spaced = value.trim().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const spaced = value
+    .trim()
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
   if (!spaced) return EM_DASH;
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }

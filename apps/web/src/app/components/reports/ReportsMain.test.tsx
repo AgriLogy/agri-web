@@ -69,14 +69,18 @@ let server: FakeReportsServer;
 
 const lastCall = (url: string) => {
   const calls = mockGet.mock.calls.filter((c) => c[0] === url);
-  return calls[calls.length - 1] as [string, { params: Record<string, unknown> }];
+  return calls[calls.length - 1] as [
+    string,
+    { params: Record<string, unknown> },
+  ];
 };
 
-const renderPage = () => render(
-  <ChakraProvider>
-    <ReportsMain />
-  </ChakraProvider>
-);
+const renderPage = () =>
+  render(
+    <ChakraProvider>
+      <ReportsMain />
+    </ChakraProvider>
+  );
 
 beforeEach(() => {
   mockGet.mockReset();

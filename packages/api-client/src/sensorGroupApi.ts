@@ -119,10 +119,11 @@ export const sensorGroupApi = {
     api
       .patch('/sensor-groups/0', {})
       .then((): SensorGroupsAvailability => 'available')
-      .catch((error: unknown): SensorGroupsAvailability =>
-        classifyProbeError(error, [
-          SENSOR_GROUPS_MIGRATION,
-          'analytics_sensorgroup',
-        ])
+      .catch(
+        (error: unknown): SensorGroupsAvailability =>
+          classifyProbeError(error, [
+            SENSOR_GROUPS_MIGRATION,
+            'analytics_sensorgroup',
+          ])
       ),
 };

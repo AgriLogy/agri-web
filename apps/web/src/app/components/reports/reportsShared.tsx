@@ -121,14 +121,12 @@ export function ReportPager({
   const canNext = offset + limit < count;
 
   return (
-    <Flex
-      align="center"
-      justify="space-between"
-      gap={3}
-      mt={4}
-      flexWrap="wrap"
-    >
-      <Text fontSize="sm" color="app.text.muted" data-testid="reports-page-range">
+    <Flex align="center" justify="space-between" gap={3} mt={4} flexWrap="wrap">
+      <Text
+        fontSize="sm"
+        color="app.text.muted"
+        data-testid="reports-page-range"
+      >
         {t('reports.pageRange', { from, to, total })}
       </Text>
       <HStack spacing={2}>
