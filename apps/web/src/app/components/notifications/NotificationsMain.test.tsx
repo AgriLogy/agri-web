@@ -9,7 +9,13 @@
  */
 
 import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  within,
+} from '@testing-library/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { App as AntdApp } from 'antd';
 
@@ -60,7 +66,7 @@ jest.mock(
   '@/app/components/notifications/ZoneNotificationConfigureForm',
   () => ({
     __esModule: true,
-    default: () => null,
+    default: () => <div data-testid="zone-notif-configure-form">configure</div>,
   })
 );
 
@@ -151,7 +157,7 @@ describe('NotificationsMain — list layout (agri-web #107)', () => {
     await waitFor(() => expect(mockRefresh).toHaveBeenCalled());
   });
 
-  it('per-row delete opens the confirm modal and removes the row', async () => {
+  it('per-row delete opens the Chakra confirm dialog and confirming removes the row', async () => {
     renderPage();
 
     const row = await screen.findByTestId('notif-item-1');
@@ -160,13 +166,35 @@ describe('NotificationsMain — list layout (agri-web #107)', () => {
     ) as HTMLElement;
     fireEvent.click(del);
 
-    // Confirm modal (existing antd Modal) then confirm the deletion.
-    const ok = await screen.findByText('notifications.main.delete');
+    // Confirm dialog is a Chakra AlertDialog (role="alertdialog"), not antd.
+    const dialog = await screen.findByRole('alertdialog');
+    expect(
+      screen.getByText('notifications.main.deleteDialogTitle')
+    ).toBeTruthy();
+    expect(document.querySelector('.ant-modal')).toBeNull();
+
+    // Confirm the deletion via the red Delete button inside the dialog.
+    const ok = within(dialog).getByText('notifications.main.delete');
     fireEvent.click(ok);
 
     await waitFor(() =>
       expect(screen.queryByTestId('notif-item-1')).toBeNull()
     );
     expect(screen.getByTestId('notif-item-2')).toBeTruthy();
+  });
+
+  it('add-zone-notification opens a Chakra dialog hosting the configure form', async () => {
+    renderPage();
+
+    await screen.findByTestId('notif-item-1');
+    expect(screen.queryByTestId('zone-notif-configure-form')).toBeNull();
+
+    fireEvent.click(screen.getByTestId('add-zone-notif'));
+
+    const dialog = await screen.findByRole('dialog');
+    expect(
+      within(dialog).getByTestId('zone-notif-configure-form')
+    ).toBeTruthy();
+    expect(document.querySelector('.ant-modal')).toBeNull();
   });
 });
