@@ -1,3 +1,10 @@
+## [1.26.13](https://github.com/AgriLogy/agri-web/compare/v1.26.12...v1.26.13) (2026-07-24)
+
+
+### Bug Fixes
+
+* **cards:** add centered header icons to VPD, Air, ET0, Water level cards ([#126](https://github.com/AgriLogy/agri-web/issues/126)) ([2ccc30b](https://github.com/AgriLogy/agri-web/commit/2ccc30b7114e556a9c4167d5ad00b7d879eb48a6)), closes [#123](https://github.com/AgriLogy/agri-web/issues/123)
+
 ## [1.26.12](https://github.com/AgriLogy/agri-web/compare/v1.26.11...v1.26.12) (2026-07-24)
 
 
