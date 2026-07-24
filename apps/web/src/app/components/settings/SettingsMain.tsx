@@ -5,6 +5,7 @@ import { Box, Button, HStack } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
+import { useCan } from '@/app/hooks/useAccessLevel';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import ProfileSection from '@/app/components/settings/ProfileSection';
 import DefaultContactSection from '@/app/components/settings/DefaultContactSection';
@@ -54,8 +55,16 @@ const TAB_LABEL_KEY: Record<SettingsTab, string> = {
 const SettingsMain = () => {
   const t = useTranslations();
   const { tabAccent, iconColor } = useColorModeStyles();
+  const { canManageUsers } = useCan();
   const [activeTab, setActiveTab] = React.useState<SettingsTab>('readings');
-  const activeLabel = t(TAB_LABEL_KEY[activeTab]);
+
+  // The "Users" tab is the super-admin account manager: GET /users is
+  // admin-only server-side (403 "Admin access required"), so a normal user
+  // only ever saw its "Access denied" error. Hide the tab unless the caller
+  // may manage users — technicians (below) remain available to every owner.
+  const tabKeys = TAB_KEYS.filter((key) => key !== 'users' || canManageUsers);
+  const visibleTab = tabKeys.includes(activeTab) ? activeTab : 'readings';
+  const activeLabel = t(TAB_LABEL_KEY[visibleTab]);
 
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
@@ -74,8 +83,8 @@ const SettingsMain = () => {
         }}
       >
         <HStack spacing={{ base: 1, md: 2 }} minW="max-content">
-          {TAB_KEYS.map((tabKey) => {
-            const isActive = tabKey === activeTab;
+          {tabKeys.map((tabKey) => {
+            const isActive = tabKey === visibleTab;
             return (
               <Button
                 key={tabKey}
@@ -109,15 +118,15 @@ const SettingsMain = () => {
         py={{ base: 3, md: 4 }}
         minW={0}
       >
-        {activeTab === 'profile' && <ProfileSection />}
-        {activeTab === 'readings' && <SensorReadingsSettings />}
-        {activeTab === 'farms' && <FarmSettingsSection />}
-        {activeTab === 'contact' && <DefaultContactSection />}
-        {activeTab === 'technicians' && <TechniciansSection />}
-        {activeTab === 'users' && <SuperAdminUsersSettings />}
-        {activeTab === 'sensors' && <SensorDirectorySettings />}
-        {activeTab === 'calibration' && <SensorCalibrationSettings />}
-        {activeTab === 'groups' && <SensorGroupsSettings />}
+        {visibleTab === 'profile' && <ProfileSection />}
+        {visibleTab === 'readings' && <SensorReadingsSettings />}
+        {visibleTab === 'farms' && <FarmSettingsSection />}
+        {visibleTab === 'contact' && <DefaultContactSection />}
+        {visibleTab === 'technicians' && <TechniciansSection />}
+        {visibleTab === 'users' && <SuperAdminUsersSettings />}
+        {visibleTab === 'sensors' && <SensorDirectorySettings />}
+        {visibleTab === 'calibration' && <SensorCalibrationSettings />}
+        {visibleTab === 'groups' && <SensorGroupsSettings />}
       </Box>
     </Box>
   );

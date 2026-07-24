@@ -34,7 +34,11 @@ type ZoneOpt = { id: number; name: string };
 const TechniciansSection: React.FC = () => {
   const t = useTranslations();
   const { message } = App.useApp();
-  const { canManageUsers } = useCan();
+  // Technicians are read-only, zone-scoped "monitoring" logins. The API lets any
+  // non-technician owner manage them (routers/technicians._require_owner), so
+  // this is gated on canEdit (Editor+), NOT canManageUsers — the admin-only
+  // super-admin account manager lives in the separate "Users" tab.
+  const { canEdit } = useCan();
   const [form] = Form.useForm();
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [zones, setZones] = useState<ZoneOpt[]>([]);
@@ -193,8 +197,8 @@ const TechniciansSection: React.FC = () => {
       render: (_: unknown, row: Technician) => (
         <Space>
           <PermissionGate
-            blocked={!canManageUsers}
-            reason={t('access.manageUsersRequiresAdmin')}
+            blocked={!canEdit}
+            reason={t('access.editRequiresEditor')}
             ui="antd"
           >
             <Button size="small" onClick={() => openEditScope(row)}>
@@ -202,8 +206,8 @@ const TechniciansSection: React.FC = () => {
             </Button>
           </PermissionGate>
           <PermissionGate
-            blocked={!canManageUsers}
-            reason={t('access.manageUsersRequiresAdmin')}
+            blocked={!canEdit}
+            reason={t('access.editRequiresEditor')}
             ui="antd"
           >
             <Button size="small" onClick={() => resetPw(row.id)}>
@@ -212,12 +216,12 @@ const TechniciansSection: React.FC = () => {
           </PermissionGate>
           <Popconfirm
             title={t('settings.technicians.confirmRevoke')}
-            disabled={!canManageUsers}
+            disabled={!canEdit}
             onConfirm={() => revoke(row.id)}
           >
             <PermissionGate
-              blocked={!canManageUsers}
-              reason={t('access.manageUsersRequiresAdmin')}
+              blocked={!canEdit}
+              reason={t('access.editRequiresEditor')}
               ui="antd"
             >
               <Button size="small" danger>
@@ -280,8 +284,8 @@ const TechniciansSection: React.FC = () => {
     <div>
       <Space style={{ marginBottom: 12 }}>
         <PermissionGate
-          blocked={!canManageUsers}
-          reason={t('access.manageUsersRequiresAdmin')}
+          blocked={!canEdit}
+          reason={t('access.editRequiresEditor')}
           ui="antd"
         >
           <Button type="primary" onClick={openCreate}>
