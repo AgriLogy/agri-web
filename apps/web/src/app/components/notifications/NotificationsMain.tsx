@@ -1,9 +1,25 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
-import { App, Modal } from 'antd';
-import { BellOutlined } from '@ant-design/icons';
-import { Button, HStack } from '@chakra-ui/react';
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Box,
+  Button,
+  HStack,
+  Icon,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  useToast,
+} from '@chakra-ui/react';
 import { FaBell, FaPlus } from 'react-icons/fa';
 import NotificationListItem from '../notifications/NotificationListItem';
 import EmptyBox from '../common/EmptyBox';
@@ -30,7 +46,8 @@ import {
 
 const NotificationsMain: React.FC = () => {
   const t = useTranslations();
-  const { message } = App.useApp();
+  const toast = useToast();
+  const cancelDeleteRef = useRef<HTMLButtonElement>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { refresh: refreshBell } = useNotificationBellCounts();
@@ -197,16 +214,19 @@ const NotificationsMain: React.FC = () => {
     removeNotificationFromCacheById(id);
     setNotifications(readNotificationsFromCache() as any[]);
     void refreshBell();
-    message.success({
-      content: `${t('notifications.main.deletedToastTitle')} — ${t('notifications.main.deletedToastDescription')}`,
-      duration: 4,
+    toast({
+      status: 'success',
+      title: t('notifications.main.deletedToastTitle'),
+      description: t('notifications.main.deletedToastDescription'),
+      duration: 4000,
+      isClosable: true,
     });
   };
 
   if (loading) return <EmptyBox variant="loading" />;
 
   return (
-    <div style={{ padding: 16 }}>
+    <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
       <PageInfoBar
         title={t('notifications.main.title')}
         subtitle={t('notifications.main.subtitle')}
@@ -278,48 +298,75 @@ const NotificationsMain: React.FC = () => {
       )}
 
       <Modal
-        open={isOpen}
-        onCancel={closeConfigureModal}
-        footer={null}
-        destroyOnHidden
-        width="min(1200px, 100vw - 16px)"
-        title={
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <BellOutlined />
-            {configureIntent === 'edit'
-              ? t('notifications.main.editModalTitle')
-              : t('notifications.main.newModalTitle')}
-          </span>
-        }
+        isOpen={isOpen}
+        onClose={closeConfigureModal}
+        size={{ base: 'full', md: '4xl' }}
+        scrollBehavior="inside"
       >
-        {isOpen && (
-          <ZoneNotificationConfigureForm
-            key={`${configureIntent}-${configureInitialZoneId ?? 'z'}-${configureConfigId ?? 'new'}`}
-            intent={configureIntent}
-            initialZoneId={configureInitialZoneId ?? null}
-            initialConfigId={configureConfigId ?? null}
-            onClose={closeConfigureModal}
-            onSaved={() => {
-              syncNotificationsFromCache();
-              void refreshBell();
-              refetchNotifications();
-            }}
-          />
-        )}
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            <HStack spacing={2}>
+              <Icon as={FaBell} />
+              <span>
+                {configureIntent === 'edit'
+                  ? t('notifications.main.editModalTitle')
+                  : t('notifications.main.newModalTitle')}
+              </span>
+            </HStack>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            {isOpen && (
+              <ZoneNotificationConfigureForm
+                key={`${configureIntent}-${configureInitialZoneId ?? 'z'}-${configureConfigId ?? 'new'}`}
+                intent={configureIntent}
+                initialZoneId={configureInitialZoneId ?? null}
+                initialConfigId={configureConfigId ?? null}
+                onClose={closeConfigureModal}
+                onSaved={() => {
+                  syncNotificationsFromCache();
+                  void refreshBell();
+                  refetchNotifications();
+                }}
+              />
+            )}
+          </ModalBody>
+        </ModalContent>
       </Modal>
 
-      <Modal
-        open={deleteNotifId != null}
-        onCancel={() => setDeleteNotifId(null)}
-        onOk={confirmDeleteNotification}
-        okText={t('notifications.main.delete')}
-        cancelText={t('notifications.main.cancel')}
-        okButtonProps={{ danger: true }}
-        title={t('notifications.main.deleteDialogTitle')}
+      <AlertDialog
+        isOpen={deleteNotifId != null}
+        leastDestructiveRef={cancelDeleteRef}
+        onClose={() => setDeleteNotifId(null)}
       >
-        {t('notifications.main.deleteDialogBody')}
-      </Modal>
-    </div>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              {t('notifications.main.deleteDialogTitle')}
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              {t('notifications.main.deleteDialogBody')}
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button
+                ref={cancelDeleteRef}
+                onClick={() => setDeleteNotifId(null)}
+              >
+                {t('notifications.main.cancel')}
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={confirmDeleteNotification}
+                ml={3}
+              >
+                {t('notifications.main.delete')}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </Box>
   );
 };
 
