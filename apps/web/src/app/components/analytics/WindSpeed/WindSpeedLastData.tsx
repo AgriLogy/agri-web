@@ -70,7 +70,9 @@ const WindSpeedLastData = ({ data }: { data: SensorData[] }) => {
         textAlign="center"
         minW="250px"
       >
-        <FaBolt size={44} color="#f4a261" />
+        <Box display="flex" justifyContent="center">
+          <FaBolt size={44} color="#f4a261" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"

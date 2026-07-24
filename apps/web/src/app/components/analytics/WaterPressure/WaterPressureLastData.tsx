@@ -53,7 +53,9 @@ const WaterPressureLastData = ({ data }: { data: SensorData[] }) => {
         textAlign="center"
         minW="250px"
       >
-        <FaTachometerAlt size={44} color="#577590" />
+        <Box display="flex" justifyContent="center">
+          <FaTachometerAlt size={44} color="#577590" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"

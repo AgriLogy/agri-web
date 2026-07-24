@@ -73,7 +73,9 @@ const WindRadarLastData = ({
         textAlign="center"
         minW="250px"
       >
-        <WiStrongWind size={52} color={iconTone} />
+        <Box display="flex" justifyContent="center">
+          <WiStrongWind size={52} color={iconTone} />
+        </Box>
 
         <Text
           fontWeight="semibold"

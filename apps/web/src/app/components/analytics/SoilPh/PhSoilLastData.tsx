@@ -62,7 +62,9 @@ const PhSoilLastData = ({ data }: { data: SensorData[] }) => {
         <Box position="absolute" top={2} right={2} zIndex={1}>
           <DeviceStatusIndicator zoneId={zoneId} />
         </Box>
-        <GiChemicalDrop size={44} color="#68d391" />
+        <Box display="flex" justifyContent="center">
+          <GiChemicalDrop size={44} color="#68d391" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"

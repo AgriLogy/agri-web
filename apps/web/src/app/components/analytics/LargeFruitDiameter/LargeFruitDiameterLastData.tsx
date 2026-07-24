@@ -58,7 +58,9 @@ const LargeFruitDiameterLastData = ({ data }: { data: SensorData[] }) => {
         textAlign="center"
         minW="250px"
       >
-        <FaAppleAlt size={44} color="#d1495b" />
+        <Box display="flex" justifyContent="center">
+          <FaAppleAlt size={44} color="#d1495b" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"

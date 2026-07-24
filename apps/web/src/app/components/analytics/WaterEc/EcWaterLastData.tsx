@@ -54,7 +54,9 @@ const EcWaterLastData = ({ data }: { data: SensorData[] }) => {
         textAlign="center"
         minW="250px"
       >
-        <GiElectricalResistance size={44} color="#4cae70" />
+        <Box display="flex" justifyContent="center">
+          <GiElectricalResistance size={44} color="#4cae70" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"
