@@ -113,7 +113,17 @@
     "npk_k": "Potassium (K)",
     "fruit_size": "Fruit size",
     "large_fruit_diameter": "Fruit diameter",
-    "electricity_consumption": "Electricity consumption"
+    "electricity_consumption": "Electricity consumption",
+    "ec_salinity": "Salinity (EC)",
+    "ec_soil_high": "Soil conductivity (high)",
+    "ec_soil_low": "Soil conductivity (low)",
+    "ec_soil_medium": "Soil conductivity (medium)",
+    "et0_calculated": "ET₀ (calculated)",
+    "et0_weather": "ET₀ (weather)",
+    "multi_depth_soil_moisture": "Soil moisture (multi-depth)",
+    "ph_water": "Water pH",
+    "soil_temperature_high": "Soil temperature (high)",
+    "soil_temperature_low": "Soil temperature (low)"
   },
   "conditions": {
     "gt": "Greater than",
@@ -2270,7 +2280,14 @@
     "sensorCount": "{count, plural, =0 {no sensor} one {# sensor} other {# sensors}}",
     "lastReceived": "Last reading: {when}",
     "never": "No reading received",
-    "alsoIn": "Also in: {groups}"
+    "alsoIn": "Also in: {groups}",
+    "freshness": {
+      "fresh": "Up to date",
+      "recent": "Recent",
+      "stale": "Stale",
+      "never": "Never received"
+    },
+    "alsoInShort": "+{count}"
   },
   "access": {
     "forbiddenTitle": "Access denied",

@@ -113,7 +113,17 @@
     "npk_k": "البوتاسيوم (K)",
     "fruit_size": "حجم الثمار",
     "large_fruit_diameter": "قطر الثمار",
-    "electricity_consumption": "استهلاك الكهرباء"
+    "electricity_consumption": "استهلاك الكهرباء",
+    "ec_salinity": "الملوحة (EC)",
+    "ec_soil_high": "ناقلية التربة (مرتفع)",
+    "ec_soil_low": "ناقلية التربة (منخفض)",
+    "ec_soil_medium": "ناقلية التربة (متوسط)",
+    "et0_calculated": "التبخر النتحي ET₀ (محسوب)",
+    "et0_weather": "التبخر النتحي ET₀ (مناخي)",
+    "multi_depth_soil_moisture": "رطوبة التربة (أعماق متعددة)",
+    "ph_water": "حموضة الماء",
+    "soil_temperature_high": "حرارة التربة (مرتفع)",
+    "soil_temperature_low": "حرارة التربة (منخفض)"
   },
   "conditions": {
     "gt": "أكبر من",
@@ -2270,7 +2280,14 @@
     "sensorCount": "{count, plural, =0 {لا مستشعر} one {مستشعر واحد} other {# مستشعرات}}",
     "lastReceived": "آخر قراءة: {when}",
     "never": "لم تُستلم أي بيانات",
-    "alsoIn": "أيضًا في: {groups}"
+    "alsoIn": "أيضًا في: {groups}",
+    "freshness": {
+      "fresh": "محدّث",
+      "recent": "حديث",
+      "stale": "قديم",
+      "never": "لم يُستلم"
+    },
+    "alsoInShort": "+{count}"
   },
   "access": {
     "forbiddenTitle": "تم رفض الوصول",
