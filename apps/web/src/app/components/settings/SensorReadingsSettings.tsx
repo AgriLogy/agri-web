@@ -33,6 +33,8 @@ import {
   type RecordCard,
 } from '@/app/components/common/MobileRecordCards';
 import { useIsMobile } from '@/app/hooks/useIsMobile';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 import { useTranslations } from 'next-intl';
 import {
   getAllSensorsCatalog,
@@ -142,6 +144,7 @@ function loadRows(): UnitSettingRow[] {
 
 const SensorReadingsSettings = () => {
   const t = useTranslations();
+  const { canEdit } = useCan();
   const toast = useToast();
   const isMobile = useIsMobile();
   const [rows, setRows] = useState<UnitSettingRow[]>(() => getDefaultRows());
@@ -455,6 +458,7 @@ const SensorReadingsSettings = () => {
                     icon={<FaPen />}
                     variant="ghost"
                     colorScheme="brand"
+                    isDisabled={!canEdit}
                     onClick={() => startEdit(row)}
                   />
                 ),
@@ -491,6 +495,7 @@ const SensorReadingsSettings = () => {
                     icon={<FaPen />}
                     variant="ghost"
                     colorScheme="brand"
+                    isDisabled={!canEdit}
                     onClick={() => startEdit(row)}
                   />
                 </Td>
@@ -501,12 +506,23 @@ const SensorReadingsSettings = () => {
       )}
 
       <Flex justify="flex-end" gap={2} mt={4} p={3}>
-        <Button size="sm" variant="outline" onClick={handleReset}>
+        <Button
+          size="sm"
+          variant="outline"
+          isDisabled={!canEdit}
+          onClick={handleReset}
+        >
           {t('settings.readings.resetButton')}
         </Button>
-        <Button size="sm" colorScheme="brand" onClick={handleSave}>
-          {t('settings.readings.saveButton')}
-        </Button>
+        <PermissionGate
+          blocked={!canEdit}
+          reason={t('access.editRequiresEditor')}
+          ui="chakra"
+        >
+          <Button size="sm" colorScheme="brand" onClick={handleSave}>
+            {t('settings.readings.saveButton')}
+          </Button>
+        </PermissionGate>
       </Flex>
 
       {hasChanges && (

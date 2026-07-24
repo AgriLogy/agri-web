@@ -21,6 +21,8 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { FaBell, FaPlus } from 'react-icons/fa';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 import NotificationListItem from '../notifications/NotificationListItem';
 import EmptyBox from '../common/EmptyBox';
 import axiosInstance from '@agri/api-client/api';
@@ -47,6 +49,7 @@ import {
 const NotificationsMain: React.FC = () => {
   const t = useTranslations();
   const toast = useToast();
+  const { canEdit } = useCan();
   const cancelDeleteRef = useRef<HTMLButtonElement>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -241,15 +244,21 @@ const NotificationsMain: React.FC = () => {
             >
               {t('notificationZones.manage')}
             </Button>
-            <Button
-              size="sm"
-              colorScheme="brand"
-              leftIcon={<FaPlus />}
-              onClick={openConfigure}
-              data-testid="add-zone-notif"
+            <PermissionGate
+              blocked={!canEdit}
+              reason={t('access.editRequiresEditor')}
+              ui="chakra"
             >
-              {t('notifications.main.addZoneNotification')}
-            </Button>
+              <Button
+                size="sm"
+                colorScheme="brand"
+                leftIcon={<FaPlus />}
+                onClick={openConfigure}
+                data-testid="add-zone-notif"
+              >
+                {t('notifications.main.addZoneNotification')}
+              </Button>
+            </PermissionGate>
           </HStack>
         }
       />
@@ -284,10 +293,12 @@ const NotificationsMain: React.FC = () => {
                 is_read={notification.is_read}
                 onOpen={() => markNotificationRead(notification.id)}
                 onEditZone={
-                  zid != null ? () => openEditZone(zid, rowCfgId) : undefined
+                  canEdit && zid != null
+                    ? () => openEditZone(zid, rowCfgId)
+                    : undefined
                 }
                 onDeleteZone={
-                  notification.id != null
+                  canEdit && notification.id != null
                     ? () => setDeleteNotifId(notification.id)
                     : undefined
                 }

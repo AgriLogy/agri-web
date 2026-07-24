@@ -32,6 +32,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+import { useCan } from '@/app/hooks/useAccessLevel';
 import { ensureSectorColorsOnDraw } from '@/app/utils/ensureSectorColorsOnDraw';
 import {
   FARM_SENSORS_LAYER_ID,
@@ -289,6 +290,10 @@ export default function AgricultureMapboxMap({
   showToolsPanel = true,
 }: AgricultureMapboxMapProps) {
   const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? '';
+  // Read-only tiers (monitor) get no drawing/save/delete tools — the sector
+  // draw + save controls only make sense for a caller who may edit (#99).
+  const { canEdit } = useCan();
+  const toolsEnabled = showToolsPanel && canEdit;
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const drawRef = useRef<MapboxDraw | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -953,9 +958,9 @@ export default function AgricultureMapboxMap({
   }, [token, lat, lon, pushLabelsFromDraw, toast, t]);
 
   useEffect(() => {
-    if (showToolsPanel) return;
+    if (toolsEnabled) return;
     drawRef.current?.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
-  }, [showToolsPanel]);
+  }, [toolsEnabled]);
 
   /* Re-sync Mapbox canvas size after Chakra color-mode transition settles. */
   useEffect(() => {
@@ -1085,7 +1090,7 @@ export default function AgricultureMapboxMap({
       w="100%"
       minH={{ base: '320px', md: '460px' }}
     >
-      <Collapse in={showToolsPanel} animateOpacity>
+      <Collapse in={toolsEnabled} animateOpacity>
         <VStack align="stretch" spacing={3}>
           <Box
             borderRadius="md"
