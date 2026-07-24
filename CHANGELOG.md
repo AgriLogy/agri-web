@@ -1,3 +1,10 @@
+## [1.26.11](https://github.com/AgriLogy/agri-web/compare/v1.26.10...v1.26.11) (2026-07-24)
+
+
+### Bug Fixes
+
+* **cards:** center the header icon on all metric cards ([#122](https://github.com/AgriLogy/agri-web/issues/122)) ([225774f](https://github.com/AgriLogy/agri-web/commit/225774f61c58c12ffa502b5479fa106e6fdd0e20))
+
 ## [1.26.10](https://github.com/AgriLogy/agri-web/compare/v1.26.9...v1.26.10) (2026-07-24)
 
 
