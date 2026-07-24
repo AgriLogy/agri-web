@@ -152,8 +152,9 @@ describe('SensorGroupsCard', () => {
     await renderCard();
 
     expect(screen.getAllByText('Température sol')).toHaveLength(2);
-    expect(screen.getByText('Aussi dans : Irrigation')).toBeInTheDocument();
-    expect(screen.getByText('Aussi dans : Serre A')).toBeInTheDocument();
+    // The sensor lives in both groups: under each it shows a compact "also in
+    // 1 other" badge (the group names move into the tile tooltip). #127.
+    expect(screen.getAllByText('+1')).toHaveLength(2);
 
     fireEvent.click(
       screen.getByRole('button', {
