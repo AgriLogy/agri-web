@@ -1,3 +1,10 @@
+## [1.27.2](https://github.com/AgriLogy/agri-web/compare/v1.27.1...v1.27.2) (2026-07-24)
+
+
+### Bug Fixes
+
+* **rbac:** enforce read-only mode for monitor tier across the app ([#132](https://github.com/AgriLogy/agri-web/issues/132)) ([22682b5](https://github.com/AgriLogy/agri-web/commit/22682b54ce6d4ad56f99e60c09105d057ebf3e8a)), closes [#131](https://github.com/AgriLogy/agri-web/issues/131)
+
 ## [1.27.1](https://github.com/AgriLogy/agri-web/compare/v1.27.0...v1.27.1) (2026-07-24)
 
 
