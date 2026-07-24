@@ -15,7 +15,6 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Button,
-  Spacer,
   VStack,
 } from '@chakra-ui/react';
 import { MdWarningAmber } from 'react-icons/md';
@@ -163,40 +162,46 @@ const Sidebar = () => {
           })}
         </VStack>
 
-        <Spacer minH={4} />
+        {/* Pinned footer — kept out of the flex-grow race with the nav so it
+            never steals the vertical space the nav needs. A previous growing
+            <Spacer> claimed half the free height, squeezing the scrollable nav
+            down to a handful of icons and hiding the lower items (notifications,
+            alerts). The nav VStack (flex=1) now fills all space above this and
+            the footer sits flush at the bottom. */}
+        <VStack spacing={1} align="stretch" flexShrink={0} mt={2} pt={2}>
+          <ReportIssueButton variant="sidebar" />
 
-        <ReportIssueButton variant="sidebar" />
-
-        <Tooltip label={t('logout.signOut')} placement="right" hasArrow>
-          <Flex
-            align="center"
-            justify="center"
-            h="44px"
-            w="100%"
-            borderRadius="lg"
-            color={iconColor}
-            cursor="pointer"
-            transition="background 0.15s ease, color 0.15s ease"
-            onClick={onOpen}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                onOpen();
-              }
-            }}
-            tabIndex={0}
-            role="button"
-            aria-label={t('logout.signOut')}
-            _hover={{ color: 'red.500', bg: 'blackAlpha.50' }}
-            _dark={{ _hover: { bg: 'whiteAlpha.100' } }}
-          >
-            <IoLogOut
-              size={22}
-              style={{ transform: 'scaleX(-1)' }}
-              aria-hidden
-            />
-          </Flex>
-        </Tooltip>
+          <Tooltip label={t('logout.signOut')} placement="right" hasArrow>
+            <Flex
+              align="center"
+              justify="center"
+              h="44px"
+              w="100%"
+              borderRadius="lg"
+              color={iconColor}
+              cursor="pointer"
+              transition="background 0.15s ease, color 0.15s ease"
+              onClick={onOpen}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onOpen();
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              aria-label={t('logout.signOut')}
+              _hover={{ color: 'red.500', bg: 'blackAlpha.50' }}
+              _dark={{ _hover: { bg: 'whiteAlpha.100' } }}
+            >
+              <IoLogOut
+                size={22}
+                style={{ transform: 'scaleX(-1)' }}
+                aria-hidden
+              />
+            </Flex>
+          </Tooltip>
+        </VStack>
       </Flex>
 
       <AlertDialog
