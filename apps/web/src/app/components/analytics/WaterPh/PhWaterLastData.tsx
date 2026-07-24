@@ -54,7 +54,9 @@ const PhWaterLastData = ({ data }: { data: SensorData[] }) => {
         textAlign="center"
         minW="250px"
       >
-        <GiChemicalDrop size={44} color="#90be6d" />
+        <Box display="flex" justifyContent="center">
+          <GiChemicalDrop size={44} color="#90be6d" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"

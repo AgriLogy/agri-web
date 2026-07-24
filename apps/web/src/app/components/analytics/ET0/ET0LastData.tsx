@@ -102,7 +102,9 @@ const ET0LastData = ({
         textAlign="center"
         minW="250px"
       >
-        <GiWaterDrop size={44} color="#175E33" />
+        <Box display="flex" justifyContent="center">
+          <GiWaterDrop size={44} color="#175E33" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"

@@ -117,7 +117,9 @@ const SolarRadiationLastData = ({ data }: { data: SensorData[] }) => {
         textAlign="center"
         minW="250px"
       >
-        <FaSun size={44} color="#f6c90e" />
+        <Box display="flex" justifyContent="center">
+          <FaSun size={44} color="#f6c90e" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"

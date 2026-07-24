@@ -57,10 +57,12 @@ const PrecipitationRateLastData = ({ data }: { data: SensorData[] }) => {
         textAlign="center"
         minW="250px"
       >
-        <FaCloudShowersHeavy
-          size={44}
-          fill={colorMode === 'dark' ? '#7ecb98' : '#2e924f'}
-        />
+        <Box display="flex" justifyContent="center">
+          <FaCloudShowersHeavy
+            size={44}
+            fill={colorMode === 'dark' ? '#7ecb98' : '#2e924f'}
+          />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"

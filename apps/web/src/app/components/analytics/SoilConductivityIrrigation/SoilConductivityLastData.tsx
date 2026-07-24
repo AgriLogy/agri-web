@@ -97,7 +97,9 @@ const SoilConductivityLastData = ({
         >
           {t('analytics.soilConductivity.lastDataHeading')}
         </Text>
-        <FaWater size={40} color="#2E924F" style={{ margin: '0 auto' }} />
+        <Box display="flex" justifyContent="center">
+          <FaWater size={40} color="#2E924F" />
+        </Box>
         <VStack spacing={4} mt={4} align="stretch" w="100%">
           <Row
             labelColor={rowLabelColor}
