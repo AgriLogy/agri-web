@@ -9,7 +9,7 @@ const Loading = () => {
       alignItems="center"
       height="200px"
     >
-      <Spinner size="xl" color="green.500" />
+      <Spinner size="xl" color="brand.500" />
     </Box>
   );
 };

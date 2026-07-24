@@ -143,7 +143,7 @@ function SchemaSection({
 }) {
   const cardBg = useColorModeValue('white', 'gray.800');
   const border = useColorModeValue('gray.100', 'gray.700');
-  const accent = useColorModeValue('teal.500', 'teal.300');
+  const accent = useColorModeValue('brand.500', 'brand.300');
   const subtitle = useColorModeValue('gray.500', 'gray.400');
   const cardShadow = useColorModeValue(
     '0 1px 3px rgba(0,0,0,0.06)',

@@ -220,7 +220,7 @@ function pickInitialZoneId(
 function LabelWithIcon({
   icon,
   children,
-  iconColor = 'teal.500',
+  iconColor = 'brand.500',
   labelColor,
 }: {
   icon: IconType;

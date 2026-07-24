@@ -50,7 +50,7 @@ const EmptyBox = ({ text, variant = 'empty' }: EmptyBoxProps) => {
     >
       {variant === 'loading' ? (
         <VStack spacing={3}>
-          <Spinner size="lg" color="teal.500" thickness="3px" />
+          <Spinner size="lg" color="brand.500" thickness="3px" />
           <Text color={textColor} fontSize="sm">
             {displayText}
           </Text>
