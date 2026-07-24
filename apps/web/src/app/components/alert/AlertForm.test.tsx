@@ -1,17 +1,28 @@
 /**
- * Behaviour tests for AlertForm.
+ * Behaviour tests for the alert form model + the controlled AlertForm.
  *
- * We test the contract — what the form *does* when the user submits —
- * not the rendering. Specifically:
- *   1. Submitting valid values calls onSubmit with the normalised payload.
- *   2. Editing an existing alert pre-fills the form via setFieldsValue.
- *   3. Description trimming happens at submit time (server is happy).
+ * Post-antd, the form is plain React state: the normalisation, validation and
+ * edit-prefill logic live in pure helpers (`useAlertForm`), and AlertForm is a
+ * controlled presentational component. We test the contract — what the form
+ * *produces* — not the Chakra markup:
+ *   1. buildAlertPayload emits the normalised (trimmed / numeric) payload.
+ *   2. validateAlertForm blocks an empty name (mirrors the antd `required` rule).
+ *   3. toFormValues pre-fills the editable shape from an existing alert.
+ *   4. AlertForm renders the current values and reports edits via onChange.
  */
 
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
-import { Form, App as AntdApp } from 'antd';
-import AlertForm, { type AlertFormValues } from './AlertForm';
+import '@testing-library/jest-dom';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { ChakraProvider } from '@chakra-ui/react';
+import AlertForm from './AlertForm';
+import {
+  ALERT_FORM_DEFAULTS,
+  buildAlertPayload,
+  toFormValues,
+  validateAlertForm,
+  type AlertFormValues,
+} from './useAlertForm';
 import type { AlertRecord } from '@agri/api-client/alertApi';
 
 const SENSOR_KEYS = [
@@ -19,47 +30,10 @@ const SENSOR_KEYS = [
   { key: 'soil_moisture_medium', label: 'Sol', unit: '%' },
 ];
 
-function FormHost({
-  initial,
-  onSubmit,
-  expose,
-}: {
-  initial?: AlertRecord | null;
-  onSubmit: (p: unknown) => void;
-  expose: (form: ReturnType<typeof Form.useForm<AlertFormValues>>[0]) => void;
-}) {
-  const [form] = Form.useForm<AlertFormValues>();
-  React.useEffect(() => {
-    expose(form);
-  }, [form, expose]);
-  return (
-    <AntdApp>
-      <AlertForm
-        form={form}
-        initial={initial ?? null}
-        sensorKeys={SENSOR_KEYS}
-        onSubmit={onSubmit}
-      />
-    </AntdApp>
-  );
-}
-
-describe('AlertForm', () => {
-  it('submits the normalised payload', async () => {
-    let formRef: ReturnType<typeof Form.useForm<AlertFormValues>>[0] | null =
-      null;
-    const onSubmit = jest.fn();
-    render(
-      <FormHost
-        onSubmit={onSubmit}
-        expose={(f) => {
-          formRef = f;
-        }}
-      />
-    );
-    await waitFor(() => expect(formRef).not.toBeNull());
-
-    formRef!.setFieldsValue({
+describe('alert form model', () => {
+  it('builds the normalised payload (trim + numeric threshold)', () => {
+    const values: AlertFormValues = {
+      ...ALERT_FORM_DEFAULTS,
       name: '   Heat   ',
       type: 'Weather Temperature',
       description: '  hot zone  ',
@@ -68,11 +42,9 @@ describe('AlertForm', () => {
       condition: '>',
       condition_nbr: 30.5,
       is_active: true,
-    });
-    await formRef!.submit();
+    };
 
-    await waitFor(() => expect(onSubmit).toHaveBeenCalled());
-    expect(onSubmit).toHaveBeenCalledWith({
+    expect(buildAlertPayload(values)).toEqual({
       name: 'Heat',
       type: 'Weather Temperature',
       description: 'hot zone',
@@ -90,35 +62,19 @@ describe('AlertForm', () => {
     });
   });
 
-  it('rejects an empty name (validation runs before onSubmit)', async () => {
-    let formRef: ReturnType<typeof Form.useForm<AlertFormValues>>[0] | null =
-      null;
-    const onSubmit = jest.fn();
-    render(
-      <FormHost
-        onSubmit={onSubmit}
-        expose={(f) => {
-          formRef = f;
-        }}
-      />
-    );
-    await waitFor(() => expect(formRef).not.toBeNull());
-
-    formRef!.setFieldsValue({
-      name: '',
-      type: 'Weather Temperature',
-      sensor_key: 'temperature_weather',
-      zone: null,
-      condition: '>',
-      condition_nbr: 30,
-      is_active: true,
+  it('rejects an empty name and a cleared threshold', () => {
+    const named: AlertFormValues = { ...ALERT_FORM_DEFAULTS, name: 'Heat' };
+    expect(validateAlertForm({ ...named, name: '' })).toEqual({
+      name: 'alertsPage.form.nameRequired',
     });
-
-    await expect(formRef!.validateFields()).rejects.toBeTruthy();
-    expect(onSubmit).not.toHaveBeenCalled();
+    expect(validateAlertForm({ ...named, condition_nbr: '' })).toEqual({
+      condition_nbr: 'alertsPage.form.thresholdRequired',
+    });
+    // A fully valid set (name filled, threshold present) passes clean.
+    expect(validateAlertForm(named)).toEqual({});
   });
 
-  it('pre-fills the form when editing an existing alert', async () => {
+  it('pre-fills the editable shape from an existing alert', () => {
     const initial: AlertRecord = {
       id: 9,
       name: 'Existing',
@@ -141,24 +97,36 @@ describe('AlertForm', () => {
       override_phone: null,
       override_email: null,
     };
-    let formRef: ReturnType<typeof Form.useForm<AlertFormValues>>[0] | null =
-      null;
+
+    const values = toFormValues(initial);
+    expect(values.name).toBe('Existing');
+    expect(values.sensor_key).toBe('soil_moisture_medium');
+    expect(values.condition).toBe('<');
+    expect(values.condition_nbr).toBe(20);
+    expect(values.is_active).toBe(false);
+  });
+});
+
+describe('AlertForm (controlled)', () => {
+  it('renders the current values and reports edits via onChange', () => {
+    const onChange = jest.fn();
     render(
-      <FormHost
-        initial={initial}
-        onSubmit={() => {}}
-        expose={(f) => {
-          formRef = f;
-        }}
-      />
+      <ChakraProvider>
+        <AlertForm
+          values={{ ...ALERT_FORM_DEFAULTS, name: 'Gel' }}
+          errors={{}}
+          onChange={onChange}
+          sensorKeys={SENSOR_KEYS}
+        />
+      </ChakraProvider>
     );
-    await waitFor(() => expect(formRef).not.toBeNull());
-    await waitFor(() => {
-      expect(formRef!.getFieldValue('name')).toBe('Existing');
-    });
-    expect(formRef!.getFieldValue('sensor_key')).toBe('soil_moisture_medium');
-    expect(formRef!.getFieldValue('condition')).toBe('<');
-    expect(formRef!.getFieldValue('condition_nbr')).toBe(20);
-    expect(formRef!.getFieldValue('is_active')).toBe(false);
+
+    const nameInput = screen.getByTestId(
+      'alert-name-input'
+    ) as HTMLInputElement;
+    expect(nameInput.value).toBe('Gel');
+
+    fireEvent.change(nameInput, { target: { value: 'Canicule' } });
+    expect(onChange).toHaveBeenCalledWith('name', 'Canicule');
   });
 });

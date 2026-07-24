@@ -13,14 +13,27 @@
  * has to nudge the threshold.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { App, Button, Drawer, Form, Space } from 'antd';
 import {
-  alertApi,
-  type AlertRecord,
-  type AlertWritePayload,
-} from '@agri/api-client/alertApi';
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  HStack,
+  useToast,
+} from '@chakra-ui/react';
+import { alertApi, type AlertRecord } from '@agri/api-client/alertApi';
 import {
   DEFAULT_SENSOR_KEYS,
   type SensorKeyOption,
@@ -28,7 +41,8 @@ import {
 import api from '@agri/api-client/api';
 import { notificationZoneApi } from '@agri/api-client/notificationZoneApi';
 import { userProfileApi } from '@agri/api-client/userProfileApi';
-import AlertForm, { type AlertFormValues } from './AlertForm';
+import AlertForm from './AlertForm';
+import { buildAlertPayload, toFormValues, useAlertForm } from './useAlertForm';
 
 export interface AlertCreateDrawerProps {
   open: boolean;
@@ -53,9 +67,12 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
   onSaved,
 }) => {
   const t = useTranslations();
-  const { message, modal } = App.useApp();
-  const [form] = Form.useForm<AlertFormValues>();
+  const toast = useToast();
+  const { values, errors, touched, setField, patch, reset, validate } =
+    useAlertForm();
   const [submitting, setSubmitting] = useState(false);
+  const [discardOpen, setDiscardOpen] = useState(false);
+  const discardKeepRef = useRef<HTMLButtonElement>(null);
   const [sensorKeys, setSensorKeys] =
     useState<SensorKeyOption[]>(DEFAULT_SENSOR_KEYS);
   const [zones, setZones] = useState<{ id: number; name: string }[]>([]);
@@ -102,23 +119,25 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
       .catch(() => {});
   }, [open]);
 
-  // Prefill on open: either edit-mode (uses AlertForm's own initial
-  // logic) or create-mode with a sensorKey hint.
+  // Prefill on open: edit-mode maps the alert onto the form; create-mode
+  // resets to defaults and, when a sensorKey hint is present, overlays the
+  // /alerts/suggest mean-based defaults. Programmatic prefill never marks the
+  // form "touched" — only user edits do — so the discard confirm stays honest.
   useEffect(() => {
     if (!open) return;
-    if (editing) return; // AlertForm handles edit-mode prefill itself.
-    if (!sensorKey) {
-      form.resetFields();
+    if (editing) {
+      reset(toFormValues(editing));
       return;
     }
-    form.resetFields();
+    reset();
+    if (!sensorKey) return;
     void alertApi
       .suggest({
         sensor_key: sensorKey,
         ...(zoneId ? { zone_id: zoneId } : {}),
       })
       .then((suggestion) => {
-        form.setFieldsValue({
+        patch({
           name: suggestion.name,
           type: suggestion.type,
           description: suggestion.description,
@@ -129,11 +148,16 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
           ...(zoneId ? { zone: zoneId } : {}),
         });
         if (suggestion.sample_size === 0) {
-          message.info(t('alertsPage.createDrawer.noRecentReadings'));
+          toast({
+            status: 'info',
+            description: t('alertsPage.createDrawer.noRecentReadings'),
+            duration: 5000,
+            isClosable: true,
+          });
         }
       })
       .catch(() => {
-        form.setFieldsValue({
+        patch({
           sensor_key: sensorKey,
           ...(zoneId ? { zone: zoneId } : {}),
         });
@@ -141,35 +165,49 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, sensorKey, zoneId, editing]);
 
-  const close = () => {
-    if (submitting) return;
-    if (!editing && form.isFieldsTouched()) {
-      modal.confirm({
-        title: t('alertsPage.createDrawer.discardTitle'),
-        okText: t('alertsPage.createDrawer.discardOk'),
-        cancelText: t('alertsPage.createDrawer.discardCancel'),
-        onOk: () => {
-          form.resetFields();
-          onClose();
-        },
-      });
-      return;
-    }
-    form.resetFields();
+  const finishClose = () => {
+    reset();
     onClose();
   };
 
-  const handleSubmit = async (payload: AlertWritePayload) => {
+  const requestClose = () => {
+    if (submitting) return;
+    if (!editing && touched) {
+      setDiscardOpen(true);
+      return;
+    }
+    finishClose();
+  };
+
+  const confirmDiscard = () => {
+    setDiscardOpen(false);
+    finishClose();
+  };
+
+  const handleSubmit = async () => {
+    const found = validate();
+    if (Object.keys(found).length > 0) return;
+    const payload = buildAlertPayload(values);
     setSubmitting(true);
     try {
       if (editing) {
         await alertApi.update(editing.id, payload);
-        message.success(t('alertsPage.createDrawer.updateSuccess'));
+        toast({
+          status: 'success',
+          description: t('alertsPage.createDrawer.updateSuccess'),
+          duration: 4000,
+          isClosable: true,
+        });
       } else {
         await alertApi.create(payload);
-        message.success(t('alertsPage.createDrawer.createSuccess'));
+        toast({
+          status: 'success',
+          description: t('alertsPage.createDrawer.createSuccess'),
+          duration: 4000,
+          isClosable: true,
+        });
       }
-      form.resetFields();
+      reset();
       onClose();
       onSaved?.();
     } catch (err: unknown) {
@@ -184,7 +222,12 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
           Object.values(data).flat().filter(Boolean).map(String).join(' · ')) ||
         e?.message ||
         t('alertsPage.createDrawer.saveError');
-      message.error(detail);
+      toast({
+        status: 'error',
+        description: detail,
+        duration: 6000,
+        isClosable: true,
+      });
       console.error('alert save failed', err);
     } finally {
       setSubmitting(false);
@@ -192,44 +235,84 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
   };
 
   return (
-    <Drawer
-      title={
-        editing
-          ? t('alertsPage.createDrawer.editTitle')
-          : t('alertsPage.createDrawer.newTitle')
-      }
-      size="default"
-      open={open}
-      onClose={close}
-      destroyOnHidden
-      footer={
-        <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button onClick={close} disabled={submitting}>
-            {t('alertsPage.createDrawer.cancel')}
-          </Button>
-          <Button
-            type="primary"
-            loading={submitting}
-            onClick={() => form.submit()}
-            data-testid="alert-submit-button"
-          >
+    <>
+      <Drawer
+        isOpen={open}
+        placement="right"
+        onClose={requestClose}
+        size={{ base: 'full', md: 'md' }}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton isDisabled={submitting} />
+          <DrawerHeader>
             {editing
-              ? t('alertsPage.createDrawer.update')
-              : t('alertsPage.createDrawer.create')}
-          </Button>
-        </Space>
-      }
-    >
-      <AlertForm
-        form={form}
-        initial={editing}
-        sensorKeys={sensorKeys}
-        zones={zones}
-        notificationZones={notificationZones}
-        defaultContact={defaultContact}
-        onSubmit={handleSubmit}
-      />
-    </Drawer>
+              ? t('alertsPage.createDrawer.editTitle')
+              : t('alertsPage.createDrawer.newTitle')}
+          </DrawerHeader>
+
+          <DrawerBody>
+            <AlertForm
+              values={values}
+              errors={errors}
+              onChange={setField}
+              sensorKeys={sensorKeys}
+              zones={zones}
+              notificationZones={notificationZones}
+              defaultContact={defaultContact}
+            />
+          </DrawerBody>
+
+          <DrawerFooter>
+            <HStack justifyContent="flex-end" width="100%">
+              <Button
+                variant="ghost"
+                onClick={requestClose}
+                isDisabled={submitting}
+              >
+                {t('alertsPage.createDrawer.cancel')}
+              </Button>
+              <Button
+                colorScheme="brand"
+                isLoading={submitting}
+                onClick={() => void handleSubmit()}
+                data-testid="alert-submit-button"
+              >
+                {editing
+                  ? t('alertsPage.createDrawer.update')
+                  : t('alertsPage.createDrawer.create')}
+              </Button>
+            </HStack>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      <AlertDialog
+        isOpen={discardOpen}
+        leastDestructiveRef={discardKeepRef}
+        onClose={() => setDiscardOpen(false)}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              {t('alertsPage.createDrawer.discardTitle')}
+            </AlertDialogHeader>
+            <AlertDialogBody />
+            <AlertDialogFooter>
+              <Button
+                ref={discardKeepRef}
+                onClick={() => setDiscardOpen(false)}
+              >
+                {t('alertsPage.createDrawer.discardCancel')}
+              </Button>
+              <Button colorScheme="red" onClick={confirmDiscard} ml={3}>
+                {t('alertsPage.createDrawer.discardOk')}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </>
   );
 };
 
