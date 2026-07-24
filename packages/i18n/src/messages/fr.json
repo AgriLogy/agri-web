@@ -56,7 +56,9 @@
     "usernameRequired": "Veuillez saisir votre nom d'utilisateur.",
     "passwordRequired": "Veuillez saisir votre mot de passe.",
     "submit": "Se connecter",
-    "invalidCredentials": "Nom d'utilisateur ou mot de passe incorrect."
+    "invalidCredentials": "Nom d'utilisateur ou mot de passe incorrect.",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe"
   },
   "deviceStatus": {
     "signal": {
