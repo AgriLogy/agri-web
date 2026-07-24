@@ -95,7 +95,17 @@ const Sidebar = () => {
         borderRight="1px solid"
         borderColor={sidebarRailBorder}
       >
-        <VStack spacing={1} align="stretch" flex="1">
+        <VStack
+          spacing={1}
+          align="stretch"
+          flex="1"
+          minH={0}
+          overflowY="auto"
+          sx={{
+            scrollbarWidth: 'none',
+            '::-webkit-scrollbar': { display: 'none' },
+          }}
+        >
           {navItems.map((item) => {
             const active =
               item.href === '/'
