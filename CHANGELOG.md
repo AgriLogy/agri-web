@@ -1,3 +1,10 @@
+## [1.27.1](https://github.com/AgriLogy/agri-web/compare/v1.27.0...v1.27.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* **settings:** hide admin-only Users tab; let normal users create technicians ([#130](https://github.com/AgriLogy/agri-web/issues/130)) ([4734604](https://github.com/AgriLogy/agri-web/commit/4734604f848805c6b12423de961b1af27b670e3c)), closes [#129](https://github.com/AgriLogy/agri-web/issues/129)
+
 # [1.27.0](https://github.com/AgriLogy/agri-web/compare/v1.26.13...v1.27.0) (2026-07-24)
 
 
