@@ -6,6 +6,7 @@ import { Box, Button, useBreakpointValue } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 import Loading from '@component/common/Loading';
 import DashboardCard from '@component/dashboard/DashboardCard';
+import { useCan } from '@/app/hooks/useAccessLevel';
 
 const AgricultureMapboxMap = dynamic(
   () => import('@component/map/AgricultureMapboxMap'),
@@ -20,6 +21,7 @@ const DEFAULT_LON = -6.914351;
 
 export default function GoogleMapWeather() {
   const t = useTranslations();
+  const { canEdit } = useCan();
   const p = useBreakpointValue({ base: 2, md: 4 }) ?? 2;
   const [mapToolsOpen, setMapToolsOpen] = useState(false);
 
@@ -42,7 +44,9 @@ export default function GoogleMapWeather() {
     </Box>
   );
 
-  const titleAddon = (
+  // Monitor (read-only) callers get no sector-editing tools, so hide the
+  // toggle entirely — an inert button would just be noise (#99).
+  const titleAddon = canEdit ? (
     <Button
       size="sm"
       variant={mapToolsOpen ? 'solid' : 'outline'}
@@ -53,7 +57,7 @@ export default function GoogleMapWeather() {
         ? t('misc.googleMapWeather.hideTools')
         : t('misc.googleMapWeather.showTools')}
     </Button>
-  );
+  ) : undefined;
 
   return (
     <Box width="100%" height="100%" p={p} overflowX="auto">

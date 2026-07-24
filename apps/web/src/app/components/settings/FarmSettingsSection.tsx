@@ -18,6 +18,8 @@ import { useTranslations } from 'next-intl';
 import api from '@agri/api-client/api';
 import type { ZoneType, ZoneWrapper } from '@/app/types';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 import {
   getFarmImageDataUrl,
   setFarmImageDataUrl,
@@ -25,6 +27,7 @@ import {
 
 const FarmSettingsSection = () => {
   const t = useTranslations();
+  const { canEdit } = useCan();
   const toast = useToast();
   const { textColor, bg, bgColor, borderColor, mutedTextColor } =
     useColorModeStyles();
@@ -215,6 +218,7 @@ const FarmSettingsSection = () => {
                   <FormLabel>{t('settings.farms.farmNameLabel')}</FormLabel>
                   <Input
                     value={names[zone.id] ?? ''}
+                    isDisabled={!canEdit}
                     onChange={(e) =>
                       setNames((prev) => ({
                         ...prev,
@@ -223,14 +227,20 @@ const FarmSettingsSection = () => {
                     }
                   />
                 </FormControl>
-                <Button
-                  size="sm"
-                  colorScheme="brand"
-                  alignSelf="flex-start"
-                  onClick={() => void saveZone(zone)}
+                <PermissionGate
+                  blocked={!canEdit}
+                  reason={t('access.editRequiresEditor')}
+                  ui="chakra"
                 >
-                  {t('settings.farms.saveNameButton')}
-                </Button>
+                  <Button
+                    size="sm"
+                    colorScheme="brand"
+                    alignSelf="flex-start"
+                    onClick={() => void saveZone(zone)}
+                  >
+                    {t('settings.farms.saveNameButton')}
+                  </Button>
+                </PermissionGate>
               </VStack>
             </Flex>
           </Box>

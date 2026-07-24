@@ -29,6 +29,8 @@ import dayjs from 'dayjs';
 import { useTranslations } from 'next-intl';
 import { kcApi, type Kc, type ZoneOption } from '@agri/api-client/kcApi';
 import { PageInfoBar } from '@/app/components/layout/PageInfoBar';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 
 type PeriodForm = {
   period_name: string;
@@ -45,6 +47,7 @@ type KcForm = {
 const CropCalendarMain = () => {
   const t = useTranslations();
   const { message } = App.useApp();
+  const { canEdit } = useCan();
   const [form] = Form.useForm<KcForm>();
 
   const [zones, setZones] = useState<ZoneOption[]>([]);
@@ -178,19 +181,32 @@ const CropCalendarMain = () => {
       width: 110,
       render: (_, r) => (
         <Space>
-          <Button
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => openEdit(r)}
-            aria-label={t('cropCalendar.edit')}
-          />
+          <PermissionGate
+            blocked={!canEdit}
+            reason={t('access.editRequiresEditor')}
+            ui="antd"
+          >
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => openEdit(r)}
+              aria-label={t('cropCalendar.edit')}
+            />
+          </PermissionGate>
           <Popconfirm
             title={t('cropCalendar.confirmDelete')}
+            disabled={!canEdit}
             onConfirm={() => remove(r.id)}
             okText={t('cropCalendar.yes')}
             cancelText={t('cropCalendar.no')}
           >
-            <Button size="small" danger icon={<DeleteOutlined />} />
+            <PermissionGate
+              blocked={!canEdit}
+              reason={t('access.editRequiresEditor')}
+              ui="antd"
+            >
+              <Button size="small" danger icon={<DeleteOutlined />} />
+            </PermissionGate>
           </Popconfirm>
         </Space>
       ),
@@ -212,13 +228,19 @@ const CropCalendarMain = () => {
               onChange={(v) => setZoneFilter(v)}
               options={zones.map((z) => ({ value: z.id, label: z.name }))}
             />
-            <ChakraButton
-              colorScheme="brand"
-              leftIcon={<FaPlus />}
-              onClick={openCreate}
+            <PermissionGate
+              blocked={!canEdit}
+              reason={t('access.editRequiresEditor')}
+              ui="chakra"
             >
-              {t('cropCalendar.newCrop')}
-            </ChakraButton>
+              <ChakraButton
+                colorScheme="brand"
+                leftIcon={<FaPlus />}
+                onClick={openCreate}
+              >
+                {t('cropCalendar.newCrop')}
+              </ChakraButton>
+            </PermissionGate>
           </Space>
         }
       />

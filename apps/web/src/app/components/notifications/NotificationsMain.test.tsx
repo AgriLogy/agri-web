@@ -20,6 +20,20 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { App as AntdApp } from 'antd';
 
 const mockGet = jest.fn();
+// Editor tier by default so the create/delete controls are enabled; a monitor
+// (read-only) case flips mockCanEdit to assert the add control is blocked. #99.
+let mockCanEdit = true;
+jest.mock('@/app/hooks/useAccessLevel', () => ({
+  __esModule: true,
+  useCan: () => ({
+    level: mockCanEdit ? 'editor' : 'monitor',
+    loading: false,
+    canEdit: mockCanEdit,
+    canDelete: false,
+    canManageUsers: false,
+  }),
+}));
+
 jest.mock('@agri/api-client/api', () => ({
   __esModule: true,
   default: { get: (...args: unknown[]) => mockGet(...args) },
@@ -105,6 +119,7 @@ function renderPage() {
 beforeEach(() => {
   localStorage.clear();
   jest.clearAllMocks();
+  mockCanEdit = true;
   mockRefresh.mockResolvedValue(undefined);
   mockGet.mockResolvedValue({ data: { notifications: ROWS } });
 });
@@ -196,5 +211,19 @@ describe('NotificationsMain — list layout (agri-web #107)', () => {
       within(dialog).getByTestId('zone-notif-configure-form')
     ).toBeTruthy();
     expect(document.querySelector('.ant-modal')).toBeNull();
+  });
+
+  it('read-only monitor cannot add a zone notification', async () => {
+    mockCanEdit = false;
+    renderPage();
+
+    await screen.findByTestId('notif-item-1');
+    // The add control is disabled and clicking it opens nothing.
+    const addBtn = screen.getByTestId('add-zone-notif') as HTMLButtonElement;
+    expect(addBtn.disabled).toBe(true);
+    fireEvent.click(addBtn);
+    expect(screen.queryByTestId('zone-notif-configure-form')).toBeNull();
+    // No per-row delete control is rendered for a monitor.
+    expect(document.querySelector('[data-testid="notif-delete"]')).toBeNull();
   });
 });

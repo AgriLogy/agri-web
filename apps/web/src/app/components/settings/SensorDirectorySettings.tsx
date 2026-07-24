@@ -45,6 +45,8 @@ import {
   type SensorInstanceOverridesMap,
 } from '@/app/utils/sensorInstanceOverrides';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
+import { useCan } from '@/app/hooks/useAccessLevel';
+import { PermissionGate } from '@/app/components/common/PermissionGate';
 
 const PLACEMENT_OPTION_KEYS = [
   'soil',
@@ -58,6 +60,7 @@ const PLACEMENT_OPTION_KEYS = [
 
 const SensorDirectorySettings = () => {
   const t = useTranslations();
+  const { canEdit } = useCan();
   // Built-in sensors resolve their reading/type label from the catalog so they
   // follow the active locale; custom (user-added) sensors keep their stored label.
   const readingFor = (it: { key: string; readingLabel: string }) =>
@@ -201,9 +204,19 @@ const SensorDirectorySettings = () => {
           onChange={(e) => setQuery(e.target.value)}
           maxW="480px"
         />
-        <Button size="sm" colorScheme="brand" onClick={() => setOpenAdd(true)}>
-          {t('settings.directory.addSensorButton')}
-        </Button>
+        <PermissionGate
+          blocked={!canEdit}
+          reason={t('access.editRequiresEditor')}
+          ui="chakra"
+        >
+          <Button
+            size="sm"
+            colorScheme="brand"
+            onClick={() => setOpenAdd(true)}
+          >
+            {t('settings.directory.addSensorButton')}
+          </Button>
+        </PermissionGate>
       </Flex>
       <Text fontSize="sm" color={mutedTextColor} mb={2}>
         {t('settings.directory.countShown', { count: rows.length })}
@@ -242,6 +255,7 @@ const SensorDirectorySettings = () => {
                     size="sm"
                     icon={<FaPen />}
                     variant="ghost"
+                    isDisabled={!canEdit}
                     onClick={() => startEdit(row)}
                   />
                 </Td>
