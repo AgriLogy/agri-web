@@ -1,3 +1,10 @@
+## [1.26.12](https://github.com/AgriLogy/agri-web/compare/v1.26.11...v1.26.12) (2026-07-24)
+
+
+### Bug Fixes
+
+* **sidebar:** stop growing Spacer from hiding lower nav items ([#125](https://github.com/AgriLogy/agri-web/issues/125)) ([df66c20](https://github.com/AgriLogy/agri-web/commit/df66c204943dfc3329ae4c11717ceacaf98e2483)), closes [#120](https://github.com/AgriLogy/agri-web/issues/120) [#124](https://github.com/AgriLogy/agri-web/issues/124)
+
 ## [1.26.11](https://github.com/AgriLogy/agri-web/compare/v1.26.10...v1.26.11) (2026-07-24)
 
 
