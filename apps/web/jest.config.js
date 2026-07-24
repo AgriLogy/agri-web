@@ -14,6 +14,7 @@ module.exports = {
     // next-intl ships ESM that jest's babel transform can't parse; stub it.
     '^next-intl$': '<rootDir>/__mocks__/nextIntlMock.js',
     '\\.(scss|css)$': '<rootDir>/__mocks__/styleMock.js',
+    '\\.(png|jpg|jpeg|gif|webp|avif|svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
   transform: {
     '^.+\\.(ts|tsx|js|jsx)$': [

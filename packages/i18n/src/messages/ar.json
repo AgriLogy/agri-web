@@ -56,7 +56,9 @@
     "usernameRequired": "يُرجى إدخال اسم المستخدم.",
     "passwordRequired": "يُرجى إدخال كلمة المرور.",
     "submit": "تسجيل الدخول",
-    "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة."
+    "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور"
   },
   "deviceStatus": {
     "signal": {

@@ -56,7 +56,9 @@
     "usernameRequired": "Please enter your username.",
     "passwordRequired": "Please enter your password.",
     "submit": "Sign in",
-    "invalidCredentials": "Incorrect username or password."
+    "invalidCredentials": "Incorrect username or password.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "deviceStatus": {
     "signal": {

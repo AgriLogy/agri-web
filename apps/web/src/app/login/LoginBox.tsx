@@ -3,16 +3,22 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { App, Button, Form, Input } from 'antd';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  IconButton,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  VStack,
+  useToast,
+} from '@chakra-ui/react';
+import { FaEye, FaEyeSlash, FaLock, FaUser } from 'react-icons/fa';
 import axiosInstance from '@agri/api-client/api';
 import { LoginCard } from '../components/auth/LoginCard';
-import styles from './LoginBox.module.scss';
-
-type LoginFormValues = {
-  username: string;
-  password: string;
-};
 
 type SignInResponse = {
   access: string;
@@ -23,17 +29,36 @@ type SignInResponse = {
 
 export default function LoginBox() {
   const router = useRouter();
-  const { notification } = App.useApp();
-  const [loading, setLoading] = useState(false);
+  const toast = useToast();
   const t = useTranslations('auth');
 
-  const onFinish = async (values: LoginFormValues) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    let hasError = false;
+    if (!username) {
+      setUsernameError(t('usernameRequired'));
+      hasError = true;
+    }
+    if (!password) {
+      setPasswordError(t('passwordRequired'));
+      hasError = true;
+    }
+    if (hasError) return;
+
     setLoading(true);
 
     try {
       const { status, data } = await axiosInstance.post<SignInResponse>(
         '/auth/sessions',
-        values
+        { username, password }
       );
 
       if (status >= 200 && status < 300) {
@@ -54,11 +79,12 @@ export default function LoginBox() {
         }
       }
     } catch {
-      notification.error({
-        message: t('invalidCredentials'),
-        placement: 'bottom',
-        duration: 4,
-        showProgress: true,
+      toast({
+        status: 'error',
+        description: t('invalidCredentials'),
+        position: 'bottom',
+        duration: 4000,
+        isClosable: true,
       });
     } finally {
       setLoading(false);
@@ -67,55 +93,68 @@ export default function LoginBox() {
 
   return (
     <LoginCard title={t('title')} subtitle={t('subtitle')}>
-      <Form<LoginFormValues>
-        layout="vertical"
-        size="large"
-        autoComplete="on"
-        requiredMark={false}
-        onFinish={onFinish}
-      >
-        <Form.Item
-          name="username"
-          label={<span className={styles.label}>{t('username')}</span>}
-          rules={[
-            {
-              required: true,
-              message: t('usernameRequired'),
-            },
-          ]}
-        >
-          <Input
-            className={styles.input}
-            prefix={<UserOutlined />}
-            placeholder={t('usernamePlaceholder')}
-            autoComplete="username"
-          />
-        </Form.Item>
+      <form onSubmit={handleSubmit} autoComplete="on" noValidate>
+        <VStack spacing={4} align="stretch">
+          <FormControl isInvalid={Boolean(usernameError)}>
+            <FormLabel>{t('username')}</FormLabel>
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <FaUser color="var(--text-muted)" />
+              </InputLeftElement>
+              <Input
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  if (usernameError) setUsernameError('');
+                }}
+                placeholder={t('usernamePlaceholder')}
+                autoComplete="username"
+              />
+            </InputGroup>
+            <FormErrorMessage>{usernameError}</FormErrorMessage>
+          </FormControl>
 
-        <Form.Item
-          name="password"
-          label={<span className={styles.label}>{t('password')}</span>}
-          rules={[
-            {
-              required: true,
-              message: t('passwordRequired'),
-            },
-          ]}
-        >
-          <Input.Password
-            className={styles.input}
-            prefix={<LockOutlined />}
-            placeholder={t('passwordPlaceholder')}
-            autoComplete="current-password"
-          />
-        </Form.Item>
+          <FormControl isInvalid={Boolean(passwordError)}>
+            <FormLabel>{t('password')}</FormLabel>
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <FaLock color="var(--text-muted)" />
+              </InputLeftElement>
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (passwordError) setPasswordError('');
+                }}
+                placeholder={t('passwordPlaceholder')}
+                autoComplete="current-password"
+              />
+              <InputRightElement>
+                <IconButton
+                  variant="ghost"
+                  size="sm"
+                  aria-label={
+                    showPassword ? t('hidePassword') : t('showPassword')
+                  }
+                  icon={showPassword ? <FaEyeSlash /> : <FaEye />}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                />
+              </InputRightElement>
+            </InputGroup>
+            <FormErrorMessage>{passwordError}</FormErrorMessage>
+          </FormControl>
 
-        <Form.Item style={{ marginBottom: 0 }}>
-          <Button type="primary" htmlType="submit" block loading={loading}>
+          <Button
+            type="submit"
+            colorScheme="brand"
+            w="100%"
+            isLoading={loading}
+          >
             {t('submit')}
           </Button>
-        </Form.Item>
-      </Form>
+        </VStack>
+      </form>
     </LoginCard>
   );
 }
