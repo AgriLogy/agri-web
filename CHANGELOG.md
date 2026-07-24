@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/AgriLogy/agri-web/compare/v1.26.13...v1.27.0) (2026-07-24)
+
+
+### Features
+
+* **dashboard:** rebuild sensors-by-group as an icon grid with status ([#128](https://github.com/AgriLogy/agri-web/issues/128)) ([579df3d](https://github.com/AgriLogy/agri-web/commit/579df3dd378d0d4436cf2ec5c75b05124c80aaa1)), closes [#127](https://github.com/AgriLogy/agri-web/issues/127)
+
 ## [1.26.13](https://github.com/AgriLogy/agri-web/compare/v1.26.12...v1.26.13) (2026-07-24)
 
 
