@@ -1,5 +1,6 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
+import { WiBarometer } from 'react-icons/wi';
 import LastDataAddAlertButton from '../../common/LastDataAddAlertButton';
 import LastDataPanel from '../../common/LastDataPanel';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -49,12 +50,16 @@ const VPDLastData = ({ data }: { data: VPDDataPoint[] }) => {
         textAlign="center"
         minW="250px"
       >
+        <Box display="flex" justifyContent="center">
+          <WiBarometer size={44} color="#805AD5" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"
           letterSpacing="0.08em"
           textTransform="uppercase"
           color={textColor}
+          mt={2}
         >
           {t('analytics.vpd.title')}
         </Text>

@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { WiDaySunny } from 'react-icons/wi';
 
 import {
   getEtForecast,
@@ -105,10 +106,19 @@ const EtForecastMain = ({
 
   const title = t('station.etForecast.title');
 
+  // Centered header icon harmonizing this card with the sibling "last data"
+  // cards (evapotranspiration = sun driving water loss).
+  const headerIcon = (
+    <Box display="flex" justifyContent="center" mb={2}>
+      <WiDaySunny size={44} color="#DD6B20" />
+    </Box>
+  );
+
   // Title + inline location picker — kept visible in every state so the farmer
   // can re-anchor the forecast even while it's loading, empty, or errored.
   const titleRow = (
     <Box mb={2}>
+      {headerIcon}
       <Text fontWeight="bold">{title}</Text>
       <WeatherLocationPicker size="xs" />
     </Box>
@@ -165,6 +175,7 @@ const EtForecastMain = ({
 
   return (
     <Box>
+      {headerIcon}
       <Flex justify="space-between" align="start" mb={3} wrap="wrap" gap={2}>
         <Box>
           <Text fontWeight="bold">{title}</Text>

@@ -1,6 +1,6 @@
 import { Box, Text, VStack, useColorModeValue } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
-import { WiHumidity, WiThermometer } from 'react-icons/wi';
+import { WiDayCloudy, WiHumidity, WiThermometer } from 'react-icons/wi';
 import {
   formatCalibratedReading,
   resolveAxisUnit,
@@ -73,12 +73,16 @@ const TempuratureHumidtyLastData = ({
         textAlign="center"
         minW="250px"
       >
+        <Box display="flex" justifyContent="center">
+          <WiDayCloudy size={44} color="#dd6b20" />
+        </Box>
         <Text
           fontSize="xs"
           fontWeight="semibold"
           letterSpacing="0.08em"
           textTransform="uppercase"
           color={muted}
+          mt={2}
           mb={3}
         >
           {t('analytics.weatherTempHumidity.lastTitle', {
