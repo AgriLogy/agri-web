@@ -1,5 +1,6 @@
 import { Box, Flex, Text, VStack, useColorModeValue } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
+import { GiWaterTank } from 'react-icons/gi';
 import { SensorData } from '@/app/types';
 import { resolveAxisUnit } from '@/app/utils/unitOverrides';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
@@ -95,12 +96,16 @@ const WaterLevelLastData = ({
         textAlign="center"
         minW="250px"
       >
+        <Box display="flex" justifyContent="center">
+          <GiWaterTank size={44} color="#3182CE" />
+        </Box>
         <Text
           fontWeight="semibold"
           fontSize="xs"
           letterSpacing="0.08em"
           textTransform="uppercase"
           color={titleColor}
+          mt={2}
         >
           {t('analytics.waterLevel.cardTitle')}
         </Text>

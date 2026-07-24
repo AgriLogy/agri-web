@@ -17,7 +17,18 @@ import { render } from '@testing-library/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import CumulPrecipitationLastData from './CumulPrecipitation/CumulPrecipitationLastData';
 import SoilSalinityConductivityLastData from './SoilSalinityConductivity/SoilSalinityConductivityLastData';
+import VPDLastData from './VPD/VPDLastData';
+import TempuratureHumidtyLastData from './WeatherTempuratureHumidty/TempuratureHumidtyLastData';
+import WaterLevelLastData from './WaterLevel/WaterLevelLastData';
+import EtForecastMain from './EtForecast/EtForecastMain';
 import type { SensorData } from '@/app/types';
+
+// The ET₀ card embeds the weather-location picker, whose mount effect calls
+// `fetch` (absent in jsdom). Stub it out — this suite only pins the header icon.
+jest.mock('@/app/components/weather/WeatherLocationPicker', () => ({
+  __esModule: true,
+  default: () => null,
+}));
 
 const reading: SensorData = {
   value: 12.3,
@@ -27,6 +38,16 @@ const reading: SensorData = {
 
 const renderWithChakra = (ui: React.ReactElement) =>
   render(<ChakraProvider>{ui}</ChakraProvider>);
+
+const expectCenteredHeaderIcon = (container: HTMLElement) => {
+  const svg = container.querySelector('svg');
+  expect(svg).not.toBeNull();
+  const wrapper = svg!.parentElement as HTMLElement;
+  expect(wrapper).toHaveStyle({
+    display: 'flex',
+    justifyContent: 'center',
+  });
+};
 
 describe('last-data header icon alignment (#121)', () => {
   it('centers the header icon of a fixed card (CumulPrecipitation)', () => {
@@ -56,5 +77,41 @@ describe('last-data header icon alignment (#121)', () => {
       display: 'flex',
       justifyContent: 'center',
     });
+  });
+});
+
+describe('last-data header icon added to previously icon-less cards (#123)', () => {
+  it('adds a centered header icon to VPD', () => {
+    const { container } = renderWithChakra(
+      <VPDLastData data={[{ timestamp: reading.timestamp, vpd: 1.2 }]} />
+    );
+    expectCenteredHeaderIcon(container);
+  });
+
+  it('adds a centered header icon to Temperature/Humidity', () => {
+    const weather = [
+      { timestamp: reading.timestamp, value: 21.5, default_unit: '°C' },
+    ];
+    const { container } = renderWithChakra(
+      <TempuratureHumidtyLastData
+        temperatureData={weather}
+        humidityData={weather}
+      />
+    );
+    expectCenteredHeaderIcon(container);
+  });
+
+  it('adds a centered header icon to Water level', () => {
+    const { container } = renderWithChakra(
+      <WaterLevelLastData data={[reading]} />
+    );
+    expectCenteredHeaderIcon(container);
+  });
+
+  it('adds a centered header icon to ET₀ forecast', () => {
+    const { container } = renderWithChakra(
+      <EtForecastMain filters={{ selectedZone: null }} />
+    );
+    expectCenteredHeaderIcon(container);
   });
 });
