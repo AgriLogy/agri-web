@@ -1,3 +1,10 @@
+## [1.26.10](https://github.com/AgriLogy/agri-web/compare/v1.26.9...v1.26.10) (2026-07-24)
+
+
+### Bug Fixes
+
+* **sidebar:** scroll the nav list so the logout button stays visible ([#120](https://github.com/AgriLogy/agri-web/issues/120)) ([b5f7d4f](https://github.com/AgriLogy/agri-web/commit/b5f7d4f2d2047c3bb1dbc6a6310469d0dd60e007))
+
 ## [1.26.9](https://github.com/AgriLogy/agri-web/compare/v1.26.8...v1.26.9) (2026-07-24)
 
 ## [1.26.8](https://github.com/AgriLogy/agri-web/compare/v1.26.7...v1.26.8) (2026-07-24)
