@@ -47,7 +47,7 @@ export default function ChartDateRangeDragger({
   const border = useColorModeValue('gray.200', 'gray.600');
   const muted = useColorModeValue('gray.600', 'gray.400');
   const trackBg = useColorModeValue('gray.100', 'gray.700');
-  const accent = useColorModeValue('teal.500', 'teal.300');
+  const accent = useColorModeValue('brand.500', 'brand.300');
 
   const n = timestamps.length;
   const maxIdx = Math.max(0, n - 1);

@@ -95,7 +95,7 @@ function Row({
 }) {
   return (
     <HStack align="flex-start" spacing={2} py={1}>
-      <Icon as={icon} mt={0.5} color="teal.500" boxSize={4} flexShrink={0} />
+      <Icon as={icon} mt={0.5} color="brand.500" boxSize={4} flexShrink={0} />
       <Text fontSize="sm" color={textColor}>
         {label ? (
           <>
