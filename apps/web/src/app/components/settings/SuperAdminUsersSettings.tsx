@@ -76,8 +76,16 @@ const SuperAdminUsersSettings = () => {
   };
 
   useEffect(() => {
+    // GET /users is admin-only (403 otherwise). Skip the doomed request — and
+    // its "Access denied" toast — for non-admins; the tab is hidden for them
+    // anyway (SettingsMain), this is just belt-and-suspenders.
+    if (!canManageUsers) {
+      setLoading(false);
+      return;
+    }
     refreshUsers();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canManageUsers]);
 
   useEffect(() => {
     setSelectedKeys(new Set(catalog.map((c) => c.key)));
@@ -168,6 +176,14 @@ const SuperAdminUsersSettings = () => {
 
   if (loading) {
     return <Text color={textColor}>{t('settings.users.loading')}</Text>;
+  }
+
+  if (!canManageUsers) {
+    return (
+      <Text fontSize="sm" color={mutedTextColor}>
+        {t('access.manageUsersRequiresAdmin')}
+      </Text>
+    );
   }
 
   return (
