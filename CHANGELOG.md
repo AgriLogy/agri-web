@@ -1,3 +1,10 @@
+## [1.27.3](https://github.com/AgriLogy/agri-web/compare/v1.27.2...v1.27.3) (2026-08-06)
+
+
+### Bug Fixes
+
+* **notifications:** stop truncating the zone-contact hint in the input ([#133](https://github.com/AgriLogy/agri-web/issues/133)) ([aa1de66](https://github.com/AgriLogy/agri-web/commit/aa1de66d8b81aa34ef6a80a3b61d2103f9cdc890))
+
 ## [1.27.2](https://github.com/AgriLogy/agri-web/compare/v1.27.1...v1.27.2) (2026-07-24)
 
 
