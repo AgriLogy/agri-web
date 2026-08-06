@@ -1373,6 +1373,8 @@
       "channelsHint": "Cochez les canaux puis, au besoin, saisissez un contact dédié à cette zone (ex. le technicien responsable). Laissez vide pour utiliser le contact de votre profil.",
       "overridePhone": "Numéro personnalisé (SMS / WhatsApp)",
       "overrideEmail": "E-mail personnalisé",
+      "overridePhonePlaceholder": "Ex. +212 6 12 34 56 78",
+      "overrideEmailPlaceholder": "Ex. technicien@exemple.ma",
       "overrideContactHint": "Laissez vide pour utiliser le contact de votre profil ; sinon saisissez le contact du technicien de cette zone.",
       "saveZoneNotification": "Enregistrer la notification de zone",
       "savedToast": "Configuration de notification enregistrée",

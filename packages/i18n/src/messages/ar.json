@@ -1373,6 +1373,8 @@
       "channelsHint": "حدّد القنوات، ثم عند الحاجة أدخل جهة اتصال مخصّصة لهذه المنطقة (مثل التقني المسؤول). اتركه فارغًا لاستخدام جهة اتصال ملفك.",
       "overridePhone": "رقم مخصّص (SMS / واتساب)",
       "overrideEmail": "بريد مخصّص",
+      "overridePhonePlaceholder": "مثال: +212 6 12 34 56 78",
+      "overrideEmailPlaceholder": "مثال: technician@example.com",
       "overrideContactHint": "اتركه فارغًا لاستخدام جهة اتصال ملفك؛ وإلا أدخل جهة اتصال تقني هذه المنطقة.",
       "saveZoneNotification": "حفظ إشعار المنطقة",
       "savedToast": "تم حفظ إعدادات التنبيه",

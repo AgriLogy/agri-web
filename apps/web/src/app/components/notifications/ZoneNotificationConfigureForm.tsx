@@ -8,6 +8,7 @@ import {
   Checkbox,
   Divider,
   FormControl,
+  FormHelperText,
   FormLabel,
   Grid,
   GridItem,
@@ -1418,9 +1419,12 @@ const ZoneNotificationConfigureForm: React.FC<
                       value={form.overridePhone ?? ''}
                       onChange={(e) => update('overridePhone', e.target.value)}
                       placeholder={t(
-                        'notifications.configForm.overrideContactHint'
+                        'notifications.configForm.overridePhonePlaceholder'
                       )}
                     />
+                    <FormHelperText fontSize="xs">
+                      {t('notifications.configForm.overrideContactHint')}
+                    </FormHelperText>
                   </FormControl>
                 )}
                 {form.notifyEmail && (
@@ -1430,12 +1434,16 @@ const ZoneNotificationConfigureForm: React.FC<
                     </FormLabel>
                     <Input
                       size="sm"
+                      type="email"
                       value={form.overrideEmail ?? ''}
                       onChange={(e) => update('overrideEmail', e.target.value)}
                       placeholder={t(
-                        'notifications.configForm.overrideContactHint'
+                        'notifications.configForm.overrideEmailPlaceholder'
                       )}
                     />
+                    <FormHelperText fontSize="xs">
+                      {t('notifications.configForm.overrideContactHint')}
+                    </FormHelperText>
                   </FormControl>
                 )}
               </VStack>
