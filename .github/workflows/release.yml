@@ -3,6 +3,13 @@ name: Release
 on:
   push:
     branches: [main]
+  # Manual fallback, matching agri-api / agri-core / agri-db. Needed whenever a
+  # merge lands without its push event producing a run — as happened when the
+  # org's repos were private and no workflow ran at all: #133 merged, but the
+  # release (and so the Vercel production deploy that rides the release commit)
+  # never fired, and a push-only trigger left no way to catch up short of an
+  # empty commit.
+  workflow_dispatch:
 
 permissions:
   contents: write
