@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/AgriLogy/agri-web/compare/v1.27.3...v1.28.0) (2026-10-05)
+
+
+### Features
+
+* **basin:** rectangular basin volume graph + visual ([ea44845](https://github.com/AgriLogy/agri-web/commit/ea44845178cd8345dde53391b206341ec789d291))
+
 ## [1.27.3](https://github.com/AgriLogy/agri-web/compare/v1.27.2...v1.27.3) (2026-08-06)
 
 
