@@ -751,7 +751,17 @@
       "maxDepth": "Basin max depth",
       "sensorLevel": "Sensor level",
       "capacity": "Actual capacity",
-      "fillPct": "Percentage of filling"
+      "fillPct": "Percentage of filling",
+      "volumeSeries": "Volume",
+      "fillSeries": "Fill",
+      "waterHeight": "Water height",
+      "maxCapacity": "Max capacity",
+      "basinLength": "Length (m)",
+      "basinWidth": "Width (m)",
+      "basinHeight": "Height sens→bottom (m)",
+      "sensorToMax": "Sensor → max level (m)",
+      "saveBasin": "Save dimensions",
+      "basinConfigHint": "Rectangle L × W × H + sensor offset (kept in this browser until the admin sets the zone)."
     },
     "waterFlow": {
       "lastDataTitle": "Water flow / irrigation",

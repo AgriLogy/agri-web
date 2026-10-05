@@ -1,5 +1,5 @@
 import { Box, VStack } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ChartDateRangeDragger from '../../common/ChartDateRangeDragger';
 import ChartLastDataShell from '../../common/ChartLastDataShell';
 import ChartDateRangeGate from '../../common/ChartDateRangeGate';
@@ -7,9 +7,30 @@ import { useFrequencySeries } from '../../common/ChartFrequencyContext';
 import { SensorData } from '@/app/types';
 import api from '@agri/api-client/api';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
-import WaterLevelChart from './WaterLevelChart';
+import {
+  distanceToBasinPoint,
+  rawToMetres,
+  resolveBasin,
+  type BasinGeometryRect,
+} from '@/app/utils/basinVolume';
+import WaterLevelChart, { type BasinChartRow } from './WaterLevelChart';
 import WaterLevelLastData, { type BasinGeometry } from './WaterLevelLastData';
+import BasinConfigForm, { readBasinOverride } from './BasinConfigForm';
 import { CHART_SHELL_MAX_HEIGHT } from '@/app/utils/chartAxisConfig';
+
+const mergeGeom = (
+  zone: BasinGeometry,
+  local: BasinGeometryRect | null
+): BasinGeometry =>
+  ({
+    lengthM: zone.lengthM ?? local?.lengthM ?? null,
+    widthM: zone.widthM ?? local?.widthM ?? null,
+    heightM: zone.heightM ?? local?.heightM ?? null,
+    sensorToMaxM: zone.sensorToMaxM ?? local?.sensorToMaxM ?? null,
+    maxDepthM: zone.maxDepthM ?? null,
+    areaM2: zone.areaM2 ?? null,
+    offsetM: zone.offsetM ?? null,
+  }) as BasinGeometry;
 
 const WaterLevelMain = ({
   filters,
@@ -27,6 +48,11 @@ const WaterLevelMain = ({
   const { startDate, endDate, selectedZone } = filters;
   const [data, setData] = useState<SensorData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [override, setOverride] = useState<BasinGeometryRect | null>(null);
+
+  useEffect(() => {
+    setOverride(readBasinOverride(selectedZone));
+  }, [selectedZone]);
 
   useEffect(() => {
     const params = {
@@ -54,7 +80,35 @@ const WaterLevelMain = ({
     };
   }, [startDate, endDate, selectedZone]);
 
-  const { series: sortedData, timeline } = useFrequencySeries(data);
+  const geom = useMemo(
+    () => mergeGeom(basin, override),
+
+    [basin, override]
+  );
+  const resolved = useMemo(() => resolveBasin(geom), [geom]);
+
+  // Raw D(t) -> volume litres + fill% per point (chart evolution).
+  const volumeRows: BasinChartRow[] = useMemo(
+    () =>
+      data.flatMap((item) => {
+        if (typeof item.value !== 'number') return [];
+        const dM = rawToMetres(item.value, item.default_unit);
+        const p = distanceToBasinPoint(dM, resolved);
+        if (!p) return [];
+        return [
+          {
+            timestamp: item.timestamp,
+            distance: item.value,
+            waterHeight: p.hM,
+            fillPct: p.fillPct,
+            volumeL: p.volumeL,
+          },
+        ];
+      }),
+    [data, resolved]
+  );
+
+  const { series: sortedData, timeline } = useFrequencySeries(volumeRows);
 
   return (
     <ChartLastDataShell
@@ -68,16 +122,23 @@ const WaterLevelMain = ({
         <Box flex={3} p={2} width="100%" minW={0}>
           <ChartDateRangeGate timeline={timeline}>
             {({ startIdx, endIdx, setRange }) => (
-              <VStack spacing={0} align="stretch" width="100%">
+              <VStack spacing={2} align="stretch" width="100%">
                 <WaterLevelChart
                   data={sortedData.slice(startIdx, endIdx + 1)}
                   loading={loading}
+                  vMaxL={resolved.vMaxL}
+                  hasGeometry={resolved.hMaxM != null}
                 />
                 <ChartDateRangeDragger
                   timestamps={timeline}
                   startIdx={startIdx}
                   endIdx={endIdx}
                   onChange={(r) => setRange(r)}
+                />
+                <BasinConfigForm
+                  zoneId={selectedZone}
+                  initial={geom}
+                  onChange={setOverride}
                 />
               </VStack>
             )}
@@ -95,7 +156,7 @@ const WaterLevelMain = ({
           justifyContent="center"
           alignItems="stretch"
         >
-          <WaterLevelLastData data={data} basin={basin} />
+          <WaterLevelLastData data={data} basin={geom} />
         </Box>
       }
     />

@@ -41,11 +41,16 @@ const StationMain = () => {
   } = useAnalyticsHeader();
 
   // The basin/water-level section shows only for zones that have a level
-  // sensor configured (basin geometry present on the zone).
+  // sensor configured (basin geometry present on the zone) or a local
+  // per-browser override (BasinConfigForm stores L/W/H/D_max in localStorage
+  // so the graph works before the admin fills the zone params).
   const currentZone = zones.find((z) => z.id === selectedZone);
   const hasBasin =
     currentZone?.basin_max_depth_m != null ||
-    currentZone?.basin_area_m2 != null;
+    currentZone?.basin_area_m2 != null ||
+    currentZone?.basin_length_m != null ||
+    currentZone?.basin_width_m != null ||
+    currentZone?.basin_height_m != null;
 
   return (
     <Box px={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
@@ -130,6 +135,10 @@ const StationMain = () => {
               <WaterLevelMain
                 filters={filters}
                 basin={{
+                  lengthM: currentZone?.basin_length_m,
+                  widthM: currentZone?.basin_width_m,
+                  heightM: currentZone?.basin_height_m,
+                  sensorToMaxM: currentZone?.sensor_mount_offset_m,
                   maxDepthM: currentZone?.basin_max_depth_m,
                   areaM2: currentZone?.basin_area_m2,
                   offsetM: currentZone?.sensor_mount_offset_m,

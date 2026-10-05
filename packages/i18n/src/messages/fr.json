@@ -751,7 +751,17 @@
       "maxDepth": "Profondeur max du bassin",
       "sensorLevel": "Niveau capteur",
       "capacity": "Capacité actuelle",
-      "fillPct": "Pourcentage de remplissage"
+      "fillPct": "Pourcentage de remplissage",
+      "volumeSeries": "Volume",
+      "fillSeries": "Remplissage",
+      "waterHeight": "Hauteur d’eau",
+      "maxCapacity": "Capacité max",
+      "basinLength": "Longueur (m)",
+      "basinWidth": "Largeur (m)",
+      "basinHeight": "Hauteur capt→fond (m)",
+      "sensorToMax": "Capteur → niveau max (m)",
+      "saveBasin": "Enregistrer",
+      "basinConfigHint": "Rectangle L × l × H + offset capteur (conservé dans ce navigateur)."
     },
     "waterFlow": {
       "lastDataTitle": "Débit d'eau / irrigation",

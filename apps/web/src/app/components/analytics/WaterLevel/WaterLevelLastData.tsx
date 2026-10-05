@@ -5,14 +5,17 @@ import { SensorData } from '@/app/types';
 import { resolveAxisUnit } from '@/app/utils/unitOverrides';
 import { useUnitOverridesRevision } from '@/app/hooks/useUnitOverridesRevision';
 import { formatNumber } from '@/app/utils/formatNumber';
+import { colorForSensor } from '@agri/ui';
+import {
+  distanceToBasinPoint,
+  rawToMetres,
+  resolveBasin,
+  type BasinGeometryRect,
+} from '@/app/utils/basinVolume';
 import LastDataPanel from '../../common/LastDataPanel';
 
-export interface BasinGeometry {
-  maxDepthM?: number | null;
-  areaM2?: number | null;
-  /** Reading offset (m) subtracted from the raw level reading. */
-  offsetM?: number | null;
-}
+// Re-exported so WaterLevelMain/StationMain keep importing from here.
+export type BasinGeometry = BasinGeometryRect;
 
 const clamp = (v: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, v));
@@ -44,6 +47,8 @@ const WaterLevelLastData = ({
   basin = {},
 }: {
   data: SensorData[];
+  // Optional: when basin dimensions aren't available the section still renders
+  // the raw level + chart; the basin-fill/capacity viz only shows with geometry.
   basin?: BasinGeometry;
 }) => {
   const t = useTranslations();
@@ -53,31 +58,34 @@ const WaterLevelLastData = ({
     data[data.length - 1]?.default_unit
   );
   const latest = data[data.length - 1];
+  const resolved = resolveBasin(basin);
 
   const valueColor = useColorModeValue('blue.700', 'blue.200');
   const titleColor = useColorModeValue('gray.600', 'gray.300');
   const tankBorder = useColorModeValue('blue.300', 'blue.600');
   const tankBg = useColorModeValue('blue.50', 'gray.700');
-
-  const maxDepth = basin.maxDepthM ?? null;
-  const area = basin.areaM2 ?? null;
-  const offset = basin.offsetM ?? 0;
+  const dimColor = useColorModeValue('gray.500', 'gray.400');
 
   const reading = typeof latest?.value === 'number' ? latest.value : null;
-  // Water column height = reading minus an optional sensor mount offset.
-  const waterHeight =
-    reading === null ? null : Math.max(0, reading - (offset ?? 0));
+  // Captor reports D(t) = sensor -> surface. Convert to metres first.
+  const distanceM =
+    reading === null ? null : rawToMetres(reading, latest?.default_unit);
+  const point =
+    distanceM === null ? null : distanceToBasinPoint(distanceM, resolved);
 
-  const fillPct =
-    waterHeight !== null && maxDepth && maxDepth > 0
-      ? clamp((waterHeight / maxDepth) * 100, 0, 100)
-      : null;
-
-  // Capacity in litres = area (m²) × height (m) × 1000.
-  const capacityL =
-    waterHeight !== null && area && area > 0 ? area * waterHeight * 1000 : null;
+  const waterHeight = point?.hM ?? null;
+  const fillPct = point?.fillPct ?? null;
+  const capacityL = point?.volumeL ?? null;
 
   const dash = '—';
+  const dims =
+    resolved.lengthM != null &&
+    resolved.widthM != null &&
+    resolved.hTotM != null
+      ? `${formatNumber(resolved.lengthM)} × ${formatNumber(
+          resolved.widthM
+        )} × ${formatNumber(resolved.hTotM)} m`
+      : null;
 
   return (
     <Box
@@ -97,7 +105,7 @@ const WaterLevelLastData = ({
         minW="250px"
       >
         <Box display="flex" justifyContent="center">
-          <GiWaterTank size={44} color="#3182CE" />
+          <GiWaterTank size={44} color={colorForSensor('water_level')} />
         </Box>
         <Text
           fontWeight="semibold"
@@ -110,44 +118,85 @@ const WaterLevelLastData = ({
           {t('analytics.waterLevel.cardTitle')}
         </Text>
 
-        {/* Tank visualization */}
-        <Flex justify="center" my={3}>
-          <Box
-            position="relative"
-            w="64px"
-            h="120px"
-            borderWidth="2px"
-            borderColor={tankBorder}
-            borderRadius="md"
-            bg={tankBg}
-            overflow="hidden"
-          >
+        {/* Rectangle basin visualization (exported to PNG with the chart) */}
+        <Flex justify="center" my={3} data-basin-visual>
+          <Box w="100%" maxW="220px">
             <Box
-              position="absolute"
-              bottom={0}
-              left={0}
-              right={0}
-              h={`${fillPct ?? 0}%`}
-              bgGradient="linear(to-t, blue.500, blue.300)"
-              transition="height 0.4s ease"
-            />
-            <Flex position="absolute" inset={0} align="center" justify="center">
-              <Text fontSize="md" fontWeight="bold" color={valueColor}>
-                {fillPct !== null ? `${formatNumber(fillPct)}%` : dash}
+              position="relative"
+              w="100%"
+              h="140px"
+              borderWidth="2px"
+              borderColor={tankBorder}
+              borderRadius="md"
+              bg={tankBg}
+              overflow="hidden"
+            >
+              {/* Max-level line at D_max */}
+              {resolved.hTotM != null &&
+                resolved.hTotM > 0 &&
+                resolved.hMaxM != null && (
+                  <Box
+                    position="absolute"
+                    left={0}
+                    right={0}
+                    top={`${clamp(
+                      (resolved.dMaxM / resolved.hTotM) * 100,
+                      0,
+                      100
+                    )}%`}
+                    borderTopWidth="2px"
+                    borderTopStyle="dashed"
+                    borderTopColor="red.400"
+                  />
+                )}
+              <Box
+                position="absolute"
+                bottom={0}
+                left={0}
+                right={0}
+                h={`${fillPct ?? 0}%`}
+                bgGradient="linear(to-t, blue.500, blue.300)"
+                transition="height 0.4s ease"
+              />
+              <Flex
+                position="absolute"
+                inset={0}
+                align="center"
+                justify="center"
+              >
+                <Text fontSize="md" fontWeight="bold" color={valueColor}>
+                  {fillPct !== null ? `${formatNumber(fillPct)}%` : dash}
+                </Text>
+              </Flex>
+            </Box>
+            <Text fontSize="xs" color={dimColor} mt={1}>
+              {dims ??
+                (resolved.hMaxM != null
+                  ? `${t('analytics.waterLevel.maxDepth')}: ${formatNumber(
+                      resolved.hMaxM
+                    )} m`
+                  : dash)}
+            </Text>
+            {resolved.isRectangle && (
+              <Text fontSize="xs" color={dimColor}>
+                {t('analytics.waterLevel.sensorToMax')}:{' '}
+                {formatNumber(resolved.dMaxM)} m
               </Text>
-            </Flex>
+            )}
           </Box>
         </Flex>
 
         <VStack spacing={2} align="stretch" w="100%">
           <Row
-            label={t('analytics.waterLevel.maxDepth')}
-            value={maxDepth != null ? `${formatNumber(maxDepth)} m` : dash}
+            label={t('analytics.waterLevel.sensorLevel')}
+            value={reading != null ? `${formatNumber(reading)} ${unit}` : dash}
             color={valueColor}
           />
           <Row
-            label={t('analytics.waterLevel.sensorLevel')}
-            value={reading != null ? `${formatNumber(reading)} ${unit}` : dash}
+            label={t('analytics.waterLevel.waterHeight')}
+            value={
+              waterHeight != null ? `${formatNumber(waterHeight)} m` : dash
+            }
             color={valueColor}
           />
           <Row
@@ -160,6 +209,13 @@ const WaterLevelLastData = ({
             value={fillPct != null ? `${formatNumber(fillPct)} %` : dash}
             color={valueColor}
           />
+          {resolved.vMaxL != null && (
+            <Row
+              label={t('analytics.waterLevel.maxCapacity')}
+              value={`${formatNumber(resolved.vMaxL)} L`}
+              color={valueColor}
+            />
+          )}
         </VStack>
       </LastDataPanel>
     </Box>

@@ -13,6 +13,10 @@ export type ZoneOption = {
   basin_max_depth_m?: number | null;
   basin_area_m2?: number | null;
   sensor_mount_offset_m?: number | null;
+  /** Rectangular basin interior dimensions (m). */
+  basin_length_m?: number | null;
+  basin_width_m?: number | null;
+  basin_height_m?: number | null;
 };
 
 export type ZoneSelectProps = {

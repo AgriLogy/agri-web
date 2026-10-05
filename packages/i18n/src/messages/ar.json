@@ -751,7 +751,17 @@
       "maxDepth": "أقصى عمق للحوض",
       "sensorLevel": "مستوى المستشعر",
       "capacity": "السعة الحالية",
-      "fillPct": "نسبة الامتلاء"
+      "fillPct": "نسبة الامتلاء",
+      "volumeSeries": "الحجم",
+      "fillSeries": "نسبة الملء",
+      "waterHeight": "ارتفاع الماء",
+      "maxCapacity": "السعة القصوى",
+      "basinLength": "الطول (م)",
+      "basinWidth": "العرض (م)",
+      "basinHeight": "الارتفاع حساس→القاع (م)",
+      "sensorToMax": "الحساس → المستوى الأقصى (م)",
+      "saveBasin": "حفظ الأبعاد",
+      "basinConfigHint": "مستطيل L × W × H + إزاحة الحساس (محفوظة في المتصفح)."
     },
     "waterFlow": {
       "lastDataTitle": "تدفق المياه / الري",
