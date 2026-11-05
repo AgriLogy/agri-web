@@ -19,6 +19,8 @@ import React, {
   useState,
 } from 'react';
 import { useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
+import { hydrateSsoSession } from '@agri/api-client/hydrateSsoSession';
 import { loadConversations, saveConversations } from './chatHistoryStorage';
 import { isClearCommand } from './chatMap';
 import { mockEngine, streamReply } from './mockEngine';
@@ -62,6 +64,8 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [streaming, setStreaming] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const hydrated = useRef(false);
+  // Whether the one-time server history pull has run (or is not needed).
+  const serverPullDone = useRef(true);
   // Latest conversations, for the best-effort server push without re-subscribing.
   const conversationsRef = useRef<Conversation[]>([]);
 
@@ -73,15 +77,28 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     setConversations(loaded);
     setActiveId(loaded[0]?.id ?? null);
     hydrated.current = true;
-    if (!USE_MOCK && loaded.length === 0) {
-      pullConversations().then((server) => {
-        if (server.length > 0) {
-          setConversations(server);
-          setActiveId((cur) => cur ?? server[0]?.id ?? null);
-        }
-      });
-    }
+    // Local history wins: only an empty device ever pulls from the server.
+    serverPullDone.current = USE_MOCK || loaded.length > 0;
   }, []);
+
+  // The provider lives in the root layout, so it is mounted on /login too and
+  // survives the client-side router.push after signing in. Pull on the first
+  // route that has a session rather than on mount: pulling while logged out
+  // 401'd and (before the api.ts guard) reload-looped the login page (#138).
+  const pathname = usePathname();
+  useEffect(() => {
+    if (serverPullDone.current || !hydrateSsoSession()) return;
+    serverPullDone.current = true;
+    pullConversations().then((server) => {
+      // A stale token 401s and the api.ts interceptor clears the session:
+      // retry on the next route once the user has signed in again.
+      if (!hydrateSsoSession()) serverPullDone.current = false;
+      if (server.length > 0) {
+        setConversations((cur) => (cur.length > 0 ? cur : server));
+        setActiveId((cur) => cur ?? server[0]?.id ?? null);
+      }
+    });
+  }, [pathname]);
 
   // Persist whenever conversations change (after hydration). Keep the ref in
   // sync so the post-stream server push reads the committed state.
