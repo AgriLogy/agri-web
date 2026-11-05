@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { hydrateSsoSession } from './hydrateSsoSession';
 import { clearSsoSession } from './clearSsoSession';
+import { shouldRedirectToLogin } from './loginRedirect';
 
 const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL;
 const DEFAULT_API_URL = 'https://back.agrogo-datafarm.com';
@@ -78,7 +79,18 @@ api.interceptors.response.use(
       clearSsoSession();
       // Login route differs per app (web: /login, admin: /admin/login).
       // NEXT_PUBLIC_LOGIN_PATH overrides; default keeps the farmer app's path.
-      window.location.href = process.env.NEXT_PUBLIC_LOGIN_PATH || '/login';
+      // Never "redirect" to the page we are already on: that reloads it,
+      // re-fires whatever request 401'd, and loops forever (#138).
+      const loginPath = process.env.NEXT_PUBLIC_LOGIN_PATH || '/login';
+      if (
+        shouldRedirectToLogin(
+          window.location.pathname,
+          loginPath,
+          window.location.origin
+        )
+      ) {
+        window.location.href = loginPath;
+      }
     }
     return Promise.reject(error);
   }
