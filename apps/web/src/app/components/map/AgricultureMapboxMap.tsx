@@ -402,12 +402,16 @@ interface AgricultureMapboxMapProps {
   lat: number;
   lon: number;
   showToolsPanel?: boolean;
+  /** Stretch to the parent's height (e.g. inside the expanded-map modal)
+   *  instead of sizing to content; the map canvas takes the leftover space. */
+  fillHeight?: boolean;
 }
 
 export default function AgricultureMapboxMap({
   lat,
   lon,
   showToolsPanel = true,
+  fillHeight = false,
 }: AgricultureMapboxMapProps) {
   const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? '';
   // Read-only tiers (monitor) get no drawing/save/delete tools (#99), but
@@ -1959,6 +1963,7 @@ export default function AgricultureMapboxMap({
       align="stretch"
       spacing={3}
       w="100%"
+      h={fillHeight ? '100%' : undefined}
       minH={{ base: '320px', md: '460px' }}
     >
       {loadError ? (
