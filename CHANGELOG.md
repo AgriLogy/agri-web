@@ -1,3 +1,10 @@
+## [1.28.1](https://github.com/AgriLogy/agri-web/compare/v1.28.0...v1.28.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* **auth:** stop the /login reload loop when logged out ([#140](https://github.com/AgriLogy/agri-web/issues/140)) ([2e0849d](https://github.com/AgriLogy/agri-web/commit/2e0849d2da885ce2e2e70a4c6a48d08a7e1eaf36)), closes [#138](https://github.com/AgriLogy/agri-web/issues/138)
+
 # [1.28.0](https://github.com/AgriLogy/agri-web/compare/v1.27.3...v1.28.0) (2026-10-05)
 
 
