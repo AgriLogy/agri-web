@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/AgriLogy/agri-web/compare/v1.28.1...v1.29.0) (2026-11-05)
+
+
+### Features
+
+* **farm-map:** server-backed sectors and named sensors, live status, layers and basemaps ([#136](https://github.com/AgriLogy/agri-web/issues/136)) ([fd3ef16](https://github.com/AgriLogy/agri-web/commit/fd3ef161f8cb6b26601342ec075d2ae29d09a5b2)), closes [AgriLogy/agri-api#459](https://github.com/AgriLogy/agri-api/issues/459)
+
 ## [1.28.1](https://github.com/AgriLogy/agri-web/compare/v1.28.0...v1.28.1) (2026-11-05)
 
 
