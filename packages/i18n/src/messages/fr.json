@@ -1310,7 +1310,9 @@
     "googleMapWeather": {
       "title": "Exploitation & secteurs",
       "showTools": "Outils carte",
-      "hideTools": "Masquer les outils"
+      "hideTools": "Masquer les outils",
+      "expand": "Agrandir la carte",
+      "openInModal": "Carte ouverte en vue agrandie"
     }
   },
   "notifications": {

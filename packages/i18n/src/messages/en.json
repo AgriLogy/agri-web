@@ -1310,7 +1310,9 @@
     "googleMapWeather": {
       "title": "Farm & sectors",
       "showTools": "Map tools",
-      "hideTools": "Hide tools"
+      "hideTools": "Hide tools",
+      "expand": "Expand map",
+      "openInModal": "Map open in the expanded view"
     }
   },
   "notifications": {

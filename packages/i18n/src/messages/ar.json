@@ -1310,7 +1310,9 @@
     "googleMapWeather": {
       "title": "المزرعة والقطاعات",
       "showTools": "أدوات الخريطة",
-      "hideTools": "إخفاء الأدوات"
+      "hideTools": "إخفاء الأدوات",
+      "expand": "تكبير الخريطة",
+      "openInModal": "الخريطة مفتوحة في العرض الموسّع"
     }
   },
   "notifications": {
