@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/AgriLogy/agri-web/compare/v1.29.0...v1.30.0) (2026-11-06)
+
+
+### Features
+
+* **dashboard:** open the farm map in an expanded modal ([#139](https://github.com/AgriLogy/agri-web/issues/139)) ([152e26c](https://github.com/AgriLogy/agri-web/commit/152e26ca255a5062e114927d9060037c7944c4d7)), closes [#137](https://github.com/AgriLogy/agri-web/issues/137)
+
 # [1.29.0](https://github.com/AgriLogy/agri-web/compare/v1.28.1...v1.29.0) (2026-11-05)
 
 
