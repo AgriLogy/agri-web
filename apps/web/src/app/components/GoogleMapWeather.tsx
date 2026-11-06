@@ -33,9 +33,19 @@ export default function GoogleMapWeather() {
   const t = useTranslations();
   const { canEdit } = useCan();
   const p = useBreakpointValue({ base: 2, md: 4 }) ?? 2;
+  // Editing happens only in the modal (like Météo → details modal): the card
+  // map is read-only, and "Outils carte" opens the modal with the tools out.
   const [mapToolsOpen, setMapToolsOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const toggleTools = () => setMapToolsOpen((o) => !o);
+  const openModal = (withTools: boolean) => {
+    setMapToolsOpen(withTools);
+    setExpanded(true);
+  };
+  const closeModal = () => {
+    setExpanded(false);
+    setMapToolsOpen(false);
+  };
 
   const content = (
     <Box
@@ -66,27 +76,25 @@ export default function GoogleMapWeather() {
         <AgricultureMapboxMap
           lat={DEFAULT_LAT}
           lon={DEFAULT_LON}
-          showToolsPanel={mapToolsOpen}
+          showToolsPanel={false}
         />
       )}
     </Box>
   );
 
   // Monitor (read-only) callers get no sector-editing tools, so hide the
-  // toggle entirely — an inert button would just be noise (#99). The expand
-  // button is for every tier: viewing a bigger map needs no edit rights.
+  // tools button entirely — an inert button would just be noise (#99). The
+  // expand button is for every tier: viewing a bigger map needs no edit rights.
   const titleAddon = (
     <HStack spacing={2}>
       {canEdit ? (
         <Button
           size="sm"
-          variant={mapToolsOpen ? 'solid' : 'outline'}
+          variant="outline"
           colorScheme="brand"
-          onClick={toggleTools}
+          onClick={() => openModal(true)}
         >
-          {mapToolsOpen
-            ? t('misc.googleMapWeather.hideTools')
-            : t('misc.googleMapWeather.showTools')}
+          {t('misc.googleMapWeather.showTools')}
         </Button>
       ) : null}
       <Tooltip label={t('misc.googleMapWeather.expand')} hasArrow>
@@ -95,7 +103,7 @@ export default function GoogleMapWeather() {
           variant="outline"
           aria-label={t('misc.googleMapWeather.expand')}
           icon={<Maximize2 size={16} />}
-          onClick={() => setExpanded(true)}
+          onClick={() => openModal(false)}
         />
       </Tooltip>
     </HStack>
@@ -110,7 +118,7 @@ export default function GoogleMapWeather() {
       />
       <FarmMapModal
         isOpen={expanded}
-        onClose={() => setExpanded(false)}
+        onClose={closeModal}
         lat={DEFAULT_LAT}
         lon={DEFAULT_LON}
         toolsOpen={mapToolsOpen}
