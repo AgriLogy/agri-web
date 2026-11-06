@@ -1305,6 +1305,54 @@
       "cleared": "Conversation cleared.",
       "dataCard": {
         "empty": "No data to show."
+      },
+      "llmUnavailable": "The smart assistant is unavailable right now. You can use the commands (/help) or try again later.",
+      "sources": {
+        "title": "Data used ({n})",
+        "someStale": "some is old",
+        "justNow": "just now",
+        "hoursAgo": "{n} h ago",
+        "daysAgo": "{n} d ago",
+        "noData": "no data"
+      },
+      "tools": {
+        "get_soil_status": "Soil status",
+        "get_farm_status": "Farm status",
+        "get_weather": "Weather",
+        "get_plant_status": "Plant status",
+        "get_water_status": "Water",
+        "get_sensor_trend": "Sensor trend",
+        "get_irrigation_advice": "Irrigation advice",
+        "get_active_alerts": "Active alerts",
+        "list_zones": "Zones",
+        "get_zone_detail": "Zone detail",
+        "list_recent_notifications": "Recent notifications",
+        "get_sitemap": "Pages"
+      },
+      "action": {
+        "title": "Action to confirm",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "running": "Running…",
+        "confirmed": "Done",
+        "cancelled": "Cancelled",
+        "failed": "The action failed",
+        "networkError": "network error",
+        "createAlert": "Create the alert \"{name}\": {sensor} {condition} {value}",
+        "setCadence": "Receive notifications every {minutes} minutes",
+        "generic": "Run the action \"{tool}\""
+      },
+      "controls": {
+        "language": "Answer language",
+        "zone": "Zone",
+        "allZones": "All zones",
+        "languages": {
+          "auto": "Language: automatic",
+          "ary": "Darija",
+          "ar": "العربية",
+          "fr": "Français",
+          "en": "English"
+        }
       }
     },
     "googleMapWeather": {

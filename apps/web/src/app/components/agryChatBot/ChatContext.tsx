@@ -22,7 +22,9 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { hydrateSsoSession } from '@agri/api-client/hydrateSsoSession';
 import { loadConversations, saveConversations } from './chatHistoryStorage';
-import { isClearCommand } from './chatMap';
+import { historyFor, isClearCommand } from './chatMap';
+import { assistantApi } from '@agri/api-client/assistantApi';
+import type { AssistantLanguage } from '@agri/api-client/assistantApi';
 import { mockEngine, streamReply } from './mockEngine';
 import { realEngine } from './realEngine';
 import {
@@ -42,6 +44,42 @@ interface ChatContextValue {
   deleteConversation: (id: string) => void;
   sendMessage: (text: string) => void;
   stop: () => void;
+  /** Answer language: auto (the farmer's own) or a fixed one. Persisted. */
+  language: AssistantLanguage;
+  setLanguage: (lang: AssistantLanguage) => void;
+  /** Zone the farmer is asking about (remembered across sessions). */
+  zoneId: number | null;
+  setZoneId: (id: number | null) => void;
+  /** Run / dismiss an action the assistant proposed on `messageId`. */
+  confirmAction: (messageId: string) => void;
+  dismissAction: (messageId: string) => void;
+}
+
+const LANGUAGE_KEY = 'agri.chat.language';
+const ZONE_KEY = 'agri.chat.zoneId';
+const LANGUAGES: AssistantLanguage[] = ['auto', 'ary', 'ar', 'fr', 'en'];
+
+function readStored<T>(
+  key: string,
+  parse: (raw: string) => T | null
+): T | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(key);
+    return raw === null ? null : parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function writeStored(key: string, value: string | null) {
+  if (typeof window === 'undefined') return;
+  try {
+    if (value === null) window.localStorage.removeItem(key);
+    else window.localStorage.setItem(key, value);
+  } catch {
+    /* storage full / disabled — the choice just isn't remembered */
+  }
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null);
@@ -62,8 +100,36 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [streaming, setStreaming] = useState(false);
+  const [language, setLanguageState] = useState<AssistantLanguage>('auto');
+  const [zoneId, setZoneIdState] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const hydrated = useRef(false);
+
+  // Restore the remembered language + zone once on mount (client only).
+  useEffect(() => {
+    const lang = readStored(LANGUAGE_KEY, (raw) =>
+      LANGUAGES.includes(raw as AssistantLanguage)
+        ? (raw as AssistantLanguage)
+        : null
+    );
+    const zone = readStored(ZONE_KEY, (raw) =>
+      Number.isInteger(Number(raw)) ? Number(raw) : null
+    );
+    /* eslint-disable react-hooks/set-state-in-effect -- one-time hydration from localStorage */
+    if (lang) setLanguageState(lang);
+    if (zone !== null) setZoneIdState(zone);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, []);
+
+  const setLanguage = useCallback((lang: AssistantLanguage) => {
+    setLanguageState(lang);
+    writeStored(LANGUAGE_KEY, lang);
+  }, []);
+
+  const setZoneId = useCallback((id: number | null) => {
+    setZoneIdState(id);
+    writeStored(ZONE_KEY, id === null ? null : String(id));
+  }, []);
   // Whether the one-time server history pull has run (or is not needed).
   const serverPullDone = useRef(true);
   // Latest conversations, for the best-effort server push without re-subscribing.
@@ -198,6 +264,10 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
+      // Prior turns of THIS thread, captured before the new pair is appended.
+      const history = historyFor(
+        conversationsRef.current.find((c) => c.id === activeId)?.messages ?? []
+      );
       const now = new Date();
       const userMsg: Message = {
         id: uuid(),
@@ -249,7 +319,13 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Ask the engine, then stream the resolved reply into the assistant bubble.
       engine
-        .respond({ message: text, signal: controller.signal })
+        .respond({
+          message: text,
+          signal: controller.signal,
+          history,
+          zoneId,
+          language,
+        })
         .then((reply) => {
           if (controller.signal.aborted) return;
           if (reply.isError) {
@@ -259,6 +335,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
           }
           const replyText = resolveReplyText(reply);
           const card: ChatCard | undefined = reply.card;
+          const { sources, pendingAction } = reply;
           return streamReply(
             replyText,
             (chunk) =>
@@ -270,9 +347,16 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
             controller.signal,
             { instant: !reply.stream }
           ).then(() => {
-            if (card) {
+            if (card || sources || pendingAction) {
               patchLastMessage(targetId, (m) =>
-                m.role === 'assistant' ? { ...m, card } : m
+                m.role === 'assistant'
+                  ? {
+                      ...m,
+                      ...(card ? { card } : {}),
+                      ...(sources ? { sources } : {}),
+                      ...(pendingAction ? { pendingAction } : {}),
+                    }
+                  : m
               );
             }
           });
@@ -303,7 +387,99 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
           setStreaming(false);
         });
     },
-    [activeId, streaming, patchLastMessage, resolveReplyText, clearActiveThread]
+    [
+      activeId,
+      streaming,
+      patchLastMessage,
+      resolveReplyText,
+      clearActiveThread,
+      zoneId,
+      language,
+    ]
+  );
+
+  // Update one message (by id) inside the active conversation.
+  const patchMessage = useCallback(
+    (messageId: string, patch: (m: Message) => Message) => {
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.messages.some((m) => m.id === messageId)
+            ? {
+                ...c,
+                messages: c.messages.map((m) =>
+                  m.id === messageId ? patch(m) : m
+                ),
+                updatedAt: new Date(),
+              }
+            : c
+        )
+      );
+    },
+    []
+  );
+
+  const syncThreadOf = useCallback((messageId: string) => {
+    if (USE_MOCK) return;
+    setTimeout(() => {
+      const conv = conversationsRef.current.find((c) =>
+        c.messages.some((m) => m.id === messageId)
+      );
+      if (conv) pushConversation(conv);
+    }, 0);
+  }, []);
+
+  // The farmer confirmed a proposed action: only now is it executed, through
+  // the authenticated tool route, as the farmer (never from the chat call).
+  const confirmAction = useCallback(
+    (messageId: string) => {
+      const msg = conversationsRef.current
+        .flatMap((c) => c.messages)
+        .find((m) => m.id === messageId);
+      const action = msg?.pendingAction;
+      if (!action || action.state !== 'proposed') return;
+      patchMessage(messageId, (m) => ({
+        ...m,
+        pendingAction: { ...action, state: 'running' },
+      }));
+      assistantApi
+        .invokeTool(action.tool, action.params)
+        .then((res) => {
+          const err =
+            typeof res?.data?.error === 'string' ? res.data.error : undefined;
+          patchMessage(messageId, (m) => ({
+            ...m,
+            pendingAction: {
+              ...action,
+              state: err ? 'failed' : 'confirmed',
+              ...(err ? { error: err } : {}),
+            },
+          }));
+        })
+        .catch(() =>
+          patchMessage(messageId, (m) => ({
+            ...m,
+            pendingAction: {
+              ...action,
+              state: 'failed',
+              error: t('misc.chatbot.action.networkError'),
+            },
+          }))
+        )
+        .finally(() => syncThreadOf(messageId));
+    },
+    [patchMessage, syncThreadOf, t]
+  );
+
+  const dismissAction = useCallback(
+    (messageId: string) => {
+      patchMessage(messageId, (m) =>
+        m.pendingAction?.state === 'proposed'
+          ? { ...m, pendingAction: { ...m.pendingAction, state: 'cancelled' } }
+          : m
+      );
+      syncThreadOf(messageId);
+    },
+    [patchMessage, syncThreadOf]
   );
 
   const stop = useCallback(() => {
@@ -321,6 +497,12 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     deleteConversation,
     sendMessage,
     stop,
+    language,
+    setLanguage,
+    zoneId,
+    setZoneId,
+    confirmAction,
+    dismissAction,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

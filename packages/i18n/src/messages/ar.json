@@ -1305,6 +1305,54 @@
       "cleared": "تم مسح المحادثة.",
       "dataCard": {
         "empty": "لا توجد بيانات للعرض."
+      },
+      "llmUnavailable": "المساعد الذكي غير متاح حاليًا. يمكنك استعمال الأوامر (/مساعدة) أو المحاولة لاحقًا.",
+      "sources": {
+        "title": "البيانات المستعملة ({n})",
+        "someStale": "بعضها قديم",
+        "justNow": "الآن",
+        "hoursAgo": "منذ {n} ساعة",
+        "daysAgo": "منذ {n} يوم",
+        "noData": "لا توجد بيانات"
+      },
+      "tools": {
+        "get_soil_status": "حالة التربة",
+        "get_farm_status": "حالة المزرعة",
+        "get_weather": "الطقس",
+        "get_plant_status": "حالة النباتات",
+        "get_water_status": "الماء",
+        "get_sensor_trend": "اتجاه المستشعر",
+        "get_irrigation_advice": "نصيحة الري",
+        "get_active_alerts": "التنبيهات النشطة",
+        "list_zones": "المناطق",
+        "get_zone_detail": "تفاصيل المنطقة",
+        "list_recent_notifications": "الإشعارات الأخيرة",
+        "get_sitemap": "الصفحات"
+      },
+      "action": {
+        "title": "إجراء يحتاج إلى تأكيد",
+        "confirm": "تأكيد",
+        "cancel": "إلغاء",
+        "running": "جارٍ التنفيذ…",
+        "confirmed": "تم التنفيذ",
+        "cancelled": "تم الإلغاء",
+        "failed": "فشل الإجراء",
+        "networkError": "خطأ في الشبكة",
+        "createAlert": "إنشاء التنبيه «{name}»: {sensor} {condition} {value}",
+        "setCadence": "تلقي الإشعارات كل {minutes} دقيقة",
+        "generic": "تنفيذ الإجراء «{tool}»"
+      },
+      "controls": {
+        "language": "لغة الأجوبة",
+        "zone": "المنطقة",
+        "allZones": "كل المناطق",
+        "languages": {
+          "auto": "اللغة: تلقائي",
+          "ary": "الدارجة",
+          "ar": "العربية",
+          "fr": "Français",
+          "en": "English"
+        }
       }
     },
     "googleMapWeather": {
