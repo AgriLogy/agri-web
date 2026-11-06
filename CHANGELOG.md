@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/AgriLogy/agri-web/compare/v1.30.0...v1.31.0) (2026-11-06)
+
+
+### Features
+
+* **assistant:** grounded chat with language, zone, sources and confirmed actions ([#142](https://github.com/AgriLogy/agri-web/issues/142)) ([4588ea1](https://github.com/AgriLogy/agri-web/commit/4588ea1704e6169e4abbb0add0773b44eef88864)), closes [#141](https://github.com/AgriLogy/agri-web/issues/141)
+
 # [1.30.0](https://github.com/AgriLogy/agri-web/compare/v1.29.0...v1.30.0) (2026-11-06)
 
 
