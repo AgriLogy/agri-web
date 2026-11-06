@@ -11,6 +11,8 @@ import type {
   ChatCard,
   ChatMetricItem,
   ChatNotificationItem,
+  ChatPendingAction,
+  ChatSource,
   Conversation,
   EngineReply,
   Message,
@@ -100,15 +102,94 @@ export function isClearCommand(message: string): boolean {
  * - `intent === 'sitemap'` → attach the client-rendered sitemap card.
  */
 export function mapChatResponse(res: AssistantChatResponse): EngineReply {
-  const card = dataCardFor(res);
+  const sources = sourcesFrom(res);
+  // An AI answer that lists its sources (each with its reading time) doesn't
+  // also get the raw data card: those rows carry no dates, so a months-old
+  // value would look current. Rule-based command replies keep their cards.
+  const card =
+    res?.intent === 'llm' && sources.length ? undefined : dataCardFor(res);
+  const pendingAction = pendingActionFrom(res);
+  const extras = {
+    ...(sources.length ? { sources } : {}),
+    ...(pendingAction ? { pendingAction } : {}),
+  };
 
   const reply = (res?.reply ?? '').trim();
   if (reply) {
-    return { text: reply, card, stream: true };
+    return { text: reply, card, stream: true, ...extras };
+  }
+
+  // The AI engine failed and the server fell back to the keyword matcher,
+  // which found nothing: say so instead of the generic "try a command".
+  if (res?.fallback_reason && res?.intent === 'smalltalk') {
+    return { replyKey: 'misc.chatbot.llmUnavailable', stream: false };
   }
 
   const replyKey = res?.reply_key || 'misc.chatbot.mock.generic';
-  return { replyKey, card, stream: false };
+  return { replyKey, card, stream: false, ...extras };
+}
+
+/** The farm data an LLM answer was based on (label, value, reading time). */
+export function sourcesFrom(res: AssistantChatResponse): ChatSource[] {
+  return arr(res?.sources).flatMap((raw) => {
+    const s = (raw ?? {}) as Record<string, unknown>;
+    const tool = str(s.tool);
+    if (!tool) return [];
+    const items = arr(s.items).map((rawItem) => {
+      const i = (rawItem ?? {}) as Record<string, unknown>;
+      const value =
+        typeof i.value === 'number' || typeof i.value === 'string'
+          ? i.value
+          : null;
+      return {
+        label: str(i.label),
+        value,
+        unit: str(i.unit),
+        asOf: str(i.as_of) || null,
+      };
+    });
+    const source: ChatSource = { tool, asOf: str(s.as_of) || null, items };
+    if (str(s.error)) source.error = str(s.error);
+    return [source];
+  });
+}
+
+/** An action the assistant proposed; the farmer must confirm it. */
+export function pendingActionFrom(
+  res: AssistantChatResponse
+): ChatPendingAction | undefined {
+  const p = res?.pending_action;
+  if (!p || typeof p !== 'object' || !str(p.tool)) return undefined;
+  const params =
+    p.params && typeof p.params === 'object'
+      ? (p.params as Record<string, unknown>)
+      : {};
+  return { tool: p.tool, params, state: 'proposed' };
+}
+
+/** Text history sent with a new message: the last `limit` finished turns,
+ *  skipping error bubbles and empty placeholders. */
+export function historyFor(
+  messages: Message[],
+  limit = 12
+): { role: Message['role']; content: string }[] {
+  return messages
+    .filter((m) => !m.isError && m.content.trim())
+    .slice(-limit)
+    .map((m) => ({ role: m.role, content: m.content.trim() }));
+}
+
+/** How old a reading is, for the "data used" list. `stale` past 2 days, the
+ *  same threshold the assistant is told to treat as outdated. */
+export function readingAge(
+  asOf: string | null,
+  now: Date = new Date()
+): { hours: number; stale: boolean } | null {
+  if (!asOf) return null;
+  const t = Date.parse(asOf);
+  if (Number.isNaN(t)) return null;
+  const hours = Math.max(0, (now.getTime() - t) / 3_600_000);
+  return { hours, stale: hours > 48 };
 }
 
 /** Serialize our in-memory messages to plain JSON (ISO timestamps) for the
@@ -120,6 +201,8 @@ export function messagesToJSON(messages: Message[]): unknown[] {
     content: m.content,
     isError: m.isError ?? false,
     card: m.card ?? null,
+    sources: m.sources ?? null,
+    pendingAction: m.pendingAction ?? null,
     timestamp:
       m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp,
   }));
@@ -131,6 +214,8 @@ interface RawMessage {
   content?: string;
   isError?: boolean;
   card?: Message['card'] | null;
+  sources?: Message['sources'] | null;
+  pendingAction?: Message['pendingAction'] | null;
   timestamp?: string;
 }
 
@@ -142,6 +227,8 @@ function reviveMessage(raw: RawMessage, index: number): Message {
     content: typeof raw.content === 'string' ? raw.content : '',
     isError: Boolean(raw.isError),
     card: raw.card ?? undefined,
+    sources: raw.sources ?? undefined,
+    pendingAction: raw.pendingAction ?? undefined,
     timestamp: raw.timestamp ? new Date(raw.timestamp) : new Date(0),
   };
 }

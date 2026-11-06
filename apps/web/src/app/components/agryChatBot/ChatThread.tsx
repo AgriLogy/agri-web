@@ -14,6 +14,8 @@ import { keyframes } from '@emotion/react';
 import { AgrilogyMessageBubble } from './MessageBubble';
 import { SitemapCard } from './SitemapCard';
 import { DataCard } from './DataCard';
+import { MessageExtras } from './MessageExtras';
+import { ChatControls } from './ChatControls';
 import { useChat } from './ChatContext';
 import {
   localeToRecognitionLang,
@@ -282,6 +284,7 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
                     <DataCard card={msg.card} />
                   )}
                 </Box>
+                <MessageExtras message={msg} />
                 <Text
                   fontSize="10px"
                   color={timestampColor}
@@ -299,11 +302,10 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
           }
 
           return (
-            <AgrilogyMessageBubble
-              key={msg.id}
-              message={msg}
-              isTyping={showTyping}
-            />
+            <Box key={msg.id}>
+              <AgrilogyMessageBubble message={msg} isTyping={showTyping} />
+              {!showTyping ? <MessageExtras message={msg} /> : null}
+            </Box>
           );
         })}
         <div ref={endRef} />
@@ -322,6 +324,7 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
         flexDirection="column"
         gap="6px"
       >
+        <ChatControls />
         <Flex align="flex-end" gap="8px">
           <Textarea
             ref={textareaRef}
@@ -344,6 +347,7 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
             minH="38px"
             rows={1}
             lineHeight="1.45"
+            dir="auto"
             placeholder={t('misc.chatbot.inputPlaceholder')}
             _placeholder={{ color: placeholderColor }}
             _focus={{ borderColor: inputFocus, boxShadow: 'none' }}

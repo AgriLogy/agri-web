@@ -4,6 +4,7 @@
  * axios `api`, which attaches the Bearer token + base URL):
  *
  *   POST   /assistant/chat                     — orchestrate a message
+ *   POST   /assistant/tools/{name}             — run a confirmed action
  *   GET    /assistant/conversations            — list the caller's threads
  *   PUT    /assistant/conversations/{clientId} — create/replace a thread
  *   DELETE /assistant/conversations/{clientId} — delete a thread
@@ -19,6 +20,40 @@ export interface AssistantChatResponse {
   reply: string | null;
   tool: string | null;
   data: unknown;
+  /** LLM path only: what the answer was based on, with reading times. */
+  sources?: AssistantSource[];
+  /** LLM path only: an action the farmer must confirm (never auto-executed). */
+  pending_action?: AssistantPendingAction;
+  model?: string;
+  /** LLM path failed and the rule-based reply was used instead. */
+  fallback_reason?: string;
+}
+
+export interface AssistantSourceItem {
+  label: string | null;
+  value: number | string | null;
+  unit: string | null;
+  as_of: string | null;
+}
+
+export interface AssistantSource {
+  tool: string;
+  as_of: string | null;
+  items?: AssistantSourceItem[];
+  error?: string;
+}
+
+export interface AssistantPendingAction {
+  tool: string;
+  params: Record<string, unknown>;
+}
+
+/** Chat language: answer in the farmer's language, or a fixed one. */
+export type AssistantLanguage = 'auto' | 'ary' | 'ar' | 'fr' | 'en';
+
+export interface AssistantHistoryItem {
+  role: 'user' | 'assistant';
+  content: string;
 }
 
 /** Server-side conversation record. `messages` is opaque JSON owned by the
@@ -43,13 +78,29 @@ export const assistantApi = {
     message: string;
     zoneId?: number | null;
     context?: string | null;
+    history?: AssistantHistoryItem[];
+    language?: AssistantLanguage;
   }): Promise<AssistantChatResponse> {
     const { data } = await api.post('/assistant/chat', {
       message: input.message,
       zone_id: input.zoneId ?? null,
       context: input.context ?? null,
+      history: input.history ?? [],
+      language: input.language ?? 'auto',
     });
     return data as AssistantChatResponse;
+  },
+  /** Run one assistant tool as the caller: used to execute a confirmed
+   *  `pending_action` (the server never runs a write from chat). */
+  async invokeTool(
+    name: string,
+    params: Record<string, unknown>
+  ): Promise<{ tool: string; data: Record<string, unknown> }> {
+    const { data } = await api.post(
+      `/assistant/tools/${encodeURIComponent(name)}`,
+      { params }
+    );
+    return data as { tool: string; data: Record<string, unknown> };
   },
 
   async listConversations(): Promise<AssistantConversationDTO[]> {

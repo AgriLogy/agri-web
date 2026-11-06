@@ -1305,6 +1305,54 @@
       "cleared": "Conversation effacée.",
       "dataCard": {
         "empty": "Aucune donnée à afficher."
+      },
+      "llmUnavailable": "L'assistant intelligent est indisponible pour le moment. Vous pouvez utiliser les commandes (/aide) ou réessayer plus tard.",
+      "sources": {
+        "title": "Données utilisées ({n})",
+        "someStale": "certaines sont anciennes",
+        "justNow": "à l'instant",
+        "hoursAgo": "il y a {n} h",
+        "daysAgo": "il y a {n} j",
+        "noData": "aucune donnée"
+      },
+      "tools": {
+        "get_soil_status": "État du sol",
+        "get_farm_status": "État de la ferme",
+        "get_weather": "Météo",
+        "get_plant_status": "État des plantes",
+        "get_water_status": "Eau",
+        "get_sensor_trend": "Tendance capteur",
+        "get_irrigation_advice": "Conseil d'irrigation",
+        "get_active_alerts": "Alertes actives",
+        "list_zones": "Zones",
+        "get_zone_detail": "Détail de la zone",
+        "list_recent_notifications": "Notifications récentes",
+        "get_sitemap": "Pages"
+      },
+      "action": {
+        "title": "Action à confirmer",
+        "confirm": "Confirmer",
+        "cancel": "Annuler",
+        "running": "En cours…",
+        "confirmed": "Action effectuée",
+        "cancelled": "Action annulée",
+        "failed": "Échec de l'action",
+        "networkError": "erreur réseau",
+        "createAlert": "Créer l'alerte « {name} » : {sensor} {condition} {value}",
+        "setCadence": "Recevoir les notifications toutes les {minutes} minutes",
+        "generic": "Exécuter l'action « {tool} »"
+      },
+      "controls": {
+        "language": "Langue des réponses",
+        "zone": "Zone concernée",
+        "allZones": "Toutes les zones",
+        "languages": {
+          "auto": "Langue : automatique",
+          "ary": "Darija",
+          "ar": "العربية",
+          "fr": "Français",
+          "en": "English"
+        }
       }
     },
     "googleMapWeather": {

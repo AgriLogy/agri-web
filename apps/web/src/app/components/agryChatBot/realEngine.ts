@@ -24,9 +24,14 @@ function errorReply(err: unknown): EngineReply {
 }
 
 export const realEngine: ChatEngine = {
-  async respond({ message }) {
+  async respond({ message, history, zoneId, language }) {
     try {
-      const res = await assistantApi.chat({ message });
+      const res = await assistantApi.chat({
+        message,
+        history: history ?? [],
+        zoneId: zoneId ?? null,
+        language: language ?? 'auto',
+      });
       return mapChatResponse(res);
     } catch (err) {
       return errorReply(err);

@@ -3,7 +3,11 @@ import {
   messagesToJSON,
   conversationFromDTO,
   dataCardFor,
+  historyFor,
   isClearCommand,
+  pendingActionFrom,
+  readingAge,
+  sourcesFrom,
 } from './chatMap';
 import type { Message } from './types';
 
@@ -256,5 +260,147 @@ describe('isClearCommand', () => {
     expect(isClearCommand('clear the field?')).toBe(false);
     expect(isClearCommand('/sitemap')).toBe(false);
     expect(isClearCommand('hello')).toBe(false);
+  });
+});
+
+describe('AI answer extras (agri-api#472)', () => {
+  const llm = {
+    ...base,
+    intent: 'llm',
+    reply: 'Rtoba mzyana.',
+    sources: [
+      {
+        tool: 'get_soil_status',
+        as_of: '2026-06-22T08:26:00+00:00',
+        items: [
+          {
+            label: 'Soil moisture (medium)',
+            value: 27,
+            unit: '%',
+            as_of: '2026-06-22T08:26:00+00:00',
+          },
+        ],
+      },
+      { tool: '', as_of: null },
+    ],
+    pending_action: {
+      tool: 'create_alert',
+      params: { name: 'Sol sec', condition_nbr: 20 },
+    },
+  };
+
+  it('maps sources (dropping malformed ones) and the pending action', () => {
+    const r = mapChatResponse(llm);
+    expect(r.text).toBe('Rtoba mzyana.');
+    expect(r.sources).toEqual([
+      {
+        tool: 'get_soil_status',
+        asOf: '2026-06-22T08:26:00+00:00',
+        items: [
+          {
+            label: 'Soil moisture (medium)',
+            value: 27,
+            unit: '%',
+            asOf: '2026-06-22T08:26:00+00:00',
+          },
+        ],
+      },
+    ]);
+    expect(r.pendingAction).toEqual({
+      tool: 'create_alert',
+      params: { name: 'Sol sec', condition_nbr: 20 },
+      state: 'proposed',
+    });
+  });
+
+  it('an AI answer with dated sources does not repeat the undated data card', () => {
+    const r = mapChatResponse({
+      ...llm,
+      tool: 'get_soil_status',
+      data: { metrics: [{ label: 'Soil moisture', value: 27, unit: '%' }] },
+    });
+    expect(r.card).toBeUndefined();
+    expect(r.sources).toHaveLength(1);
+  });
+
+  it('no extras on the rule-based path', () => {
+    const r = mapChatResponse({
+      ...base,
+      reply_key: 'misc.chatbot.alertsCard.intro',
+    });
+    expect(r.sources).toBeUndefined();
+    expect(r.pendingAction).toBeUndefined();
+    expect(sourcesFrom(base)).toEqual([]);
+    expect(pendingActionFrom(base)).toBeUndefined();
+  });
+
+  it('says the AI is unavailable when the server fell back to nothing', () => {
+    const r = mapChatResponse({
+      ...base,
+      reply_key: 'misc.chatbot.mock.generic',
+      fallback_reason: 'unavailable',
+    });
+    expect(r.replyKey).toBe('misc.chatbot.llmUnavailable');
+  });
+
+  it('a fallback that still matched a command keeps the command reply', () => {
+    const r = mapChatResponse({
+      ...base,
+      intent: 'active_alerts',
+      reply_key: 'misc.chatbot.alertsCard.intro',
+      fallback_reason: 'rate_limit',
+    });
+    expect(r.replyKey).toBe('misc.chatbot.alertsCard.intro');
+  });
+
+  it('readingAge flags data older than 2 days', () => {
+    const now = new Date('2026-06-25T08:26:00Z');
+    expect(readingAge('2026-06-25T05:26:00Z', now)).toEqual({
+      hours: 3,
+      stale: false,
+    });
+    expect(readingAge('2026-06-22T08:26:00Z', now)?.stale).toBe(true);
+    expect(readingAge(null, now)).toBeNull();
+    expect(readingAge('not a date', now)).toBeNull();
+  });
+
+  it('historyFor keeps the last finished text turns only', () => {
+    const at = new Date(0);
+    const msgs: Message[] = [
+      { id: '1', role: 'user', content: 'salam', timestamp: at },
+      {
+        id: '2',
+        role: 'assistant',
+        content: 'oops',
+        isError: true,
+        timestamp: at,
+      },
+      { id: '3', role: 'assistant', content: '  ', timestamp: at },
+      { id: '4', role: 'assistant', content: ' wa3alaykum ', timestamp: at },
+    ];
+    expect(historyFor(msgs)).toEqual([
+      { role: 'user', content: 'salam' },
+      { role: 'assistant', content: 'wa3alaykum' },
+    ]);
+    expect(historyFor(msgs, 1)).toEqual([
+      { role: 'assistant', content: 'wa3alaykum' },
+    ]);
+  });
+
+  it('sources and actions survive the server round-trip', () => {
+    const msg: Message = {
+      id: 'a',
+      role: 'assistant',
+      content: 'x',
+      timestamp: new Date('2026-06-22T08:26:00Z'),
+      sources: [{ tool: 'get_weather', asOf: null, items: [] }],
+      pendingAction: { tool: 'create_alert', params: {}, state: 'confirmed' },
+    };
+    const conv = conversationFromDTO({
+      id: 'c',
+      messages: messagesToJSON([msg]),
+    });
+    expect(conv.messages[0].sources).toEqual(msg.sources);
+    expect(conv.messages[0].pendingAction?.state).toBe('confirmed');
   });
 });

@@ -88,6 +88,8 @@ export const AgrilogyMessageBubble = ({
         lineHeight="1.55"
         wordBreak="break-word"
         whiteSpace={renderMarkdown ? undefined : 'pre-wrap'}
+        // Darija / Arabic replies render right-to-left, French/English left-to-right.
+        dir="auto"
       >
         {isTyping ? (
           /* Typing indicator */

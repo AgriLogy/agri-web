@@ -41,6 +41,26 @@ export type ChatCard =
   | { type: 'notifications'; items: ChatNotificationItem[] }
   | { type: 'error'; message: string };
 
+export interface ChatSource {
+  tool: string;
+  asOf: string | null;
+  items: {
+    label: string;
+    value: number | string | null;
+    unit: string;
+    asOf: string | null;
+  }[];
+  error?: string;
+}
+
+export interface ChatPendingAction {
+  tool: string;
+  params: Record<string, unknown>;
+  /** proposed → the farmer still has to confirm; then confirmed/cancelled/failed. */
+  state: 'proposed' | 'running' | 'confirmed' | 'cancelled' | 'failed';
+  error?: string;
+}
+
 export interface Message {
   id: string;
   role: MessageRole;
@@ -48,6 +68,10 @@ export interface Message {
   isError?: boolean;
   /** Optional structured attachment (sitemap, etc.). */
   card?: ChatCard;
+  /** LLM answers: the farm data the advice was based on, with reading times. */
+  sources?: ChatSource[];
+  /** LLM answers: an action awaiting the farmer's explicit confirmation. */
+  pendingAction?: ChatPendingAction;
   timestamp: Date;
 }
 
@@ -67,6 +91,8 @@ export interface EngineReply {
   stream: boolean;
   /** Mark the reply as an error bubble (failed request, etc.). */
   isError?: boolean;
+  sources?: ChatSource[];
+  pendingAction?: ChatPendingAction;
 }
 
 /** Pluggable chat backend. `mockEngine` and `realEngine` both implement this so
@@ -75,6 +101,10 @@ export interface ChatEngine {
   respond(input: {
     message: string;
     signal: AbortSignal;
+    /** Prior turns, oldest first (text only). */
+    history?: { role: MessageRole; content: string }[];
+    zoneId?: number | null;
+    language?: 'auto' | 'ary' | 'ar' | 'fr' | 'en';
   }): Promise<EngineReply>;
 }
 
