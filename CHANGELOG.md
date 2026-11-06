@@ -1,3 +1,10 @@
+# [1.32.0](https://github.com/AgriLogy/agri-web/compare/v1.31.0...v1.32.0) (2026-11-06)
+
+
+### Features
+
+* **map:** edit sectors only in the modal; Outils carte opens it ([#144](https://github.com/AgriLogy/agri-web/issues/144)) ([6f15b49](https://github.com/AgriLogy/agri-web/commit/6f15b49e95968609b7b1e01ddada491f2f14e191))
+
 # [1.31.0](https://github.com/AgriLogy/agri-web/compare/v1.30.0...v1.31.0) (2026-11-06)
 
 
