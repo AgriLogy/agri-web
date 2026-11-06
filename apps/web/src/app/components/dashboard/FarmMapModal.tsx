@@ -2,9 +2,10 @@
 
 /**
  * Expanded farm map: the dashboard "Farm & sectors" card opened in a large
- * modal (same pattern as the Météo card → WeatherDetailsModal), so sectors
- * and sensors can be read and edited with real screen room. Full screen on
- * mobile, 6xl on desktop.
+ * modal (same pattern as the Météo card → WeatherDetailsModal). This is the
+ * only place sectors and sensors are edited: the card map is read-only and its
+ * "Outils carte" button opens this modal with the tools panel out. Full
+ * screen on mobile, 6xl on desktop.
  *
  * The caller unmounts its own card map while this is open, so only one
  * Mapbox instance exists at a time; each instance loads from the server on
