@@ -165,6 +165,42 @@ export interface SensorKeyOption {
   label: string;
 }
 
+// ---- NDVI (Sentinel-2 via Copernicus, agri-api#459 phase 2) ---------------
+export interface NdviLegendStop {
+  value: number;
+  color: string;
+}
+export type SatIndex = 'ndvi' | 'ndmi' | 'ndre';
+export type SatImageKind = SatIndex | 'false_color';
+export interface SatIndexInfo {
+  id: SatIndex;
+  use: string;
+  legend: NdviLegendStop[];
+  classes: { low_below: number; high_from: number };
+}
+export interface NdviConfig {
+  configured: boolean;
+  source: string;
+  legend: NdviLegendStop[];
+  indexes?: SatIndexInfo[];
+  image_kinds?: SatImageKind[];
+}
+export interface NdviDate {
+  date: string;
+  cloud_cover: number;
+}
+export interface NdviStat {
+  date: string;
+  mean: number;
+  min: number | null;
+  max: number | null;
+  std: number | null;
+  /** Share of the sector's pixels that were clear (not cloud/shadow). */
+  valid_fraction: number;
+  /** Share of clear pixels in the index's low / medium / high classes. */
+  classes?: { low: number; medium: number; high: number } | null;
+}
+
 export const farmMapApi = {
   listSectors: () => api.get<MapSector[]>('/sectors').then((r) => r.data),
   createSector: (body: SectorWrite) =>
@@ -193,6 +229,28 @@ export const farmMapApi = {
     api.put<MapPreferences>('/map-preferences', body).then((r) => r.data),
 
   status: () => api.get<FarmMapStatus>('/farm-map/status').then((r) => r.data),
+  ndviConfig: () =>
+    api.get<NdviConfig>('/farm-map/ndvi/config').then((r) => r.data),
+  ndviDates: (sectorId: number, days = 120, maxCloud = 40) =>
+    api
+      .get<{ dates: NdviDate[] }>(`/farm-map/ndvi/sectors/${sectorId}/dates`, {
+        params: { days, max_cloud: maxCloud },
+      })
+      .then((r) => r.data.dates),
+  ndviStats: (sectorId: number, days = 120, index: SatIndex = 'ndvi') =>
+    api
+      .get<{ series: NdviStat[] }>(`/farm-map/ndvi/sectors/${sectorId}/stats`, {
+        params: { days, index },
+      })
+      .then((r) => r.data.series),
+  /** PNG clipped to the sector (transparent outside it and on clouds). */
+  ndviImage: (sectorId: number, date: string, index: SatImageKind = 'ndvi') =>
+    api
+      .get<Blob>(`/farm-map/ndvi/sectors/${sectorId}/image`, {
+        params: { date, index },
+        responseType: 'blob',
+      })
+      .then((r) => r.data),
 
   listZones: () => api.get<ZoneOption[]>('/zones').then((r) => r.data),
   listSensorKeys: () =>
