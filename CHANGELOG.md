@@ -1,3 +1,10 @@
+# [1.35.0](https://github.com/AgriLogy/agri-web/compare/v1.34.0...v1.35.0) (2026-11-07)
+
+
+### Features
+
+* **map:** satellite indices panel (ndvi/ndmi/ndre) with map overlay ([#153](https://github.com/AgriLogy/agri-web/issues/153)) ([645987a](https://github.com/AgriLogy/agri-web/commit/645987ad9a9e30a25431ef10bf5532724ec9d065)), closes [#149](https://github.com/AgriLogy/agri-web/issues/149)
+
 # [1.34.0](https://github.com/AgriLogy/agri-web/compare/v1.33.1...v1.34.0) (2026-11-07)
 
 
