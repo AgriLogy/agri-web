@@ -1,3 +1,10 @@
+## [1.33.1](https://github.com/AgriLogy/agri-web/compare/v1.33.0...v1.33.1) (2026-11-07)
+
+
+### Bug Fixes
+
+* **map:** drawing a sector no longer crashes when sensors exist ([#148](https://github.com/AgriLogy/agri-web/issues/148)) ([ea6066e](https://github.com/AgriLogy/agri-web/commit/ea6066e3b9f939052add2009c8e8f8941ef95a97))
+
 # [1.33.0](https://github.com/AgriLogy/agri-web/compare/v1.32.0...v1.33.0) (2026-11-07)
 
 
