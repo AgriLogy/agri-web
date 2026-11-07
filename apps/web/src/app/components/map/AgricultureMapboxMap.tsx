@@ -106,6 +106,8 @@ import MapLayerPanel, {
   type MapLayerId,
 } from './MapLayerPanel';
 import SectorDetailsPanel from './SectorDetailsPanel';
+import type { NdviOverlay } from './SectorNdviPanel';
+import { bboxCorners } from '@/app/lib/farmMap/ndvi';
 import SensorInstallationModal, {
   type SensorModalTarget,
 } from './SensorInstallationModal';
@@ -476,6 +478,9 @@ export default function AgricultureMapboxMap({
 
   const [nextSectorName, setNextSectorName] = useState('');
   const [drawMode, setDrawMode] = useState<string>('simple_select');
+  // NDVI image laid over one sector (agri-api#459 phase 2).
+  const [ndviOverlay, setNdviOverlay] = useState<NdviOverlay | null>(null);
+  const ndviOverlayRef = useRef<NdviOverlay | null>(null);
   const [nextAutoSectorIndex, setNextAutoSectorIndex] = useState(1);
   const [sensorPlacementType, setSensorPlacementType] = useState<string | null>(
     null
@@ -1292,6 +1297,7 @@ export default function AgricultureMapboxMap({
       refreshLabels();
       setSourceData(map, FARM_SENSORS_SOURCE_ID, sensorsFcRef.current);
       applyLayerPrefs(map, layerPrefsRef.current);
+      applyNdviOverlay(map, ndviOverlayRef.current);
     };
 
     // One layer setup per loaded style: `style.load` and `load` both ask for
@@ -1654,6 +1660,51 @@ export default function AgricultureMapboxMap({
     savePrefs({ layers: next });
   };
 
+  /** Image source + raster layer under the sector outlines (gl-draw). */
+  const applyNdviOverlay = useCallback(
+    (map: mapboxgl.Map, o: NdviOverlay | null) => {
+      const SRC = 'ndvi-overlay';
+      if (map.getLayer(SRC)) map.removeLayer(SRC);
+      if (map.getSource(SRC)) map.removeSource(SRC);
+      if (!o) return;
+      const corners = bboxCorners(
+        sectorRowsRef.current.get(o.sectorId)?.geometry ?? null
+      );
+      if (!corners) return;
+      map.addSource(SRC, {
+        type: 'image',
+        url: o.url,
+        coordinates: corners as [
+          [number, number],
+          [number, number],
+          [number, number],
+          [number, number],
+        ],
+      });
+      const firstDraw = map
+        .getStyle()
+        ?.layers?.find((l) => l.id.startsWith('gl-draw'))?.id;
+      map.addLayer(
+        {
+          id: SRC,
+          type: 'raster',
+          source: SRC,
+          paint: { 'raster-opacity': 0.85, 'raster-resampling': 'nearest' },
+        },
+        firstDraw
+      );
+    },
+    []
+  );
+
+  useEffect(() => {
+    const prev = ndviOverlayRef.current;
+    ndviOverlayRef.current = ndviOverlay;
+    const map = mapRef.current;
+    if (map && map.isStyleLoaded()) applyNdviOverlay(map, ndviOverlay);
+    if (prev && prev.url !== ndviOverlay?.url) URL.revokeObjectURL(prev.url);
+  }, [ndviOverlay, applyNdviOverlay]);
+
   const handleSaveNow = async () => {
     if (syncTimerRef.current) window.clearTimeout(syncTimerRef.current);
     await runServerSync();
@@ -1940,6 +1991,13 @@ export default function AgricultureMapboxMap({
     [view, selectedSectorDrawId]
   );
 
+  // The NDVI image follows the selected sector: deselecting clears it.
+  useEffect(() => {
+    if (ndviOverlay && ndviOverlay.sectorId !== selectedSector?.id) {
+      setNdviOverlay(null);
+    }
+  }, [selectedSector, ndviOverlay]);
+
   const selectedSectorStatus = useMemo(
     () =>
       selectedSector
@@ -2161,6 +2219,8 @@ export default function AgricultureMapboxMap({
                     selectedSectorDrawId && zoomToSector(selectedSectorDrawId)
                   }
                   onSave={(b) => void handleSaveSectorDetails(b)}
+                  ndviOverlay={ndviOverlay}
+                  onNdviOverlay={setNdviOverlay}
                 />
               </Box>
             </Collapse>
@@ -2354,6 +2414,8 @@ export default function AgricultureMapboxMap({
               selectedSectorDrawId && zoomToSector(selectedSectorDrawId)
             }
             onSave={() => {}}
+            ndviOverlay={ndviOverlay}
+            onNdviOverlay={setNdviOverlay}
           />
         </Box>
       ) : null}
