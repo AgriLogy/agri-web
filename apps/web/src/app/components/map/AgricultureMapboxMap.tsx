@@ -1665,6 +1665,17 @@ export default function AgricultureMapboxMap({
     drawRef.current?.changeMode(MapboxDraw.constants.modes.DRAW_POLYGON);
   };
 
+  // Leaving draw_polygon commits the shape when it has >= 3 corners
+  // (mapbox-gl-draw fires draw.create on stop), so "Finish" = switch mode.
+  const handleFinishDrawing = () => {
+    drawRef.current?.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
+  };
+
+  // trash() in draw_polygon drops the shape in progress and exits the mode.
+  const handleCancelDrawing = () => {
+    drawRef.current?.trash();
+  };
+
   const handleSelect = () => {
     setSensorPlacementType(null);
     drawRef.current?.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
@@ -2348,16 +2359,66 @@ export default function AgricultureMapboxMap({
       ) : null}
 
       <Box
-        ref={containerRef}
         w="100%"
         flex="1"
         minH={{ base: '240px', md: '360px' }}
-        borderRadius="md"
-        overflow="hidden"
         position="relative"
-        borderWidth="1px"
-        borderColor={toolbarBorder}
-      />
+        display="flex"
+        flexDirection="column"
+      >
+        {/* Mapbox owns this node's children, so overlays sit in a sibling.
+            Flex-sized, not absolute: .mapboxgl-map forces position:relative. */}
+        <Box
+          ref={containerRef}
+          flex="1"
+          minH={0}
+          w="100%"
+          borderRadius="md"
+          overflow="hidden"
+          borderWidth="1px"
+          borderColor={toolbarBorder}
+        />
+        {toolsEnabled && drawMode === 'draw_polygon' ? (
+          <Flex
+            position="absolute"
+            top={2}
+            insetX={2}
+            zIndex={2}
+            justify="center"
+            pointerEvents="none"
+          >
+            <Flex
+              pointerEvents="auto"
+              role="status"
+              bg={toolbarBg}
+              borderWidth="1px"
+              borderColor={toolbarBorder}
+              borderRadius="md"
+              boxShadow="md"
+              px={3}
+              py={2}
+              gap={3}
+              align="center"
+              flexWrap="wrap"
+              maxW="100%"
+            >
+              <Text fontSize="sm">{t('misc.map.drawingHint')}</Text>
+              <HStack spacing={2}>
+                <Button
+                  size="xs"
+                  colorScheme="brand"
+                  onClick={handleFinishDrawing}
+                >
+                  {t('misc.map.finishDrawing')}
+                </Button>
+                <Button size="xs" variant="ghost" onClick={handleCancelDrawing}>
+                  {t('misc.map.cancelDrawing')}
+                </Button>
+              </HStack>
+            </Flex>
+          </Flex>
+        ) : null}
+      </Box>
 
       <SensorInstallationModal
         target={modalTarget}

@@ -1181,7 +1181,10 @@
         "active": "Active sector",
         "save": "Save details",
         "saved": "Sector details saved"
-      }
+      },
+      "drawingHint": "Click the map to place each corner of the sector. Double-click or click the first point to finish.",
+      "finishDrawing": "Finish",
+      "cancelDrawing": "Cancel"
     },
     "chatbot": {
       "welcome": "Hello! I'm your Agrogo assistant. Ask me about your fields, sensors, crop health, or your farm's performance. Type /help to see the available pages.",
