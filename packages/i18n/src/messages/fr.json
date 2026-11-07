@@ -1121,7 +1121,7 @@
         "devices": "Appareils enregistrés",
         "opacity": "Opacité",
         "legend": "Légende des états",
-        "satelliteSoon": "Les indices satellite (NDVI, NDMI) arrivent dans une prochaine version."
+        "satelliteSoon": "NDVI : sélectionnez un secteur pour voir sa vigueur et l'afficher sur la carte. NDMI et NDRE arrivent ensuite."
       },
       "basemaps": {
         "satellite_labels": "Satellite + libellés",
@@ -1205,6 +1205,29 @@
         "area": "Surface : {area}",
         "clear": "Effacer",
         "done": "Terminer"
+      },
+      "ndvi": {
+        "title": "NDVI satellite (vigueur de la végétation)",
+        "needShape": "Dessinez le contour du secteur pour voir son NDVI.",
+        "notConfigured": "Les images satellite ne sont pas encore activées sur ce serveur.",
+        "loadError": "Impossible de charger les données satellite pour le moment.",
+        "rateLimited": "Quota satellite atteint, réessayez plus tard.",
+        "noImagery": "Aucune image Sentinel-2 assez dégagée sur les 4 derniers mois.",
+        "noClearDate": "Aucune date avec au moins {pct} % du secteur sans nuages.",
+        "latestOn": "Dernière image claire : {date} ({clear} % du secteur visible).",
+        "changeSince": "Évolution depuis le {date}",
+        "date": "Date de l'image",
+        "clouds": "{pct} % nuages",
+        "showOnMap": "Afficher sur la carte",
+        "legendLow": "Sol nu / faible",
+        "legendHigh": "Végétation dense",
+        "disclaimer": "Le NDVI indique la vigueur de la végétation (pixels de 10 m). Il ne mesure pas la densité exacte des plants ni la répartition de l'eau d'irrigation ; croisez-le avec vos capteurs et vos relevés.",
+        "class": {
+          "bare": "Sol nu ou végétation très faible",
+          "low": "Végétation faible",
+          "moderate": "Vigueur modérée",
+          "high": "Forte vigueur"
+        }
       }
     },
     "chatbot": {

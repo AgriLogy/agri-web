@@ -1121,7 +1121,7 @@
         "devices": "Registered devices",
         "opacity": "Opacity",
         "legend": "Status legend",
-        "satelliteSoon": "Satellite indices (NDVI, NDMI) are coming in a later release."
+        "satelliteSoon": "NDVI: select a sector to see its vigour and show it on the map. NDMI and NDRE come next."
       },
       "basemaps": {
         "satellite_labels": "Satellite + labels",
@@ -1205,6 +1205,29 @@
         "area": "Area: {area}",
         "clear": "Clear",
         "done": "Done"
+      },
+      "ndvi": {
+        "title": "Satellite NDVI (vegetation vigour)",
+        "needShape": "Draw the sector outline to see its NDVI.",
+        "notConfigured": "Satellite imagery is not enabled on this server yet.",
+        "loadError": "Satellite data could not be loaded right now.",
+        "rateLimited": "Satellite quota reached, try again later.",
+        "noImagery": "No clear enough Sentinel-2 image in the last 4 months.",
+        "noClearDate": "No date with at least {pct}% of the sector cloud-free.",
+        "latestOn": "Latest clear image: {date} ({clear}% of the sector visible).",
+        "changeSince": "Change since {date}",
+        "date": "Image date",
+        "clouds": "{pct}% clouds",
+        "showOnMap": "Show on map",
+        "legendLow": "Bare soil / low",
+        "legendHigh": "Dense vegetation",
+        "disclaimer": "NDVI shows vegetation vigour (10 m pixels). It does not measure exact plant density or where irrigation water went; compare it with your sensors and field records.",
+        "class": {
+          "bare": "Bare soil or very sparse vegetation",
+          "low": "Low vegetation",
+          "moderate": "Moderate vigour",
+          "high": "High vigour"
+        }
       }
     },
     "chatbot": {

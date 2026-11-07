@@ -29,6 +29,7 @@ import {
   formatPerimeter,
   STATUS_COLORS,
 } from '@/app/lib/farmMap/mapModel';
+import SectorNdviPanel, { type NdviOverlay } from './SectorNdviPanel';
 
 interface Props {
   sector: MapSector | null;
@@ -37,6 +38,9 @@ interface Props {
   isSaving: boolean;
   onZoom: () => void;
   onSave: (body: Omit<SectorWrite, 'name' | 'geometry' | 'color'>) => void;
+  /** NDVI image currently laid over the map (one sector at a time). */
+  ndviOverlay?: NdviOverlay | null;
+  onNdviOverlay?: (o: NdviOverlay | null) => void;
 }
 
 type Draft = {
@@ -69,6 +73,8 @@ export default function SectorDetailsPanel({
   isSaving,
   onZoom,
   onSave,
+  ndviOverlay = null,
+  onNdviOverlay,
 }: Props) {
   const t = useTranslations();
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -229,6 +235,13 @@ export default function SectorDetailsPanel({
             </Button>
           ) : null}
         </>
+      ) : null}
+      {onNdviOverlay ? (
+        <SectorNdviPanel
+          sector={sector}
+          overlay={ndviOverlay}
+          onOverlay={onNdviOverlay}
+        />
       ) : null}
     </VStack>
   );
