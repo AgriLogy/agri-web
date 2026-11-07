@@ -1184,7 +1184,28 @@
       },
       "drawingHint": "Click the map to place each corner of the sector. Double-click or click the first point to finish.",
       "finishDrawing": "Finish",
-      "cancelDrawing": "Cancel"
+      "cancelDrawing": "Cancel",
+      "undo": "↶ Undo",
+      "redo": "↷ Redo",
+      "undoHint": "Undo the last sector change (Ctrl/Cmd+Z)",
+      "redoHint": "Redo (Shift+Ctrl/Cmd+Z)",
+      "filter": {
+        "button": "Filter sensors",
+        "types": "Types",
+        "statuses": "Statuses",
+        "sector": "Sector",
+        "allSectors": "All sectors",
+        "noSector": "Outside sectors",
+        "reset": "Reset filters"
+      },
+      "measure": {
+        "button": "Measure",
+        "hint": "Click the map to place measuring points.",
+        "result": "Distance: {distance}",
+        "area": "Area: {area}",
+        "clear": "Clear",
+        "done": "Done"
+      }
     },
     "chatbot": {
       "welcome": "Hello! I'm your Agrogo assistant. Ask me about your fields, sensors, crop health, or your farm's performance. Type /help to see the available pages.",

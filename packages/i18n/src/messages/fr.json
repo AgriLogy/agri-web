@@ -1184,7 +1184,28 @@
       },
       "drawingHint": "Cliquez sur la carte pour placer chaque coin du secteur. Double-cliquez ou cliquez sur le premier point pour terminer.",
       "finishDrawing": "Terminer",
-      "cancelDrawing": "Annuler"
+      "cancelDrawing": "Annuler",
+      "undo": "↶ Défaire",
+      "redo": "↷ Refaire",
+      "undoHint": "Défaire la dernière modification de secteur (Ctrl/Cmd+Z)",
+      "redoHint": "Refaire (Maj+Ctrl/Cmd+Z)",
+      "filter": {
+        "button": "Filtrer les capteurs",
+        "types": "Types",
+        "statuses": "États",
+        "sector": "Secteur",
+        "allSectors": "Tous les secteurs",
+        "noSector": "Hors secteur",
+        "reset": "Réinitialiser les filtres"
+      },
+      "measure": {
+        "button": "Mesurer",
+        "hint": "Cliquez sur la carte pour poser des points de mesure.",
+        "result": "Distance : {distance}",
+        "area": "Surface : {area}",
+        "clear": "Effacer",
+        "done": "Terminer"
+      }
     },
     "chatbot": {
       "welcome": "Bonjour ! Je suis votre assistant Agrogo. Posez-moi vos questions sur vos champs, capteurs, santé des cultures ou performance de votre exploitation. Tapez /help pour voir les pages disponibles.",

@@ -20,12 +20,15 @@ import {
   MenuButton,
   MenuGroup,
   MenuItem,
+  MenuItemOption,
   MenuList,
+  MenuOptionGroup,
   Popover,
   PopoverArrow,
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Select,
   Text,
   VStack,
   useColorMode,
@@ -106,6 +109,20 @@ import MapLayerPanel, {
   type MapLayerId,
 } from './MapLayerPanel';
 import SectorDetailsPanel from './SectorDetailsPanel';
+import {
+  NO_SENSOR_FILTER,
+  isFiltering,
+  matchesSensorFilter,
+  sensorFilterExpression,
+  toggleIn,
+  type SensorFilter,
+} from '@/app/lib/farmMap/sensorFilter';
+import {
+  formatAreaM2,
+  formatDistance,
+  pathLengthM,
+  polygonAreaM2,
+} from '@/app/lib/farmMap/measure';
 import SensorInstallationModal, {
   type SensorModalTarget,
 } from './SensorInstallationModal';
@@ -114,6 +131,26 @@ const LABEL_SOURCE_ID = 'agrilogy-sector-labels';
 const LABEL_LAYER_ID = 'agrilogy-sector-labels-symbol';
 const SENSORS_HALO_LAYER_ID = 'agrilogy-sensors-halo';
 const SENSOR_NAMES_LAYER_ID = 'agrilogy-sensors-names';
+// Zoomed out past CLUSTER_UNTIL_ZOOM, sensors merge into numbered clusters.
+const SENSOR_CLUSTER_SOURCE_ID = 'agrilogy-sensors-cluster';
+const SENSOR_CLUSTER_LAYER_ID = 'agrilogy-sensors-cluster-circles';
+const SENSOR_CLUSTER_COUNT_LAYER_ID = 'agrilogy-sensors-cluster-count';
+const SENSOR_CLUSTER_POINT_LAYER_ID = 'agrilogy-sensors-cluster-point';
+const CLUSTER_UNTIL_ZOOM = 13;
+const SENSOR_TYPE_IDS = SENSOR_TYPES.map((x) => x.id as string);
+const SENSOR_STATUS_IDS = [
+  'normal',
+  'warning',
+  'critical',
+  'offline',
+  'no_data',
+  'unlinked',
+];
+const FILTERED_SENSOR_LAYERS = [
+  SENSORS_HALO_LAYER_ID,
+  FARM_SENSORS_LAYER_ID,
+  SENSOR_NAMES_LAYER_ID,
+];
 const SECTOR_STATUS_SOURCE_ID = 'agrilogy-sector-status';
 const SECTOR_STATUS_LAYER_ID = 'agrilogy-sector-status-fill';
 // Real registered devices, plotted at their captured GPS position (MAP-1),
@@ -476,6 +513,22 @@ export default function AgricultureMapboxMap({
 
   const [nextSectorName, setNextSectorName] = useState('');
   const [drawMode, setDrawMode] = useState<string>('simple_select');
+  // Undo / redo of sector edits (draw, move, reshape, delete, rename).
+  const historyRef = useRef<{ past: string[]; future: string[] }>({
+    past: [],
+    future: [],
+  });
+  const lastSnapshotRef = useRef<string | null>(null);
+  const restoringRef = useRef(false);
+  const [historyDepth, setHistoryDepth] = useState({ past: 0, future: 0 });
+  const [sensorFilter, setSensorFilter] =
+    useState<SensorFilter>(NO_SENSOR_FILTER);
+  const sensorFilterRef = useRef<SensorFilter>(NO_SENSOR_FILTER);
+  // Measure tool: clicks add points; shows path length and enclosed area.
+  const [measuring, setMeasuring] = useState(false);
+  const measuringRef = useRef(false);
+  const [measurePoints, setMeasurePoints] = useState<[number, number][]>([]);
+  const measurePointsRef = useRef<[number, number][]>([]);
   const [nextAutoSectorIndex, setNextAutoSectorIndex] = useState(1);
   const [sensorPlacementType, setSensorPlacementType] = useState<string | null>(
     null
@@ -579,11 +632,25 @@ export default function AgricultureMapboxMap({
     });
   }, []);
 
+  /** Cluster source = the sensors the current filter lets through. */
+  const pushClusterData = useCallback((map: mapboxgl.Map) => {
+    const f = sensorFilterRef.current;
+    setSourceData(map, SENSOR_CLUSTER_SOURCE_ID, {
+      type: 'FeatureCollection',
+      features: sensorsFcRef.current.features.filter((x) =>
+        matchesSensorFilter(x.properties, f)
+      ),
+    } as SensorFC);
+  }, []);
+
   const pushSensors = useCallback(() => {
     const map = mapRef.current;
-    if (map) setSourceData(map, FARM_SENSORS_SOURCE_ID, sensorsFcRef.current);
+    if (map) {
+      setSourceData(map, FARM_SENSORS_SOURCE_ID, sensorsFcRef.current);
+      pushClusterData(map);
+    }
     bumpSensorListRef.current();
-  }, []);
+  }, [pushClusterData]);
 
   const savePrefs = useCallback((patch: Partial<MapPreferences>) => {
     if (!cameraReadyRef.current) return;
@@ -963,6 +1030,7 @@ export default function AgricultureMapboxMap({
       }
       refreshLabels();
       pushSensors();
+      recordHistory(d);
       scheduleServerSync();
     };
     syncSectorsAndSensorsRef.current = syncSectorsAndSensors;
@@ -1003,6 +1071,7 @@ export default function AgricultureMapboxMap({
       if (g) {
         g.coordinates = [e.lngLat.lng, e.lngLat.lat];
         setSourceData(map, FARM_SENSORS_SOURCE_ID, sensorsFcRef.current);
+        pushClusterData(map);
       }
     };
 
@@ -1135,6 +1204,17 @@ export default function AgricultureMapboxMap({
 
     // ----- placement: a map click opens the sensor form -----
     const onCanvasClickCapture = (domEv: MouseEvent) => {
+      if (measuringRef.current) {
+        domEv.stopPropagation();
+        domEv.stopImmediatePropagation();
+        const r = map.getCanvas().getBoundingClientRect();
+        const p = map.unproject([
+          domEv.clientX - r.left,
+          domEv.clientY - r.top,
+        ]);
+        setMeasurePoints((pts) => [...pts, [p.lng, p.lat]]);
+        return;
+      }
       const typeId = placingSensorTypeRef.current;
       if (!typeId) return;
       domEv.stopPropagation();
@@ -1194,6 +1274,7 @@ export default function AgricultureMapboxMap({
           id: SENSORS_HALO_LAYER_ID,
           type: 'circle',
           source: FARM_SENSORS_SOURCE_ID,
+          minzoom: CLUSTER_UNTIL_ZOOM,
           paint: {
             'circle-radius': 13,
             'circle-color':
@@ -1211,6 +1292,7 @@ export default function AgricultureMapboxMap({
             id: FARM_SENSORS_LAYER_ID,
             type: 'symbol',
             source: FARM_SENSORS_SOURCE_ID,
+            minzoom: CLUSTER_UNTIL_ZOOM,
             layout: {
               'icon-image':
                 sensorTypeIconImageMatchExpression() as mapboxgl.ExpressionSpecification,
@@ -1223,6 +1305,66 @@ export default function AgricultureMapboxMap({
         }
       } catch (e) {
         console.error('Capteurs: icônes carte indisponibles', e);
+      }
+      if (!map.getSource(SENSOR_CLUSTER_SOURCE_ID)) {
+        map.addSource(SENSOR_CLUSTER_SOURCE_ID, {
+          type: 'geojson',
+          data: emptyFC(),
+          cluster: true,
+          clusterRadius: 40,
+          clusterMaxZoom: CLUSTER_UNTIL_ZOOM - 1,
+        });
+      }
+      if (!map.getLayer(SENSOR_CLUSTER_LAYER_ID)) {
+        map.addLayer({
+          id: SENSOR_CLUSTER_LAYER_ID,
+          type: 'circle',
+          source: SENSOR_CLUSTER_SOURCE_ID,
+          maxzoom: CLUSTER_UNTIL_ZOOM,
+          filter: ['has', 'point_count'],
+          paint: {
+            'circle-color': '#15803d',
+            'circle-opacity': 0.85,
+            'circle-radius': [
+              'step',
+              ['get', 'point_count'],
+              14,
+              5,
+              18,
+              20,
+              24,
+            ],
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 2,
+          },
+        });
+        map.addLayer({
+          id: SENSOR_CLUSTER_COUNT_LAYER_ID,
+          type: 'symbol',
+          source: SENSOR_CLUSTER_SOURCE_ID,
+          maxzoom: CLUSTER_UNTIL_ZOOM,
+          filter: ['has', 'point_count'],
+          layout: {
+            'text-field': ['get', 'point_count_abbreviated'],
+            'text-size': 12,
+            'text-allow-overlap': true,
+          },
+          paint: { 'text-color': '#ffffff' },
+        });
+        map.addLayer({
+          id: SENSOR_CLUSTER_POINT_LAYER_ID,
+          type: 'circle',
+          source: SENSOR_CLUSTER_SOURCE_ID,
+          maxzoom: CLUSTER_UNTIL_ZOOM,
+          filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-radius': 7,
+            'circle-color':
+              statusColorExpression() as mapboxgl.ExpressionSpecification,
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 2,
+          },
+        });
       }
       if (!map.getLayer(SENSOR_NAMES_LAYER_ID)) {
         map.addLayer({
@@ -1291,7 +1433,10 @@ export default function AgricultureMapboxMap({
       }
       refreshLabels();
       setSourceData(map, FARM_SENSORS_SOURCE_ID, sensorsFcRef.current);
+      pushClusterData(map);
       applyLayerPrefs(map, layerPrefsRef.current);
+      applySensorFilter(map, sensorFilterRef.current);
+      applyMeasure(map, measurePointsRef.current);
     };
 
     // One layer setup per loaded style: `style.load` and `load` both ask for
@@ -1395,6 +1540,9 @@ export default function AgricultureMapboxMap({
         legacySensorsRef.current = legacySensors;
       }
       serverSyncEnabledRef.current = true;
+      lastSnapshotRef.current = snapshotDraw(draw);
+      historyRef.current = { past: [], future: [] };
+      setHistoryDepth({ past: 0, future: 0 });
       sectorCentroidPrevRef.current.clear();
       for (const f of draw.getAll().features.filter(isPolygonFeature)) {
         const c = sectorFeatureCentroid(f);
@@ -1553,13 +1701,37 @@ export default function AgricultureMapboxMap({
       setSelectedSectorDrawId(null);
       setRenameSectorDraft('');
     };
-    const onModeChange = (e: { mode: string }) => setDrawMode(e.mode);
+    const onModeChange = (e: { mode: string }) => {
+      setDrawMode(e.mode);
+      // Finishing (or abandoning) a polygon: record it as one undo step once
+      // draw has committed the final shape.
+      if (e.mode !== MapboxDraw.constants.modes.DRAW_POLYGON) {
+        window.setTimeout(() => recordHistory(draw), 0);
+      }
+    };
 
     map.on('style.load', onStyleLoad);
     map.on('styledata', onStyleData);
     map.on('load', onLoad);
     map.on('moveend', onMoveEnd);
     map.on('click', REGISTERED_DEVICES_LAYER_ID, onDeviceClick);
+    const onClusterClick = (e: mapboxgl.MapLayerMouseEvent) => {
+      const f = e.features?.[0];
+      const clusterId = f?.properties?.cluster_id;
+      const src = map.getSource(SENSOR_CLUSTER_SOURCE_ID) as
+        | mapboxgl.GeoJSONSource
+        | undefined;
+      if (clusterId == null || !src || f?.geometry.type !== 'Point') return;
+      const center = f.geometry.coordinates as [number, number];
+      src.getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err || zoom == null) return;
+        map.easeTo({
+          center,
+          zoom: Math.max(zoom, CLUSTER_UNTIL_ZOOM),
+        });
+      });
+    };
+    map.on('click', SENSOR_CLUSTER_LAYER_ID, onClusterClick);
     map.on('mouseenter', REGISTERED_DEVICES_LAYER_ID, onDeviceEnter);
     map.on('mouseleave', REGISTERED_DEVICES_LAYER_ID, onDeviceLeave);
     map.on('mouseenter', SENSORS_HALO_LAYER_ID, onSensorMouseEnter);
@@ -1659,6 +1831,191 @@ export default function AgricultureMapboxMap({
     await runServerSync();
     toast({ title: t('misc.map.synced'), status: 'success', duration: 2200 });
   };
+
+  function applySensorFilter(map: mapboxgl.Map, f: SensorFilter) {
+    const expr = sensorFilterExpression(
+      f
+    ) as mapboxgl.FilterSpecification | null;
+    for (const id of FILTERED_SENSOR_LAYERS) {
+      if (map.getLayer(id)) map.setFilter(id, expr);
+    }
+  }
+
+  useEffect(() => {
+    sensorFilterRef.current = sensorFilter;
+    const map = mapRef.current;
+    if (!map || !map.isStyleLoaded()) return;
+    applySensorFilter(map, sensorFilter);
+    pushClusterData(map);
+  }, [sensorFilter, pushClusterData]);
+
+  function applyMeasure(map: mapboxgl.Map, pts: [number, number][]) {
+    const SRC = 'agrilogy-measure';
+    const features: GeoJSON.Feature[] = pts.map((p) => ({
+      type: 'Feature',
+      properties: {},
+      geometry: { type: 'Point', coordinates: p },
+    }));
+    if (pts.length >= 2) {
+      features.push({
+        type: 'Feature',
+        properties: {},
+        geometry: { type: 'LineString', coordinates: pts },
+      });
+    }
+    if (pts.length >= 3) {
+      features.push({
+        type: 'Feature',
+        properties: {},
+        geometry: { type: 'Polygon', coordinates: [[...pts, pts[0]!]] },
+      });
+    }
+    const data: GeoJSON.FeatureCollection = {
+      type: 'FeatureCollection',
+      features,
+    };
+    const src = map.getSource(SRC) as mapboxgl.GeoJSONSource | undefined;
+    if (src) {
+      src.setData(data);
+      return;
+    }
+    map.addSource(SRC, { type: 'geojson', data });
+    map.addLayer({
+      id: `${SRC}-fill`,
+      type: 'fill',
+      source: SRC,
+      filter: ['==', ['geometry-type'], 'Polygon'],
+      paint: { 'fill-color': '#facc15', 'fill-opacity': 0.18 },
+    });
+    map.addLayer({
+      id: `${SRC}-line`,
+      type: 'line',
+      source: SRC,
+      filter: ['==', ['geometry-type'], 'LineString'],
+      paint: {
+        'line-color': '#facc15',
+        'line-width': 2.5,
+        'line-dasharray': [2, 1],
+      },
+    });
+    map.addLayer({
+      id: `${SRC}-points`,
+      type: 'circle',
+      source: SRC,
+      filter: ['==', ['geometry-type'], 'Point'],
+      paint: {
+        'circle-radius': 4,
+        'circle-color': '#facc15',
+        'circle-stroke-color': '#111827',
+        'circle-stroke-width': 1.5,
+      },
+    });
+  }
+
+  useEffect(() => {
+    measuringRef.current = measuring;
+    measurePointsRef.current = measurePoints;
+    const map = mapRef.current;
+    if (map && map.isStyleLoaded()) applyMeasure(map, measurePoints);
+    if (map) map.getCanvas().style.cursor = measuring ? 'crosshair' : '';
+  }, [measuring, measurePoints]);
+
+  const toggleMeasure = () => {
+    if (measuring) {
+      setMeasuring(false);
+      setMeasurePoints([]);
+      return;
+    }
+    setSensorPlacementType(null);
+    drawRef.current?.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
+    setMeasurePoints([]);
+    setMeasuring(true);
+  };
+
+  const UNDO_LIMIT = 50;
+  function snapshotDraw(d: MapboxDraw): string {
+    return JSON.stringify(d.getAll().features.filter(isPolygonFeature));
+  }
+  /** What counts as a user edit: outlines and names only. Automatic
+   * property writes (default colour, sync bookkeeping) are not undo steps. */
+  function historyKey(snap: string): string {
+    const fs = JSON.parse(snap) as GeoJSON.Feature[];
+    return JSON.stringify(
+      fs
+        .map((f) => [
+          String(f.id),
+          (f.properties as { name?: unknown } | null)?.name ?? '',
+          f.geometry,
+        ])
+        .sort((a, b) => String(a[0]).localeCompare(String(b[0])))
+    );
+  }
+  function recordHistory(d: MapboxDraw) {
+    if (!serverSyncEnabledRef.current || restoringRef.current) return;
+    // A polygon still being drawn is one step once finished, not one per
+    // corner: keep the pre-draw snapshot until draw_polygon ends.
+    if (d.getMode() === MapboxDraw.constants.modes.DRAW_POLYGON) return;
+    const now = snapshotDraw(d);
+    const last = lastSnapshotRef.current;
+    if (last == null || historyKey(now) === historyKey(last)) {
+      lastSnapshotRef.current = now;
+      return;
+    }
+    const h = historyRef.current;
+    h.past.push(last);
+    if (h.past.length > UNDO_LIMIT) h.past.shift();
+    h.future = [];
+    lastSnapshotRef.current = now;
+    setHistoryDepth({ past: h.past.length, future: 0 });
+  }
+  const restoreSnapshot = (snap: string) => {
+    const d = drawRef.current;
+    if (!d) return;
+    restoringRef.current = true;
+    try {
+      d.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
+      d.set({ type: 'FeatureCollection', features: JSON.parse(snap) });
+    } finally {
+      restoringRef.current = false;
+    }
+    lastSnapshotRef.current = snap;
+    // Same path as a manual edit: labels, sensor sectors, server sync.
+    syncSectorsAndSensorsRef.current?.();
+  };
+  const handleUndo = () => {
+    const h = historyRef.current;
+    const prev = h.past.pop();
+    if (prev == null || lastSnapshotRef.current == null) return;
+    h.future.push(lastSnapshotRef.current);
+    restoreSnapshot(prev);
+    setHistoryDepth({ past: h.past.length, future: h.future.length });
+  };
+  const handleRedo = () => {
+    const h = historyRef.current;
+    const next = h.future.pop();
+    if (next == null || lastSnapshotRef.current == null) return;
+    h.past.push(lastSnapshotRef.current);
+    restoreSnapshot(next);
+    setHistoryDepth({ past: h.past.length, future: h.future.length });
+  };
+  const undoRef = useRef(handleUndo);
+  const redoRef = useRef(handleRedo);
+  undoRef.current = handleUndo;
+  redoRef.current = handleRedo;
+
+  useEffect(() => {
+    if (!toolsEnabled) return;
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== 'z') return;
+      e.preventDefault();
+      if (e.shiftKey) redoRef.current();
+      else undoRef.current();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [toolsEnabled]);
 
   const handleDrawPolygon = () => {
     setSensorPlacementType(null);
@@ -2004,6 +2361,92 @@ export default function AgricultureMapboxMap({
             </PopoverBody>
           </PopoverContent>
         </Popover>
+        <Button
+          size="sm"
+          variant={measuring ? 'solid' : 'outline'}
+          colorScheme={measuring ? 'yellow' : undefined}
+          onClick={toggleMeasure}
+        >
+          {t('misc.map.measure.button')}
+        </Button>
+        <Menu closeOnSelect={false}>
+          <MenuButton
+            as={Button}
+            size="sm"
+            variant={isFiltering(sensorFilter) ? 'solid' : 'outline'}
+            colorScheme={isFiltering(sensorFilter) ? 'brand' : undefined}
+            rightIcon={<ChevronDownIcon />}
+          >
+            {t('misc.map.filter.button')}
+          </MenuButton>
+          <MenuList zIndex={2000} maxH="60vh" overflowY="auto" minW="240px">
+            <MenuOptionGroup
+              title={t('misc.map.filter.types')}
+              type="checkbox"
+              value={sensorFilter.types ?? SENSOR_TYPE_IDS}
+            >
+              {SENSOR_TYPE_IDS.map((id) => (
+                <MenuItemOption
+                  key={id}
+                  value={id}
+                  onClick={() =>
+                    setSensorFilter((f) => ({
+                      ...f,
+                      types: toggleIn(f.types, id, SENSOR_TYPE_IDS),
+                    }))
+                  }
+                >
+                  {t.has(`sensors.${id}`) ? t(`sensors.${id}`) : id}
+                </MenuItemOption>
+              ))}
+            </MenuOptionGroup>
+            <MenuOptionGroup
+              title={t('misc.map.filter.statuses')}
+              type="checkbox"
+              value={sensorFilter.statuses ?? SENSOR_STATUS_IDS}
+            >
+              {SENSOR_STATUS_IDS.map((id) => (
+                <MenuItemOption
+                  key={id}
+                  value={id}
+                  onClick={() =>
+                    setSensorFilter((f) => ({
+                      ...f,
+                      statuses: toggleIn(f.statuses, id, SENSOR_STATUS_IDS),
+                    }))
+                  }
+                >
+                  {t(`misc.map.status.${id}`)}
+                </MenuItemOption>
+              ))}
+            </MenuOptionGroup>
+            <Box px={3} py={2}>
+              <Text fontSize="sm" fontWeight={600} mb={1}>
+                {t('misc.map.filter.sector')}
+              </Text>
+              <Select
+                size="sm"
+                value={sensorFilter.sector}
+                onChange={(e) =>
+                  setSensorFilter((f) => ({ ...f, sector: e.target.value }))
+                }
+              >
+                <option value="all">{t('misc.map.filter.allSectors')}</option>
+                <option value="none">{t('misc.map.filter.noSector')}</option>
+                {view.sectors.map((sec) => (
+                  <option key={sec.drawId} value={sec.drawId}>
+                    {sec.row?.name ?? sec.drawId}
+                  </option>
+                ))}
+              </Select>
+            </Box>
+            {isFiltering(sensorFilter) ? (
+              <MenuItem onClick={() => setSensorFilter(NO_SENSOR_FILTER)}>
+                {t('misc.map.filter.reset')}
+              </MenuItem>
+            ) : null}
+          </MenuList>
+        </Menu>
         <Button size="sm" variant="outline" onClick={() => fitFarm()}>
           {t('misc.map.fitFarm')}
         </Button>
@@ -2069,6 +2512,24 @@ export default function AgricultureMapboxMap({
                   variant="solid"
                 >
                   {t('misc.map.delete')}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleUndo}
+                  isDisabled={historyDepth.past === 0}
+                  title={t('misc.map.undoHint')}
+                >
+                  {t('misc.map.undo')}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleRedo}
+                  isDisabled={historyDepth.future === 0}
+                  title={t('misc.map.redoHint')}
+                >
+                  {t('misc.map.redo')}
                 </Button>
                 <Button
                   size="sm"
@@ -2413,6 +2874,57 @@ export default function AgricultureMapboxMap({
                 </Button>
                 <Button size="xs" variant="ghost" onClick={handleCancelDrawing}>
                   {t('misc.map.cancelDrawing')}
+                </Button>
+              </HStack>
+            </Flex>
+          </Flex>
+        ) : null}
+        {measuring ? (
+          <Flex
+            position="absolute"
+            bottom={8}
+            insetX={2}
+            zIndex={2}
+            justify="center"
+            pointerEvents="none"
+          >
+            <Flex
+              pointerEvents="auto"
+              role="status"
+              bg={toolbarBg}
+              borderWidth="1px"
+              borderColor={toolbarBorder}
+              borderRadius="md"
+              boxShadow="md"
+              px={3}
+              py={2}
+              gap={3}
+              align="center"
+              flexWrap="wrap"
+            >
+              <Text fontSize="sm">
+                {measurePoints.length < 2
+                  ? t('misc.map.measure.hint')
+                  : t('misc.map.measure.result', {
+                      distance: formatDistance(pathLengthM(measurePoints)),
+                    })}
+                {measurePoints.length >= 3
+                  ? ` · ${t('misc.map.measure.area', {
+                      area: formatAreaM2(polygonAreaM2(measurePoints)),
+                    })}`
+                  : ''}
+              </Text>
+              <HStack spacing={2}>
+                <Button
+                  size="xs"
+                  variant="ghost"
+                  onClick={() => setMeasurePoints([])}
+                  isDisabled={!measurePoints.length}
+                >
+                  {t('misc.map.measure.clear')}
+                </Button>
+                <Button size="xs" colorScheme="brand" onClick={toggleMeasure}>
+                  {t('misc.map.measure.done')}
                 </Button>
               </HStack>
             </Flex>
