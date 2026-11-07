@@ -1264,7 +1264,9 @@
           "ndvi": "vigour",
           "ndmi": "canopy water",
           "ndre": "chlorophyll"
-        }
+        },
+        "button": "Satellite (NDVI)",
+        "drawFirst": "Draw a sector first to see its satellite imagery."
       }
     },
     "chatbot": {

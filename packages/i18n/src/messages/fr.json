@@ -1264,7 +1264,9 @@
           "ndvi": "vigueur",
           "ndmi": "eau du couvert",
           "ndre": "chlorophylle"
-        }
+        },
+        "button": "Satellite (NDVI)",
+        "drawFirst": "Dessinez d’abord un secteur pour voir ses images satellite."
       }
     },
     "chatbot": {
