@@ -1181,7 +1181,10 @@
         "active": "Secteur actif",
         "save": "Enregistrer les détails",
         "saved": "Détails du secteur enregistrés"
-      }
+      },
+      "drawingHint": "Cliquez sur la carte pour placer chaque coin du secteur. Double-cliquez ou cliquez sur le premier point pour terminer.",
+      "finishDrawing": "Terminer",
+      "cancelDrawing": "Annuler"
     },
     "chatbot": {
       "welcome": "Bonjour ! Je suis votre assistant Agrogo. Posez-moi vos questions sur vos champs, capteurs, santé des cultures ou performance de votre exploitation. Tapez /help pour voir les pages disponibles.",
