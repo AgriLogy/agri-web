@@ -295,7 +295,13 @@ export default function SectorNdviPanel({ sector, overlay, onOverlay }: Props) {
   const kindLabel = (k: SatImageKind) => t(`misc.map.ndvi.kinds.${k}`);
 
   return (
-    <Box borderTopWidth="1px" borderColor={border} pt={3} mt={1}>
+    <Box
+      id="sector-ndvi-panel"
+      borderTopWidth="1px"
+      borderColor={border}
+      pt={3}
+      mt={1}
+    >
       <Flex justify="space-between" align="center" mb={2} gap={2}>
         <Text fontSize="sm" fontWeight={600}>
           {t('misc.map.ndvi.title')}

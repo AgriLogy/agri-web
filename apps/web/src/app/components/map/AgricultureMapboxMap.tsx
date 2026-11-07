@@ -2367,6 +2367,36 @@ export default function AgricultureMapboxMap({
     [view, selectedSectorDrawId]
   );
 
+  // Toolbar shortcut to the satellite panel: select a sector (the current
+  // one, else the first drawn), frame it, and scroll the panel into view.
+  const openSatellite = useCallback(() => {
+    const target =
+      view.sectors.find((x) => x.drawId === selectedSectorDrawId) ??
+      view.sectors.find((x) => x.row?.geometry) ??
+      view.sectors[0];
+    if (!target) {
+      toast({
+        title: t('misc.map.ndvi.drawFirst'),
+        status: 'info',
+        duration: 3500,
+      });
+      return;
+    }
+    if (target.drawId !== selectedSectorDrawId) {
+      drawRef.current?.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT, {
+        featureIds: [target.drawId],
+      });
+      setSelectedSectorDrawId(target.drawId);
+      setRenameSectorDraft(target.row?.name ?? '');
+    }
+    zoomToSector(target.drawId);
+    window.setTimeout(() => {
+      document
+        .getElementById('sector-ndvi-panel')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 350);
+  }, [view, selectedSectorDrawId, toast, t, zoomToSector]);
+
   // The NDVI image follows the selected sector: deselecting clears it.
   useEffect(() => {
     if (ndviOverlay && ndviOverlay.sectorId !== selectedSector?.id) {
@@ -2445,6 +2475,14 @@ export default function AgricultureMapboxMap({
           onClick={toggleMeasure}
         >
           {t('misc.map.measure.button')}
+        </Button>
+        <Button
+          size="sm"
+          variant={ndviOverlay ? 'solid' : 'outline'}
+          colorScheme={ndviOverlay ? 'brand' : undefined}
+          onClick={openSatellite}
+        >
+          {t('misc.map.ndvi.button')}
         </Button>
         <Menu closeOnSelect={false}>
           <MenuButton
