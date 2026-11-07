@@ -170,10 +170,20 @@ export interface NdviLegendStop {
   value: number;
   color: string;
 }
+export type SatIndex = 'ndvi' | 'ndmi' | 'ndre';
+export type SatImageKind = SatIndex | 'false_color';
+export interface SatIndexInfo {
+  id: SatIndex;
+  use: string;
+  legend: NdviLegendStop[];
+  classes: { low_below: number; high_from: number };
+}
 export interface NdviConfig {
   configured: boolean;
   source: string;
   legend: NdviLegendStop[];
+  indexes?: SatIndexInfo[];
+  image_kinds?: SatImageKind[];
 }
 export interface NdviDate {
   date: string;
@@ -187,6 +197,8 @@ export interface NdviStat {
   std: number | null;
   /** Share of the sector's pixels that were clear (not cloud/shadow). */
   valid_fraction: number;
+  /** Share of clear pixels in the index's low / medium / high classes. */
+  classes?: { low: number; medium: number; high: number } | null;
 }
 
 export const farmMapApi = {
@@ -225,17 +237,17 @@ export const farmMapApi = {
         params: { days, max_cloud: maxCloud },
       })
       .then((r) => r.data.dates),
-  ndviStats: (sectorId: number, days = 120) =>
+  ndviStats: (sectorId: number, days = 120, index: SatIndex = 'ndvi') =>
     api
       .get<{ series: NdviStat[] }>(`/farm-map/ndvi/sectors/${sectorId}/stats`, {
-        params: { days },
+        params: { days, index },
       })
       .then((r) => r.data.series),
   /** PNG clipped to the sector (transparent outside it and on clouds). */
-  ndviImage: (sectorId: number, date: string) =>
+  ndviImage: (sectorId: number, date: string, index: SatImageKind = 'ndvi') =>
     api
       .get<Blob>(`/farm-map/ndvi/sectors/${sectorId}/image`, {
-        params: { date },
+        params: { date, index },
         responseType: 'blob',
       })
       .then((r) => r.data),

@@ -3,6 +3,8 @@ import {
   latestChange,
   legendGradient,
   ndviClass,
+  persistentDecline,
+  statAt,
   usableStats,
 } from './ndvi';
 
@@ -85,5 +87,34 @@ describe('ndvi classes and series', () => {
         { value: 0.8, color: '#0a0' },
       ])
     ).toBe('linear-gradient(to right, #a00 0%, #0a0 100%)');
+  });
+});
+
+describe('persistentDecline and statAt', () => {
+  it('needs two earlier clear dates as a baseline', () => {
+    expect(
+      persistentDecline([stat('a', 0.6), stat('b', 0.3), stat('c', 0.3)])
+    ).toBeNull();
+  });
+
+  it('flags two clear dates in a row well below the baseline', () => {
+    const s = [
+      stat('2026-09-01', 0.62),
+      stat('2026-09-11', 0.6),
+      stat('2026-09-21', 0.2, 0.2), // cloudy: ignored
+      stat('2026-10-01', 0.45),
+      stat('2026-10-11', 0.44),
+    ];
+    expect(persistentDecline(s)).toEqual({ baseline: 0.61, latest: 0.44 });
+  });
+
+  it('does not flag a single bad date', () => {
+    const s = [stat('a', 0.6), stat('b', 0.6), stat('c', 0.4), stat('d', 0.58)];
+    expect(persistentDecline(s)).toBe(false);
+  });
+
+  it('finds the stat for a date', () => {
+    expect(statAt([stat('2026-10-01', 0.5)], '2026-10-01')?.mean).toBe(0.5);
+    expect(statAt([stat('2026-10-01', 0.5)], '2026-10-02')).toBeNull();
   });
 });

@@ -1207,12 +1207,12 @@
         "done": "Done"
       },
       "ndvi": {
-        "title": "Satellite NDVI (vegetation vigour)",
+        "title": "Satellite indices (Sentinel-2)",
         "needShape": "Draw the sector outline to see its NDVI.",
         "notConfigured": "Satellite imagery is not enabled on this server yet.",
         "loadError": "Satellite data could not be loaded right now.",
         "rateLimited": "Satellite quota reached, try again later.",
-        "noImagery": "No clear enough Sentinel-2 image in the last 4 months.",
+        "noImagery": "No image with under {pct}% clouds in the last 4 months. Raise the cloud limit.",
         "noClearDate": "No date with at least {pct}% of the sector cloud-free.",
         "latestOn": "Latest clear image: {date} ({clear}% of the sector visible).",
         "changeSince": "Change since {date}",
@@ -1227,6 +1227,43 @@
           "low": "Low vegetation",
           "moderate": "Moderate vigour",
           "high": "High vigour"
+        },
+        "index": "Index",
+        "kinds": {
+          "ndvi": "NDVI · vigour",
+          "ndmi": "NDMI · canopy water",
+          "ndre": "NDRE · chlorophyll",
+          "false_color": "False colour"
+        },
+        "kindUse": {
+          "ndvi": "Greenness and overall crop vigour.",
+          "ndmi": "Leaf water content: helps spot water stress.",
+          "ndre": "Chlorophyll in dense canopy (red-edge band, 20 m).",
+          "false_color": "Near-infrared picture: vigorous vegetation shows red."
+        },
+        "previous": "Previous image",
+        "next": "Next image",
+        "atDate": "This date: mean {mean} · valid pixels {valid}%",
+        "lowValid": "too cloudy to rely on",
+        "noStatForDate": "No statistics for this date (sector under cloud).",
+        "maxCloud": "Clouds ≤ {pct}%",
+        "maxCloudLabel": "Maximum image cloud cover",
+        "compare": "Compare with",
+        "compareNone": "— no date —",
+        "compareClose": "Close",
+        "compareDelta": "Mean change: {delta} since {from}",
+        "compareHigh": "share in high class: {delta} pts",
+        "decline": "Persistent decline",
+        "declineHint": "The last two clear images are well below this sector's usual average ({baseline}). Check in the field (water, disease, nutrition).",
+        "areaClass": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        },
+        "legend": {
+          "ndvi": "vigour",
+          "ndmi": "canopy water",
+          "ndre": "chlorophyll"
         }
       }
     },

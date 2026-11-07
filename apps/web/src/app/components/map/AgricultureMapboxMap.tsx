@@ -1861,7 +1861,10 @@ export default function AgricultureMapboxMap({
           id: SRC,
           type: 'raster',
           source: SRC,
-          paint: { 'raster-opacity': 0.85, 'raster-resampling': 'nearest' },
+          paint: {
+            'raster-opacity': o.opacity ?? 0.85,
+            'raster-resampling': 'nearest',
+          },
         },
         firstDraw
       );
@@ -1873,7 +1876,23 @@ export default function AgricultureMapboxMap({
     const prev = ndviOverlayRef.current;
     ndviOverlayRef.current = ndviOverlay;
     const map = mapRef.current;
-    if (map && map.isStyleLoaded()) applyNdviOverlay(map, ndviOverlay);
+    if (map && map.isStyleLoaded()) {
+      // Opacity-only change: repaint instead of re-adding the image.
+      if (
+        prev &&
+        ndviOverlay &&
+        prev.url === ndviOverlay.url &&
+        map.getLayer('ndvi-overlay')
+      ) {
+        map.setPaintProperty(
+          'ndvi-overlay',
+          'raster-opacity',
+          ndviOverlay.opacity
+        );
+      } else {
+        applyNdviOverlay(map, ndviOverlay);
+      }
+    }
     if (prev && prev.url !== ndviOverlay?.url) URL.revokeObjectURL(prev.url);
   }, [ndviOverlay, applyNdviOverlay]);
 

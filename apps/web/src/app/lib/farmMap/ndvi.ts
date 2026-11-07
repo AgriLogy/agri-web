@@ -78,3 +78,31 @@ export function legendGradient(stops: { value: number; color: string }[]) {
   );
   return `linear-gradient(to right, ${parts.join(', ')})`;
 }
+
+/** The stat for one acquisition date, if the statistics cover it. */
+export function statAt(series: NdviStat[], date: string): NdviStat | null {
+  return series.find((s) => s.date === date) ?? null;
+}
+
+/**
+ * Persistent decline: the last two clear acquisitions are both below the
+ * sector's earlier clear-sky average by more than `drop`. Needs at least two
+ * earlier clear dates as a baseline, otherwise null (not enough history).
+ */
+export function persistentDecline(
+  series: NdviStat[],
+  drop = 0.1
+): { baseline: number; latest: number } | null | false {
+  const ok = usableStats(series);
+  if (ok.length < 4) return null;
+  const recent = ok.slice(-2);
+  const earlier = ok.slice(0, -2);
+  const baseline = earlier.reduce((a, s) => a + s.mean, 0) / earlier.length;
+  const declined = recent.every((s) => s.mean < baseline - drop);
+  return declined
+    ? {
+        baseline: Math.round(baseline * 1000) / 1000,
+        latest: recent[recent.length - 1]!.mean,
+      }
+    : false;
+}

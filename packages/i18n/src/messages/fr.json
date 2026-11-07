@@ -1207,12 +1207,12 @@
         "done": "Terminer"
       },
       "ndvi": {
-        "title": "NDVI satellite (vigueur de la végétation)",
+        "title": "Indices satellite (Sentinel-2)",
         "needShape": "Dessinez le contour du secteur pour voir son NDVI.",
         "notConfigured": "Les images satellite ne sont pas encore activées sur ce serveur.",
         "loadError": "Impossible de charger les données satellite pour le moment.",
         "rateLimited": "Quota satellite atteint, réessayez plus tard.",
-        "noImagery": "Aucune image Sentinel-2 assez dégagée sur les 4 derniers mois.",
+        "noImagery": "Aucune image avec moins de {pct} % de nuages sur les 4 derniers mois. Augmentez le seuil de nuages.",
         "noClearDate": "Aucune date avec au moins {pct} % du secteur sans nuages.",
         "latestOn": "Dernière image claire : {date} ({clear} % du secteur visible).",
         "changeSince": "Évolution depuis le {date}",
@@ -1227,6 +1227,43 @@
           "low": "Végétation faible",
           "moderate": "Vigueur modérée",
           "high": "Forte vigueur"
+        },
+        "index": "Indice",
+        "kinds": {
+          "ndvi": "NDVI · vigueur",
+          "ndmi": "NDMI · eau du couvert",
+          "ndre": "NDRE · chlorophylle",
+          "false_color": "Fausses couleurs"
+        },
+        "kindUse": {
+          "ndvi": "Verdure et vigueur générale de la culture.",
+          "ndmi": "Teneur en eau du feuillage : aide à repérer un stress hydrique.",
+          "ndre": "Chlorophylle des couverts denses (bande red-edge, 20 m).",
+          "false_color": "Image proche infrarouge : la végétation vigoureuse apparaît en rouge."
+        },
+        "previous": "Image précédente",
+        "next": "Image suivante",
+        "atDate": "Ce jour : moyenne {mean} · pixels valides {valid} %",
+        "lowValid": "trop nuageux pour être fiable",
+        "noStatForDate": "Pas de statistique pour cette date (secteur couvert de nuages).",
+        "maxCloud": "Nuages ≤ {pct} %",
+        "maxCloudLabel": "Couverture nuageuse maximale des images",
+        "compare": "Comparer avec",
+        "compareNone": "— aucune date —",
+        "compareClose": "Fermer",
+        "compareDelta": "Évolution de la moyenne : {delta} depuis le {from}",
+        "compareHigh": "part en classe haute : {delta} pts",
+        "decline": "Baisse persistante",
+        "declineHint": "Les deux dernières images claires sont nettement sous la moyenne habituelle du secteur ({baseline}). À vérifier sur le terrain (eau, maladie, nutrition).",
+        "areaClass": {
+          "low": "Faible",
+          "medium": "Moyen",
+          "high": "Élevé"
+        },
+        "legend": {
+          "ndvi": "vigueur",
+          "ndmi": "eau du couvert",
+          "ndre": "chlorophylle"
         }
       }
     },
