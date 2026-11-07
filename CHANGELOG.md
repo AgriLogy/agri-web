@@ -1,3 +1,10 @@
+# [1.33.0](https://github.com/AgriLogy/agri-web/compare/v1.32.0...v1.33.0) (2026-11-07)
+
+
+### Features
+
+* **map:** on-map drawing guide with Terminer / Annuler ([#146](https://github.com/AgriLogy/agri-web/issues/146)) ([0eb79d8](https://github.com/AgriLogy/agri-web/commit/0eb79d8fdd1cf8b9cdc1983686cc85756455e81e))
+
 # [1.32.0](https://github.com/AgriLogy/agri-web/compare/v1.31.0...v1.32.0) (2026-11-06)
 
 
