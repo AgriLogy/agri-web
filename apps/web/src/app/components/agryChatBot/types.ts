@@ -41,6 +41,14 @@ export type ChatCard =
   | { type: 'notifications'; items: ChatNotificationItem[] }
   | { type: 'error'; message: string };
 
+/** A knowledge-base article an answer cited (approved by Agrogo staff). */
+export interface ChatArticle {
+  id: number;
+  title: string;
+  sources: { title: string; url: string }[];
+  reviewOverdue: boolean;
+}
+
 export interface ChatSource {
   tool: string;
   asOf: string | null;
@@ -50,6 +58,8 @@ export interface ChatSource {
     unit: string;
     asOf: string | null;
   }[];
+  /** Set for a knowledge-base search (possibly empty): not a farm reading. */
+  articles?: ChatArticle[];
   error?: string;
 }
 

@@ -8,6 +8,7 @@
 import type { AssistantChatResponse } from '@agri/api-client/assistantApi';
 import type {
   ChatAlertItem,
+  ChatArticle,
   ChatCard,
   ChatMetricItem,
   ChatNotificationItem,
@@ -149,9 +150,61 @@ export function sourcesFrom(res: AssistantChatResponse): ChatSource[] {
       };
     });
     const source: ChatSource = { tool, asOf: str(s.as_of) || null, items };
+    if (Array.isArray(s.articles)) source.articles = articlesFrom(s.articles);
     if (str(s.error)) source.error = str(s.error);
     return [source];
   });
+}
+
+const httpUrl = (u: string) => (/^https?:\/\//i.test(u) ? u : '');
+
+function articlesFrom(raw: unknown[]): ChatArticle[] {
+  return raw.flatMap((rawArticle) => {
+    const a = (rawArticle ?? {}) as Record<string, unknown>;
+    const id = typeof a.id === 'number' ? a.id : NaN;
+    const title = str(a.title);
+    if (!Number.isFinite(id) || !title) return [];
+    const sources = arr(a.sources).flatMap((rawSource) => {
+      const src = (rawSource ?? {}) as Record<string, unknown>;
+      const t = str(src.title);
+      // Only web links are clickable; anything else is shown as plain text.
+      return t ? [{ title: t, url: httpUrl(str(src.url)) }] : [];
+    });
+    return [{ id, title, sources, reviewOverdue: a.review_overdue === true }];
+  });
+}
+
+/**
+ * What "Data used" lists: farm readings (with their age) and, separately, the
+ * knowledge-base articles cited, each once even if several searches found it.
+ * A knowledge search contributes no reading row.
+ */
+export function splitSources(sources: ChatSource[]): {
+  readings: (ChatSource['items'][number] & { tool: string })[];
+  articles: ChatArticle[];
+} {
+  const readings: (ChatSource['items'][number] & { tool: string })[] = [];
+  const articles: ChatArticle[] = [];
+  for (const s of sources) {
+    if (s.articles) {
+      for (const a of s.articles) {
+        if (!articles.some((x) => x.id === a.id)) articles.push(a);
+      }
+      continue;
+    }
+    if (s.items.length) {
+      readings.push(...s.items.map((i) => ({ ...i, tool: s.tool })));
+    } else {
+      readings.push({
+        label: '',
+        value: null,
+        unit: '',
+        asOf: s.asOf,
+        tool: s.tool,
+      });
+    }
+  }
+  return { readings, articles };
 }
 
 /** An action the assistant proposed; the farmer must confirm it. */

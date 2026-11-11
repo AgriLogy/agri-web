@@ -8,7 +8,10 @@ import {
   pendingActionFrom,
   readingAge,
   sourcesFrom,
+  splitSources,
 } from './chatMap';
+import type { AssistantSource } from '@agri/api-client/assistantApi';
+
 import type { Message } from './types';
 
 const base = {
@@ -402,5 +405,77 @@ describe('AI answer extras (agri-api#472)', () => {
     });
     expect(conv.messages[0].sources).toEqual(msg.sources);
     expect(conv.messages[0].pendingAction?.state).toBe('confirmed');
+  });
+});
+
+describe('knowledge-base articles in sources (agri-api#483)', () => {
+  const soil = {
+    tool: 'get_soil_status',
+    as_of: '2026-11-11T08:00:00+00:00',
+    items: [
+      {
+        label: 'Soil moisture',
+        value: 27,
+        unit: '%',
+        as_of: '2026-11-11T08:00:00+00:00',
+      },
+    ],
+  };
+  // Raw server payload: may carry malformed entries the mapper must drop.
+  const search = (articles: unknown[]) =>
+    ({
+      tool: 'search_knowledge',
+      as_of: null,
+      articles,
+    }) as unknown as AssistantSource;
+  const olive = {
+    id: 3,
+    title: "Irrigation de l'olivier en été",
+    sources: [
+      { title: 'FAO-56', url: 'https://www.fao.org/3/x0490e/x0490e00.htm' },
+      { title: 'Guide ONCA', url: 'javascript:alert(1)' },
+      { title: '', url: 'https://ignored.example' },
+    ],
+    reviewed_at: '2026-11-01T00:00:00+00:00',
+    review_overdue: true,
+  };
+
+  it('maps articles, keeping only web links clickable', () => {
+    const [, knowledge] = sourcesFrom({
+      ...base,
+      intent: 'llm',
+      sources: [soil, search([olive, { id: 'x', title: 'bad' }])],
+    });
+    expect(knowledge.articles).toEqual([
+      {
+        id: 3,
+        title: "Irrigation de l'olivier en été",
+        sources: [
+          { title: 'FAO-56', url: 'https://www.fao.org/3/x0490e/x0490e00.htm' },
+          { title: 'Guide ONCA', url: '' },
+        ],
+        reviewOverdue: true,
+      },
+    ]);
+  });
+
+  it('lists readings and articles separately, each article once', () => {
+    const sources = sourcesFrom({
+      ...base,
+      intent: 'llm',
+      sources: [soil, search([olive]), search([olive])],
+    });
+    const { readings, articles } = splitSources(sources);
+    expect(readings).toHaveLength(1);
+    expect(readings[0]).toMatchObject({ tool: 'get_soil_status', value: 27 });
+    expect(articles.map((a) => a.id)).toEqual([3]);
+  });
+
+  it('an empty knowledge search adds nothing to show', () => {
+    const { readings, articles } = splitSources(
+      sourcesFrom({ ...base, intent: 'llm', sources: [search([])] })
+    );
+    expect(readings).toEqual([]);
+    expect(articles).toEqual([]);
   });
 });

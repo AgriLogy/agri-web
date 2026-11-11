@@ -36,10 +36,22 @@ export interface AssistantSourceItem {
   as_of: string | null;
 }
 
+/** A knowledge-base article the answer cited (agri-api#483). */
+export interface AssistantSourceArticle {
+  id: number;
+  title: string;
+  sources: { title: string; url: string }[];
+  reviewed_at: string | null;
+  /** Its review date has passed: it may be outdated. */
+  review_overdue: boolean;
+}
+
 export interface AssistantSource {
   tool: string;
   as_of: string | null;
   items?: AssistantSourceItem[];
+  /** search_knowledge only: the approved articles it returned. */
+  articles?: AssistantSourceArticle[];
   error?: string;
 }
 
