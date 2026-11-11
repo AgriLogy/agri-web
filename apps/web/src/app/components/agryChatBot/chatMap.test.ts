@@ -10,6 +10,8 @@ import {
   sourcesFrom,
   splitSources,
 } from './chatMap';
+import type { AssistantSource } from '@agri/api-client/assistantApi';
+
 import type { Message } from './types';
 
 const base = {
@@ -419,11 +421,13 @@ describe('knowledge-base articles in sources (agri-api#483)', () => {
       },
     ],
   };
-  const search = (articles: unknown[]) => ({
-    tool: 'search_knowledge',
-    as_of: null,
-    articles,
-  });
+  // Raw server payload: may carry malformed entries the mapper must drop.
+  const search = (articles: unknown[]) =>
+    ({
+      tool: 'search_knowledge',
+      as_of: null,
+      articles,
+    }) as unknown as AssistantSource;
   const olive = {
     id: 3,
     title: "Irrigation de l'olivier en été",
