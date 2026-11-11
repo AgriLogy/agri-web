@@ -391,6 +391,14 @@ export interface Calibration {
   /** `false` disables the correction while KEEPING the coefficients. */
   isActive: boolean;
   note: string;
+  /**
+   * #460 — when non-empty, `real = equation(x)` with `coefficients` REPLACES
+   * `scaleA`/`offsetB` on the server. Evaluated server-side only.
+   */
+  equation?: string;
+  coefficients?: Record<string, number> | null;
+  referencePoints?: { captured: number; real: number }[] | null;
+  fitMetrics?: import('./calibrationEquationModel').FitMetrics | null;
 }
 
 /** The no-op calibration: what an un-calibrated sensor behaves like. */
