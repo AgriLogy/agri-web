@@ -1,3 +1,10 @@
+# [1.38.0](https://github.com/AgriLogy/agri-web/compare/v1.37.0...v1.38.0) (2026-11-11)
+
+
+### Features
+
+* **assistant:** show the knowledge-base articles an answer cited ([#159](https://github.com/AgriLogy/agri-web/issues/159)) ([fed9fa1](https://github.com/AgriLogy/agri-web/commit/fed9fa16bcb65dd22f7adb778bef6ec4fecbb7b6)), closes [#158](https://github.com/AgriLogy/agri-web/issues/158)
+
 # [1.37.0](https://github.com/AgriLogy/agri-web/compare/v1.36.0...v1.37.0) (2026-11-11)
 
 
