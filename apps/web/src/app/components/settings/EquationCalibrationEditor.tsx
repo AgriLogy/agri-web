@@ -29,6 +29,7 @@ import type { CalibrationFitResponse } from '@agri/api-client/sensorCalibrationA
 import {
   EQUATION_PRESETS,
   fitQuality,
+  formatMeasure,
   formatNumber,
   parseReferencePoints,
   scanCoefficientNames,
@@ -263,7 +264,7 @@ const EquationCalibrationEditor = ({
                   </Td>
                   {fit && fit.points.length > 0 && (
                     <Td isNumeric fontFamily="mono" fontSize="xs">
-                      {residual === undefined ? '' : formatNumber(residual)}
+                      {residual === undefined ? '' : formatMeasure(residual)}
                     </Td>
                   )}
                   <Td>
@@ -409,15 +410,15 @@ const EquationCalibrationEditor = ({
             <Metric label="R²" value={formatNumber(metrics.r2)} />
             <Metric
               label={t('settings.calibration.metricRmse')}
-              value={`${formatNumber(metrics.rmse)} ${unit}`}
+              value={`${formatMeasure(metrics.rmse)} ${unit}`}
             />
             <Metric
               label={t('settings.calibration.metricMae')}
-              value={`${formatNumber(metrics.mae)} ${unit}`}
+              value={`${formatMeasure(metrics.mae)} ${unit}`}
             />
             <Metric
               label={t('settings.calibration.metricMax')}
-              value={`${formatNumber(metrics.max_abs_error)} ${unit}`}
+              value={`${formatMeasure(metrics.max_abs_error)} ${unit}`}
             />
             <Metric
               label={t('settings.calibration.metricPoints')}

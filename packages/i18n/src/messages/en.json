@@ -1990,6 +1990,7 @@
       "appliedTitle": "Applied everywhere once saved",
       "appliedBody": "A saved, active calibration corrects the values shown on the dashboard, the alerts and the reports — all three together, computed on the server. Switch the correction off to go back to the raw values without losing it.",
       "appliedShort": "Dashboard, alerts and reports now use the corrected values.",
+      "savedInactiveShort": "Saved, but the correction is switched off: displayed values are unchanged until you turn it on.",
       "modeLabel": "Calibration method",
       "modeLinear": "Linear — scale factor and offset (a·x + b)",
       "modeEquation": "Equation — fitted to reference points",

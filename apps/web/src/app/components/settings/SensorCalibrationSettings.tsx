@@ -318,7 +318,10 @@ const SensorCalibrationSettings = () => {
       await reloadCalibration();
       toast({
         title: t('settings.calibration.toastSaved'),
-        description: t('settings.calibration.appliedShort'),
+        // Never claim the numbers changed when the correction is switched off.
+        description: draft.isActive
+          ? t('settings.calibration.appliedShort')
+          : t('settings.calibration.savedInactiveShort'),
         status: 'success',
         duration: 4000,
       });

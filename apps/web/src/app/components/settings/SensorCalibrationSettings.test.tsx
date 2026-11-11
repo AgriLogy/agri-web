@@ -489,6 +489,32 @@ describe('SensorCalibrationSettings — equation calibration (#460)', () => {
     expect(screen.getByText(m.modeEquationUnavailable)).toBeInTheDocument();
   });
 
+  it('does not claim the dashboard changed when the correction is off', async () => {
+    server.seed(FIRST_SENSOR.deviceId, FIRST_SENSOR.sensorKey, {
+      is_active: false,
+    });
+    await renderEditor();
+    switchToEquation();
+    enterPoints([
+      ['1', '3'],
+      ['2', '4'],
+    ]);
+    fireEvent.change(screen.getByLabelText(m.presetLabel), {
+      target: { value: 'offset' },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(m.saveButton));
+    });
+
+    expect(mockPut).toHaveBeenCalledWith(
+      firstPath,
+      expect.objectContaining({ is_active: false, equation: 'x + b' })
+    );
+    expect(await screen.findByText(m.savedInactiveShort)).toBeInTheDocument();
+    expect(screen.queryByText(m.appliedShort)).not.toBeInTheDocument();
+  });
+
   it('switching back to linear clears the stored equation', async () => {
     server.seed(FIRST_SENSOR.deviceId, FIRST_SENSOR.sensorKey, {
       equation: 'x + b',

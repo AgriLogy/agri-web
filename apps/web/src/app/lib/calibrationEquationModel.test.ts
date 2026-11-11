@@ -5,6 +5,7 @@
 import {
   EQUATION_PRESETS,
   fitQuality,
+  formatMeasure,
   formatNumber,
   parseCoefficientInputs,
   parseReferencePoints,
@@ -162,5 +163,17 @@ describe('formatNumber', () => {
     [null, '—'],
   ])('%p → %s', (value, text) => {
     expect(formatNumber(value as number | null)).toBe(text);
+  });
+});
+
+describe('formatMeasure', () => {
+  it('reads float noise from an exact fit as 0', () => {
+    expect(formatMeasure(-4.440892098500626e-16)).toBe('0');
+    expect(formatMeasure(1.986e-16)).toBe('0');
+  });
+  it('keeps real errors', () => {
+    expect(formatMeasure(0.25)).toBe('0.25');
+    expect(formatMeasure(-1.5e-6)).toBe('-1.5000e-6');
+    expect(formatMeasure(null)).toBe('—');
   });
 });

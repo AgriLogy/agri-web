@@ -246,3 +246,16 @@ export function formatNumber(value: number | null | undefined): string {
   if (magnitude >= 1e6 || magnitude < 1e-4) return value.toExponential(4);
   return String(Number(value.toPrecision(6)));
 }
+
+/**
+ * Errors and fit metrics (residual, RMSE, MAE, max error): an exact fit leaves
+ * float noise like `-4.44e-16`, which must read as `0`, not as a scary
+ * exponent. Coefficients use {@link formatNumber} instead — a genuine
+ * coefficient on raw ADC counts can be as small as 1e-10.
+ */
+export function formatMeasure(value: number | null | undefined): string {
+  if (value != null && Number.isFinite(value) && Math.abs(value) < 1e-9) {
+    return '0';
+  }
+  return formatNumber(value);
+}

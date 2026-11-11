@@ -1990,6 +1990,7 @@
       "appliedTitle": "Appliqué partout dès l’enregistrement",
       "appliedBody": "Un étalonnage enregistré et actif corrige les valeurs du tableau de bord, des alertes et des rapports — les trois ensemble, calculés sur le serveur. Désactivez la correction pour revenir aux valeurs brutes sans la perdre.",
       "appliedShort": "Tableau de bord, alertes et rapports utilisent désormais les valeurs corrigées.",
+      "savedInactiveShort": "Enregistré, mais la correction est désactivée : les valeurs affichées ne changent pas tant que vous ne l’activez pas.",
       "modeLabel": "Méthode d’étalonnage",
       "modeLinear": "Linéaire — facteur d’échelle et décalage (a·x + b)",
       "modeEquation": "Équation — ajustée sur des points de référence",
