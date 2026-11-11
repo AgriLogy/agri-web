@@ -1,3 +1,10 @@
+# [1.37.0](https://github.com/AgriLogy/agri-web/compare/v1.36.0...v1.37.0) (2026-11-11)
+
+
+### Features
+
+* **calibration:** equation calibration fitted from reference points ([#157](https://github.com/AgriLogy/agri-web/issues/157)) ([07e84d5](https://github.com/AgriLogy/agri-web/commit/07e84d5c0a8d2f812e786580ccaf8d0ebdfabb4a))
+
 # [1.36.0](https://github.com/AgriLogy/agri-web/compare/v1.35.0...v1.36.0) (2026-11-07)
 
 
