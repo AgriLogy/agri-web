@@ -40,6 +40,11 @@ export interface SensorCalibrationState {
    * "this sensor is simply not calibrated yet".
    */
   availability: SensorCalibrationAvailability;
+  /**
+   * #460 — can an EQUATION calibration be stored here? `false` when the API
+   * says the agri-db equation columns are missing, or is too old to say.
+   */
+  equationAvailable: boolean;
   reloadCalibration: () => Promise<void>;
   /** Force the degraded state after a write came back naming the migration. */
   markUnavailable: () => void;
@@ -60,6 +65,7 @@ export function useSensorCalibration(): SensorCalibrationState {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [calibration, setCalibration] = useState<Calibration | null>(null);
   const [configured, setConfigured] = useState(false);
+  const [equationAvailable, setEquationAvailable] = useState(false);
   const [loadingSensors, setLoadingSensors] = useState(true);
   const [loadingCalibration, setLoadingCalibration] = useState(false);
   const [error, setError] = useState(false);
@@ -107,6 +113,10 @@ export function useSensorCalibration(): SensorCalibrationState {
           unit: normalizeUnit(row.unit),
           isActive: row.is_active,
           note: row.note ?? '',
+          equation: row.equation ?? '',
+          coefficients: row.coefficients ?? null,
+          referencePoints: row.reference_points ?? null,
+          fitMetrics: row.fit_metrics ?? null,
         };
       }
       const seed = getDefaultCalibrationForSensorKey(sensorKey);
@@ -133,6 +143,7 @@ export function useSensorCalibration(): SensorCalibrationState {
       const row = await sensorCalibrationApi.get(deviceId, sensorKey);
       setCalibration(toCalibration(row, sensorKey));
       setConfigured(Boolean(row.configured));
+      setEquationAvailable(row.equation_available === true);
       if (row.configured) {
         // A real row came back, so the table is obviously there.
         setAvailability('available');
@@ -188,6 +199,7 @@ export function useSensorCalibration(): SensorCalibrationState {
     loadingCalibration,
     error,
     availability,
+    equationAvailable,
     reloadCalibration,
     markUnavailable,
   };

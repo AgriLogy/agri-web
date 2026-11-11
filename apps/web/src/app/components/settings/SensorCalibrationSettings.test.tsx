@@ -63,12 +63,14 @@ jest.mock('next-intl', () => {
 
 const mockGet = jest.fn();
 const mockPut = jest.fn();
+const mockPost = jest.fn();
 
 jest.mock('@agri/api-client/api', () => ({
   __esModule: true,
   default: {
     get: (...a: unknown[]) => mockGet(...a),
     put: (...a: unknown[]) => mockPut(...a),
+    post: (...a: unknown[]) => mockPost(...a),
   },
 }));
 
@@ -123,8 +125,9 @@ beforeEach(() => {
   localStorage.clear();
   mockGet.mockReset();
   mockPut.mockReset();
+  mockPost.mockReset();
   server = makeFakeCalibrationServer();
-  wireFakeCalibrationServer(server, { mockGet, mockPut });
+  wireFakeCalibrationServer(server, { mockGet, mockPut, mockPost });
 });
 
 describe('SensorCalibrationSettings — per-sensor, account-persisted', () => {
@@ -309,15 +312,227 @@ describe('SensorCalibrationSettings — refusals', () => {
   });
 });
 
-describe('SensorCalibrationSettings — "stored but not applied"', () => {
-  it('says so on screen, every time, without dressing it up as an error', async () => {
+describe('SensorCalibrationSettings — "applied everywhere"', () => {
+  it('says a saved calibration changes dashboard, alerts and reports', async () => {
     await renderEditor();
 
-    const notice = screen.getByTestId('calibration-not-applied');
+    const notice = screen.getByTestId('calibration-applied');
     expect(notice).toBeInTheDocument();
-    // Informational, not an error: the calibration IS saved.
     expect(notice).toHaveAttribute('data-status', 'info');
-    expect(screen.getByText(m.notAppliedBody)).toBeInTheDocument();
+    expect(screen.getByText(m.appliedBody)).toBeInTheDocument();
+  });
+});
+
+describe('SensorCalibrationSettings — equation calibration (#460)', () => {
+  const modeSelect = () => screen.getByLabelText(m.modeLabel);
+  const equationInput = () => screen.getByLabelText(m.equationLabel);
+  const capturedInput = (row: number) =>
+    screen.getByLabelText(`${m.pointsCaptured} ${row}`);
+  const realInput = (row: number) =>
+    screen.getByLabelText(`${m.pointsReal} ${row}`);
+
+  const enterPoints = (points: [string, string][]) => {
+    points.forEach(([captured, real], i) => {
+      fireEvent.change(capturedInput(i + 1), { target: { value: captured } });
+      fireEvent.change(realInput(i + 1), { target: { value: real } });
+    });
+  };
+
+  const switchToEquation = () =>
+    fireEvent.change(modeSelect(), { target: { value: 'equation' } });
+
+  it('fits the equation on the server and shows the coefficients and R²', async () => {
+    await renderEditor();
+    switchToEquation();
+    // y = 2x + 1, with a decimal comma on the last row.
+    enterPoints([
+      ['0', '1'],
+      ['1', '3'],
+      ['2', '5,0'],
+    ]);
+    fireEvent.change(screen.getByLabelText(m.previewRawLabel), {
+      target: { value: '10' },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(m.fitButton));
+    });
+
+    expect(mockPost).toHaveBeenCalledWith(
+      '/sensor-calibrations/fit',
+      expect.objectContaining({
+        equation: 'a*x + b',
+        reference_points: [
+          { captured: 0, real: 1 },
+          { captured: 1, real: 3 },
+          { captured: 2, real: 5 },
+        ],
+        preview_raw: [10],
+      })
+    );
+    await waitFor(() =>
+      expect(screen.getByLabelText(`${m.coefficientLabel} a`)).toHaveValue('2')
+    );
+    expect(screen.getByLabelText(`${m.coefficientLabel} b`)).toHaveValue('1');
+    expect(screen.getByTestId('calibration-fit-metrics')).toHaveTextContent(
+      'R²'
+    );
+    // Exactly-fitting points with spare degrees of freedom → excellent.
+    expect(screen.getByTestId('calibration-fit-quality')).toHaveTextContent(
+      m.quality.excellent
+    );
+    // 10 × 2 + 1 = 21, computed by the server's equation, not the browser.
+    expect(screen.getByTestId('calibration-preview')).toHaveTextContent('21');
+    expect(mockPut).not.toHaveBeenCalled();
+  });
+
+  it('saves the equation with its reference points, and reloads in equation mode', async () => {
+    await renderEditor();
+    switchToEquation();
+    enterPoints([
+      ['10', '12'],
+      ['20', '22'],
+      ['30', '32'],
+    ]);
+    fireEvent.change(screen.getByLabelText(m.presetLabel), {
+      target: { value: 'offset' },
+    });
+    expect(equationInput()).toHaveValue('x + b');
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(m.saveButton));
+    });
+
+    expect(mockPut).toHaveBeenCalledWith(
+      firstPath,
+      expect.objectContaining({
+        equation: 'x + b',
+        reference_points: [
+          { captured: 10, real: 12 },
+          { captured: 20, real: 22 },
+          { captured: 30, real: 32 },
+        ],
+      })
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('calibration-status')).toHaveTextContent(
+        m.statusConfigured
+      )
+    );
+    expect(modeSelect()).toHaveValue('equation');
+    // Stored form `**` is shown back with `^`; fitted b = 2 is in the input.
+    expect(equationInput()).toHaveValue('x + b');
+    expect(screen.getByLabelText(`${m.coefficientLabel} b`)).toHaveValue('2');
+    expect(screen.getByTestId('calibration-fit-metrics')).toHaveTextContent(
+      m.fitStoredTitle
+    );
+  });
+
+  it('flags too few points before asking the server', async () => {
+    await renderEditor();
+    switchToEquation();
+    fireEvent.change(equationInput(), {
+      target: { value: 'a*x^2 + b*x + c' },
+    });
+    enterPoints([
+      ['1', '1'],
+      ['2', '4'],
+    ]);
+
+    expect(
+      screen.getByText(m.errors.notEnoughPoints.split('{needed}').join('3'))
+    ).toBeInTheDocument();
+    expect(screen.getByText(m.fitButton).closest('button')).toBeDisabled();
+    expect(screen.getByText(m.saveButton).closest('button')).toBeDisabled();
+  });
+
+  it('flags a half-filled reference point instead of dropping it', async () => {
+    await renderEditor();
+    switchToEquation();
+    fireEvent.change(capturedInput(1), { target: { value: '5' } });
+
+    expect(screen.getByText(m.errors.invalidPoints)).toBeInTheDocument();
+  });
+
+  it('shows the server reason when the equation is refused', async () => {
+    await renderEditor();
+    switchToEquation();
+    fireEvent.change(equationInput(), {
+      target: { value: "__import__('os') + x" },
+    });
+    fireEvent.change(screen.getByLabelText(m.presetLabel), {
+      target: { value: '' },
+    });
+    enterPoints([
+      ['1', '1'],
+      ['2', '2'],
+      ['3', '3'],
+    ]);
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(m.fitButton));
+    });
+
+    await waitFor(() =>
+      expect(screen.getByTestId('calibration-fit-error')).toHaveTextContent(
+        'Invalid equation'
+      )
+    );
+  });
+
+  it('offers equation mode only where the server can store it', async () => {
+    server.equationAvailable = false;
+    await renderEditor();
+
+    const option = screen.getByRole('option', { name: m.modeEquation });
+    expect(option).toBeDisabled();
+    expect(screen.getByText(m.modeEquationUnavailable)).toBeInTheDocument();
+  });
+
+  it('does not claim the dashboard changed when the correction is off', async () => {
+    server.seed(FIRST_SENSOR.deviceId, FIRST_SENSOR.sensorKey, {
+      is_active: false,
+    });
+    await renderEditor();
+    switchToEquation();
+    enterPoints([
+      ['1', '3'],
+      ['2', '4'],
+    ]);
+    fireEvent.change(screen.getByLabelText(m.presetLabel), {
+      target: { value: 'offset' },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(m.saveButton));
+    });
+
+    expect(mockPut).toHaveBeenCalledWith(
+      firstPath,
+      expect.objectContaining({ is_active: false, equation: 'x + b' })
+    );
+    expect(await screen.findByText(m.savedInactiveShort)).toBeInTheDocument();
+    expect(screen.queryByText(m.appliedShort)).not.toBeInTheDocument();
+  });
+
+  it('switching back to linear clears the stored equation', async () => {
+    server.seed(FIRST_SENSOR.deviceId, FIRST_SENSOR.sensorKey, {
+      equation: 'x + b',
+      coefficients: { b: 2 },
+      reference_points: [{ captured: 1, real: 3 }],
+    });
+    await renderEditor();
+    expect(modeSelect()).toHaveValue('equation');
+
+    fireEvent.change(modeSelect(), { target: { value: 'linear' } });
+    await act(async () => {
+      fireEvent.click(screen.getByText(m.saveButton));
+    });
+
+    expect(mockPut).toHaveBeenCalledWith(
+      firstPath,
+      expect.objectContaining({ equation: '', coefficients: null })
+    );
   });
 });
 

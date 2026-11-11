@@ -22,7 +22,18 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
-import { sensorCalibrationApi } from '@agri/api-client/sensorCalibrationApi';
+import {
+  sensorCalibrationApi,
+  type CalibrationFitResponse,
+} from '@agri/api-client/sensorCalibrationApi';
+import {
+  formatNumber,
+  parseCoefficientInputs,
+  parseReferencePoints,
+  referencePointsToDrafts,
+  validateEquationDraft,
+  type EquationDraft,
+} from '@agri/api-client/calibrationEquationModel';
 import {
   calibrationInUnit,
   isSensorCalibrationUnavailableError,
@@ -38,6 +49,7 @@ import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import { useSensorCalibration } from '@/app/hooks/useSensorCalibration';
 import { useCan } from '@/app/hooks/useAccessLevel';
 import { PermissionGate } from '@/app/components/common/PermissionGate';
+import EquationCalibrationEditor from './EquationCalibrationEditor';
 
 const EMPTY_DRAFT: CalibrationDraft = {
   scaleA: 1,
@@ -45,6 +57,26 @@ const EMPTY_DRAFT: CalibrationDraft = {
   unit: '',
   isActive: true,
   note: '',
+};
+
+type CalibrationMode = 'linear' | 'equation';
+
+/** A fresh equation draft: the linear preset and three blank point rows. */
+const EMPTY_EQUATION: EquationDraft = {
+  equation: 'a*x + b',
+  points: [
+    { captured: '', real: '' },
+    { captured: '', real: '' },
+    { captured: '', real: '' },
+  ],
+  coefficients: {},
+};
+
+/** The API's 400 `detail`, when there is one. */
+const errorDetail = (err: unknown): string | null => {
+  const detail = (err as { response?: { data?: { detail?: unknown } } })
+    ?.response?.data?.detail;
+  return typeof detail === 'string' ? detail : null;
 };
 
 /**
@@ -55,10 +87,15 @@ const EMPTY_DRAFT: CalibrationDraft = {
  * different pieces of hardware and drift differently. Everything here is
  * account data, stored through `/sensor-calibrations`.
  *
- * Three things this screen is careful about:
- *   1. it SAYS, every time, that a stored calibration does not yet change the
- *      numbers on the dashboard — that is a backend ticket, and letting a
- *      farmer believe otherwise would be worse than not shipping the editor;
+ * Two modes (agri-api #460):
+ *   • LINEAR — `real = raw × a + b`, the original affine correction;
+ *   • EQUATION — the general case: any equation in `x` (the captured value)
+ *     whose coefficients the SERVER fits from reference points
+ *     `(captured, real)`, with R² / RMSE / max error to judge the fit.
+ *
+ * Things this screen is careful about:
+ *   1. it SAYS that a saved calibration changes what the dashboard, the alerts
+ *      and the reports show — all three are corrected server-side (#446);
  *   2. changing the unit RECOMPUTES `a` and `b` (`a' = a·m`, `b' = b·m + c`)
  *      instead of relabelling them, so the correction keeps meaning the same
  *      physical thing;
@@ -78,6 +115,7 @@ const SensorCalibrationSettings = () => {
     loadingCalibration,
     error,
     availability,
+    equationAvailable,
     reloadCalibration,
     markUnavailable,
   } = useSensorCalibration();
@@ -87,6 +125,12 @@ const SensorCalibrationSettings = () => {
   const [offsetText, setOffsetText] = useState('0');
   const [rawSample, setRawSample] = useState('');
   const [saving, setSaving] = useState(false);
+  const [mode, setMode] = useState<CalibrationMode>('linear');
+  const [equationDraft, setEquationDraft] =
+    useState<EquationDraft>(EMPTY_EQUATION);
+  const [fit, setFit] = useState<CalibrationFitResponse | null>(null);
+  const [fitting, setFitting] = useState(false);
+  const [fitError, setFitError] = useState<string | null>(null);
   const { canEdit } = useCan();
 
   const unavailable = availability === 'unavailable';
@@ -111,12 +155,35 @@ const SensorCalibrationSettings = () => {
 
   // Reset the draft whenever a different sensor's calibration arrives.
   useEffect(() => {
+    setFit(null);
+    setFitError(null);
     if (!calibration) {
       setDraft(EMPTY_DRAFT);
       setScaleText('1');
       setOffsetText('0');
+      setMode('linear');
+      setEquationDraft(EMPTY_EQUATION);
       return;
     }
+    const storedEquation = (calibration.equation ?? '').trim();
+    setMode(storedEquation ? 'equation' : 'linear');
+    const storedPoints = referencePointsToDrafts(calibration.referencePoints);
+    setEquationDraft(
+      storedEquation
+        ? {
+            equation: storedEquation.replace(/\*\*/g, '^'),
+            points: storedPoints.length ? storedPoints : EMPTY_EQUATION.points,
+            coefficients: Object.fromEntries(
+              Object.entries(calibration.coefficients ?? {}).map(
+                ([name, value]) => [name, formatNumber(value)]
+              )
+            ),
+          }
+        : {
+            ...EMPTY_EQUATION,
+            points: storedPoints.length ? storedPoints : EMPTY_EQUATION.points,
+          }
+    );
     const next: CalibrationDraft = {
       scaleA: calibration.scaleA,
       offsetB: calibration.offsetB,
@@ -134,8 +201,54 @@ const SensorCalibrationSettings = () => {
     [draft.unit, catalogUnit]
   );
 
-  const draftError = validateCalibrationDraft(draft);
-  const preview = previewCalibration(rawSample, draft);
+  const isEquation = mode === 'equation';
+  const linearError = validateCalibrationDraft(draft);
+  const equationError = validateEquationDraft(equationDraft);
+  const draftError = isEquation ? equationError : linearError;
+  const preview = isEquation ? null : previewCalibration(rawSample, draft);
+  const equationPreview = fit?.preview[0];
+
+  /** Any edit to the equation invalidates the fit shown for it. */
+  const changeEquationDraft = (next: EquationDraft) => {
+    setEquationDraft(next);
+    setFit(null);
+    setFitError(null);
+  };
+
+  /** Ask the server to fit (or, with no points, just evaluate) + preview. */
+  const runFit = async () => {
+    if (equationError) return;
+    const raw = Number(rawSample.replace(',', '.'));
+    setFitting(true);
+    setFitError(null);
+    try {
+      const result = await sensorCalibrationApi.fit({
+        equation: equationDraft.equation,
+        reference_points: parseReferencePoints(equationDraft.points).points,
+        initial: parseCoefficientInputs(equationDraft.coefficients),
+        preview_raw:
+          rawSample.trim() !== '' && Number.isFinite(raw) ? [raw] : [],
+      });
+      setFit(result);
+      // Show the fitted values in the inputs (they also seed the save).
+      setEquationDraft((prev) => ({
+        ...prev,
+        coefficients: Object.fromEntries(
+          Object.entries(result.coefficients).map(([name, value]) => [
+            name,
+            formatNumber(value),
+          ])
+        ),
+      }));
+    } catch (err) {
+      setFit(null);
+      setFitError(
+        errorDetail(err) ?? t('settings.calibration.errors.fitFailed')
+      );
+    } finally {
+      setFitting(false);
+    }
+  };
 
   /**
    * Unit change = closed-form rewrite of the two coefficients, never a
@@ -172,17 +285,43 @@ const SensorCalibrationSettings = () => {
     if (!selected || selected.deviceId == null || draftError) return;
     setSaving(true);
     try {
-      await sensorCalibrationApi.save(selected.deviceId, selected.sensorKey, {
-        scale_a: draft.scaleA,
-        offset_b: draft.offsetB,
+      const base = {
+        // In equation mode a/b are kept untouched: switching back to linear
+        // restores them.
+        scale_a: linearError ? 1 : draft.scaleA,
+        offset_b: linearError ? 0 : draft.offsetB,
         unit: draft.unit,
         is_active: draft.isActive,
         note: draft.note || null,
-      });
+      };
+      const points = parseReferencePoints(equationDraft.points).points;
+      await sensorCalibrationApi.save(
+        selected.deviceId,
+        selected.sensorKey,
+        isEquation
+          ? {
+              ...base,
+              equation: equationDraft.equation,
+              coefficients: parseCoefficientInputs(equationDraft.coefficients),
+              reference_points: points,
+            }
+          : equationAvailable
+            ? // Clear a previous equation; keep verification points.
+              {
+                ...base,
+                equation: '',
+                coefficients: null,
+                reference_points: points.length ? points : null,
+              }
+            : base
+      );
       await reloadCalibration();
       toast({
         title: t('settings.calibration.toastSaved'),
-        description: t('settings.calibration.notAppliedShort'),
+        // Never claim the numbers changed when the correction is switched off.
+        description: draft.isActive
+          ? t('settings.calibration.appliedShort')
+          : t('settings.calibration.savedInactiveShort'),
         status: 'success',
         duration: 4000,
       });
@@ -198,8 +337,9 @@ const SensorCalibrationSettings = () => {
       } else {
         toast({
           title: t('settings.calibration.toastError'),
+          description: errorDetail(err) ?? undefined,
           status: 'error',
-          duration: 3000,
+          duration: 6000,
         });
       }
     } finally {
@@ -234,22 +374,22 @@ const SensorCalibrationSettings = () => {
         {t('settings.calibration.intro')}
       </Text>
 
-      {/* The one thing a farmer must not misunderstand. Informational, not an
-          error: the calibration IS saved — it just is not read back yet. */}
+      {/* The one thing a farmer must not misunderstand: saving changes the
+          numbers everywhere — dashboard, alerts and reports (#446). */}
       <Alert
         status="info"
         borderRadius="md"
         mb={3}
         alignItems="flex-start"
-        data-testid="calibration-not-applied"
+        data-testid="calibration-applied"
       >
         <AlertIcon />
         <Box>
           <AlertTitle fontSize="sm">
-            {t('settings.calibration.notAppliedTitle')}
+            {t('settings.calibration.appliedTitle')}
           </AlertTitle>
           <AlertDescription fontSize="sm">
-            {t('settings.calibration.notAppliedBody')}
+            {t('settings.calibration.appliedBody')}
           </AlertDescription>
         </Box>
       </Alert>
@@ -344,6 +484,38 @@ const SensorCalibrationSettings = () => {
                 )}
               </Flex>
 
+              <FormControl maxW="420px" mb={3}>
+                <FormLabel fontSize="sm">
+                  {t('settings.calibration.modeLabel')}
+                </FormLabel>
+                <chakra.select
+                  {...selectProps}
+                  aria-label={t('settings.calibration.modeLabel')}
+                  value={mode}
+                  disabled={blockEdit}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                    setMode(e.target.value as CalibrationMode);
+                    setFit(null);
+                    setFitError(null);
+                  }}
+                >
+                  <option value="linear">
+                    {t('settings.calibration.modeLinear')}
+                  </option>
+                  <option
+                    value="equation"
+                    disabled={!equationAvailable && mode !== 'equation'}
+                  >
+                    {t('settings.calibration.modeEquation')}
+                  </option>
+                </chakra.select>
+                <FormHelperText fontSize="xs">
+                  {equationAvailable
+                    ? t('settings.calibration.modeHelp')
+                    : t('settings.calibration.modeEquationUnavailable')}
+                </FormHelperText>
+              </FormControl>
+
               <Flex gap={3} flexWrap="wrap" mb={3}>
                 <FormControl maxW="200px">
                   <FormLabel fontSize="sm">
@@ -354,9 +526,17 @@ const SensorCalibrationSettings = () => {
                     aria-label={t('settings.calibration.unitLabel')}
                     value={draft.unit}
                     disabled={blockEdit}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      changeUnit(e.target.value)
-                    }
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                      if (isEquation) {
+                        // The unit of the REAL reference values: a label for
+                        // what the points are expressed in, refitted on save.
+                        const unit = e.target.value;
+                        setDraft((prev) => ({ ...prev, unit }));
+                        setFit(null);
+                      } else {
+                        changeUnit(e.target.value);
+                      }
+                    }}
                   >
                     {unitOptions.length === 0 && <option value="">—</option>}
                     {unitOptions.map((unit) => (
@@ -366,67 +546,88 @@ const SensorCalibrationSettings = () => {
                     ))}
                   </chakra.select>
                   <FormHelperText fontSize="xs">
-                    {t('settings.calibration.unitHelp')}
+                    {isEquation
+                      ? t('settings.calibration.unitHelpEquation')
+                      : t('settings.calibration.unitHelp')}
                   </FormHelperText>
                 </FormControl>
 
-                <FormControl
-                  maxW="200px"
-                  isInvalid={
-                    draftError === 'scaleZero' ||
-                    draftError === 'scaleNotANumber'
-                  }
-                >
-                  <FormLabel fontSize="sm">
-                    {t('settings.calibration.scaleLabel')}
-                  </FormLabel>
-                  <Input
-                    type="number"
-                    step="any"
-                    value={scaleText}
-                    isDisabled={blockEdit}
-                    aria-label={t('settings.calibration.scaleLabel')}
-                    onChange={(e) => {
-                      setScaleText(e.target.value);
-                      setDraft((prev) => ({
-                        ...prev,
-                        scaleA: Number(e.target.value),
-                      }));
-                    }}
-                  />
-                  <FormErrorMessage fontSize="xs">
-                    {draftError === 'scaleZero'
-                      ? t('settings.calibration.scaleZeroError')
-                      : t('settings.calibration.scaleNaNError')}
-                  </FormErrorMessage>
-                </FormControl>
+                {!isEquation && (
+                  <>
+                    <FormControl
+                      maxW="200px"
+                      isInvalid={
+                        draftError === 'scaleZero' ||
+                        draftError === 'scaleNotANumber'
+                      }
+                    >
+                      <FormLabel fontSize="sm">
+                        {t('settings.calibration.scaleLabel')}
+                      </FormLabel>
+                      <Input
+                        type="number"
+                        step="any"
+                        value={scaleText}
+                        isDisabled={blockEdit}
+                        aria-label={t('settings.calibration.scaleLabel')}
+                        onChange={(e) => {
+                          setScaleText(e.target.value);
+                          setDraft((prev) => ({
+                            ...prev,
+                            scaleA: Number(e.target.value),
+                          }));
+                        }}
+                      />
+                      <FormErrorMessage fontSize="xs">
+                        {draftError === 'scaleZero'
+                          ? t('settings.calibration.scaleZeroError')
+                          : t('settings.calibration.scaleNaNError')}
+                      </FormErrorMessage>
+                    </FormControl>
 
-                <FormControl
-                  maxW="200px"
-                  isInvalid={draftError === 'offsetNotANumber'}
-                >
-                  <FormLabel fontSize="sm">
-                    {t('settings.calibration.offsetLabel')}
-                  </FormLabel>
-                  <Input
-                    type="number"
-                    step="any"
-                    value={offsetText}
-                    isDisabled={blockEdit}
-                    aria-label={t('settings.calibration.offsetLabel')}
-                    onChange={(e) => {
-                      setOffsetText(e.target.value);
-                      setDraft((prev) => ({
-                        ...prev,
-                        offsetB: Number(e.target.value),
-                      }));
-                    }}
-                  />
-                  <FormErrorMessage fontSize="xs">
-                    {t('settings.calibration.offsetNaNError')}
-                  </FormErrorMessage>
-                </FormControl>
+                    <FormControl
+                      maxW="200px"
+                      isInvalid={draftError === 'offsetNotANumber'}
+                    >
+                      <FormLabel fontSize="sm">
+                        {t('settings.calibration.offsetLabel')}
+                      </FormLabel>
+                      <Input
+                        type="number"
+                        step="any"
+                        value={offsetText}
+                        isDisabled={blockEdit}
+                        aria-label={t('settings.calibration.offsetLabel')}
+                        onChange={(e) => {
+                          setOffsetText(e.target.value);
+                          setDraft((prev) => ({
+                            ...prev,
+                            offsetB: Number(e.target.value),
+                          }));
+                        }}
+                      />
+                      <FormErrorMessage fontSize="xs">
+                        {t('settings.calibration.offsetNaNError')}
+                      </FormErrorMessage>
+                    </FormControl>
+                  </>
+                )}
               </Flex>
+
+              {isEquation && (
+                <EquationCalibrationEditor
+                  draft={equationDraft}
+                  onChange={changeEquationDraft}
+                  draftError={equationError}
+                  disabled={blockEdit}
+                  unit={draft.unit || catalogUnit}
+                  fit={fit}
+                  storedMetrics={calibration?.fitMetrics ?? null}
+                  fitting={fitting}
+                  fitError={fitError}
+                  onFit={() => void runFit()}
+                />
+              )}
 
               <FormControl display="flex" alignItems="center" gap={2} mb={3}>
                 <Switch
@@ -488,17 +689,30 @@ const SensorCalibrationSettings = () => {
                       placeholder={t(
                         'settings.calibration.previewRawPlaceholder'
                       )}
-                      onChange={(e) => setRawSample(e.target.value)}
+                      onChange={(e) => {
+                        setRawSample(e.target.value);
+                        if (isEquation) setFit(null);
+                      }}
                     />
                   </FormControl>
                   <Text fontSize="sm" data-testid="calibration-preview">
-                    {preview
-                      ? t('settings.calibration.previewResult', {
-                          raw: preview.raw,
-                          corrected: roundCoefficient(preview.corrected),
-                          unit: draft.unit || catalogUnit || '',
-                        })
-                      : t('settings.calibration.previewEmpty')}
+                    {isEquation
+                      ? equationPreview && equationPreview.real != null
+                        ? t('settings.calibration.previewResult', {
+                            raw: equationPreview.raw,
+                            corrected: formatNumber(equationPreview.real),
+                            unit: draft.unit || catalogUnit || '',
+                          })
+                        : equationPreview
+                          ? t('settings.calibration.previewOutOfDomain')
+                          : t('settings.calibration.previewEquationEmpty')
+                      : preview
+                        ? t('settings.calibration.previewResult', {
+                            raw: preview.raw,
+                            corrected: roundCoefficient(preview.corrected),
+                            unit: draft.unit || catalogUnit || '',
+                          })
+                        : t('settings.calibration.previewEmpty')}
                   </Text>
                 </Flex>
                 {preview?.disabled && (
@@ -507,7 +721,11 @@ const SensorCalibrationSettings = () => {
                   </Text>
                 )}
                 <Text fontSize="xs" color={mutedTextColor} mt={2}>
-                  {t('settings.calibration.formulaHint')}
+                  {isEquation
+                    ? t('settings.calibration.formulaHintEquation', {
+                        equation: equationDraft.equation,
+                      })
+                    : t('settings.calibration.formulaHint')}
                 </Text>
               </Box>
 
