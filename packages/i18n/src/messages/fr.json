@@ -1399,7 +1399,11 @@
         "justNow": "à l'instant",
         "hoursAgo": "il y a {n} h",
         "daysAgo": "il y a {n} j",
-        "noData": "aucune donnée"
+        "noData": "aucune donnée",
+        "articlesOnly": "Sources ({n})",
+        "articlesCount": "{n} article(s)",
+        "articlesHeading": "Base de connaissances Agrogo",
+        "articleOverdue": "Article à relire : il peut être dépassé."
       },
       "tools": {
         "get_soil_status": "État du sol",
@@ -1413,7 +1417,8 @@
         "list_zones": "Zones",
         "get_zone_detail": "Détail de la zone",
         "list_recent_notifications": "Notifications récentes",
-        "get_sitemap": "Pages"
+        "get_sitemap": "Pages",
+        "search_knowledge": "Base de connaissances"
       },
       "action": {
         "title": "Action à confirmer",

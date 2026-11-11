@@ -5,7 +5,8 @@
  *
  * - **Data used**: the readings the advice was based on, each with its time,
  *   flagged when older than 2 days, so a farmer can see what the answer rests
- *   on and how fresh it is;
+ *   on and how fresh it is — and the knowledge-base articles (approved by
+ *   Agrogo agronomists) it cited, with their sources (agri-api#483);
  * - **Action to confirm**: an action the assistant proposed (create an alert,
  *   change notification frequency). Nothing happens until the farmer presses
  *   Confirm; the server never runs a write from the chat itself.
@@ -17,13 +18,14 @@ import {
   Button,
   Collapse,
   Flex,
+  Link,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useLocale, useTranslations } from 'next-intl';
 
 import { useChat } from './ChatContext';
-import { readingAge } from './chatMap';
+import { readingAge, splitSources } from './chatMap';
 import type { ChatPendingAction, ChatSource, Message } from './types';
 
 const formatAge = (
@@ -43,11 +45,7 @@ const SourcesList = ({ sources }: { sources: ChatSource[] }) => {
   const muted = useColorModeValue('gray.500', 'gray.400');
   const stale = useColorModeValue('orange.600', 'orange.300');
   const border = useColorModeValue('gray.200', 'gray.600');
-  const items = sources.flatMap((s) =>
-    s.items.length
-      ? s.items.map((i) => ({ ...i, tool: s.tool }))
-      : [{ label: '', value: null, unit: '', asOf: s.asOf, tool: s.tool }]
-  );
+  const { readings: items, articles } = splitSources(sources);
   const anyStale = items.some((i) => readingAge(i.asOf)?.stale);
   const toolLabel = (tool: string) =>
     t.has(`misc.chatbot.tools.${tool}`)
@@ -64,7 +62,12 @@ const SourcesList = ({ sources }: { sources: ChatSource[] }) => {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
       >
-        {t('misc.chatbot.sources.title', { n: items.length })}
+        {items.length
+          ? t('misc.chatbot.sources.title', { n: items.length })
+          : t('misc.chatbot.sources.articlesOnly', { n: articles.length })}
+        {items.length && articles.length
+          ? ` · ${t('misc.chatbot.sources.articlesCount', { n: articles.length })}`
+          : ''}
         {anyStale ? ` · ${t('misc.chatbot.sources.someStale')}` : ''}
       </Button>
       <Collapse in={open} animateOpacity>
@@ -110,6 +113,50 @@ const SourcesList = ({ sources }: { sources: ChatSource[] }) => {
               </Flex>
             );
           })}
+          {articles.length ? (
+            <Box
+              mt={items.length ? '6px' : 0}
+              pt={items.length ? '6px' : 0}
+              borderTop={items.length ? '1px solid' : undefined}
+              borderColor={border}
+            >
+              <Text fontSize="11px" color={muted} mb="2px">
+                {t('misc.chatbot.sources.articlesHeading')}
+              </Text>
+              {articles.map((a) => (
+                <Box key={a.id} fontSize="11.5px" py="2px">
+                  <Text dir="auto" fontWeight={600}>
+                    {a.title}
+                  </Text>
+                  {a.sources.length ? (
+                    <Text color={muted}>
+                      {a.sources.map((src, idx) => (
+                        <span key={`${a.id}-${idx}`}>
+                          {idx ? ' · ' : ''}
+                          {src.url ? (
+                            <Link
+                              href={src.url}
+                              isExternal
+                              rel="noopener noreferrer"
+                            >
+                              {src.title}
+                            </Link>
+                          ) : (
+                            src.title
+                          )}
+                        </span>
+                      ))}
+                    </Text>
+                  ) : null}
+                  {a.reviewOverdue ? (
+                    <Text color={stale}>
+                      {t('misc.chatbot.sources.articleOverdue')}
+                    </Text>
+                  ) : null}
+                </Box>
+              ))}
+            </Box>
+          ) : null}
         </Box>
       </Collapse>
     </Box>
@@ -220,7 +267,11 @@ const ActionCard = ({
 
 export const MessageExtras = ({ message }: { message: Message }) => {
   if (message.role !== 'assistant') return null;
-  const hasSources = !!message.sources?.length;
+  const hasSources = (() => {
+    if (!message.sources?.length) return false;
+    const { readings, articles } = splitSources(message.sources);
+    return readings.length + articles.length > 0;
+  })();
   if (!hasSources && !message.pendingAction) return null;
   return (
     <Box display="flex" flexDirection="column" alignItems="flex-start">

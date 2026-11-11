@@ -1399,7 +1399,11 @@
         "justNow": "الآن",
         "hoursAgo": "منذ {n} ساعة",
         "daysAgo": "منذ {n} يوم",
-        "noData": "لا توجد بيانات"
+        "noData": "لا توجد بيانات",
+        "articlesOnly": "المصادر ({n})",
+        "articlesCount": "{n} مقال",
+        "articlesHeading": "قاعدة معارف Agrogo",
+        "articleOverdue": "يحتاج إلى مراجعة: قد يكون قديمًا."
       },
       "tools": {
         "get_soil_status": "حالة التربة",
@@ -1413,7 +1417,8 @@
         "list_zones": "المناطق",
         "get_zone_detail": "تفاصيل المنطقة",
         "list_recent_notifications": "الإشعارات الأخيرة",
-        "get_sitemap": "الصفحات"
+        "get_sitemap": "الصفحات",
+        "search_knowledge": "قاعدة المعارف"
       },
       "action": {
         "title": "إجراء يحتاج إلى تأكيد",
