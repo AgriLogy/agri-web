@@ -1,3 +1,10 @@
+# [1.39.0](https://github.com/AgriLogy/agri-web/compare/v1.38.1...v1.39.0) (2026-11-12)
+
+
+### Features
+
+* **alerts:** choose recent vs same-season basis for the suggested threshold ([#163](https://github.com/AgriLogy/agri-web/issues/163)) ([4d2937a](https://github.com/AgriLogy/agri-web/commit/4d2937a88be4e0fe8ae692f83776b213ce9730e7)), closes [#486](https://github.com/AgriLogy/agri-web/issues/486) [#162](https://github.com/AgriLogy/agri-web/issues/162)
+
 ## [1.38.1](https://github.com/AgriLogy/agri-web/compare/v1.38.0...v1.38.1) (2026-11-12)
 
 # [1.38.0](https://github.com/AgriLogy/agri-web/compare/v1.37.0...v1.38.0) (2026-11-11)
