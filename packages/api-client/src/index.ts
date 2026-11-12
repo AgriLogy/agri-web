@@ -22,6 +22,7 @@ export * from './notificationDeliveryRate';
 export * from './myDevicesApi';
 export * from './notificationDispatch';
 export * from './notificationsCacheStorage';
+export * from './pushApi';
 export * from './reportsApi';
 export * from './reportsModel';
 export * from './schemaAvailability';

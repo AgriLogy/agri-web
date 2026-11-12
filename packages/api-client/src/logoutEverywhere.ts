@@ -13,8 +13,12 @@
 
 import api from './api';
 import { clearSsoSession } from './clearSsoSession';
+import { forgetWebPush } from './pushApi';
 
 export const logoutEverywhere = async (redirectTo?: string): Promise<void> => {
+  // Unregister this browser from push FIRST, while the session is still valid,
+  // so a shared computer stops receiving the previous user's alerts.
+  await forgetWebPush();
   try {
     await api.delete('/auth/sessions');
   } catch {
