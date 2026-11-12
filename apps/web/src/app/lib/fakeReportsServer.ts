@@ -46,6 +46,14 @@ export interface FakeReportsServer {
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
+/** ISO timestamp ``hours`` before now. Seed rows must sit inside the page's
+ * default range (the last 30 days), so they are dated relative to the clock —
+ * fixed dates silently fall out of the range as time passes. */
+export const hoursAgoIso = (hours: number): string =>
+  new Date(Date.now() - hours * 3_600_000)
+    .toISOString()
+    .replace(/\.\d{3}Z$/, 'Z');
+
 export function makeFakeReportsServer(): FakeReportsServer {
   const server: FakeReportsServer = {
     degraded: false,
@@ -54,7 +62,7 @@ export function makeFakeReportsServer(): FakeReportsServer {
     decisions: [],
     seedAlert(over = {}) {
       const row: AlertEvent = {
-        triggered_at: '2026-07-20T10:00:00Z',
+        triggered_at: hoursAgoIso(24),
         alert_name: 'Gel nocturne',
         condition: 'lt',
         threshold_value: 3,
@@ -63,7 +71,7 @@ export function makeFakeReportsServer(): FakeReportsServer {
         sensor_key: 'soil_temperature',
         zone_id: 5,
         notified_channels: ['email'],
-        reading_at: '2026-07-20T09:55:00Z',
+        reading_at: hoursAgoIso(24.1),
         ...over,
       };
       server.alerts.push(row);
@@ -71,7 +79,7 @@ export function makeFakeReportsServer(): FakeReportsServer {
     },
     seedDecision(over = {}) {
       const row: IrrigationDecision = {
-        decided_at: '2026-07-20T06:00:00Z',
+        decided_at: hoursAgoIso(28),
         zone_id: 5,
         source: 'water_balance',
         irrigate: true,

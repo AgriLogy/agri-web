@@ -60,6 +60,7 @@ jest.mock('@/app/components/layout/ChartDateRangeControl', () => {
 
 import ReportsMain from './ReportsMain';
 import {
+  hoursAgoIso,
   makeFakeReportsServer,
   wireFakeReportsServer,
   type FakeReportsServer,
@@ -150,10 +151,9 @@ describe('ReportsMain — alert history', () => {
 
   it('pages with offset when there are more rows than one page holds', async () => {
     for (let i = 0; i < 60; i++) {
-      const mm = String(i).padStart(2, '0');
       server.seedAlert({
         alert_name: `Alerte ${i}`,
-        triggered_at: `2026-07-20T10:${mm}:00Z`,
+        triggered_at: hoursAgoIso(24 + i / 60),
       });
     }
     renderPage();
