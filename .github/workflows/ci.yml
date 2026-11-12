@@ -32,5 +32,10 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
+      # Unit/integration tests (jest via turbo). Without this step a broken test
+      # could sit on main unnoticed — ReportsMain's fixtures did for months.
+      - name: Test
+        run: npm test
+
       - name: Build
         run: npm run build
