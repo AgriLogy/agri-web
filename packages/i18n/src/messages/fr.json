@@ -699,6 +699,17 @@
       "notificationZone": "Zone de notification",
       "notificationZonePlaceholder": "Optionnel — associer à une zone personnalisée",
       "notificationZoneHint": "Associer cette alerte à une zone de notification personnalisée plutôt qu'à une parcelle."
+    },
+    "webPush": {
+      "title": "Notifications sur ce navigateur",
+      "enable": "Activer",
+      "disable": "Désactiver",
+      "enabled": "Notifications activées sur ce navigateur.",
+      "error": "Impossible d'activer les notifications. Réessayez.",
+      "hint_off": "Recevez vos alertes ici, même onglet fermé.",
+      "hint_on": "Activées : vos alertes arrivent sur ce navigateur.",
+      "hint_denied": "Bloquées par le navigateur. Autorisez les notifications pour ce site dans les réglages du navigateur.",
+      "hint_unsupported": "Ce navigateur ne prend pas en charge les notifications push."
     }
   },
   "analytics": {

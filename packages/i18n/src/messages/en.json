@@ -699,6 +699,17 @@
       "notificationZone": "Notification zone",
       "notificationZonePlaceholder": "Optional — bind to a custom zone",
       "notificationZoneHint": "Bind this alert to a custom notification zone instead of a farm zone."
+    },
+    "webPush": {
+      "title": "Notifications on this browser",
+      "enable": "Enable",
+      "disable": "Turn off",
+      "enabled": "Notifications enabled on this browser.",
+      "error": "Could not enable notifications. Please try again.",
+      "hint_off": "Get your alerts here, even with the tab closed.",
+      "hint_on": "On: your alerts arrive on this browser.",
+      "hint_denied": "Blocked by the browser. Allow notifications for this site in your browser's settings.",
+      "hint_unsupported": "This browser does not support push notifications."
     }
   },
   "analytics": {

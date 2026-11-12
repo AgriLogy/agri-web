@@ -32,6 +32,7 @@ import {
 } from '@/app/components/common/MobileRecordCards';
 import { useIsMobile } from '@/app/hooks/useIsMobile';
 import AlertCreateDrawer from './AlertCreateDrawer';
+import WebPushToggle from './WebPushToggle';
 import styles from './AlertMain.module.scss';
 
 const AlertMain: React.FC = () => {
@@ -378,6 +379,8 @@ const AlertMain: React.FC = () => {
           </PermissionGate>
         }
       />
+
+      <WebPushToggle />
 
       <Box
         bg="app.surface"
