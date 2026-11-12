@@ -30,10 +30,18 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  Box,
+  ButtonGroup,
   HStack,
+  Text,
   useToast,
 } from '@chakra-ui/react';
-import { alertApi, type AlertRecord } from '@agri/api-client/alertApi';
+import {
+  alertApi,
+  type AlertRecord,
+  type AlertSuggestion,
+  type SuggestWindow,
+} from '@agri/api-client/alertApi';
 import {
   DEFAULT_SENSOR_KEYS,
   type SensorKeyOption,
@@ -72,6 +80,10 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
     useAlertForm();
   const [submitting, setSubmitting] = useState(false);
   const [discardOpen, setDiscardOpen] = useState(false);
+  // Basis of the prefilled threshold (create-from-chart only): the latest
+  // readings, or the same period in previous years (agri-api #485).
+  const [suggestWindow, setSuggestWindow] = useState<SuggestWindow>('recent');
+  const [seasonalFallback, setSeasonalFallback] = useState(false);
   const discardKeepRef = useRef<HTMLButtonElement>(null);
   const [sensorKeys, setSensorKeys] =
     useState<SensorKeyOption[]>(DEFAULT_SENSOR_KEYS);
@@ -119,10 +131,29 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
       .catch(() => {});
   }, [open]);
 
+  const fetchSuggestion = (basis: SuggestWindow): Promise<AlertSuggestion> =>
+    alertApi.suggest({
+      sensor_key: sensorKey as string,
+      ...(zoneId ? { zone_id: zoneId } : {}),
+      ...(basis === 'seasonal' ? { window: 'seasonal' as const } : {}),
+    });
+
+  const noteThinHistory = (suggestion: AlertSuggestion) => {
+    setSeasonalFallback(Boolean(suggestion.seasonal_fallback));
+    if (suggestion.sample_size === 0) {
+      toast({
+        status: 'info',
+        description: t('alertsPage.createDrawer.noRecentReadings'),
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   // Prefill on open: edit-mode maps the alert onto the form; create-mode
   // resets to defaults and, when a sensorKey hint is present, overlays the
-  // /alerts/suggest mean-based defaults. Programmatic prefill never marks the
-  // form "touched" — only user edits do — so the discard confirm stays honest.
+  // /alerts/suggest defaults. Programmatic prefill never marks the form
+  // "touched" — only user edits do — so the discard confirm stays honest.
   useEffect(() => {
     if (!open) return;
     if (editing) {
@@ -131,11 +162,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
     }
     reset();
     if (!sensorKey) return;
-    void alertApi
-      .suggest({
-        sensor_key: sensorKey,
-        ...(zoneId ? { zone_id: zoneId } : {}),
-      })
+    void fetchSuggestion('recent')
       .then((suggestion) => {
         patch({
           name: suggestion.name,
@@ -147,14 +174,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
           is_active: suggestion.is_active,
           ...(zoneId ? { zone: zoneId } : {}),
         });
-        if (suggestion.sample_size === 0) {
-          toast({
-            status: 'info',
-            description: t('alertsPage.createDrawer.noRecentReadings'),
-            duration: 5000,
-            isClosable: true,
-          });
-        }
+        noteThinHistory(suggestion);
       })
       .catch(() => {
         patch({
@@ -165,8 +185,34 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, sensorKey, zoneId, editing]);
 
+  // Switching the basis re-derives ONLY the threshold (+ its condition and the
+  // description that explains it); name, channels and anything else the user
+  // typed are kept.
+  const changeSuggestWindow = (basis: SuggestWindow) => {
+    if (basis === suggestWindow || !sensorKey) return;
+    setSuggestWindow(basis);
+    void fetchSuggestion(basis)
+      .then((suggestion) => {
+        patch({
+          condition: suggestion.condition,
+          condition_nbr: suggestion.condition_nbr,
+          description: suggestion.description,
+        });
+        noteThinHistory(suggestion);
+      })
+      .catch(() => {});
+  };
+
+  // The basis starts on "recent" for every open; reset it on the way out so
+  // the next open needs no setState inside the prefill effect.
+  const resetSuggestBasis = () => {
+    setSuggestWindow('recent');
+    setSeasonalFallback(false);
+  };
+
   const finishClose = () => {
     reset();
+    resetSuggestBasis();
     onClose();
   };
 
@@ -208,6 +254,7 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
         });
       }
       reset();
+      resetSuggestBasis();
       onClose();
       onSaved?.();
     } catch (err: unknown) {
@@ -252,6 +299,36 @@ const AlertCreateDrawer: React.FC<AlertCreateDrawerProps> = ({
           </DrawerHeader>
 
           <DrawerBody>
+            {!editing && sensorKey ? (
+              <Box mb={4} data-testid="alert-suggest-basis">
+                <Text fontSize="sm" mb={2}>
+                  {t('alertsPage.createDrawer.suggestBasis')}
+                </Text>
+                <ButtonGroup size="sm" isAttached variant="outline">
+                  {(['recent', 'seasonal'] as const).map((basis) => (
+                    <Button
+                      key={basis}
+                      onClick={() => changeSuggestWindow(basis)}
+                      isActive={suggestWindow === basis}
+                      aria-pressed={suggestWindow === basis}
+                      data-testid={`alert-suggest-${basis}`}
+                    >
+                      {t(`alertsPage.createDrawer.suggestBasis_${basis}`)}
+                    </Button>
+                  ))}
+                </ButtonGroup>
+                {suggestWindow === 'seasonal' && seasonalFallback ? (
+                  <Text
+                    fontSize="xs"
+                    color="gray.500"
+                    mt={2}
+                    data-testid="alert-suggest-fallback"
+                  >
+                    {t('alertsPage.createDrawer.seasonalFallback')}
+                  </Text>
+                ) : null}
+              </Box>
+            ) : null}
             <AlertForm
               values={values}
               errors={errors}

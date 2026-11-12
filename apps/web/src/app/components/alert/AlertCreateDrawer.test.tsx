@@ -175,4 +175,98 @@ describe('AlertCreateDrawer', () => {
     );
     await waitFor(() => expect(onClose).toHaveBeenCalled());
   });
+
+  describe('suggested threshold basis (create from a chart)', () => {
+    const suggestion = (over: Record<string, unknown> = {}) => ({
+      sensor_key: 'temperature_weather',
+      label: 'Température',
+      unit: '°C',
+      type: 'Weather Temperature',
+      name: 'Alerte — Température',
+      description: 'recent basis',
+      condition: '>',
+      condition_nbr: 31,
+      mean: 31,
+      sample_size: 20,
+      is_active: true,
+      window: 'recent',
+      seasonal_fallback: false,
+      ...over,
+    });
+
+    const suggestCalls = () =>
+      mockGet.mock.calls.filter(([url]) => url === '/alerts/suggest');
+
+    const mockSuggest = (seasonal: Record<string, unknown>) => {
+      const base = mockGet.getMockImplementation()!;
+      mockGet.mockImplementation(
+        (url: string, cfg?: { params?: Record<string, unknown> }) => {
+          if (url === '/alerts/suggest') {
+            return Promise.resolve({
+              data:
+                cfg?.params?.window === 'seasonal'
+                  ? suggestion(seasonal)
+                  : suggestion(),
+            });
+          }
+          return base(url, cfg);
+        }
+      );
+    };
+
+    it('is hidden without a sensor hint and in edit mode', async () => {
+      renderDrawer();
+      await screen.findByTestId('alert-form');
+      expect(
+        screen.queryByTestId('alert-suggest-basis')
+      ).not.toBeInTheDocument();
+    });
+
+    it('re-derives only the threshold when switching to seasonal', async () => {
+      mockSuggest({
+        condition_nbr: 36,
+        description: 'seasonal basis',
+        window: 'seasonal',
+      });
+      renderDrawer({ sensorKey: 'temperature_weather' });
+      await waitFor(() =>
+        expect(screen.getByTestId('alert-threshold-input')).toHaveValue('31')
+      );
+      expect(suggestCalls()[0][1].params).toEqual({
+        sensor_key: 'temperature_weather',
+      });
+
+      fireEvent.change(screen.getByTestId('alert-name-input'), {
+        target: { value: 'Ma chaleur' },
+      });
+      fireEvent.click(screen.getByTestId('alert-suggest-seasonal'));
+
+      await waitFor(() =>
+        expect(screen.getByTestId('alert-threshold-input')).toHaveValue('36')
+      );
+      expect(suggestCalls().at(-1)![1].params).toEqual({
+        sensor_key: 'temperature_weather',
+        window: 'seasonal',
+      });
+      // the user's own edit survives the re-derivation
+      expect(screen.getByTestId('alert-name-input')).toHaveValue('Ma chaleur');
+      expect(screen.getByTestId('alert-suggest-seasonal')).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      );
+      expect(
+        screen.queryByTestId('alert-suggest-fallback')
+      ).not.toBeInTheDocument();
+    });
+
+    it('says so when seasonal history was too thin', async () => {
+      mockSuggest({ window: 'recent', seasonal_fallback: true });
+      renderDrawer({ sensorKey: 'temperature_weather' });
+      await waitFor(() => expect(suggestCalls()).toHaveLength(1));
+      fireEvent.click(screen.getByTestId('alert-suggest-seasonal'));
+      expect(
+        await screen.findByTestId('alert-suggest-fallback')
+      ).toHaveTextContent('alertsPage.createDrawer.seasonalFallback');
+    });
+  });
 });

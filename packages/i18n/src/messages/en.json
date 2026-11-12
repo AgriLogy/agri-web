@@ -638,7 +638,11 @@
       "newTitle": "New alert",
       "cancel": "Cancel",
       "update": "Update",
-      "create": "Create"
+      "create": "Create",
+      "suggestBasis": "Suggested threshold based on",
+      "suggestBasis_recent": "Recent readings",
+      "suggestBasis_seasonal": "Same season (previous years)",
+      "seasonalFallback": "Not enough history for this period in previous years: the threshold comes from recent readings."
     },
     "main": {
       "loadError": "Unable to load alerts.",
