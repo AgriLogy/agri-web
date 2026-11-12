@@ -638,7 +638,11 @@
       "newTitle": "Nouvelle alerte",
       "cancel": "Annuler",
       "update": "Mettre à jour",
-      "create": "Créer"
+      "create": "Créer",
+      "suggestBasis": "Seuil suggéré à partir de",
+      "suggestBasis_recent": "Lectures récentes",
+      "suggestBasis_seasonal": "Même saison (années précédentes)",
+      "seasonalFallback": "Pas assez d'historique pour cette période les années précédentes : le seuil vient des lectures récentes."
     },
     "main": {
       "loadError": "Impossible de charger les alertes.",

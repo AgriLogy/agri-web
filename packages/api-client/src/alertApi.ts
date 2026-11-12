@@ -88,9 +88,17 @@ export const alertApi = {
       }>('/sensors')
       .then((r) => r.data.keys),
 
-  suggest: (params: { sensor_key: string; zone_id?: number }) =>
+  suggest: (params: {
+    sensor_key: string;
+    zone_id?: number;
+    window?: SuggestWindow;
+  }) =>
     api.get<AlertSuggestion>('/alerts/suggest', { params }).then((r) => r.data),
 };
+
+/** How the suggested threshold is sampled (agri-api #485): the latest readings,
+ * or the same calendar period (±15 days) in previous years. */
+export type SuggestWindow = 'recent' | 'seasonal';
 
 export interface AlertSuggestion {
   sensor_key: string;
@@ -104,4 +112,9 @@ export interface AlertSuggestion {
   mean: number | null;
   sample_size: number;
   is_active: boolean;
+  /** Echoed by the backend; older servers omit them. */
+  strategy?: string;
+  window?: SuggestWindow;
+  /** Seasonal was asked for but history was too thin → recent readings used. */
+  seasonal_fallback?: boolean;
 }
