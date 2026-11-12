@@ -1,3 +1,10 @@
+# [1.40.0](https://github.com/AgriLogy/agri-web/compare/v1.39.0...v1.40.0) (2026-11-12)
+
+
+### Features
+
+* **alerts:** browser push notifications for alerts ([#165](https://github.com/AgriLogy/agri-web/issues/165)) ([7425919](https://github.com/AgriLogy/agri-web/commit/7425919a145ffcdfad7fbf36ca23c5a5c36239f6)), closes [#489](https://github.com/AgriLogy/agri-web/issues/489) [#164](https://github.com/AgriLogy/agri-web/issues/164)
+
 # [1.39.0](https://github.com/AgriLogy/agri-web/compare/v1.38.1...v1.39.0) (2026-11-12)
 
 
