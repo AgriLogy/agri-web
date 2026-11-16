@@ -16,7 +16,6 @@ import {
 } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 import api from '@agri/api-client/api';
-import type { ZoneType, ZoneWrapper } from '@/app/types';
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import { useCan } from '@/app/hooks/useAccessLevel';
 import { PermissionGate } from '@/app/components/common/PermissionGate';
@@ -25,39 +24,28 @@ import {
   setFarmImageDataUrl,
 } from '@/app/utils/farmImageStorage';
 
+type MyZone = { id: number; name: string };
+
 const FarmSettingsSection = () => {
   const t = useTranslations();
   const { canEdit } = useCan();
   const toast = useToast();
   const { textColor, bg, bgColor, borderColor, mutedTextColor } =
     useColorModeStyles();
-  const [username, setUsername] = useState('');
-  const [zones, setZones] = useState<ZoneWrapper[]>([]);
+  // GET /zones gives the caller's zones; PATCH /zones/{id} renames one
+  // (agri-web#172 — the old /api/zone-per-user routes no longer exist).
+  const [zones, setZones] = useState<MyZone[]>([]);
   const [loading, setLoading] = useState(true);
   const [names, setNames] = useState<Record<number, string>>({});
   const [, bump] = useState(0);
 
   useEffect(() => {
     api
-      .get<{ username: string }>('/users/me')
-      .then((r) => setUsername(r.data.username))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    if (!username) return;
-    setLoading(true);
-    api
-      .get<ZoneWrapper[]>(`/api/zone-per-user/${username}/`)
+      .get<MyZone[]>('/zones')
       .then((res) => {
         const list = res.data ?? [];
         setZones(list);
-        const n: Record<number, string> = {};
-        for (const zw of list) {
-          n[zw.zone.id] = zw.zone.name;
-        }
-        setNames(n);
+        setNames(Object.fromEntries(list.map((z) => [z.id, z.name])));
       })
       .catch(() => {
         toast({
@@ -69,9 +57,9 @@ const FarmSettingsSection = () => {
         });
       })
       .finally(() => setLoading(false));
-  }, [username, toast]);
+  }, [toast, t]);
 
-  const saveZone = async (zone: ZoneType) => {
+  const saveZone = async (zone: MyZone) => {
     const name = names[zone.id]?.trim();
     if (!name) {
       toast({
@@ -83,13 +71,11 @@ const FarmSettingsSection = () => {
       return;
     }
     try {
-      const payload: ZoneType = { ...zone, name };
-      await api.put(`/api/mod-zone-per-user/${username}/${zone.id}/`, payload);
+      const res = await api.patch<MyZone>(`/zones/${zone.id}`, { name });
       setZones((prev) =>
-        prev.map((zw) =>
-          zw.zone.id === zone.id ? { ...zw, zone: { ...zw.zone, name } } : zw
-        )
+        prev.map((z) => (z.id === zone.id ? { ...z, name: res.data.name } : z))
       );
+      setNames((prev) => ({ ...prev, [zone.id]: res.data.name }));
       toast({
         title: t('settings.farms.farmUpdated'),
         status: 'success',
@@ -149,12 +135,11 @@ const FarmSettingsSection = () => {
       {zones.length === 0 && (
         <Text color={textColor}>{t('settings.farms.empty')}</Text>
       )}
-      {zones.map((zw) => {
-        const zone = zw.zone;
+      {zones.map((zone) => {
         const img = getFarmImageDataUrl(zone.id);
         return (
           <Box
-            key={zw.id}
+            key={zone.id}
             p={4}
             borderRadius="md"
             borderWidth="1px"
