@@ -33,6 +33,7 @@ const StationMain = () => {
     zoneName,
     sectorName,
     range,
+    displayRange,
     setRange,
     frequency,
     setFrequency,
@@ -59,8 +60,8 @@ const StationMain = () => {
         subtitle={pageSubtitle({
           sectorName,
           zoneName,
-          startDate: range.startDate,
-          endDate: range.endDate,
+          startDate: displayRange?.startDate,
+          endDate: displayRange?.endDate,
         })}
         zoneControl={
           <ZoneSelect

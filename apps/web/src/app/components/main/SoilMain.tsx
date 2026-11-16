@@ -29,6 +29,7 @@ const SoilMain = () => {
     zoneName,
     sectorName,
     range,
+    displayRange,
     setRange,
     frequency,
     setFrequency,
@@ -43,8 +44,8 @@ const SoilMain = () => {
         subtitle={pageSubtitle({
           sectorName,
           zoneName,
-          startDate: range.startDate,
-          endDate: range.endDate,
+          startDate: displayRange?.startDate,
+          endDate: displayRange?.endDate,
         })}
         zoneControl={
           <ZoneSelect

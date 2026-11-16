@@ -26,6 +26,7 @@ const PlantMain = () => {
     zoneName,
     sectorName,
     range,
+    displayRange,
     setRange,
     frequency,
     setFrequency,
@@ -40,8 +41,8 @@ const PlantMain = () => {
         subtitle={pageSubtitle({
           sectorName,
           zoneName,
-          startDate: range.startDate,
-          endDate: range.endDate,
+          startDate: displayRange?.startDate,
+          endDate: displayRange?.endDate,
         })}
         zoneControl={
           <ZoneSelect

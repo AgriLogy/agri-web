@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 
 import api from '@agri/api-client/api';
 import getActiveGraphs, {
@@ -29,6 +29,14 @@ export type AnalyticsHeaderState = {
   /** The selected zone's sector name (User → Sector → Zone), or null. */
   sectorName: string | null;
   range: ChartDateRange;
+  /**
+   * The range to PRINT (page subtitle): null during server render and
+   * hydration. `range` defaults to "the last 24 h from now", which the server
+   * (Vercel, UTC) and the browser (farmer, Africa/Casablanca) compute
+   * independently — printing it during hydration made the two disagree
+   * around midnight and React threw a hydration error.
+   */
+  displayRange: ChartDateRange | null;
   setRange: (next: ChartDateRange) => void;
   /** Page-wide chart data frequency. Charts bucket+average themselves to it. */
   frequency: ChartFrequency;
@@ -42,6 +50,8 @@ export type AnalyticsHeaderState = {
  * Holds zones + selected zone + date range + per-zone activeGraph config
  * and exposes the `filters` object every chart sub-component expects.
  */
+const noopSubscribe = () => () => {};
+
 export function useAnalyticsHeader(): AnalyticsHeaderState {
   const [zones, setZones] = useState<ZoneOption[]>([]);
   const [selectedZone, setSelectedZone] = useState<number | null>(null);
@@ -52,6 +62,11 @@ export function useAnalyticsHeader(): AnalyticsHeaderState {
   // Default to hourly so freshly-loaded pages tame high-frequency devices
   // (e.g. router 02's per-minute flood) out of the box.
   const [frequency, setFrequency] = useState<ChartFrequency>({ kind: 'hour' });
+  const hydrated = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false
+  );
 
   useEffect(() => {
     api
@@ -95,6 +110,7 @@ export function useAnalyticsHeader(): AnalyticsHeaderState {
     zoneName,
     sectorName,
     range,
+    displayRange: hydrated ? range : null,
     setRange,
     frequency,
     setFrequency,
