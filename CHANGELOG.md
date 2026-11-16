@@ -1,3 +1,11 @@
+## [1.40.2](https://github.com/AgriLogy/agri-web/compare/v1.40.1...v1.40.2) (2026-11-16)
+
+
+### Bug Fixes
+
+* **access:** technicians see no edit or delete controls ([#176](https://github.com/AgriLogy/agri-web/issues/176)) ([4c38eca](https://github.com/AgriLogy/agri-web/commit/4c38eca67039714e57566c2e4f754c89a1f85954)), closes [#175](https://github.com/AgriLogy/agri-web/issues/175)
+* **settings:** farms tab loads and renames zones through /zones ([#174](https://github.com/AgriLogy/agri-web/issues/174)) ([0b1b8ad](https://github.com/AgriLogy/agri-web/commit/0b1b8ad7c664e64fe486ff6704749563d520132d)), closes [AgriLogy/agri-api#498](https://github.com/AgriLogy/agri-api/issues/498) [#172](https://github.com/AgriLogy/agri-web/issues/172)
+
 ## [1.40.1](https://github.com/AgriLogy/agri-web/compare/v1.40.0...v1.40.1) (2026-11-16)
 
 
