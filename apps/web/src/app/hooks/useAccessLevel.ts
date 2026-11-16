@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { userProfileApi } from '@agri/api-client/userProfileApi';
 import {
   canDelete as canDeleteLevel,
@@ -108,19 +108,43 @@ export interface Capabilities extends AccessLevelState {
   canManageUsers: boolean;
 }
 
+/** Technician session flag, as stored at sign-in (`isTechnician` = '1'). */
+function subscribeTechnician(onChange: () => void): () => void {
+  window.addEventListener('storage', onChange);
+  return () => window.removeEventListener('storage', onChange);
+}
+
+function readTechnician(): boolean {
+  try {
+    return window.localStorage.getItem('isTechnician') === '1';
+  } catch {
+    return false;
+  }
+}
+
 /**
  * The one hook UI code should reach for: booleans derived from the single tier
  * mapping in `@agri/api-client/accessLevel`, so no component ever compares a
  * tier string itself.
+ *
+ * A technician login is read-only whatever its stored tier (the server 403s
+ * every technician write), so every capability is false for it. Without this
+ * a technician — who usually carries the default "editor" tier — was shown
+ * edit/delete controls that then failed on save.
  */
 export function useCan(): Capabilities {
   const { level, loading } = useAccessLevel();
+  const technician = useSyncExternalStore(
+    subscribeTechnician,
+    readTechnician,
+    () => false
+  );
   return {
     level,
     loading,
-    canEdit: canEditLevel(level),
-    canDelete: canDeleteLevel(level),
-    canManageUsers: canManageUsersLevel(level),
+    canEdit: !technician && canEditLevel(level),
+    canDelete: !technician && canDeleteLevel(level),
+    canManageUsers: !technician && canManageUsersLevel(level),
   };
 }
 
