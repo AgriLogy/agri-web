@@ -67,7 +67,6 @@ const WaterSourceCard = ({
   const panel = useColorModeValue('gray.50', 'gray.700');
   const [status, setStatus] = useState<WaterSourceStatus>(source.status);
   const [slider, setSlider] = useState<number | null>(null);
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -89,7 +88,6 @@ const WaterSourceCard = ({
   const sliderValue = slider ?? metrics?.level_m ?? 0;
 
   const simulate = async (level: number) => {
-    setBusy(true);
     setError(null);
     try {
       setStatus(await waterLevelApi.simulate(source.id, level));
@@ -99,7 +97,6 @@ const WaterSourceCard = ({
       setError(t('simulateFailed'));
     } finally {
       setSlider(null);
-      setBusy(false);
     }
   };
 
@@ -283,7 +280,7 @@ const WaterSourceCard = ({
                 max={source.max_height_m}
                 step={Math.max(0.01, source.max_height_m / 500)}
                 value={sliderValue}
-                isDisabled={busy}
+                // Not disabled while saving: disabling drops keyboard focus.
                 onChange={setSlider}
                 onChangeEnd={(v) => void simulate(v)}
               >
