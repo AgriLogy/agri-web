@@ -1,3 +1,10 @@
+## [1.40.3](https://github.com/AgriLogy/agri-web/compare/v1.40.2...v1.40.3) (2026-11-16)
+
+
+### Bug Fixes
+
+* **alerts:** redirect /alerts/wind-speed placeholder to /alerts ([#177](https://github.com/AgriLogy/agri-web/issues/177)) ([b90faed](https://github.com/AgriLogy/agri-web/commit/b90faed2ea16720fca2883c92a9fd784b3b910c9)), closes [#173](https://github.com/AgriLogy/agri-web/issues/173)
+
 ## [1.40.2](https://github.com/AgriLogy/agri-web/compare/v1.40.1...v1.40.2) (2026-11-16)
 
 
