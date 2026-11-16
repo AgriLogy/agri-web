@@ -11,6 +11,9 @@ const config = [
       'build/**',
       'node_modules/**',
       '__mocks__/**',
+      // Playwright e2e output (generated, gitignored)
+      'e2e-report/**',
+      'e2e-results/**',
     ],
   },
   ...nextCoreWebVitals,

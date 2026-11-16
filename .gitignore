@@ -109,3 +109,6 @@ push-personal.sh
 # Local agent / editor scratch — should never be committed
 .claude/
 Untitled-*
+# Playwright e2e suite output (apps/web/e2e)
+e2e-results/
+e2e-report/
