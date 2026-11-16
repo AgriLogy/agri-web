@@ -1,3 +1,10 @@
+## [1.40.1](https://github.com/AgriLogy/agri-web/compare/v1.40.0...v1.40.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* **analytics:** no hydration error from the default date range around midnight ([#169](https://github.com/AgriLogy/agri-web/issues/169)) ([437db0a](https://github.com/AgriLogy/agri-web/commit/437db0af0f39fa7f85660f935fc4f5ed4abe5be7)), closes [#168](https://github.com/AgriLogy/agri-web/issues/168)
+
 # [1.40.0](https://github.com/AgriLogy/agri-web/compare/v1.39.0...v1.40.0) (2026-11-12)
 
 
