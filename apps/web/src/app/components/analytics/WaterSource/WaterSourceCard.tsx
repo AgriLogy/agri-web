@@ -290,7 +290,13 @@ const WaterSourceCard = ({
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
-                <SliderThumb />
+                {/* onChangeEnd fires for pointer only: send keyboard moves
+                    (arrows, Home/End, Page keys) when the key is released. */}
+                <SliderThumb
+                  onKeyUp={() => {
+                    if (slider != null) void simulate(slider);
+                  }}
+                />
               </Slider>
               <Text fontSize="xs" color="gray.500">
                 {t('simulatorHint')}
