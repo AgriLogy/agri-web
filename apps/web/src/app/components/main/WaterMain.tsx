@@ -19,6 +19,7 @@ import WaterFlowMain from '../analytics/WaterFlow/WaterFlowMain';
 import PhWaterMain from '../analytics/WaterPh/PhWaterMain';
 import WaterPressureMain from '../analytics/WaterPressure/WaterPressureMain';
 import WaterLevelMain from '../analytics/WaterLevel/WaterLevelMain';
+import WaterSourcesSection from '../analytics/WaterSource/WaterSourcesSection';
 
 const WaterMain = () => {
   const t = useTranslations();
@@ -70,6 +71,9 @@ const WaterMain = () => {
 
       <ChartFrequencyProvider value={frequency}>
         <Stack spacing={{ base: 3, md: 4 }} minW={0}>
+          <ChartSection>
+            <WaterSourcesSection zones={zones} />
+          </ChartSection>
           {activeGraph?.water_flow_status && (
             <ChartSection>
               <WaterFlowMain filters={filters} />
