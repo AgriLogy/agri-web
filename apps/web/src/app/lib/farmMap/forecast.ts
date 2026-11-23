@@ -22,6 +22,23 @@ export const DEFAULT_HORIZON: ForecastHorizon = 3;
 /** Colour for a sector the forecast has no number for. */
 export const NO_DATA_COLOR = '#a0aec0';
 
+/**
+ * "No rain" gets its own style (QA A7): painted with the scale's lightest blue,
+ * a 0 mm sector read as the grey "Sans données" bucket. A light blue-grey fill
+ * plus a thick blue outline keeps it distinct from both "no data" (mid grey,
+ * thin dark outline) and the "< 1 mm" bucket, on satellite and street basemaps
+ * and in the legend in light and dark mode.
+ *
+ * Totals below 0.05 mm count as no rain: they display as "0.0 mm" anyway.
+ */
+export const NO_RAIN_MAX_MM = 0.05;
+export const NO_RAIN_COLOR = '#d3dde8';
+export const NO_RAIN_OUTLINE = '#2b6cb0';
+export const NO_RAIN_OUTLINE_WIDTH = 2.5;
+/** Outline every other forecast sector gets. */
+export const DEFAULT_OUTLINE = '#1a202c';
+export const DEFAULT_OUTLINE_WIDTH = 1;
+
 export interface ColorScale {
   /** Ascending bucket edges; bucket i is [edges[i-1], edges[i]). */
   edges: number[];
@@ -74,6 +91,45 @@ export function metricValue(
   return isNum(v) ? v : null;
 }
 
+/** True when the forecast total is a real number that rounds to no rain. */
+export function isNoRain(rain: number | null | undefined): boolean {
+  return isNum(rain) && rain < NO_RAIN_MAX_MM;
+}
+
+export interface SectorStyle {
+  color: string;
+  outline: string;
+  outlineWidth: number;
+  /** No rain forecast (whatever the metric): the popup says so in words. */
+  noRain: boolean;
+}
+
+/**
+ * Fill + outline for one sector. The dedicated "no rain" style applies to the
+ * rain metric only; on the balance a dry sector still has a meaningful
+ * (negative) number, coloured by the diverging scale.
+ */
+export function sectorStyle(
+  s: Pick<SectorForecast, 'total_rain_mm' | 'balance_mm'>,
+  metric: ForecastMetric
+): SectorStyle {
+  const noRain = isNoRain(s.total_rain_mm);
+  if (metric === 'rain' && noRain) {
+    return {
+      color: NO_RAIN_COLOR,
+      outline: NO_RAIN_OUTLINE,
+      outlineWidth: NO_RAIN_OUTLINE_WIDTH,
+      noRain,
+    };
+  }
+  return {
+    color: colorFor(metricValue(s, metric), SCALES[metric]),
+    outline: DEFAULT_OUTLINE,
+    outlineWidth: DEFAULT_OUTLINE_WIDTH,
+    noRain,
+  };
+}
+
 export interface LegendEntry {
   color: string;
   label: string;
@@ -99,6 +155,40 @@ export function legendEntries(scale: ColorScale): LegendEntry[] {
   }));
 }
 
+export interface LegendRow {
+  color: string;
+  outline: string;
+  outlineWidth: number;
+  /** A numeric range ("1 – 5"); the UI appends "mm". */
+  label?: string;
+  /** Or a translated label: misc.map.forecast.<labelKey>. */
+  labelKey?: 'noRain' | 'noData';
+}
+
+/**
+ * Every legend row for a metric, in display order: "no rain" first (rain
+ * metric only), then the scale low → high, then "no data".
+ */
+export function forecastLegendRows(metric: ForecastMetric): LegendRow[] {
+  const plain = {
+    outline: DEFAULT_OUTLINE,
+    outlineWidth: DEFAULT_OUTLINE_WIDTH,
+  };
+  const rows: LegendRow[] = [];
+  if (metric === 'rain') {
+    rows.push({
+      color: NO_RAIN_COLOR,
+      outline: NO_RAIN_OUTLINE,
+      outlineWidth: NO_RAIN_OUTLINE_WIDTH,
+      labelKey: 'noRain',
+    });
+  }
+  for (const e of legendEntries(SCALES[metric]))
+    rows.push({ ...plain, color: e.color, label: e.label });
+  rows.push({ ...plain, color: NO_DATA_COLOR, labelKey: 'noData' });
+  return rows;
+}
+
 /** Display value for one metric ("12.4 mm", "−8.6 mm", "—"). */
 export function formatMetric(
   v: number | null | undefined,
@@ -112,6 +202,9 @@ export interface ForecastFeatureProps {
   sector_id: number;
   name: string;
   color: string;
+  outline: string;
+  outlineWidth: number;
+  noRain: boolean;
   /** Pre-formatted for the popup (Mapbox stringifies properties anyway). */
   rain: string;
   et0: string;
@@ -129,7 +222,6 @@ export function forecastFeatures(
   geometryOf: (sectorId: number) => SectorGeometry | null | undefined,
   metric: ForecastMetric
 ): GeoJSON.FeatureCollection<SectorGeometry, ForecastFeatureProps> {
-  const scale = SCALES[metric];
   const features: GeoJSON.Feature<SectorGeometry, ForecastFeatureProps>[] = [];
   for (const s of forecast?.sectors ?? []) {
     const geometry = geometryOf(s.sector_id);
@@ -142,7 +234,7 @@ export function forecastFeatures(
       properties: {
         sector_id: s.sector_id,
         name: s.name,
-        color: colorFor(v, scale),
+        ...sectorStyle(s, metric),
         rain: formatMetric(s.total_rain_mm, 'rain'),
         et0: fmtNum(s.total_et0_mm, 1, 'mm'),
         balance: formatMetric(s.balance_mm, 'balance'),

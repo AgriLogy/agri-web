@@ -2,12 +2,20 @@ import {
   BALANCE_SCALE,
   bucketIndex,
   colorFor,
+  DEFAULT_OUTLINE,
+  DEFAULT_OUTLINE_WIDTH,
   forecastFeatures,
+  forecastLegendRows,
   formatMetric,
+  isNoRain,
   legendEntries,
   metricValue,
   NO_DATA_COLOR,
+  NO_RAIN_COLOR,
+  NO_RAIN_OUTLINE,
+  NO_RAIN_OUTLINE_WIDTH,
   RAIN_SCALE,
+  sectorStyle,
   toHorizon,
 } from './forecast';
 
@@ -107,6 +115,95 @@ describe('forecastFeatures', () => {
     expect(forecastFeatures(null, () => square, 'balance').features).toEqual(
       []
     );
+  });
+});
+
+describe('no rain (QA A7)', () => {
+  it('treats totals that display as 0.0 mm as no rain, never missing data', () => {
+    expect(isNoRain(0)).toBe(true);
+    expect(isNoRain(0.04)).toBe(true);
+    expect(isNoRain(0.05)).toBe(false);
+    expect(isNoRain(0.6)).toBe(false);
+    expect(isNoRain(null)).toBe(false);
+    expect(isNoRain(undefined)).toBe(false);
+    expect(isNoRain(NaN)).toBe(false);
+  });
+
+  it('gives 0 mm its own style in the rain metric', () => {
+    const st = sectorStyle(sector(1, 0, -9.8), 'rain');
+    expect(st).toEqual({
+      color: NO_RAIN_COLOR,
+      outline: NO_RAIN_OUTLINE,
+      outlineWidth: NO_RAIN_OUTLINE_WIDTH,
+      noRain: true,
+    });
+  });
+
+  it('keeps "no rain" distinct from "no data" and from the < 1 mm bucket', () => {
+    const noRain = sectorStyle(sector(1, 0, 0), 'rain');
+    const noData = sectorStyle(sector(2, null, null), 'rain');
+    const light = sectorStyle(sector(3, 0.6, 0), 'rain');
+    expect(noRain.color).not.toBe(noData.color);
+    expect(noRain.color).not.toBe(light.color);
+    expect(noRain.outline).not.toBe(noData.outline);
+    expect(noRain.outlineWidth).toBeGreaterThan(noData.outlineWidth);
+    expect(noData).toMatchObject({
+      color: NO_DATA_COLOR,
+      outline: DEFAULT_OUTLINE,
+      outlineWidth: DEFAULT_OUTLINE_WIDTH,
+      noRain: false,
+    });
+    expect(light.color).toBe(RAIN_SCALE.colors[0]);
+  });
+
+  it('colours the balance by its number even when it did not rain', () => {
+    const st = sectorStyle(sector(1, 0, -12), 'balance');
+    expect(st.color).toBe(BALANCE_SCALE.colors[1]);
+    expect(st.outline).toBe(DEFAULT_OUTLINE);
+    expect(st.noRain).toBe(true);
+  });
+
+  it('flags no-rain features for the popup', () => {
+    const fc = forecastFeatures(
+      { sectors: [sector(1, 0, -9.8), sector(2, 3, -6)] },
+      () => square,
+      'rain'
+    );
+    expect(fc.features[0]!.properties).toMatchObject({
+      noRain: true,
+      color: NO_RAIN_COLOR,
+      outline: NO_RAIN_OUTLINE,
+      rain: '0.0 mm',
+    });
+    expect(fc.features[1]!.properties).toMatchObject({
+      noRain: false,
+      outline: DEFAULT_OUTLINE,
+    });
+  });
+});
+
+describe('forecastLegendRows', () => {
+  it('lists no rain first and no data last for the rain metric', () => {
+    const rows = forecastLegendRows('rain');
+    expect(rows[0]).toEqual({
+      color: NO_RAIN_COLOR,
+      outline: NO_RAIN_OUTLINE,
+      outlineWidth: NO_RAIN_OUTLINE_WIDTH,
+      labelKey: 'noRain',
+    });
+    expect(rows.slice(1, -1).map((r) => r.label)).toEqual(
+      legendEntries(RAIN_SCALE).map((e) => e.label)
+    );
+    expect(rows[rows.length - 1]).toMatchObject({
+      color: NO_DATA_COLOR,
+      labelKey: 'noData',
+    });
+  });
+
+  it('has no "no rain" row on the balance', () => {
+    const rows = forecastLegendRows('balance');
+    expect(rows.some((r) => r.labelKey === 'noRain')).toBe(false);
+    expect(rows).toHaveLength(BALANCE_SCALE.colors.length + 1);
   });
 });
 

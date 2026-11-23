@@ -1486,6 +1486,8 @@
           "balance": "Red: soil drying · blue: soil wetting (mm)"
         },
         "noData": "No data",
+        "noRain": "No rain forecast",
+        "noRainValue": "no rain",
         "loading": "Loading forecast…",
         "loadError": "Could not load the forecast.",
         "mock": "Simulated data (weather service unavailable).",

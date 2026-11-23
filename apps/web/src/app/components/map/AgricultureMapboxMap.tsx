@@ -134,6 +134,17 @@ import {
   type ForecastHorizon,
   type ForecastMetric,
 } from '@/app/lib/farmMap/forecast';
+import {
+  guardReadOnlySelect,
+  STATIC_DRAW_MODE,
+  staticDrawMode,
+} from '@/app/lib/farmMap/drawModes';
+import {
+  fallbackView,
+  initialCenter,
+  shouldRestoreCamera,
+} from '@/app/lib/farmMap/camera';
+import { readWeatherLocation } from '@agri/api-client/weatherLocationStorage';
 import SensorInstallationModal, {
   type SensorModalTarget,
 } from './SensorInstallationModal';
@@ -725,9 +736,25 @@ export default function AgricultureMapboxMap({
           maxZoom: 17,
           duration: animate ? 800 : 0,
         });
+        return;
+      }
+      // Nothing on the farm yet (e.g. a technician whose granted zones have
+      // no sector): the account's devices, else the weather location the
+      // app already uses, and the caller's default only as a last resort.
+      const view = fallbackView({
+        devices: devicesFcRef.current.features.map((f) => f.geometry),
+        weather: readWeatherLocation(),
+        defaultCenter: { lat, lon },
+      });
+      if (view.kind === 'bounds') {
+        map.fitBounds(view.bounds as LngLatBounds, {
+          padding: 56,
+          maxZoom: 15,
+          duration: animate ? 800 : 0,
+        });
       } else {
         map.easeTo({
-          center: [lon, lat],
+          center: view.center,
           zoom: 14,
           duration: animate ? 800 : 0,
         });
@@ -1010,7 +1037,7 @@ export default function AgricultureMapboxMap({
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: BASEMAPS.satellite_labels.style,
-      center: [lon, lat],
+      center: initialCenter(readWeatherLocation(), { lat, lon }),
       zoom: 14,
       maxZoom: 20,
       // Mapbox's terms require visible attribution: compact control below.
@@ -1038,6 +1065,18 @@ export default function AgricultureMapboxMap({
       /** So `setFeatureProperty` (rename) emits `draw.update` and Draw redraws. */
       suppressAPIEvents: false,
       styles: sectorMapDrawStyles,
+      modes: {
+        ...MapboxDraw.modes,
+        // Read-only logins can select a sector (its panel is read-only) but
+        // never drag, reshape or delete one locally (QA A2).
+        simple_select: guardReadOnlySelect(
+          MapboxDraw.modes.simple_select,
+          () => !canEditRef.current
+        ),
+        // Draw ignores clicks while the measure tool is on (QA A4).
+        [STATIC_DRAW_MODE]:
+          staticDrawMode as unknown as MapboxDraw.DrawCustomMode,
+      },
     };
     const draw = new MapboxDraw(drawOptions);
     map.addControl(draw, 'top-left');
@@ -1086,7 +1125,12 @@ export default function AgricultureMapboxMap({
     } | null = null;
 
     const onSensorMouseDown = (e: mapboxgl.MapLayerMouseEvent) => {
-      if (placingSensorTypeRef.current || !canEditRef.current) return;
+      if (
+        placingSensorTypeRef.current ||
+        measuringRef.current ||
+        !canEditRef.current
+      )
+        return;
       const f = e.features?.[0];
       if (f?.id == null) return;
       const idx = sensorsFcRef.current.features.findIndex(
@@ -1329,7 +1373,12 @@ export default function AgricultureMapboxMap({
           type: 'line',
           source: FORECAST_SOURCE_ID,
           layout: { visibility: 'none' },
-          paint: { 'line-color': '#1a202c', 'line-width': 1 },
+          // Per-feature outline: "no rain" sectors get a thick blue edge so
+          // they never read as the grey "no data" bucket (QA A7).
+          paint: {
+            'line-color': ['get', 'outline'],
+            'line-width': ['get', 'outlineWidth'],
+          },
         });
       }
       if (!map.getSource(FARM_SENSORS_SOURCE_ID)) {
@@ -1525,7 +1574,7 @@ export default function AgricultureMapboxMap({
     const onStyleData = () => applyLayerPrefs(map, layerPrefsRef.current);
 
     // ----- initial data -----
-    const loadData = async () => {
+    const loadData = async (devicesLoaded: Promise<unknown>) => {
       let sectors: MapSector[];
       let installations: SensorInstallation[];
       let prefs: MapPreferences;
@@ -1638,7 +1687,19 @@ export default function AgricultureMapboxMap({
         else applyBasemapConfig(map, bm);
       }
       const cam = prefs.camera;
-      if (cam && Array.isArray(cam.center) && cam.center.length === 2) {
+      // Devices frame an empty farm: give them a moment before deciding.
+      await devicesLoaded;
+      const farmBounds = boundsOf([
+        ...draw
+          .getAll()
+          .features.filter(isPolygonFeature)
+          .map((f) => f.geometry),
+        ...sensorsFcRef.current.features.map((f) => f.geometry),
+      ]);
+      // A saved camera wins only when it looks at the farm: a view saved
+      // before the sectors existed (a technician's map opened on the default
+      // town) must not hide them (QA A2).
+      if (cam && shouldRestoreCamera(cam.center, farmBounds)) {
         map.jumpTo({
           center: cam.center,
           zoom: cam.zoom,
@@ -1664,7 +1725,7 @@ export default function AgricultureMapboxMap({
         ? 'crosshair'
         : 'grab';
       await ensureCustomLayers();
-      myDevicesApi
+      const devicesLoaded = myDevicesApi
         .list()
         .then((devices) => {
           devicesFcRef.current = devicesToGeoJSON(devices);
@@ -1677,10 +1738,17 @@ export default function AgricultureMapboxMap({
         .catch(() => {
           /* not signed in / no devices — leave the device layer empty */
         });
-      await loadData();
+      // Bounded wait: a slow devices call must not hold the camera back.
+      await loadData(
+        Promise.race([
+          devicesLoaded,
+          new Promise((r) => window.setTimeout(r, 1500)),
+        ])
+      );
     };
 
     const onDeviceClick = (e: mapboxgl.MapLayerMouseEvent) => {
+      if (measuringRef.current) return;
       const f = e.features?.[0];
       if (!f) return;
       const props = f.properties ?? {};
@@ -1759,6 +1827,8 @@ export default function AgricultureMapboxMap({
     };
 
     const onSelectionChange = (e: { features: GeoJSON.Feature[] }) => {
+      // While measuring, clicks are measure points, never a selection (A4).
+      if (measuringRef.current) return;
       const fs = e.features ?? [];
       if (fs.length === 1 && isPolygonFeature(fs[0])) {
         const sid = fs[0].id != null ? String(fs[0].id) : null;
@@ -1776,6 +1846,13 @@ export default function AgricultureMapboxMap({
     };
     const onModeChange = (e: { mode: string }) => {
       setDrawMode(e.mode);
+      // Any other mode (draw, select, a sector picked from a list) ends the
+      // measure: Draw would otherwise start reacting to the clicks again.
+      if (measuringRef.current && e.mode !== STATIC_DRAW_MODE) {
+        measuringRef.current = false;
+        setMeasuring(false);
+        setMeasurePoints([]);
+      }
       // Finishing (or abandoning) a polygon: record it as one undo step once
       // draw has committed the final shape.
       if (e.mode !== MapboxDraw.constants.modes.DRAW_POLYGON) {
@@ -1803,7 +1880,12 @@ export default function AgricultureMapboxMap({
         .setHTML(
           `<strong>${escapeHtml(String(p.name ?? ''))}</strong><br/>` +
             [
-              row('rain', p.rain),
+              row(
+                'rain',
+                p.noRain === true || p.noRain === 'true'
+                  ? tr('misc.map.forecast.noRainValue')
+                  : p.rain
+              ),
               row('et0', p.et0),
               row('balance', p.balance),
             ].join('<br/>')
@@ -1821,6 +1903,7 @@ export default function AgricultureMapboxMap({
     map.on('moveend', onMoveEnd);
     map.on('click', REGISTERED_DEVICES_LAYER_ID, onDeviceClick);
     const onClusterClick = (e: mapboxgl.MapLayerMouseEvent) => {
+      if (measuringRef.current) return;
       const f = e.features?.[0];
       const clusterId = f?.properties?.cluster_id;
       const src = map.getSource(SENSOR_CLUSTER_SOURCE_ID) as
@@ -2222,14 +2305,29 @@ export default function AgricultureMapboxMap({
     if (map) map.getCanvas().style.cursor = measuring ? 'crosshair' : '';
   }, [measuring, measurePoints]);
 
+  // While measuring, Draw sits in a static mode so a click inside a sector
+  // adds a point instead of selecting the sector (QA A4). "Terminer" puts
+  // Draw back in simple_select, keeping whatever was selected before.
   const toggleMeasure = () => {
+    const d = drawRef.current;
     if (measuring) {
+      measuringRef.current = false;
       setMeasuring(false);
       setMeasurePoints([]);
+      if (d && d.getMode() === STATIC_DRAW_MODE)
+        d.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT, {
+          featureIds: d.getSelectedIds(),
+        });
       return;
     }
     setSensorPlacementType(null);
-    drawRef.current?.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
+    // Leave draw_polygon / direct_select first (commits a shape in progress).
+    if (d && d.getMode() !== MapboxDraw.constants.modes.SIMPLE_SELECT)
+      d.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT, {
+        featureIds: d.getSelectedIds(),
+      });
+    measuringRef.current = true;
+    d?.changeMode(STATIC_DRAW_MODE);
     setMeasurePoints([]);
     setMeasuring(true);
   };
@@ -2412,6 +2510,9 @@ export default function AgricultureMapboxMap({
   const handleSaveSectorDetails = async (
     body: Omit<SectorWrite, 'name' | 'geometry' | 'color'>
   ) => {
+    // Read-only logins (technician / monitor) never write: the server would
+    // 403 and the user would see an error they did not cause (QA A2).
+    if (!canEditRef.current) return;
     const drawId = selectedSectorDrawId;
     const serverId = drawId
       ? syncedSectorsRef.current.get(drawId)?.serverId
@@ -2441,7 +2542,7 @@ export default function AgricultureMapboxMap({
 
   const handleSensorSubmit = async (body: SensorInstallationWrite) => {
     const target = modalTarget;
-    if (!target) return;
+    if (!target || !canEditRef.current) return;
     setModalSaving(true);
     try {
       const row =
@@ -2506,6 +2607,7 @@ export default function AgricultureMapboxMap({
   };
 
   const removeSensorById = async (id: string) => {
+    if (!canEditRef.current) return;
     try {
       await farmMapApi.deleteInstallation(Number(id));
     } catch (e) {

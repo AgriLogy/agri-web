@@ -1486,6 +1486,8 @@
           "balance": "Rouge : le sol s'assèche · bleu : il se recharge (mm)"
         },
         "noData": "Sans données",
+        "noRain": "Aucune pluie prévue",
+        "noRainValue": "aucune pluie",
         "loading": "Chargement des prévisions…",
         "loadError": "Impossible de charger les prévisions.",
         "mock": "Données simulées (service météo indisponible).",

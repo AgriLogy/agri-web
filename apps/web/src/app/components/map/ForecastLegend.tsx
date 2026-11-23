@@ -20,9 +20,7 @@ import {
 import {
   FORECAST_HORIZONS,
   FORECAST_METRICS,
-  legendEntries,
-  NO_DATA_COLOR,
-  SCALES,
+  forecastLegendRows,
   toHorizon,
   type ForecastHorizon,
   type ForecastMetric,
@@ -52,7 +50,7 @@ export default function ForecastLegend({
   border,
 }: Props) {
   const t = useTranslations();
-  const entries = legendEntries(SCALES[metric]);
+  const rows = forecastLegendRows(metric);
   return (
     <Box
       bg={bg}
@@ -107,19 +105,31 @@ export default function ForecastLegend({
             {t(`misc.map.forecast.legendHint.${metric}`)}
           </Text>
           <VStack align="stretch" spacing="2px">
-            {[...entries, { color: NO_DATA_COLOR, label: '' }].map((e, i) => (
-              <HStack key={`${e.color}-${i}`} spacing={2}>
+            {rows.map((r, i) => (
+              <HStack
+                key={`${r.color}-${i}`}
+                spacing={2}
+                data-testid={
+                  r.labelKey ? `forecast-legend-${r.labelKey}` : undefined
+                }
+              >
                 <Box
                   w="14px"
                   h="10px"
                   borderRadius="2px"
-                  bg={e.color}
-                  borderWidth="1px"
-                  borderColor="blackAlpha.300"
+                  bg={r.color}
+                  // The outline is part of the style (the "no rain" swatch
+                  // reads by its thick blue border, in light and dark mode).
+                  borderWidth={r.outlineWidth > 1 ? '2px' : '1px'}
+                  borderColor={
+                    r.outlineWidth > 1 ? r.outline : 'blackAlpha.300'
+                  }
                   flexShrink={0}
                 />
-                <Text fontSize="10px" dir={e.label ? 'ltr' : undefined}>
-                  {e.label ? `${e.label} mm` : t('misc.map.forecast.noData')}
+                <Text fontSize="10px" dir={r.label ? 'ltr' : undefined}>
+                  {r.label
+                    ? `${r.label} mm`
+                    : t(`misc.map.forecast.${r.labelKey ?? 'noData'}`)}
                 </Text>
               </HStack>
             ))}
