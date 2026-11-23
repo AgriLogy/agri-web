@@ -1,3 +1,10 @@
+# [1.41.0](https://github.com/AgriLogy/agri-web/compare/v1.40.3...v1.41.0) (2026-11-23)
+
+
+### Features
+
+* **water:** water sources on the Water Station (gauge, simulator, history, alerts) ([#167](https://github.com/AgriLogy/agri-web/issues/167)) ([685d2f9](https://github.com/AgriLogy/agri-web/commit/685d2f9340df9bd973b1e891c829983580e6281d)), closes [#166](https://github.com/AgriLogy/agri-web/issues/166)
+
 ## [1.40.3](https://github.com/AgriLogy/agri-web/compare/v1.40.2...v1.40.3) (2026-11-16)
 
 
