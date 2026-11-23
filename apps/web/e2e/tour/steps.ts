@@ -11,6 +11,7 @@ import path from 'node:path';
 import {
   clickCanvas,
   hoverSector,
+  openInsightsTab,
   mapDialog,
   msg,
   openMapModal,
@@ -217,11 +218,11 @@ const BASE_STEPS: TourStep[] = [
     path: '/',
     actions: (ctx) => openSector(ctx, NORD),
     caption:
-      'En cliquant sur un secteur, le panneau « Conseil » affiche le bilan hydrique (déficit Dr face à la RFU et à la RU), le Kc utilisé, la recommandation et le graphique des 14 derniers jours.',
+      'En cliquant sur un secteur, le panneau « Conseil » (onglet « Irrigation ») affiche le bilan hydrique (déficit Dr face à la RFU et à la RU), le Kc utilisé, la recommandation et le graphique des 14 derniers jours.',
     howToTest: [
       'Ouvrir la carte agrandie et cliquer à l’intérieur de « Parcelle Nord ».',
-      'Lire la section « Conseil » sous l’en-tête du secteur.',
-      'Résultat attendu : Kc 1.15 (table Kc · Mi-saison), déficit d’environ 30 mm, état « Réserve suffisante », végétation « Saine ».',
+      'Lire la section « Conseil » sous l’en-tête du secteur : onglets « Irrigation », « Végétation » et « Satellite ».',
+      'Résultat attendu : onglet « Irrigation » ouvert avec Kc 1.15 (table Kc · Mi-saison), déficit d’environ 30 mm, état « Réserve suffisante » ; l’onglet « Végétation » affiche « Saine ».',
     ],
     expect: [
       { key: 'misc.map.insights.title' },
@@ -256,12 +257,13 @@ const BASE_STEPS: TourStep[] = [
     path: '/',
     actions: async (ctx) => {
       await openSector(ctx, NORD);
+      await openInsightsTab(ctx, 'satellite');
       await reveal(ctx.page, '#sector-ndvi-history');
     },
     caption:
-      'Le panneau satellite du secteur montre l’historique NDVI enregistré sur 12 mois (moyenne et plage min–max), sans nouvelle requête au satellite.',
+      'L’onglet « Satellite » du secteur montre l’historique NDVI enregistré sur 12 mois (moyenne et plage min–max), sans nouvelle requête au satellite.',
     howToTest: [
-      'Sélectionner « Parcelle Nord » puis faire défiler jusqu’à « Indices satellite ».',
+      'Sélectionner « Parcelle Nord », ouvrir l’onglet « Satellite » puis faire défiler jusqu’à l’historique.',
       'Lire le graphique « Historique (12 mois) ».',
       'Résultat attendu : une courbe NDVI avec une douzaine de points.',
     ],
@@ -276,6 +278,7 @@ const BASE_STEPS: TourStep[] = [
     path: '/',
     actions: async (ctx) => {
       await openSector(ctx, NORD);
+      await openInsightsTab(ctx, 'satellite');
       const select = ctx.page
         .getByLabel(msg(ctx.locale, 'misc.map.ndvi.index'))
         .locator('visible=true')
@@ -291,7 +294,7 @@ const BASE_STEPS: TourStep[] = [
     caption:
       'L’historique suit l’indice choisi : ici le NDMI (eau du couvert végétal).',
     howToTest: [
-      'Dans « Indices satellite », choisir « NDMI · eau du couvert ».',
+      'Dans l’onglet « Satellite », choisir « NDMI · eau du couvert ».',
       'Résultat attendu : le titre de l’historique et la courbe passent au NDMI.',
       'Si les images satellite ne sont pas activées sur le serveur, le sélecteur n’apparaît pas : l’historique reste en NDVI.',
     ],
@@ -987,12 +990,15 @@ const BASE_STEPS: TourStep[] = [
     path: '/',
     actions: (ctx) => openSector(ctx, NORD),
     caption:
-      'Le panneau « Conseil » en arabe : titres et états traduits ; la jauge se remplit depuis la droite. Les messages agronomiques restent en français (ils viennent du serveur).',
+      'Le panneau « Conseil » en arabe : onglets, titres et états traduits ; la jauge se remplit depuis la droite. Les messages agronomiques arrivent en arabe (?lang=ar) sur un serveur à jour, en français sur un ancien.',
     howToTest: [
       'En arabe, agrandir la carte et cliquer dans « Parcelle Nord ».',
       'Résultat attendu : « نصيحة » et « مخزون كافٍ », jauge et graphique lisibles.',
     ],
-    expect: [{ key: 'misc.map.insights.title' }],
+    expect: [
+      { key: 'misc.map.insights.title' },
+      { key: 'misc.map.insights.tabs.irrigation' },
+    ],
   },
   {
     id: 'ar-water',
