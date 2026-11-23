@@ -1467,6 +1467,7 @@
         "ndvi": "NDVI",
         "ndviTrend": "الاتجاه",
         "perWeek": "{value}/أسبوع",
+        "trendStable": "مستقر",
         "soilMoisture": "رطوبة التربة",
         "criticalAt": "العتبة {value}",
         "noVegetation": "لا يوجد تحليل للغطاء النباتي بعد."

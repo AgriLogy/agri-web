@@ -1467,6 +1467,7 @@
         "ndvi": "NDVI",
         "ndviTrend": "Tendance",
         "perWeek": "{value}/sem.",
+        "trendStable": "Stable",
         "soilMoisture": "Humidité du sol",
         "criticalAt": "seuil {value}",
         "noVegetation": "Pas encore d'analyse de la végétation."

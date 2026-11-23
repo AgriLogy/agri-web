@@ -4,6 +4,7 @@ import {
   depletionGauge,
   fmtNum,
   fmtSigned,
+  isStableTrend,
   knownCode,
   shortDay,
   vegetationScheme,
@@ -121,4 +122,15 @@ describe('balanceChartRows', () => {
 it('shortDay', () => {
   expect(shortDay('2026-11-09')).toBe('09/11');
   expect(shortDay('bad')).toBe('bad');
+});
+
+describe('isStableTrend', () => {
+  it('treats a weekly change under 0.01 as stable', () => {
+    expect(isStableTrend(0)).toBe(true);
+    expect(isStableTrend(-0.004)).toBe(true);
+    expect(isStableTrend(0.01)).toBe(false);
+    expect(isStableTrend(-0.06)).toBe(false);
+    expect(isStableTrend(null)).toBe(false);
+    expect(isStableTrend(Number.NaN)).toBe(false);
+  });
 });

@@ -43,6 +43,7 @@ import {
   fmtNum,
   fmtSigned,
   isNum,
+  isStableTrend,
   KC_SOURCES,
   knownCode,
   UNAVAILABLE_REASONS,
@@ -121,9 +122,11 @@ function VegetationCard({ veg }: { veg: VegetationInsight | null }) {
         <Stat
           label={t('misc.map.insights.ndviTrend')}
           value={
-            isNum(trend)
-              ? t('misc.map.insights.perWeek', { value: fmtSigned(trend, 2) })
-              : DASH
+            isStableTrend(trend)
+              ? t('misc.map.insights.trendStable')
+              : isNum(trend)
+                ? t('misc.map.insights.perWeek', { value: fmtSigned(trend, 2) })
+                : DASH
           }
         />
         <Box minW={0}>

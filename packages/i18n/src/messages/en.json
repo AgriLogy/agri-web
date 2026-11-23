@@ -1467,6 +1467,7 @@
         "ndvi": "NDVI",
         "ndviTrend": "Trend",
         "perWeek": "{value}/wk",
+        "trendStable": "Stable",
         "soilMoisture": "Soil moisture",
         "criticalAt": "threshold {value}",
         "noVegetation": "No vegetation analysis yet."

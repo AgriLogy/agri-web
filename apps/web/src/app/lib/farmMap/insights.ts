@@ -178,3 +178,15 @@ export function shortDay(iso: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
   return m ? `${m[3]}/${m[2]}` : iso;
 }
+
+/** Weekly NDVI change under this (either way) reads as "stable" — same
+ * threshold as agri-core's NDVI_STABLE_PER_WEEK. */
+export const NDVI_STABLE_PER_WEEK = 0.01;
+
+export function isStableTrend(trend: number | null | undefined): boolean {
+  return (
+    typeof trend === 'number' &&
+    Number.isFinite(trend) &&
+    Math.abs(trend) < NDVI_STABLE_PER_WEEK
+  );
+}
