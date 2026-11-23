@@ -14,7 +14,8 @@
     "check": "npm run lint && npm run typecheck && npm run format:check",
     "export": "next export",
     "test": "npm run check && npm run test:jest",
-    "test:jest": "jest --passWithNoTests"
+    "test:jest": "jest --passWithNoTests",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@agri/api-client": "*",
@@ -65,6 +66,7 @@
     "@babel/preset-typescript": "^7.28.5",
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
+    "@playwright/test": "^1.60.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.0",
     "@semantic-release/git": "^10.0.1",
