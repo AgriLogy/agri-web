@@ -71,7 +71,8 @@ export default function FarmMapModal({
       >
         <ModalHeader pb={2} pe={14}>
           <HStack justify="space-between" spacing={3}>
-            <Text as="span" noOfLines={1}>
+            {/* Two lines on a phone rather than "Exploitation &…". */}
+            <Text as="span" noOfLines={2} lineHeight="short" minW={0}>
               {t('misc.googleMapWeather.title')}
             </Text>
             {canEdit ? (
