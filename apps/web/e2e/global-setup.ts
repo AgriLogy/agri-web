@@ -1,6 +1,7 @@
-import { API_URL, runSeed, saveSeed, type Seed } from './seed';
+import { API_URL, seedTenants } from './seed';
 
-export default async function globalSetup(): Promise<void> {
+/** Fail fast with a clear message when the web app or the API is down. */
+export async function checkStack(): Promise<void> {
   const base = process.env.E2E_BASE_URL ?? 'http://localhost:3000';
   for (const [name, url] of [
     ['web', base],
@@ -14,8 +15,9 @@ export default async function globalSetup(): Promise<void> {
       );
     }
   }
-  // Clear leftovers from an aborted run, then create this run's tenants.
-  runSeed('--cleanup');
-  const seed = JSON.parse(runSeed()) as Seed;
-  saveSeed(seed);
+}
+
+export default async function globalSetup(): Promise<void> {
+  await checkStack();
+  seedTenants();
 }

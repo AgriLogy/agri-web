@@ -15,7 +15,9 @@
     "export": "next export",
     "test": "npm run check && npm run test:jest",
     "test:jest": "jest --passWithNoTests",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:tour": "playwright test -c playwright.tour.config.ts",
+    "tour:report": "node scripts/tour-report.mjs"
   },
   "dependencies": {
     "@agri/api-client": "*",

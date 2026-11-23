@@ -16,3 +16,8 @@ CHANGELOG.md
 # Editor / tooling
 .claude
 .vscode
+
+# Playwright e2e + screenshot-tour output (generated, gitignored)
+e2e-report
+e2e-results
+tour-output

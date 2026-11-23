@@ -61,5 +61,9 @@ module.exports = {
       ].join('|') +
       ')/)',
   ],
-  testMatch: ['<rootDir>/src/**/*.test.(ts|tsx)'],
+  testMatch: [
+    '<rootDir>/src/**/*.test.(ts|tsx)',
+    // Pure helpers of the screenshot tour (e2e/tour/evaluate.ts).
+    '<rootDir>/e2e/**/*.test.ts',
+  ],
 };
