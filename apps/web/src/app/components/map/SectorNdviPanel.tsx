@@ -48,7 +48,9 @@ import {
   type SatImageKind,
   type SatIndex,
 } from '@agri/api-client/farmMapApi';
+import NdviHistoryChart from './NdviHistoryChart';
 import {
+  historyRows,
   latestChange,
   legendGradient,
   MIN_VALID_FRACTION,
@@ -175,6 +177,11 @@ export default function SectorNdviPanel({ sector, overlay, onOverlay }: Props) {
   const [thumbs, setThumbs] = useState<Record<string, string>>({});
   const [imgLoading, setImgLoading] = useState(false);
   const [opacity, setOpacity] = useState(0.85);
+  const historyKey = `${sector.id}:${isIndex(kind) ? kind : 'ndvi'}`;
+  const [historyResult, setHistoryResult] = useState<{
+    key: string;
+    series: NdviStat[] | null;
+  } | null>(null);
   const hasShape = !!sector.geometry;
   const showing = overlay?.sectorId === sector.id;
   const statsKind: SatIndex = isIndex(kind) ? kind : 'ndvi';
@@ -222,6 +229,35 @@ export default function SectorNdviPanel({ sector, overlay, onOverlay }: Props) {
       alive = false;
     };
   }, [sector.id, kind, state]);
+
+  // Stored 12-month series for the chosen index (no Copernicus call).
+  useEffect(() => {
+    let alive = true;
+    if (!hasShape) return;
+    farmMapApi
+      .ndviHistory(sector.id, statsKind, 365)
+      .then(
+        (h) =>
+          alive && setHistoryResult({ key: historyKey, series: h.series ?? [] })
+      )
+      .catch(
+        () => alive && setHistoryResult({ key: historyKey, series: null })
+      );
+    return () => {
+      alive = false;
+    };
+  }, [sector.id, statsKind, hasShape, historyKey]);
+  const historyState: Load = !hasShape
+    ? 'idle'
+    : historyResult?.key !== historyKey
+      ? 'loading'
+      : historyResult.series
+        ? 'ready'
+        : 'error';
+  const history = useMemo(
+    () => (historyState === 'ready' ? (historyResult?.series ?? []) : []),
+    [historyState, historyResult]
+  );
 
   // Thumbnails for the comparison (current date vs comparison date).
   useEffect(() => {
@@ -281,6 +317,7 @@ export default function SectorNdviPanel({ sector, overlay, onOverlay }: Props) {
     return ok.length ? ok[ok.length - 1]! : null;
   }, [series]);
   const change = useMemo(() => latestChange(series), [series]);
+  const historyData = useMemo(() => historyRows(history), [history]);
   const decline = useMemo(() => persistentDecline(series), [series]);
   const atDate = statAt(series, date);
   const atCompare = compareDate ? statAt(series, compareDate) : null;
@@ -650,6 +687,33 @@ export default function SectorNdviPanel({ sector, overlay, onOverlay }: Props) {
             {t('misc.map.ndvi.disclaimer')} {config?.source}
           </Text>
         </>
+      ) : null}
+
+      {hasShape && isIndex(kind) && historyState !== 'idle' ? (
+        <Box mt={3} id="sector-ndvi-history">
+          <Flex align="baseline" gap={2} flexWrap="wrap">
+            <Text fontSize="xs" fontWeight={600}>
+              {t('misc.map.ndviHistory.title')} · {kindLabel(kind)}
+            </Text>
+            {historyState === 'loading' ? <Spinner size="xs" /> : null}
+          </Flex>
+          {historyState === 'error' ? (
+            <Text fontSize="xs" color="red.500">
+              {t('misc.map.ndviHistory.loadError')}
+            </Text>
+          ) : historyState === 'ready' && historyData.length < 2 ? (
+            <Text fontSize="xs" color={muted}>
+              {t('misc.map.ndviHistory.empty')}
+            </Text>
+          ) : historyState === 'ready' ? (
+            <>
+              <NdviHistoryChart rows={historyData} />
+              <Text fontSize="10px" color={muted}>
+                {t('misc.map.ndviHistory.hint')}
+              </Text>
+            </>
+          ) : null}
+        </Box>
       ) : null}
     </Box>
   );

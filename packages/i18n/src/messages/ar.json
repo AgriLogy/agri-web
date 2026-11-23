@@ -1262,7 +1262,8 @@
         "devices": "الأجهزة المسجلة",
         "opacity": "الشفافية",
         "legend": "مفتاح الحالات",
-        "satelliteSoon": "NDVI: اختر قطاعًا لعرض حيويته وإظهاره على الخريطة. يأتي NDMI وNDRE لاحقًا."
+        "satelliteSoon": "NDVI: اختر قطاعًا لعرض حيويته وإظهاره على الخريطة. يأتي NDMI وNDRE لاحقًا.",
+        "forecast": "التوقعات (أمطار / ET0)"
       },
       "basemaps": {
         "satellite_labels": "قمر صناعي + تسميات",
@@ -1408,6 +1409,147 @@
         },
         "button": "القمر الصناعي (NDVI)",
         "drawFirst": "ارسم قطاعًا أولًا لعرض صور القمر الصناعي الخاصة به."
+      },
+      "insights": {
+        "title": "نصيحة",
+        "asOf": "بتاريخ {date}",
+        "refresh": "تحديث",
+        "loadError": "تعذر تحميل النصيحة حاليًا.",
+        "waterBalance": "الميزان المائي",
+        "unavailable": "الميزان المائي غير متاح: {reason}",
+        "reason": {
+          "no_zone": "لا توجد منطقة (مستشعرات) مرتبطة بهذا القطاع.",
+          "no_soil_params": "معطيات تربة المنطقة غير مدخلة.",
+          "no_location": "موقع الضيعة غير معروف (لا توجد بيانات طقس).",
+          "other": "بيانات غير كافية."
+        },
+        "status": {
+          "ok": "مخزون كافٍ",
+          "irrigate_soon": "الري قريبًا",
+          "irrigate_now": "الري الآن",
+          "unknown": "حالة غير معروفة"
+        },
+        "dr": "العجز (Dr)",
+        "raw": "RAW",
+        "taw": "TAW",
+        "rawHint": "الماء سهل الاستعمال",
+        "tawHint": "الماء المتاح الكلي في التربة",
+        "depletionPct": "تم استهلاك {pct} من الماء المتاح",
+        "gaugeLabel": "عجز التربة مقارنة بالماء المتاح الكلي",
+        "kc": "Kc {value}",
+        "kcSource": {
+          "kc_period": "جدول Kc",
+          "default": "قيمة افتراضية"
+        },
+        "recommendation": "التوصية",
+        "volume": "الحجم",
+        "duration": "المدة",
+        "rain48h": "الأمطار المتوقعة (48 ساعة)",
+        "chartTitle": "آخر 14 يومًا",
+        "chartDr": "العجز Dr (مم)",
+        "chartRain": "الأمطار (مم)",
+        "chartIrrigation": "الري (مم)",
+        "chartRaw": "RAW",
+        "vegetation": "الغطاء النباتي",
+        "vegStatus": {
+          "healthy": "سليم",
+          "water_stress": "إجهاد مائي",
+          "excess_water": "فائض في الماء",
+          "low_vigor_other": "حيوية ضعيفة",
+          "declining": "في تراجع",
+          "insufficient_data": "بيانات غير كافية"
+        },
+        "confidence": {
+          "high": "ثقة عالية",
+          "medium": "ثقة متوسطة",
+          "low": "ثقة ضعيفة"
+        },
+        "ndvi": "NDVI",
+        "ndviTrend": "الاتجاه",
+        "perWeek": "{value}/أسبوع",
+        "soilMoisture": "رطوبة التربة",
+        "criticalAt": "العتبة {value}",
+        "noVegetation": "لا يوجد تحليل للغطاء النباتي بعد."
+      },
+      "forecast": {
+        "title": "التوقعات",
+        "horizon": "المدى",
+        "horizonDays": "{count, plural, one {يوم واحد} two {يومان} few {# أيام} other {# يومًا}}",
+        "metric": "المؤشر",
+        "metrics": {
+          "rain": "مجموع الأمطار",
+          "balance": "الأمطار − ET0"
+        },
+        "legendHint": {
+          "rain": "مجموع الأمطار المتوقعة (مم)",
+          "balance": "الأحمر: التربة تجف · الأزرق: التربة تتشبع (مم)"
+        },
+        "noData": "بدون بيانات",
+        "loading": "جارٍ تحميل التوقعات…",
+        "loadError": "تعذر تحميل التوقعات.",
+        "mock": "بيانات تجريبية (خدمة الطقس غير متاحة).",
+        "empty": "لا يوجد قطاع مرسوم للتلوين.",
+        "rain": "الأمطار",
+        "et0": "ET0",
+        "balance": "الميزان"
+      },
+      "kml": {
+        "button": "استيراد KML",
+        "title": "استيراد قطاعات (KML / KMZ)",
+        "hint": "تُستورد المضلعات فقط. ملف ‎.kml أو ‎.kmz، بحد أقصى 2 ميغابايت.",
+        "chooseFile": "اختيار ملف",
+        "fileProblem": {
+          "bad_extension": "اختر ملف ‎.kml أو ‎.kmz.",
+          "too_large": "الملف كبير جدًا (2 ميغابايت كحد أقصى).",
+          "empty": "الملف فارغ."
+        },
+        "analysing": "جارٍ تحليل الملف…",
+        "toCreate": "{count, plural, =0 {لا يوجد قطاع للإنشاء} one {قطاع واحد للإنشاء} other {# قطاعات للإنشاء}}",
+        "totalArea": "المساحة الإجمالية: {area}",
+        "colName": "الاسم",
+        "colArea": "المساحة",
+        "colPerimeter": "المحيط",
+        "skipped": "{count, plural, one {عنصر واحد متجاهل} other {# عناصر متجاهلة}}",
+        "reason": {
+          "not_a_polygon": "ليس مضلعًا",
+          "invalid_geometry": "شكل هندسي غير صالح",
+          "duplicate_name": "الاسم مستخدم مسبقًا",
+          "other": "متجاهل"
+        },
+        "confirm": "{count, plural, one {إنشاء قطاع واحد} other {إنشاء # قطاعات}}",
+        "cancel": "إلغاء",
+        "done": "{count, plural, one {تم استيراد قطاع واحد} other {تم استيراد # قطاعات}}",
+        "unreadable": "ملف غير مقروء: {detail}",
+        "forbidden": "ليست لديك صلاحية استيراد القطاعات.",
+        "failed": "فشل الاستيراد. حاول مجددًا."
+      },
+      "shapeHistory": {
+        "title": "سجل حدود القطاع",
+        "empty": "لا توجد نسخة محفوظة.",
+        "loadError": "تعذر تحميل السجل.",
+        "source": {
+          "draw": "رسم",
+          "kml": "استيراد KML",
+          "restore": "استعادة",
+          "other": "أخرى"
+        },
+        "current": "الحالي",
+        "restore": "استعادة",
+        "confirmTitle": "استعادة هذه الحدود؟",
+        "confirmBody": "ستحل حدود {date} ({area}) محل الحدود الحالية. تبقى الحدود الحالية في السجل.",
+        "confirm": "استعادة",
+        "cancel": "إلغاء",
+        "restored": "تمت استعادة الحدود",
+        "forbidden": "ليست لديك صلاحية استعادة الحدود.",
+        "failed": "فشلت الاستعادة."
+      },
+      "ndviHistory": {
+        "title": "السجل (12 شهرًا)",
+        "empty": "لا يوجد سجل بعد: يمتلئ في كل مرة تُفتح فيها المؤشرات.",
+        "loadError": "تعذر تحميل السجل.",
+        "hint": "قيم محفوظة مسبقًا، دون طلب جديد للأقمار الصناعية.",
+        "mean": "المتوسط",
+        "range": "الأدنى – الأقصى"
       }
     },
     "chatbot": {

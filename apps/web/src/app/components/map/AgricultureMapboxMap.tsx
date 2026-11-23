@@ -68,6 +68,7 @@ import { myDevicesApi, devicesToGeoJSON } from '@agri/api-client/myDevicesApi';
 import {
   farmMapApi,
   type Basemap,
+  type FarmForecast,
   type FarmMapStatus,
   type LayerPref,
   type MapPreferences,
@@ -109,6 +110,8 @@ import MapLayerPanel, {
   type MapLayerId,
 } from './MapLayerPanel';
 import SectorDetailsPanel from './SectorDetailsPanel';
+import ForecastLegend from './ForecastLegend';
+import KmlImportModal from './KmlImportModal';
 import {
   NO_SENSOR_FILTER,
   isFiltering,
@@ -125,6 +128,12 @@ import {
 } from '@/app/lib/farmMap/measure';
 import type { NdviOverlay } from './SectorNdviPanel';
 import { bboxCorners } from '@/app/lib/farmMap/ndvi';
+import {
+  DEFAULT_HORIZON,
+  forecastFeatures,
+  type ForecastHorizon,
+  type ForecastMetric,
+} from '@/app/lib/farmMap/forecast';
 import SensorInstallationModal, {
   type SensorModalTarget,
 } from './SensorInstallationModal';
@@ -155,6 +164,10 @@ const FILTERED_SENSOR_LAYERS = [
 ];
 const SECTOR_STATUS_SOURCE_ID = 'agrilogy-sector-status';
 const SECTOR_STATUS_LAYER_ID = 'agrilogy-sector-status-fill';
+// Rain / ET0 forecast colouring (agri-api#459 phase 3).
+const FORECAST_SOURCE_ID = 'agrilogy-forecast';
+const FORECAST_LAYER_ID = 'agrilogy-forecast-fill';
+const FORECAST_LINE_LAYER_ID = 'agrilogy-forecast-line';
 // Real registered devices, plotted at their captured GPS position (MAP-1),
 // distinct from the placed sensor installations.
 const REGISTERED_DEVICES_SOURCE_ID = 'agrilogy-registered-devices';
@@ -392,6 +405,10 @@ function applyLayerPrefs(
     0.55 * prefs.sector_status.opacity
   );
 
+  setVisibility(map, FORECAST_LAYER_ID, prefs.forecast.visible);
+  setVisibility(map, FORECAST_LINE_LAYER_ID, prefs.forecast.visible);
+  setPaint(map, FORECAST_LAYER_ID, 'fill-opacity', prefs.forecast.opacity);
+
   setVisibility(map, LABEL_LAYER_ID, prefs.labels.visible);
 
   const sn = prefs.sensors;
@@ -534,6 +551,19 @@ export default function AgricultureMapboxMap({
   // NDVI image laid over one sector (agri-api#459 phase 2).
   const [ndviOverlay, setNdviOverlay] = useState<NdviOverlay | null>(null);
   const ndviOverlayRef = useRef<NdviOverlay | null>(null);
+  // Rain / ET0 forecast layer (agri-api#459 phase 3).
+  const [forecastHorizon, setForecastHorizon] =
+    useState<ForecastHorizon>(DEFAULT_HORIZON);
+  const [forecastMetric, setForecastMetric] = useState<ForecastMetric>('rain');
+  const forecastMetricRef = useRef<ForecastMetric>('rain');
+  const [forecast, setForecast] = useState<FarmForecast | null>(null);
+  const forecastRef = useRef<FarmForecast | null>(null);
+  /** Horizon of the last answer (or failure), so "loading" is derived. */
+  const [forecastFor, setForecastFor] = useState<{
+    days: number;
+    ok: boolean;
+  } | null>(null);
+  const [kmlOpen, setKmlOpen] = useState(false);
   const [nextAutoSectorIndex, setNextAutoSectorIndex] = useState(1);
   const [sensorPlacementType, setSensorPlacementType] = useState<string | null>(
     null
@@ -1268,6 +1298,33 @@ export default function AgricultureMapboxMap({
           },
         });
       }
+      if (!map.getSource(FORECAST_SOURCE_ID)) {
+        map.addSource(FORECAST_SOURCE_ID, {
+          type: 'geojson',
+          data: emptyFC(),
+        });
+      }
+      if (!map.getLayer(FORECAST_LAYER_ID)) {
+        map.addLayer({
+          id: FORECAST_LAYER_ID,
+          type: 'fill',
+          source: FORECAST_SOURCE_ID,
+          layout: { visibility: 'none' },
+          paint: {
+            'fill-color': ['get', 'color'],
+            'fill-opacity': 0.75,
+          },
+        });
+      }
+      if (!map.getLayer(FORECAST_LINE_LAYER_ID)) {
+        map.addLayer({
+          id: FORECAST_LINE_LAYER_ID,
+          type: 'line',
+          source: FORECAST_SOURCE_ID,
+          layout: { visibility: 'none' },
+          paint: { 'line-color': '#1a202c', 'line-width': 1 },
+        });
+      }
       if (!map.getSource(FARM_SENSORS_SOURCE_ID)) {
         map.addSource(FARM_SENSORS_SOURCE_ID, {
           type: 'geojson',
@@ -1443,6 +1500,7 @@ export default function AgricultureMapboxMap({
       applySensorFilter(map, sensorFilterRef.current);
       applyMeasure(map, measurePointsRef.current);
       applyNdviOverlay(map, ndviOverlayRef.current);
+      pushForecast(map);
     };
 
     // One layer setup per loaded style: `style.load` and `load` both ask for
@@ -1716,6 +1774,38 @@ export default function AgricultureMapboxMap({
       }
     };
 
+    // ----- forecast popup (hover on desktop, tap on touch) -----
+    const forecastPopup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      offset: 8,
+      className: 'agrilogy-forecast-popup',
+    });
+    const onForecastHover = (e: mapboxgl.MapLayerMouseEvent) => {
+      const p = e.features?.[0]?.properties as
+        | Record<string, unknown>
+        | undefined;
+      if (!p) return;
+      const tr = tRef.current;
+      const row = (k: string, v: unknown) =>
+        `${escapeHtml(tr(`misc.map.forecast.${k}`))}: <strong>${escapeHtml(String(v ?? '—'))}</strong>`;
+      forecastPopup
+        .setLngLat(e.lngLat)
+        .setHTML(
+          `<strong>${escapeHtml(String(p.name ?? ''))}</strong><br/>` +
+            [
+              row('rain', p.rain),
+              row('et0', p.et0),
+              row('balance', p.balance),
+            ].join('<br/>')
+        )
+        .addTo(map);
+    };
+    const onForecastLeave = () => forecastPopup.remove();
+    map.on('mousemove', FORECAST_LAYER_ID, onForecastHover);
+    map.on('click', FORECAST_LAYER_ID, onForecastHover);
+    map.on('mouseleave', FORECAST_LAYER_ID, onForecastLeave);
+
     map.on('style.load', onStyleLoad);
     map.on('styledata', onStyleData);
     map.on('load', onLoad);
@@ -1763,6 +1853,7 @@ export default function AgricultureMapboxMap({
       resizeObserver.disconnect();
       map.getCanvas()?.removeEventListener('click', onCanvasClickCapture, true);
       sensorPopup.remove();
+      forecastPopup.remove();
       map.remove();
       mapRef.current = null;
       drawRef.current = null;
@@ -1811,6 +1902,127 @@ export default function AgricultureMapboxMap({
   // ---------------------------------------------------------------------
   // UI handlers
   // ---------------------------------------------------------------------
+  /** Colour the drawn sectors by the forecast metric (no-op until loaded). */
+  const pushForecast = useCallback((map: mapboxgl.Map) => {
+    setSourceData(
+      map,
+      FORECAST_SOURCE_ID,
+      forecastFeatures(
+        forecastRef.current,
+        (id) => sectorRowsRef.current.get(id)?.geometry,
+        forecastMetricRef.current
+      )
+    );
+  }, []);
+
+  const forecastVisible = layerPrefs.forecast.visible;
+  useEffect(() => {
+    if (!forecastVisible) return;
+    let alive = true;
+    farmMapApi
+      .forecast(forecastHorizon)
+      .then((f) => {
+        if (!alive) return;
+        forecastRef.current = f;
+        setForecast(f);
+        setForecastFor({ days: forecastHorizon, ok: true });
+      })
+      .catch(
+        () => alive && setForecastFor({ days: forecastHorizon, ok: false })
+      );
+    return () => {
+      alive = false;
+    };
+  }, [forecastVisible, forecastHorizon]);
+
+  // Repaint on new data, metric change, or when sector shapes change.
+  useEffect(() => {
+    forecastMetricRef.current = forecastMetric;
+    const map = mapRef.current;
+    if (map && map.isStyleLoaded()) pushForecast(map);
+  }, [forecast, forecastMetric, view, pushForecast]);
+
+  const forecastState: 'loading' | 'ready' | 'error' =
+    forecastFor?.days !== forecastHorizon
+      ? 'loading'
+      : forecastFor.ok
+        ? 'ready'
+        : 'error';
+  const forecastSectorCount = useMemo(
+    () =>
+      (forecast?.sectors ?? []).filter(
+        (s) => sectorRowsRef.current.get(s.sector_id)?.geometry
+      ).length,
+    // view changes whenever sectorRowsRef does
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [forecast, view]
+  );
+
+  /**
+   * Fold sectors changed on the server (KML import, shape restore) into the
+   * draw layer without a page reload: new rows get a draw feature, `replace`
+   * rows get their outline swapped. Each is recorded as already synced so the
+   * autosave does not echo it back; the undo stack restarts from here since
+   * these edits are not undoable client-side.
+   */
+  const upsertServerSectors = useCallback(
+    (rows: MapSector[], replace: ReadonlySet<number> = new Set()) => {
+      const draw = drawRef.current;
+      if (!draw) return;
+      const byServer = drawIdByServerId();
+      for (const row of rows) {
+        const existing = byServer.get(row.id);
+        sectorRowsRef.current.set(row.id, row);
+        if (existing && !replace.has(row.id)) continue;
+        const f = sectorToDrawFeature(row);
+        if (!f) continue;
+        const drawId = existing ?? String(row.id);
+        const prevProps =
+          (existing &&
+            (draw.get(existing) as GeoJSON.Feature | undefined)?.properties) ||
+          {};
+        draw.add({
+          ...f,
+          id: drawId,
+          properties: { ...prevProps, ...f.properties },
+        });
+        const live = draw.get(drawId) as GeoJSON.Feature | undefined;
+        syncedSectorsRef.current.set(drawId, {
+          serverId: row.id,
+          fingerprint: sectorFingerprint(live ?? f),
+        });
+        const c =
+          live && isPolygonFeature(live) ? sectorFeatureCentroid(live) : null;
+        if (c) sectorCentroidPrevRef.current.set(drawId, c);
+      }
+      lastSnapshotRef.current = snapshotDraw(draw);
+      historyRef.current = { past: [], future: [] };
+      setHistoryDepth({ past: 0, future: 0 });
+      refreshLabels();
+      bumpData();
+    },
+    [drawIdByServerId, refreshLabels, bumpData]
+  );
+
+  const handleKmlImported = async (ids: number[], count: number) => {
+    try {
+      const rows = await farmMapApi.listSectors();
+      upsertServerSectors(rows);
+      if (ids.length) fitFarm();
+    } catch (e) {
+      notifyError(e, 'misc.map.loadFailed');
+    }
+    toast({
+      title: t('misc.map.kml.done', { count }),
+      status: 'success',
+      duration: 3000,
+    });
+  };
+
+  const handleGeometryRestored = (row: MapSector) => {
+    upsertServerSectors([row], new Set([row.id]));
+  };
+
   const handleBasemapChange = (next: Basemap) => {
     const map = mapRef.current;
     const prev = basemapRef.current;
@@ -2668,6 +2880,13 @@ export default function AgricultureMapboxMap({
                   hidden
                   onChange={(e) => void handleImportFile(e.target.files?.[0])}
                 />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setKmlOpen(true)}
+                >
+                  {t('misc.map.kml.button')}
+                </Button>
               </HStack>
 
               <FormControl maxW={{ md: '280px' }} flex="1" minW="0">
@@ -2739,6 +2958,9 @@ export default function AgricultureMapboxMap({
                   onSave={(b) => void handleSaveSectorDetails(b)}
                   ndviOverlay={ndviOverlay}
                   onNdviOverlay={setNdviOverlay}
+                  onGeometryRestored={
+                    canEdit ? handleGeometryRestored : undefined
+                  }
                 />
               </Box>
             </Collapse>
@@ -2934,6 +3156,7 @@ export default function AgricultureMapboxMap({
             onSave={() => {}}
             ndviOverlay={ndviOverlay}
             onNdviOverlay={setNdviOverlay}
+            onGeometryRestored={canEdit ? handleGeometryRestored : undefined}
           />
         </Box>
       ) : null}
@@ -2998,6 +3221,28 @@ export default function AgricultureMapboxMap({
             </Flex>
           </Flex>
         ) : null}
+        {forecastVisible ? (
+          <Box
+            position="absolute"
+            // Clear the drawing hint bar, which sits top-centre while drawing.
+            top={toolsEnabled && drawMode === 'draw_polygon' ? 16 : 2}
+            insetStart={2}
+            zIndex={2}
+            pointerEvents="none"
+          >
+            <ForecastLegend
+              horizon={forecastHorizon}
+              metric={forecastMetric}
+              onHorizon={setForecastHorizon}
+              onMetric={setForecastMetric}
+              state={forecastState}
+              provider={forecast?.provider ?? null}
+              sectorCount={forecastSectorCount}
+              bg={toolbarBg}
+              border={toolbarBorder}
+            />
+          </Box>
+        ) : null}
         {measuring ? (
           <Flex
             position="absolute"
@@ -3050,6 +3295,14 @@ export default function AgricultureMapboxMap({
           </Flex>
         ) : null}
       </Box>
+
+      {toolsEnabled && kmlOpen ? (
+        <KmlImportModal
+          isOpen={kmlOpen}
+          onClose={() => setKmlOpen(false)}
+          onImported={handleKmlImported}
+        />
+      ) : null}
 
       <SensorInstallationModal
         target={modalTarget}

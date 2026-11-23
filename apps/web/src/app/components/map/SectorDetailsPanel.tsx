@@ -30,6 +30,8 @@ import {
   STATUS_COLORS,
 } from '@/app/lib/farmMap/mapModel';
 import SectorNdviPanel, { type NdviOverlay } from './SectorNdviPanel';
+import SectorInsightsPanel from './SectorInsightsPanel';
+import SectorGeometryHistory from './SectorGeometryHistory';
 
 interface Props {
   sector: MapSector | null;
@@ -41,6 +43,9 @@ interface Props {
   /** NDVI image currently laid over the map (one sector at a time). */
   ndviOverlay?: NdviOverlay | null;
   onNdviOverlay?: (o: NdviOverlay | null) => void;
+  /** Shape history + restore (editor level; never technicians). When the
+   *  callback is omitted the section is hidden. */
+  onGeometryRestored?: (sector: MapSector) => void;
 }
 
 type Draft = {
@@ -75,6 +80,7 @@ export default function SectorDetailsPanel({
   onSave,
   ndviOverlay = null,
   onNdviOverlay,
+  onGeometryRestored,
 }: Props) {
   const t = useTranslations();
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -236,6 +242,14 @@ export default function SectorDetailsPanel({
           ) : null}
         </>
       ) : null}
+      {onGeometryRestored && sector.geometry ? (
+        <SectorGeometryHistory
+          sectorId={sector.id}
+          geometryVersion={sector.geometry_updated_at ?? null}
+          onRestored={onGeometryRestored}
+        />
+      ) : null}
+      <SectorInsightsPanel sectorId={sector.id} />
       {onNdviOverlay ? (
         <SectorNdviPanel
           sector={sector}

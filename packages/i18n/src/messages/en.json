@@ -1262,7 +1262,8 @@
         "devices": "Registered devices",
         "opacity": "Opacity",
         "legend": "Status legend",
-        "satelliteSoon": "NDVI: select a sector to see its vigour and show it on the map. NDMI and NDRE come next."
+        "satelliteSoon": "NDVI: select a sector to see its vigour and show it on the map. NDMI and NDRE come next.",
+        "forecast": "Forecast (rain / ET0)"
       },
       "basemaps": {
         "satellite_labels": "Satellite + labels",
@@ -1408,6 +1409,147 @@
         },
         "button": "Satellite (NDVI)",
         "drawFirst": "Draw a sector first to see its satellite imagery."
+      },
+      "insights": {
+        "title": "Advice",
+        "asOf": "As of {date}",
+        "refresh": "Refresh",
+        "loadError": "Could not load the advice right now.",
+        "waterBalance": "Water balance",
+        "unavailable": "Water balance unavailable: {reason}",
+        "reason": {
+          "no_zone": "no zone (sensors) is linked to this sector.",
+          "no_soil_params": "the zone's soil parameters are not set.",
+          "no_location": "the farm location is unknown (no weather).",
+          "other": "not enough data."
+        },
+        "status": {
+          "ok": "Enough water",
+          "irrigate_soon": "Irrigate soon",
+          "irrigate_now": "Irrigate now",
+          "unknown": "Unknown status"
+        },
+        "dr": "Depletion (Dr)",
+        "raw": "RAW",
+        "taw": "TAW",
+        "rawHint": "Readily available water",
+        "tawHint": "Total available water",
+        "depletionPct": "{pct} of available water used",
+        "gaugeLabel": "Soil depletion against total available water",
+        "kc": "Kc {value}",
+        "kcSource": {
+          "kc_period": "Kc table",
+          "default": "default value"
+        },
+        "recommendation": "Recommendation",
+        "volume": "Volume",
+        "duration": "Duration",
+        "rain48h": "Rain forecast (48 h)",
+        "chartTitle": "Last 14 days",
+        "chartDr": "Depletion Dr (mm)",
+        "chartRain": "Rain (mm)",
+        "chartIrrigation": "Irrigation (mm)",
+        "chartRaw": "RAW",
+        "vegetation": "Vegetation",
+        "vegStatus": {
+          "healthy": "Healthy",
+          "water_stress": "Water stress",
+          "excess_water": "Excess water",
+          "low_vigor_other": "Low vigour",
+          "declining": "Declining",
+          "insufficient_data": "Insufficient data"
+        },
+        "confidence": {
+          "high": "High confidence",
+          "medium": "Medium confidence",
+          "low": "Low confidence"
+        },
+        "ndvi": "NDVI",
+        "ndviTrend": "Trend",
+        "perWeek": "{value}/wk",
+        "soilMoisture": "Soil moisture",
+        "criticalAt": "threshold {value}",
+        "noVegetation": "No vegetation analysis yet."
+      },
+      "forecast": {
+        "title": "Forecast",
+        "horizon": "Horizon",
+        "horizonDays": "{count, plural, one {# day} other {# days}}",
+        "metric": "Metric",
+        "metrics": {
+          "rain": "Total rain",
+          "balance": "Rain − ET0"
+        },
+        "legendHint": {
+          "rain": "Forecast rain total (mm)",
+          "balance": "Red: soil drying · blue: soil wetting (mm)"
+        },
+        "noData": "No data",
+        "loading": "Loading forecast…",
+        "loadError": "Could not load the forecast.",
+        "mock": "Simulated data (weather service unavailable).",
+        "empty": "No drawn sector to colour.",
+        "rain": "Rain",
+        "et0": "ET0",
+        "balance": "Balance"
+      },
+      "kml": {
+        "button": "Import KML",
+        "title": "Import sectors (KML / KMZ)",
+        "hint": "Only polygons are imported. .kml or .kmz file, 2 MB max.",
+        "chooseFile": "Choose a file",
+        "fileProblem": {
+          "bad_extension": "Choose a .kml or .kmz file.",
+          "too_large": "File too large (2 MB max).",
+          "empty": "The file is empty."
+        },
+        "analysing": "Reading the file…",
+        "toCreate": "{count, plural, =0 {No sector to create} one {# sector to create} other {# sectors to create}}",
+        "totalArea": "Total area: {area}",
+        "colName": "Name",
+        "colArea": "Area",
+        "colPerimeter": "Perimeter",
+        "skipped": "{count, plural, one {# item skipped} other {# items skipped}}",
+        "reason": {
+          "not_a_polygon": "not a polygon",
+          "invalid_geometry": "invalid geometry",
+          "duplicate_name": "name already used",
+          "other": "skipped"
+        },
+        "confirm": "{count, plural, one {Create # sector} other {Create # sectors}}",
+        "cancel": "Cancel",
+        "done": "{count, plural, one {# sector imported} other {# sectors imported}}",
+        "unreadable": "Unreadable file: {detail}",
+        "forbidden": "You are not allowed to import sectors.",
+        "failed": "Import failed. Please try again."
+      },
+      "shapeHistory": {
+        "title": "Shape history",
+        "empty": "No saved version.",
+        "loadError": "Could not load the history.",
+        "source": {
+          "draw": "Drawing",
+          "kml": "KML import",
+          "restore": "Restore",
+          "other": "Other"
+        },
+        "current": "Current",
+        "restore": "Restore",
+        "confirmTitle": "Restore this shape?",
+        "confirmBody": "The shape from {date} ({area}) will replace the current one. The current shape stays in the history.",
+        "confirm": "Restore",
+        "cancel": "Cancel",
+        "restored": "Shape restored",
+        "forbidden": "You are not allowed to restore a shape.",
+        "failed": "Restore failed."
+      },
+      "ndviHistory": {
+        "title": "History (12 months)",
+        "empty": "No history yet: it fills up each time the indices are opened.",
+        "loadError": "Could not load the history.",
+        "hint": "Stored values, no new satellite request.",
+        "mean": "Mean",
+        "range": "Min – max"
       }
     },
     "chatbot": {

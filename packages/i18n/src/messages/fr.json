@@ -1262,7 +1262,8 @@
         "devices": "Appareils enregistrés",
         "opacity": "Opacité",
         "legend": "Légende des états",
-        "satelliteSoon": "NDVI : sélectionnez un secteur pour voir sa vigueur et l'afficher sur la carte. NDMI et NDRE arrivent ensuite."
+        "satelliteSoon": "NDVI : sélectionnez un secteur pour voir sa vigueur et l'afficher sur la carte. NDMI et NDRE arrivent ensuite.",
+        "forecast": "Prévisions (pluie / ET0)"
       },
       "basemaps": {
         "satellite_labels": "Satellite + libellés",
@@ -1408,6 +1409,147 @@
         },
         "button": "Satellite (NDVI)",
         "drawFirst": "Dessinez d’abord un secteur pour voir ses images satellite."
+      },
+      "insights": {
+        "title": "Conseil",
+        "asOf": "Au {date}",
+        "refresh": "Actualiser",
+        "loadError": "Impossible de charger le conseil pour le moment.",
+        "waterBalance": "Bilan hydrique",
+        "unavailable": "Bilan hydrique indisponible : {reason}",
+        "reason": {
+          "no_zone": "aucune zone (capteurs) n'est rattachée à ce secteur.",
+          "no_soil_params": "les paramètres de sol de la zone ne sont pas renseignés.",
+          "no_location": "la position de la ferme est inconnue (météo impossible).",
+          "other": "données insuffisantes."
+        },
+        "status": {
+          "ok": "Réserve suffisante",
+          "irrigate_soon": "Irriguer bientôt",
+          "irrigate_now": "Irriguer maintenant",
+          "unknown": "État inconnu"
+        },
+        "dr": "Déficit (Dr)",
+        "raw": "RFU",
+        "taw": "RU",
+        "rawHint": "Réserve facilement utilisable",
+        "tawHint": "Réserve utile du sol",
+        "depletionPct": "{pct} de la réserve utile consommée",
+        "gaugeLabel": "Déficit du sol par rapport à la réserve utile",
+        "kc": "Kc {value}",
+        "kcSource": {
+          "kc_period": "table Kc",
+          "default": "valeur par défaut"
+        },
+        "recommendation": "Recommandation",
+        "volume": "Volume",
+        "duration": "Durée",
+        "rain48h": "Pluie prévue (48 h)",
+        "chartTitle": "14 derniers jours",
+        "chartDr": "Déficit Dr (mm)",
+        "chartRain": "Pluie (mm)",
+        "chartIrrigation": "Irrigation (mm)",
+        "chartRaw": "RFU",
+        "vegetation": "Végétation",
+        "vegStatus": {
+          "healthy": "Saine",
+          "water_stress": "Stress hydrique",
+          "excess_water": "Excès d'eau",
+          "low_vigor_other": "Vigueur faible",
+          "declining": "En déclin",
+          "insufficient_data": "Données insuffisantes"
+        },
+        "confidence": {
+          "high": "Confiance élevée",
+          "medium": "Confiance moyenne",
+          "low": "Confiance faible"
+        },
+        "ndvi": "NDVI",
+        "ndviTrend": "Tendance",
+        "perWeek": "{value}/sem.",
+        "soilMoisture": "Humidité du sol",
+        "criticalAt": "seuil {value}",
+        "noVegetation": "Pas encore d'analyse de la végétation."
+      },
+      "forecast": {
+        "title": "Prévisions",
+        "horizon": "Horizon",
+        "horizonDays": "{count, plural, one {# jour} other {# jours}}",
+        "metric": "Indicateur",
+        "metrics": {
+          "rain": "Pluie totale",
+          "balance": "Pluie − ET0"
+        },
+        "legendHint": {
+          "rain": "Cumul de pluie prévu (mm)",
+          "balance": "Rouge : le sol s'assèche · bleu : il se recharge (mm)"
+        },
+        "noData": "Sans données",
+        "loading": "Chargement des prévisions…",
+        "loadError": "Impossible de charger les prévisions.",
+        "mock": "Données simulées (service météo indisponible).",
+        "empty": "Aucun secteur dessiné à colorer.",
+        "rain": "Pluie",
+        "et0": "ET0",
+        "balance": "Bilan"
+      },
+      "kml": {
+        "button": "Importer KML",
+        "title": "Importer des secteurs (KML / KMZ)",
+        "hint": "Seuls les polygones sont importés. Fichier .kml ou .kmz, 2 Mo maximum.",
+        "chooseFile": "Choisir un fichier",
+        "fileProblem": {
+          "bad_extension": "Choisissez un fichier .kml ou .kmz.",
+          "too_large": "Fichier trop volumineux (2 Mo maximum).",
+          "empty": "Le fichier est vide."
+        },
+        "analysing": "Analyse du fichier…",
+        "toCreate": "{count, plural, =0 {Aucun secteur à créer} one {# secteur à créer} other {# secteurs à créer}}",
+        "totalArea": "Surface totale : {area}",
+        "colName": "Nom",
+        "colArea": "Surface",
+        "colPerimeter": "Périmètre",
+        "skipped": "{count, plural, one {# élément ignoré} other {# éléments ignorés}}",
+        "reason": {
+          "not_a_polygon": "pas un polygone",
+          "invalid_geometry": "géométrie invalide",
+          "duplicate_name": "nom déjà utilisé",
+          "other": "ignoré"
+        },
+        "confirm": "{count, plural, one {Créer # secteur} other {Créer # secteurs}}",
+        "cancel": "Annuler",
+        "done": "{count, plural, one {# secteur importé} other {# secteurs importés}}",
+        "unreadable": "Fichier illisible : {detail}",
+        "forbidden": "Vous n'avez pas les droits pour importer des secteurs.",
+        "failed": "L'import a échoué. Réessayez."
+      },
+      "shapeHistory": {
+        "title": "Historique du contour",
+        "empty": "Aucune version enregistrée.",
+        "loadError": "Impossible de charger l'historique.",
+        "source": {
+          "draw": "Dessin",
+          "kml": "Import KML",
+          "restore": "Restauration",
+          "other": "Autre"
+        },
+        "current": "Actuel",
+        "restore": "Restaurer",
+        "confirmTitle": "Restaurer ce contour ?",
+        "confirmBody": "Le contour du {date} ({area}) remplacera le contour actuel. Le contour actuel reste dans l'historique.",
+        "confirm": "Restaurer",
+        "cancel": "Annuler",
+        "restored": "Contour restauré",
+        "forbidden": "Vous n'avez pas les droits pour restaurer un contour.",
+        "failed": "La restauration a échoué."
+      },
+      "ndviHistory": {
+        "title": "Historique (12 mois)",
+        "empty": "Pas encore d'historique : il se remplit à chaque consultation des indices.",
+        "loadError": "Impossible de charger l'historique.",
+        "hint": "Valeurs déjà enregistrées, sans nouvelle requête satellite.",
+        "mean": "Moyenne",
+        "range": "Min – max"
       }
     },
     "chatbot": {

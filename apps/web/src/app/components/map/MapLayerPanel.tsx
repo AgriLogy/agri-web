@@ -31,6 +31,7 @@ export const MAP_LAYERS: { id: MapLayerId; opacity: boolean }[] = [
   { id: 'sensors', opacity: true },
   { id: 'sensor_names', opacity: false },
   { id: 'devices', opacity: false },
+  { id: 'forecast', opacity: true },
 ];
 
 export type MapLayerId =
@@ -39,7 +40,8 @@ export type MapLayerId =
   | 'labels'
   | 'sensors'
   | 'sensor_names'
-  | 'devices';
+  | 'devices'
+  | 'forecast';
 
 export const DEFAULT_LAYER_PREFS: Record<MapLayerId, LayerPref> = {
   sectors: { visible: true, opacity: 1 },
@@ -48,6 +50,7 @@ export const DEFAULT_LAYER_PREFS: Record<MapLayerId, LayerPref> = {
   sensors: { visible: true, opacity: 1 },
   sensor_names: { visible: true, opacity: 1 },
   devices: { visible: true, opacity: 1 },
+  forecast: { visible: false, opacity: 0.75 },
 };
 
 const LEGEND: MapStatus[] = [

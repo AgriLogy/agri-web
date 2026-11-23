@@ -106,3 +106,29 @@ export function persistentDecline(
       }
     : false;
 }
+
+export interface HistoryRow {
+  date: string;
+  mean: number;
+  /** [min, max] for the range band, or null when either is missing. */
+  range: [number, number] | null;
+}
+
+/**
+ * Chart rows for the stored index history: usable (clear-sky) dates only,
+ * oldest first, de-duplicated by date (last one wins), NaN-free.
+ */
+export function historyRows(series: NdviStat[]): HistoryRow[] {
+  const byDate = new Map<string, HistoryRow>();
+  for (const s of usableStats(series)) {
+    if (typeof s.mean !== 'number' || !Number.isFinite(s.mean)) continue;
+    const ok = (v: number | null | undefined): v is number =>
+      typeof v === 'number' && Number.isFinite(v);
+    byDate.set(s.date, {
+      date: s.date,
+      mean: s.mean,
+      range: ok(s.min) && ok(s.max) ? [s.min, s.max] : null,
+    });
+  }
+  return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
