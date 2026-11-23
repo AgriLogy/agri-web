@@ -18,12 +18,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { HistoryRow } from '@/app/lib/farmMap/ndvi';
-
-const monthTick = (iso: string) => {
-  const m = /^(\d{4})-(\d{2})/.exec(iso);
-  return m ? `${m[2]}/${m[1].slice(2)}` : iso;
-};
+import { historyTickFormatter, type HistoryRow } from '@/app/lib/farmMap/ndvi';
 
 export default function NdviHistoryChart({ rows }: { rows: HistoryRow[] }) {
   const t = useTranslations();
@@ -38,12 +33,12 @@ export default function NdviHistoryChart({ rows }: { rows: HistoryRow[] }) {
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           data={rows}
-          margin={{ top: 4, right: 6, bottom: 0, left: -22 }}
+          margin={{ top: 4, right: 6, bottom: 0, left: 0 }}
         >
           <CartesianGrid stroke={grid} vertical={false} />
           <XAxis
             dataKey="date"
-            tickFormatter={monthTick}
+            tickFormatter={historyTickFormatter(rows)}
             tick={{ fontSize: 10, fill: axis }}
             minTickGap={24}
           />
@@ -51,7 +46,7 @@ export default function NdviHistoryChart({ rows }: { rows: HistoryRow[] }) {
             domain={[-0.2, 1]}
             ticks={[0, 0.4, 0.8]}
             tick={{ fontSize: 10, fill: axis }}
-            width={40}
+            width={32}
           />
           <Tooltip
             contentStyle={{ fontSize: 11, background: tooltipBg }}

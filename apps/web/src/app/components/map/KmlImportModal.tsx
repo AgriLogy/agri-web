@@ -13,6 +13,7 @@ import { useTranslations } from 'next-intl';
 import {
   Box,
   Button,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -148,10 +149,10 @@ export default function KmlImportModal({ isOpen, onClose, onImported }: Props) {
             </Box>
 
             {busy === 'preview' ? (
-              <Text fontSize="sm">
-                <Spinner size="xs" me={2} />
-                {t('misc.map.kml.analysing')}
-              </Text>
+              <Flex align="center" gap={2} fontSize="sm">
+                <Spinner size="xs" />
+                <Text>{t('misc.map.kml.analysing')}</Text>
+              </Flex>
             ) : null}
             {error ? (
               <Text fontSize="sm" color="red.500" role="alert">

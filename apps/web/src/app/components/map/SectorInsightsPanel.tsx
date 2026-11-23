@@ -67,8 +67,9 @@ function Stat({ label, value }: { label: string; value: string }) {
       <Text fontSize="10px" color={muted} noOfLines={1}>
         {label}
       </Text>
+      {/* Numbers + units stay "32.1 mm" in Arabic too. */}
       <Text fontSize="sm" fontWeight={600}>
-        {value}
+        <bdi dir="ltr">{value}</bdi>
       </Text>
     </Box>
   );
@@ -97,7 +98,7 @@ function VegetationCard({ veg }: { veg: VegetationInsight | null }) {
             : veg.label || veg.status}
         </Badge>
         {veg.label ? (
-          <Text fontSize="sm" fontWeight={600}>
+          <Text fontSize="sm" fontWeight={600} dir="auto">
             {veg.label}
           </Text>
         ) : null}
@@ -108,7 +109,7 @@ function VegetationCard({ veg }: { veg: VegetationInsight | null }) {
         ) : null}
       </HStack>
       {veg.message ? (
-        <Text fontSize="xs" mb={2}>
+        <Text fontSize="xs" mb={2} dir="auto">
           {veg.message}
         </Text>
       ) : null}
@@ -339,7 +340,7 @@ export default function SectorInsightsPanel({ sectorId }: Props) {
                 {t('misc.map.insights.recommendation')}
               </Text>
               {rec.message ? (
-                <Text fontSize="sm" mb={1}>
+                <Text fontSize="sm" mb={1} dir="auto">
                   {rec.message}
                 </Text>
               ) : null}
@@ -379,7 +380,7 @@ export default function SectorInsightsPanel({ sectorId }: Props) {
           <VegetationCard veg={data.vegetation} />
 
           {wb.assumption ? (
-            <Text fontSize="10px" color={muted} mt={2}>
+            <Text fontSize="10px" color={muted} mt={2} dir="auto">
               {wb.assumption}
             </Text>
           ) : null}

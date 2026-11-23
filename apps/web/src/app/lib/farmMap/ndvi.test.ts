@@ -1,6 +1,7 @@
 import {
   bboxCorners,
   historyRows,
+  historyTickFormatter,
   latestChange,
   legendGradient,
   ndviClass,
@@ -133,5 +134,21 @@ describe('historyRows', () => {
       { date: '2026-01-01', mean: 0.3, range: null },
       { date: '2026-03-01', mean: 0.55, range: [0.25, 0.75] },
     ]);
+  });
+});
+
+describe('historyTickFormatter', () => {
+  it('uses day/month for a short series and month/year for a long one', () => {
+    const short = historyTickFormatter([
+      { date: '2026-10-01' },
+      { date: '2026-11-20' },
+    ]);
+    expect(short('2026-10-05')).toBe('05/10');
+    const long = historyTickFormatter([
+      { date: '2025-11-23' },
+      { date: '2026-11-20' },
+    ]);
+    expect(long('2026-03-05')).toBe('03/26');
+    expect(long('bad')).toBe('bad');
   });
 });

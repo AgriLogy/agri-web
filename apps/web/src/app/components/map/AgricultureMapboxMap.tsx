@@ -2947,21 +2947,25 @@ export default function AgricultureMapboxMap({
                     {t('misc.map.applyName')}
                   </Button>
                 </Flex>
-                <SectorDetailsPanel
-                  sector={selectedSector}
-                  status={selectedSectorStatus}
-                  canEdit={canEdit}
-                  isSaving={sectorSaving}
-                  onZoom={() =>
-                    selectedSectorDrawId && zoomToSector(selectedSectorDrawId)
-                  }
-                  onSave={(b) => void handleSaveSectorDetails(b)}
-                  ndviOverlay={ndviOverlay}
-                  onNdviOverlay={setNdviOverlay}
-                  onGeometryRestored={
-                    canEdit ? handleGeometryRestored : undefined
-                  }
-                />
+                {/* Mounted only with the tools open: the read-only copy
+                    below covers the closed state (no duplicate fetches). */}
+                {toolsEnabled ? (
+                  <SectorDetailsPanel
+                    sector={selectedSector}
+                    status={selectedSectorStatus}
+                    canEdit={canEdit}
+                    isSaving={sectorSaving}
+                    onZoom={() =>
+                      selectedSectorDrawId && zoomToSector(selectedSectorDrawId)
+                    }
+                    onSave={(b) => void handleSaveSectorDetails(b)}
+                    ndviOverlay={ndviOverlay}
+                    onNdviOverlay={setNdviOverlay}
+                    onGeometryRestored={
+                      canEdit ? handleGeometryRestored : undefined
+                    }
+                  />
+                ) : null}
               </Box>
             </Collapse>
           </Box>
