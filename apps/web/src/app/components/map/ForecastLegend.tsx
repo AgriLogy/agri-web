@@ -61,7 +61,7 @@ export default function ForecastLegend({
       borderRadius="md"
       boxShadow="md"
       p={2}
-      maxW="230px"
+      maxW="270px"
       pointerEvents="auto"
       data-testid="forecast-legend"
     >
