@@ -1,5 +1,7 @@
 import {
   bboxCorners,
+  historyRows,
+  historyTickFormatter,
   latestChange,
   legendGradient,
   ndviClass,
@@ -116,5 +118,37 @@ describe('persistentDecline and statAt', () => {
   it('finds the stat for a date', () => {
     expect(statAt([stat('2026-10-01', 0.5)], '2026-10-01')?.mean).toBe(0.5);
     expect(statAt([stat('2026-10-01', 0.5)], '2026-10-02')).toBeNull();
+  });
+});
+
+describe('historyRows', () => {
+  it('keeps clear dates, sorts, dedupes and builds the range band', () => {
+    const rows = historyRows([
+      { ...stat('2026-03-01', 0.5), min: 0.2, max: 0.7 },
+      stat('2026-01-01', 0.3),
+      stat('2026-02-01', 0.9, 0.2),
+      { ...stat('2026-03-01', 0.55), min: 0.25, max: 0.75 },
+      stat('2026-04-01', NaN),
+    ]);
+    expect(rows).toEqual([
+      { date: '2026-01-01', mean: 0.3, range: null },
+      { date: '2026-03-01', mean: 0.55, range: [0.25, 0.75] },
+    ]);
+  });
+});
+
+describe('historyTickFormatter', () => {
+  it('uses day/month for a short series and month/year for a long one', () => {
+    const short = historyTickFormatter([
+      { date: '2026-10-01' },
+      { date: '2026-11-20' },
+    ]);
+    expect(short('2026-10-05')).toBe('05/10');
+    const long = historyTickFormatter([
+      { date: '2025-11-23' },
+      { date: '2026-11-20' },
+    ]);
+    expect(long('2026-03-05')).toBe('03/26');
+    expect(long('bad')).toBe('bad');
   });
 });

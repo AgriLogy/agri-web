@@ -201,6 +201,140 @@ export interface NdviStat {
   classes?: { low: number; medium: number; high: number } | null;
 }
 
+// ---- NDVI phase 3 (agri-api#459): insights, forecast, history, KML ---------
+export type WaterBalanceStatus = 'ok' | 'irrigate_soon' | 'irrigate_now';
+export type WaterBalanceUnavailable =
+  | 'no_zone'
+  | 'no_soil_params'
+  | 'no_location';
+export type KcSource = 'kc_period' | 'default';
+export type RecommendationAction = 'irrigate' | 'wait' | 'none';
+export type VegetationStatus =
+  | 'healthy'
+  | 'water_stress'
+  | 'excess_water'
+  | 'low_vigor_other'
+  | 'declining'
+  | 'insufficient_data';
+export type InsightConfidence = 'high' | 'medium' | 'low';
+
+export interface WaterBalanceDay {
+  date: string;
+  et0_mm: number | null;
+  kc: number | null;
+  etc_mm: number | null;
+  rain_mm: number | null;
+  irrigation_mm: number | null;
+  dr_mm: number | null;
+}
+
+export interface WaterBalance {
+  available: boolean;
+  reason: WaterBalanceUnavailable | string | null;
+  taw_mm: number | null;
+  raw_mm: number | null;
+  dr_mm: number | null;
+  depletion_pct: number | null;
+  status: WaterBalanceStatus | null;
+  start_date: string | null;
+  assumption: string | null;
+  days: WaterBalanceDay[];
+}
+
+export interface IrrigationRecommendation {
+  action: RecommendationAction;
+  volume_m3: number | null;
+  duration_min: number | null;
+  rain_next_48h_mm: number | null;
+  message: string;
+}
+
+export interface VegetationInsight {
+  status: VegetationStatus;
+  label: string;
+  message: string;
+  confidence: InsightConfidence | null;
+  ndvi: {
+    date: string;
+    mean: number | null;
+    trend_per_week: number | null;
+    points: number;
+  } | null;
+  soil_moisture_pct: number | null;
+  soil_moisture_at: string | null;
+  critical_moisture_pct: number | null;
+}
+
+export interface SectorInsights {
+  sector_id: number;
+  sector_name: string;
+  date: string;
+  crop: string | null;
+  zone_ids: number[];
+  kc: { value: number | null; source: KcSource; period_name: string | null };
+  water_balance: WaterBalance;
+  recommendation: IrrigationRecommendation | null;
+  vegetation: VegetationInsight | null;
+}
+
+export interface ForecastDay {
+  date: string;
+  rain_mm: number | null;
+  et0_mm: number | null;
+}
+
+export interface SectorForecast {
+  sector_id: number;
+  name: string;
+  centroid: { lat: number; lon: number } | null;
+  daily: ForecastDay[];
+  total_rain_mm: number | null;
+  total_et0_mm: number | null;
+  balance_mm: number | null;
+}
+
+export interface FarmForecast {
+  provider: string;
+  days: string[];
+  sectors: SectorForecast[];
+}
+
+export interface NdviHistory {
+  sector_id: number;
+  index: SatIndex;
+  from: string;
+  to: string;
+  series: NdviStat[];
+}
+
+export type GeometrySource = 'draw' | 'kml' | 'restore';
+
+export interface GeometryRevision {
+  id: number;
+  created_at: string;
+  source: GeometrySource | string;
+  area_ha: number | null;
+  perimeter_m: number | null;
+  geometry: SectorGeometry | null;
+}
+
+export type KmlSkipReason =
+  | 'not_a_polygon'
+  | 'invalid_geometry'
+  | 'duplicate_name';
+
+export interface KmlImportResult {
+  dry_run: boolean;
+  sectors: {
+    name: string;
+    area_ha: number | null;
+    perimeter_m: number | null;
+    geometry: SectorGeometry | null;
+    id: number | null;
+  }[];
+  skipped: { name: string; reason: KmlSkipReason | string }[];
+}
+
 export const farmMapApi = {
   listSectors: () => api.get<MapSector[]>('/sectors').then((r) => r.data),
   createSector: (body: SectorWrite) =>
@@ -251,6 +385,45 @@ export const farmMapApi = {
         responseType: 'blob',
       })
       .then((r) => r.data),
+
+  // ---- phase 3 -----------------------------------------------------------
+  sectorInsights: (sectorId: number) =>
+    api
+      .get<SectorInsights>(`/farm-map/sectors/${sectorId}/insights`)
+      .then((r) => r.data),
+  forecast: (days = 3) =>
+    api
+      .get<FarmForecast>('/farm-map/forecast', { params: { days } })
+      .then((r) => r.data),
+  /** Stored index series (no Copernicus call, grows with each /stats). */
+  ndviHistory: (sectorId: number, index: SatIndex = 'ndvi', days = 365) =>
+    api
+      .get<NdviHistory>(`/farm-map/ndvi/sectors/${sectorId}/history`, {
+        params: { index, days },
+      })
+      .then((r) => r.data),
+  geometryHistory: (sectorId: number) =>
+    api
+      .get<{
+        sector_id: number;
+        revisions: GeometryRevision[];
+      }>(`/sectors/${sectorId}/geometry-history`)
+      .then((r) => r.data.revisions),
+  restoreGeometry: (sectorId: number, revisionId: number) =>
+    api
+      .post<MapSector>(
+        `/sectors/${sectorId}/geometry-history/${revisionId}/restore`
+      )
+      .then((r) => r.data),
+  /** `.kml` / `.kmz` (≤ 2 MB). `dryRun` previews without creating. */
+  importKml: (file: File, dryRun: boolean) => {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('dry_run', dryRun ? 'true' : 'false');
+    return api
+      .post<KmlImportResult>('/farm-map/sectors/import-kml', form)
+      .then((r) => r.data);
+  },
 
   listZones: () => api.get<ZoneOption[]>('/zones').then((r) => r.data),
   listSensorKeys: () =>

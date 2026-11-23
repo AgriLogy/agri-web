@@ -68,6 +68,7 @@ import { myDevicesApi, devicesToGeoJSON } from '@agri/api-client/myDevicesApi';
 import {
   farmMapApi,
   type Basemap,
+  type FarmForecast,
   type FarmMapStatus,
   type LayerPref,
   type MapPreferences,
@@ -109,6 +110,8 @@ import MapLayerPanel, {
   type MapLayerId,
 } from './MapLayerPanel';
 import SectorDetailsPanel from './SectorDetailsPanel';
+import ForecastLegend from './ForecastLegend';
+import KmlImportModal from './KmlImportModal';
 import {
   NO_SENSOR_FILTER,
   isFiltering,
@@ -125,6 +128,23 @@ import {
 } from '@/app/lib/farmMap/measure';
 import type { NdviOverlay } from './SectorNdviPanel';
 import { bboxCorners } from '@/app/lib/farmMap/ndvi';
+import {
+  DEFAULT_HORIZON,
+  forecastFeatures,
+  type ForecastHorizon,
+  type ForecastMetric,
+} from '@/app/lib/farmMap/forecast';
+import {
+  guardReadOnlySelect,
+  STATIC_DRAW_MODE,
+  staticDrawMode,
+} from '@/app/lib/farmMap/drawModes';
+import {
+  fallbackView,
+  initialCenter,
+  shouldRestoreCamera,
+} from '@/app/lib/farmMap/camera';
+import { readWeatherLocation } from '@agri/api-client/weatherLocationStorage';
 import SensorInstallationModal, {
   type SensorModalTarget,
 } from './SensorInstallationModal';
@@ -155,6 +175,10 @@ const FILTERED_SENSOR_LAYERS = [
 ];
 const SECTOR_STATUS_SOURCE_ID = 'agrilogy-sector-status';
 const SECTOR_STATUS_LAYER_ID = 'agrilogy-sector-status-fill';
+// Rain / ET0 forecast colouring (agri-api#459 phase 3).
+const FORECAST_SOURCE_ID = 'agrilogy-forecast';
+const FORECAST_LAYER_ID = 'agrilogy-forecast-fill';
+const FORECAST_LINE_LAYER_ID = 'agrilogy-forecast-line';
 // Real registered devices, plotted at their captured GPS position (MAP-1),
 // distinct from the placed sensor installations.
 const REGISTERED_DEVICES_SOURCE_ID = 'agrilogy-registered-devices';
@@ -379,8 +403,15 @@ function applyLayerPrefs(
   const s = prefs.sectors;
   for (const id of [...DRAW_FILL_LAYERS, ...DRAW_LINE_LAYERS])
     setVisibility(map, id, s.visible);
+  // With the forecast layer on, the sectors' own fill would tint its colours
+  // (draw sits above it): keep only their outlines.
   for (const id of DRAW_FILL_LAYERS)
-    setPaint(map, id, 'fill-opacity', 0.38 * s.opacity);
+    setPaint(
+      map,
+      id,
+      'fill-opacity',
+      prefs.forecast.visible ? 0 : 0.38 * s.opacity
+    );
   for (const id of DRAW_LINE_LAYERS)
     setPaint(map, id, 'line-opacity', s.opacity);
 
@@ -391,6 +422,10 @@ function applyLayerPrefs(
     'fill-opacity',
     0.55 * prefs.sector_status.opacity
   );
+
+  setVisibility(map, FORECAST_LAYER_ID, prefs.forecast.visible);
+  setVisibility(map, FORECAST_LINE_LAYER_ID, prefs.forecast.visible);
+  setPaint(map, FORECAST_LAYER_ID, 'fill-opacity', prefs.forecast.opacity);
 
   setVisibility(map, LABEL_LAYER_ID, prefs.labels.visible);
 
@@ -534,6 +569,19 @@ export default function AgricultureMapboxMap({
   // NDVI image laid over one sector (agri-api#459 phase 2).
   const [ndviOverlay, setNdviOverlay] = useState<NdviOverlay | null>(null);
   const ndviOverlayRef = useRef<NdviOverlay | null>(null);
+  // Rain / ET0 forecast layer (agri-api#459 phase 3).
+  const [forecastHorizon, setForecastHorizon] =
+    useState<ForecastHorizon>(DEFAULT_HORIZON);
+  const [forecastMetric, setForecastMetric] = useState<ForecastMetric>('rain');
+  const forecastMetricRef = useRef<ForecastMetric>('rain');
+  const [forecast, setForecast] = useState<FarmForecast | null>(null);
+  const forecastRef = useRef<FarmForecast | null>(null);
+  /** Horizon of the last answer (or failure), so "loading" is derived. */
+  const [forecastFor, setForecastFor] = useState<{
+    days: number;
+    ok: boolean;
+  } | null>(null);
+  const [kmlOpen, setKmlOpen] = useState(false);
   const [nextAutoSectorIndex, setNextAutoSectorIndex] = useState(1);
   const [sensorPlacementType, setSensorPlacementType] = useState<string | null>(
     null
@@ -688,9 +736,25 @@ export default function AgricultureMapboxMap({
           maxZoom: 17,
           duration: animate ? 800 : 0,
         });
+        return;
+      }
+      // Nothing on the farm yet (e.g. a technician whose granted zones have
+      // no sector): the account's devices, else the weather location the
+      // app already uses, and the caller's default only as a last resort.
+      const view = fallbackView({
+        devices: devicesFcRef.current.features.map((f) => f.geometry),
+        weather: readWeatherLocation(),
+        defaultCenter: { lat, lon },
+      });
+      if (view.kind === 'bounds') {
+        map.fitBounds(view.bounds as LngLatBounds, {
+          padding: 56,
+          maxZoom: 15,
+          duration: animate ? 800 : 0,
+        });
       } else {
         map.easeTo({
-          center: [lon, lat],
+          center: view.center,
           zoom: 14,
           duration: animate ? 800 : 0,
         });
@@ -973,7 +1037,7 @@ export default function AgricultureMapboxMap({
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: BASEMAPS.satellite_labels.style,
-      center: [lon, lat],
+      center: initialCenter(readWeatherLocation(), { lat, lon }),
       zoom: 14,
       maxZoom: 20,
       // Mapbox's terms require visible attribution: compact control below.
@@ -1001,10 +1065,27 @@ export default function AgricultureMapboxMap({
       /** So `setFeatureProperty` (rename) emits `draw.update` and Draw redraws. */
       suppressAPIEvents: false,
       styles: sectorMapDrawStyles,
+      modes: {
+        ...MapboxDraw.modes,
+        // Read-only logins can select a sector (its panel is read-only) but
+        // never drag, reshape or delete one locally (QA A2).
+        simple_select: guardReadOnlySelect(
+          MapboxDraw.modes.simple_select,
+          () => !canEditRef.current
+        ),
+        // Draw ignores clicks while the measure tool is on (QA A4).
+        [STATIC_DRAW_MODE]:
+          staticDrawMode as unknown as MapboxDraw.DrawCustomMode,
+      },
     };
     const draw = new MapboxDraw(drawOptions);
     map.addControl(draw, 'top-left');
     mapRef.current = map;
+    // Test hook for the screenshot tour (e2e/tour): lets it click a sector by
+    // projecting its centroid. Never shipped in production builds.
+    if (process.env.NODE_ENV !== 'production')
+      (window as unknown as { __agrilogyMap?: mapboxgl.Map }).__agrilogyMap =
+        map;
     drawRef.current = draw;
 
     // Keep the canvas sized to its container (tools panel, tabs, window).
@@ -1049,7 +1130,12 @@ export default function AgricultureMapboxMap({
     } | null = null;
 
     const onSensorMouseDown = (e: mapboxgl.MapLayerMouseEvent) => {
-      if (placingSensorTypeRef.current || !canEditRef.current) return;
+      if (
+        placingSensorTypeRef.current ||
+        measuringRef.current ||
+        !canEditRef.current
+      )
+        return;
       const f = e.features?.[0];
       if (f?.id == null) return;
       const idx = sensorsFcRef.current.features.findIndex(
@@ -1268,6 +1354,38 @@ export default function AgricultureMapboxMap({
           },
         });
       }
+      if (!map.getSource(FORECAST_SOURCE_ID)) {
+        map.addSource(FORECAST_SOURCE_ID, {
+          type: 'geojson',
+          data: emptyFC(),
+        });
+      }
+      if (!map.getLayer(FORECAST_LAYER_ID)) {
+        map.addLayer({
+          id: FORECAST_LAYER_ID,
+          type: 'fill',
+          source: FORECAST_SOURCE_ID,
+          layout: { visibility: 'none' },
+          paint: {
+            'fill-color': ['get', 'color'],
+            'fill-opacity': 0.75,
+          },
+        });
+      }
+      if (!map.getLayer(FORECAST_LINE_LAYER_ID)) {
+        map.addLayer({
+          id: FORECAST_LINE_LAYER_ID,
+          type: 'line',
+          source: FORECAST_SOURCE_ID,
+          layout: { visibility: 'none' },
+          // Per-feature outline: "no rain" sectors get a thick blue edge so
+          // they never read as the grey "no data" bucket (QA A7).
+          paint: {
+            'line-color': ['get', 'outline'],
+            'line-width': ['get', 'outlineWidth'],
+          },
+        });
+      }
       if (!map.getSource(FARM_SENSORS_SOURCE_ID)) {
         map.addSource(FARM_SENSORS_SOURCE_ID, {
           type: 'geojson',
@@ -1443,6 +1561,7 @@ export default function AgricultureMapboxMap({
       applySensorFilter(map, sensorFilterRef.current);
       applyMeasure(map, measurePointsRef.current);
       applyNdviOverlay(map, ndviOverlayRef.current);
+      pushForecast(map);
     };
 
     // One layer setup per loaded style: `style.load` and `load` both ask for
@@ -1460,7 +1579,7 @@ export default function AgricultureMapboxMap({
     const onStyleData = () => applyLayerPrefs(map, layerPrefsRef.current);
 
     // ----- initial data -----
-    const loadData = async () => {
+    const loadData = async (devicesLoaded: Promise<unknown>) => {
       let sectors: MapSector[];
       let installations: SensorInstallation[];
       let prefs: MapPreferences;
@@ -1490,6 +1609,8 @@ export default function AgricultureMapboxMap({
       if (!mapRef.current) return;
 
       sectorRowsRef.current = new Map(sectors.map((s) => [s.id, s]));
+      // The forecast may have arrived before the shapes it colours.
+      repaintForecast(mapRef.current);
       const drawn = sectors
         .map(sectorToDrawFeature)
         .filter((f): f is GeoJSON.Feature => f != null);
@@ -1571,7 +1692,19 @@ export default function AgricultureMapboxMap({
         else applyBasemapConfig(map, bm);
       }
       const cam = prefs.camera;
-      if (cam && Array.isArray(cam.center) && cam.center.length === 2) {
+      // Devices frame an empty farm: give them a moment before deciding.
+      await devicesLoaded;
+      const farmBounds = boundsOf([
+        ...draw
+          .getAll()
+          .features.filter(isPolygonFeature)
+          .map((f) => f.geometry),
+        ...sensorsFcRef.current.features.map((f) => f.geometry),
+      ]);
+      // A saved camera wins only when it looks at the farm: a view saved
+      // before the sectors existed (a technician's map opened on the default
+      // town) must not hide them (QA A2).
+      if (cam && shouldRestoreCamera(cam.center, farmBounds)) {
         map.jumpTo({
           center: cam.center,
           zoom: cam.zoom,
@@ -1597,7 +1730,7 @@ export default function AgricultureMapboxMap({
         ? 'crosshair'
         : 'grab';
       await ensureCustomLayers();
-      myDevicesApi
+      const devicesLoaded = myDevicesApi
         .list()
         .then((devices) => {
           devicesFcRef.current = devicesToGeoJSON(devices);
@@ -1610,10 +1743,17 @@ export default function AgricultureMapboxMap({
         .catch(() => {
           /* not signed in / no devices — leave the device layer empty */
         });
-      await loadData();
+      // Bounded wait: a slow devices call must not hold the camera back.
+      await loadData(
+        Promise.race([
+          devicesLoaded,
+          new Promise((r) => window.setTimeout(r, 1500)),
+        ])
+      );
     };
 
     const onDeviceClick = (e: mapboxgl.MapLayerMouseEvent) => {
+      if (measuringRef.current) return;
       const f = e.features?.[0];
       if (!f) return;
       const props = f.properties ?? {};
@@ -1692,6 +1832,8 @@ export default function AgricultureMapboxMap({
     };
 
     const onSelectionChange = (e: { features: GeoJSON.Feature[] }) => {
+      // While measuring, clicks are measure points, never a selection (A4).
+      if (measuringRef.current) return;
       const fs = e.features ?? [];
       if (fs.length === 1 && isPolygonFeature(fs[0])) {
         const sid = fs[0].id != null ? String(fs[0].id) : null;
@@ -1709,6 +1851,13 @@ export default function AgricultureMapboxMap({
     };
     const onModeChange = (e: { mode: string }) => {
       setDrawMode(e.mode);
+      // Any other mode (draw, select, a sector picked from a list) ends the
+      // measure: Draw would otherwise start reacting to the clicks again.
+      if (measuringRef.current && e.mode !== STATIC_DRAW_MODE) {
+        measuringRef.current = false;
+        setMeasuring(false);
+        setMeasurePoints([]);
+      }
       // Finishing (or abandoning) a polygon: record it as one undo step once
       // draw has committed the final shape.
       if (e.mode !== MapboxDraw.constants.modes.DRAW_POLYGON) {
@@ -1716,12 +1865,50 @@ export default function AgricultureMapboxMap({
       }
     };
 
+    // ----- forecast popup (hover on desktop, tap on touch) -----
+    const forecastPopup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      offset: 8,
+      className: 'agrilogy-forecast-popup',
+    });
+    const onForecastHover = (e: mapboxgl.MapLayerMouseEvent) => {
+      const p = e.features?.[0]?.properties as
+        | Record<string, unknown>
+        | undefined;
+      if (!p) return;
+      const tr = tRef.current;
+      const row = (k: string, v: unknown) =>
+        `${escapeHtml(tr(`misc.map.forecast.${k}`))}: <strong>${escapeHtml(String(v ?? '—'))}</strong>`;
+      forecastPopup
+        .setLngLat(e.lngLat)
+        .setHTML(
+          `<strong>${escapeHtml(String(p.name ?? ''))}</strong><br/>` +
+            [
+              row(
+                'rain',
+                p.noRain === true || p.noRain === 'true'
+                  ? tr('misc.map.forecast.noRainValue')
+                  : p.rain
+              ),
+              row('et0', p.et0),
+              row('balance', p.balance),
+            ].join('<br/>')
+        )
+        .addTo(map);
+    };
+    const onForecastLeave = () => forecastPopup.remove();
+    map.on('mousemove', FORECAST_LAYER_ID, onForecastHover);
+    map.on('click', FORECAST_LAYER_ID, onForecastHover);
+    map.on('mouseleave', FORECAST_LAYER_ID, onForecastLeave);
+
     map.on('style.load', onStyleLoad);
     map.on('styledata', onStyleData);
     map.on('load', onLoad);
     map.on('moveend', onMoveEnd);
     map.on('click', REGISTERED_DEVICES_LAYER_ID, onDeviceClick);
     const onClusterClick = (e: mapboxgl.MapLayerMouseEvent) => {
+      if (measuringRef.current) return;
       const f = e.features?.[0];
       const clusterId = f?.properties?.cluster_id;
       const src = map.getSource(SENSOR_CLUSTER_SOURCE_ID) as
@@ -1763,6 +1950,7 @@ export default function AgricultureMapboxMap({
       resizeObserver.disconnect();
       map.getCanvas()?.removeEventListener('click', onCanvasClickCapture, true);
       sensorPopup.remove();
+      forecastPopup.remove();
       map.remove();
       mapRef.current = null;
       drawRef.current = null;
@@ -1811,6 +1999,138 @@ export default function AgricultureMapboxMap({
   // ---------------------------------------------------------------------
   // UI handlers
   // ---------------------------------------------------------------------
+  /** Colour the drawn sectors by the forecast metric (no-op until loaded). */
+  const pushForecast = useCallback((map: mapboxgl.Map) => {
+    setSourceData(
+      map,
+      FORECAST_SOURCE_ID,
+      forecastFeatures(
+        forecastRef.current,
+        (id) => sectorRowsRef.current.get(id)?.geometry,
+        forecastMetricRef.current
+      )
+    );
+  }, []);
+
+  /** Repaint now, or once the map is idle if its style is still loading
+   * (isStyleLoaded() is briefly false while sources load; skipping then left
+   * the sectors uncoloured until the next metric change). */
+  const repaintForecast = useCallback(
+    (map: mapboxgl.Map | null) => {
+      if (!map) return;
+      if (map.isStyleLoaded()) pushForecast(map);
+      else map.once('idle', () => pushForecast(map));
+    },
+    [pushForecast]
+  );
+
+  const forecastVisible = layerPrefs.forecast.visible;
+  useEffect(() => {
+    if (!forecastVisible) return;
+    let alive = true;
+    farmMapApi
+      .forecast(forecastHorizon)
+      .then((f) => {
+        if (!alive) return;
+        forecastRef.current = f;
+        setForecast(f);
+        setForecastFor({ days: forecastHorizon, ok: true });
+      })
+      .catch(
+        () => alive && setForecastFor({ days: forecastHorizon, ok: false })
+      );
+    return () => {
+      alive = false;
+    };
+  }, [forecastVisible, forecastHorizon]);
+
+  // Repaint on new data, metric change, or when sector shapes change.
+  useEffect(() => {
+    forecastMetricRef.current = forecastMetric;
+    repaintForecast(mapRef.current);
+  }, [forecast, forecastMetric, view, repaintForecast]);
+
+  const forecastState: 'loading' | 'ready' | 'error' =
+    forecastFor?.days !== forecastHorizon
+      ? 'loading'
+      : forecastFor.ok
+        ? 'ready'
+        : 'error';
+  const forecastSectorCount = useMemo(
+    () =>
+      (forecast?.sectors ?? []).filter(
+        (s) => sectorRowsRef.current.get(s.sector_id)?.geometry
+      ).length,
+    // view changes whenever sectorRowsRef does
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [forecast, view]
+  );
+
+  /**
+   * Fold sectors changed on the server (KML import, shape restore) into the
+   * draw layer without a page reload: new rows get a draw feature, `replace`
+   * rows get their outline swapped. Each is recorded as already synced so the
+   * autosave does not echo it back; the undo stack restarts from here since
+   * these edits are not undoable client-side.
+   */
+  const upsertServerSectors = useCallback(
+    (rows: MapSector[], replace: ReadonlySet<number> = new Set()) => {
+      const draw = drawRef.current;
+      if (!draw) return;
+      const byServer = drawIdByServerId();
+      for (const row of rows) {
+        const existing = byServer.get(row.id);
+        sectorRowsRef.current.set(row.id, row);
+        if (existing && !replace.has(row.id)) continue;
+        const f = sectorToDrawFeature(row);
+        if (!f) continue;
+        const drawId = existing ?? String(row.id);
+        const prevProps =
+          (existing &&
+            (draw.get(existing) as GeoJSON.Feature | undefined)?.properties) ||
+          {};
+        draw.add({
+          ...f,
+          id: drawId,
+          properties: { ...prevProps, ...f.properties },
+        });
+        const live = draw.get(drawId) as GeoJSON.Feature | undefined;
+        syncedSectorsRef.current.set(drawId, {
+          serverId: row.id,
+          fingerprint: sectorFingerprint(live ?? f),
+        });
+        const c =
+          live && isPolygonFeature(live) ? sectorFeatureCentroid(live) : null;
+        if (c) sectorCentroidPrevRef.current.set(drawId, c);
+      }
+      lastSnapshotRef.current = snapshotDraw(draw);
+      historyRef.current = { past: [], future: [] };
+      setHistoryDepth({ past: 0, future: 0 });
+      refreshLabels();
+      bumpData();
+    },
+    [drawIdByServerId, refreshLabels, bumpData]
+  );
+
+  const handleKmlImported = async (ids: number[], count: number) => {
+    try {
+      const rows = await farmMapApi.listSectors();
+      upsertServerSectors(rows);
+      if (ids.length) fitFarm();
+    } catch (e) {
+      notifyError(e, 'misc.map.loadFailed');
+    }
+    toast({
+      title: t('misc.map.kml.done', { count }),
+      status: 'success',
+      duration: 3000,
+    });
+  };
+
+  const handleGeometryRestored = (row: MapSector) => {
+    upsertServerSectors([row], new Set([row.id]));
+  };
+
   const handleBasemapChange = (next: Basemap) => {
     const map = mapRef.current;
     const prev = basemapRef.current;
@@ -1990,14 +2310,29 @@ export default function AgricultureMapboxMap({
     if (map) map.getCanvas().style.cursor = measuring ? 'crosshair' : '';
   }, [measuring, measurePoints]);
 
+  // While measuring, Draw sits in a static mode so a click inside a sector
+  // adds a point instead of selecting the sector (QA A4). "Terminer" puts
+  // Draw back in simple_select, keeping whatever was selected before.
   const toggleMeasure = () => {
+    const d = drawRef.current;
     if (measuring) {
+      measuringRef.current = false;
       setMeasuring(false);
       setMeasurePoints([]);
+      if (d && d.getMode() === STATIC_DRAW_MODE)
+        d.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT, {
+          featureIds: d.getSelectedIds(),
+        });
       return;
     }
     setSensorPlacementType(null);
-    drawRef.current?.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
+    // Leave draw_polygon / direct_select first (commits a shape in progress).
+    if (d && d.getMode() !== MapboxDraw.constants.modes.SIMPLE_SELECT)
+      d.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT, {
+        featureIds: d.getSelectedIds(),
+      });
+    measuringRef.current = true;
+    d?.changeMode(STATIC_DRAW_MODE);
     setMeasurePoints([]);
     setMeasuring(true);
   };
@@ -2180,6 +2515,9 @@ export default function AgricultureMapboxMap({
   const handleSaveSectorDetails = async (
     body: Omit<SectorWrite, 'name' | 'geometry' | 'color'>
   ) => {
+    // Read-only logins (technician / monitor) never write: the server would
+    // 403 and the user would see an error they did not cause (QA A2).
+    if (!canEditRef.current) return;
     const drawId = selectedSectorDrawId;
     const serverId = drawId
       ? syncedSectorsRef.current.get(drawId)?.serverId
@@ -2209,7 +2547,7 @@ export default function AgricultureMapboxMap({
 
   const handleSensorSubmit = async (body: SensorInstallationWrite) => {
     const target = modalTarget;
-    if (!target) return;
+    if (!target || !canEditRef.current) return;
     setModalSaving(true);
     try {
       const row =
@@ -2274,6 +2612,7 @@ export default function AgricultureMapboxMap({
   };
 
   const removeSensorById = async (id: string) => {
+    if (!canEditRef.current) return;
     try {
       await farmMapApi.deleteInstallation(Number(id));
     } catch (e) {
@@ -2668,6 +3007,13 @@ export default function AgricultureMapboxMap({
                   hidden
                   onChange={(e) => void handleImportFile(e.target.files?.[0])}
                 />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setKmlOpen(true)}
+                >
+                  {t('misc.map.kml.button')}
+                </Button>
               </HStack>
 
               <FormControl maxW={{ md: '280px' }} flex="1" minW="0">
@@ -2728,18 +3074,25 @@ export default function AgricultureMapboxMap({
                     {t('misc.map.applyName')}
                   </Button>
                 </Flex>
-                <SectorDetailsPanel
-                  sector={selectedSector}
-                  status={selectedSectorStatus}
-                  canEdit={canEdit}
-                  isSaving={sectorSaving}
-                  onZoom={() =>
-                    selectedSectorDrawId && zoomToSector(selectedSectorDrawId)
-                  }
-                  onSave={(b) => void handleSaveSectorDetails(b)}
-                  ndviOverlay={ndviOverlay}
-                  onNdviOverlay={setNdviOverlay}
-                />
+                {/* Mounted only with the tools open: the read-only copy
+                    below covers the closed state (no duplicate fetches). */}
+                {toolsEnabled ? (
+                  <SectorDetailsPanel
+                    sector={selectedSector}
+                    status={selectedSectorStatus}
+                    canEdit={canEdit}
+                    isSaving={sectorSaving}
+                    onZoom={() =>
+                      selectedSectorDrawId && zoomToSector(selectedSectorDrawId)
+                    }
+                    onSave={(b) => void handleSaveSectorDetails(b)}
+                    ndviOverlay={ndviOverlay}
+                    onNdviOverlay={setNdviOverlay}
+                    onGeometryRestored={
+                      canEdit ? handleGeometryRestored : undefined
+                    }
+                  />
+                ) : null}
               </Box>
             </Collapse>
           </Box>
@@ -2934,6 +3287,7 @@ export default function AgricultureMapboxMap({
             onSave={() => {}}
             ndviOverlay={ndviOverlay}
             onNdviOverlay={setNdviOverlay}
+            onGeometryRestored={canEdit ? handleGeometryRestored : undefined}
           />
         </Box>
       ) : null}
@@ -2998,6 +3352,28 @@ export default function AgricultureMapboxMap({
             </Flex>
           </Flex>
         ) : null}
+        {forecastVisible ? (
+          <Box
+            position="absolute"
+            // Clear the drawing hint bar, which sits top-centre while drawing.
+            top={toolsEnabled && drawMode === 'draw_polygon' ? 16 : 2}
+            insetStart={2}
+            zIndex={2}
+            pointerEvents="none"
+          >
+            <ForecastLegend
+              horizon={forecastHorizon}
+              metric={forecastMetric}
+              onHorizon={setForecastHorizon}
+              onMetric={setForecastMetric}
+              state={forecastState}
+              provider={forecast?.provider ?? null}
+              sectorCount={forecastSectorCount}
+              bg={toolbarBg}
+              border={toolbarBorder}
+            />
+          </Box>
+        ) : null}
         {measuring ? (
           <Flex
             position="absolute"
@@ -3050,6 +3426,14 @@ export default function AgricultureMapboxMap({
           </Flex>
         ) : null}
       </Box>
+
+      {toolsEnabled && kmlOpen ? (
+        <KmlImportModal
+          isOpen={kmlOpen}
+          onClose={() => setKmlOpen(false)}
+          onImported={handleKmlImported}
+        />
+      ) : null}
 
       <SensorInstallationModal
         target={modalTarget}

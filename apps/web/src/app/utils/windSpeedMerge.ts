@@ -1,33 +1,7 @@
-import api from '@agri/api-client/api';
 import type { SensorData } from '@/app/types';
 
 /** Optional `wind_gust` after merge or from embedded API fields on windspeed rows. */
 export type WindSpeedSensorRow = SensorData & { wind_gust?: number };
-
-/**
- * Heuristic gust-only URLs (not documented in this repo / README).
- * Station UI (`WindSpeedGraph.tsx`) reads `wind_gust` from the same `sensor_data` as `wind_speed`
- * — rafale may only exist there. If your Django API exposes a dedicated route, prepend it here.
- */
-const WIND_GUST_ENDPOINTS = [
-  '/sensors/windgust',
-  '/sensors/wind_gust',
-  '/sensors/windgust',
-  '/sensors/wind_gust',
-] as const;
-
-function unwrapSensorList(data: unknown): SensorData[] {
-  if (Array.isArray(data)) return data;
-  if (
-    data &&
-    typeof data === 'object' &&
-    'results' in data &&
-    Array.isArray((data as { results: unknown }).results)
-  ) {
-    return (data as { results: SensorData[] }).results;
-  }
-  return [];
-}
 
 /** Second-precision key so "2024-01-01T12:00:00.000Z" matches "2024-01-01T12:00:00Z". */
 function timeKey(ts: string): string {
@@ -52,32 +26,6 @@ function gustNumeric(row: SensorData): number | undefined {
     }
   }
   return undefined;
-}
-
-/**
- * Fetches rafale (gust) as its own sensor series (`timestamp` + `value`).
- * Tries each URL; skips empty 200 responses so a wrong first route does not block the right one.
- */
-export async function fetchWindGustRows(params: {
-  start_date: string;
-  end_date: string;
-  zone: number | null;
-}): Promise<SensorData[]> {
-  let lastEmpty: SensorData[] = [];
-  for (const path of WIND_GUST_ENDPOINTS) {
-    try {
-      const res = await api.get<unknown>(path, { params });
-      const rows = unwrapSensorList(res.data);
-      if (rows.length > 0) return rows;
-      lastEmpty = rows;
-    } catch (err) {
-      if (process.env.NODE_ENV === 'development') {
-        console.debug(`[fetchWindGustRows] ${path} failed:`, err);
-      }
-      continue;
-    }
-  }
-  return lastEmpty;
 }
 
 /**

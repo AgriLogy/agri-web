@@ -106,3 +106,48 @@ export function persistentDecline(
       }
     : false;
 }
+
+export interface HistoryRow {
+  date: string;
+  mean: number;
+  /** [min, max] for the range band, or null when either is missing. */
+  range: [number, number] | null;
+}
+
+/**
+ * Chart rows for the stored index history: usable (clear-sky) dates only,
+ * oldest first, de-duplicated by date (last one wins), NaN-free.
+ */
+export function historyRows(series: NdviStat[]): HistoryRow[] {
+  const byDate = new Map<string, HistoryRow>();
+  for (const s of usableStats(series)) {
+    if (typeof s.mean !== 'number' || !Number.isFinite(s.mean)) continue;
+    const ok = (v: number | null | undefined): v is number =>
+      typeof v === 'number' && Number.isFinite(v);
+    byDate.set(s.date, {
+      date: s.date,
+      mean: s.mean,
+      range: ok(s.min) && ok(s.max) ? [s.min, s.max] : null,
+    });
+  }
+  return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/**
+ * X-axis label for the history chart: day/month when the stored series spans
+ * four months or less (otherwise every tick would read the same month),
+ * month/year beyond that.
+ */
+export function historyTickFormatter(
+  rows: { date: string }[]
+): (iso: string) => string {
+  const first = rows[0]?.date;
+  const last = rows[rows.length - 1]?.date;
+  const spanDays =
+    first && last ? (Date.parse(last) - Date.parse(first)) / 86_400_000 : 0;
+  return (iso: string) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+    if (!m) return iso;
+    return spanDays <= 120 ? `${m[3]}/${m[2]}` : `${m[2]}/${m[1].slice(2)}`;
+  };
+}
