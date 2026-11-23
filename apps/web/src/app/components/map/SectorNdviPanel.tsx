@@ -72,6 +72,8 @@ interface Props {
   sector: MapSector;
   overlay: NdviOverlay | null;
   onOverlay: (o: NdviOverlay | null) => void;
+  /** Inside the sector panel's "Satellite" tab: no separator line on top. */
+  embedded?: boolean;
 }
 
 type Load = 'idle' | 'loading' | 'ready' | 'off' | 'error';
@@ -160,7 +162,12 @@ function ClassBar({
   );
 }
 
-export default function SectorNdviPanel({ sector, overlay, onOverlay }: Props) {
+export default function SectorNdviPanel({
+  sector,
+  overlay,
+  onOverlay,
+  embedded = false,
+}: Props) {
   const t = useTranslations();
   const locale = useLocale();
   const border = useColorModeValue('gray.200', 'gray.600');
@@ -334,10 +341,10 @@ export default function SectorNdviPanel({ sector, overlay, onOverlay }: Props) {
   return (
     <Box
       id="sector-ndvi-panel"
-      borderTopWidth="1px"
+      borderTopWidth={embedded ? 0 : '1px'}
       borderColor={border}
-      pt={3}
-      mt={1}
+      pt={embedded ? 0 : 3}
+      mt={embedded ? 0 : 1}
     >
       <Flex justify="space-between" align="center" mb={2} gap={2}>
         <Text fontSize="sm" fontWeight={600}>

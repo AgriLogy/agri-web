@@ -4,9 +4,13 @@ import {
   depletionGauge,
   fmtNum,
   fmtSigned,
+  insightsLang,
+  insightsTextDir,
+  insightTabIndex,
   isStableTrend,
   knownCode,
   shortDay,
+  visibleInsightTabs,
   vegetationScheme,
   VEGETATION_STATUSES,
   waterStatusScheme,
@@ -132,5 +136,53 @@ describe('isStableTrend', () => {
     expect(isStableTrend(-0.06)).toBe(false);
     expect(isStableTrend(null)).toBe(false);
     expect(isStableTrend(Number.NaN)).toBe(false);
+  });
+});
+
+describe('insightsLang', () => {
+  it.each([
+    ['fr', 'fr'],
+    ['ar', 'ar'],
+    ['en', 'en'],
+    ['ar-MA', 'ar'],
+    ['EN_us', 'en'],
+    ['de', 'fr'],
+    ['', 'fr'],
+    [null, 'fr'],
+    [undefined, 'fr'],
+  ])('%p → %p', (locale, want) => {
+    expect(insightsLang(locale)).toBe(want);
+  });
+});
+
+describe('insightsTextDir', () => {
+  it('follows the language the server answered in', () => {
+    expect(insightsTextDir('ar')).toBe('rtl');
+    expect(insightsTextDir('fr')).toBe('ltr');
+    expect(insightsTextDir('en')).toBe('ltr');
+  });
+  it('lets the browser decide when an older server sends no lang', () => {
+    expect(insightsTextDir(undefined)).toBe('auto');
+    expect(insightsTextDir(null)).toBe('auto');
+    expect(insightsTextDir('xx')).toBe('auto');
+  });
+});
+
+describe('insight tabs', () => {
+  it('hides the satellite tab without the NDVI panel', () => {
+    expect(visibleInsightTabs(true)).toEqual([
+      'irrigation',
+      'vegetation',
+      'satellite',
+    ]);
+    expect(visibleInsightTabs(false)).toEqual(['irrigation', 'vegetation']);
+  });
+  it('maps the remembered tab to an index, first tab when hidden', () => {
+    const all = visibleInsightTabs(true);
+    const two = visibleInsightTabs(false);
+    expect(insightTabIndex(all, 'satellite')).toBe(2);
+    expect(insightTabIndex(all, 'vegetation')).toBe(1);
+    expect(insightTabIndex(two, 'satellite')).toBe(0);
+    expect(insightTabIndex(two, null)).toBe(0);
   });
 });

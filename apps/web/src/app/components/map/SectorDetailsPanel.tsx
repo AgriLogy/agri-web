@@ -249,14 +249,19 @@ export default function SectorDetailsPanel({
           onRestored={onGeometryRestored}
         />
       ) : null}
-      <SectorInsightsPanel sectorId={sector.id} />
-      {onNdviOverlay ? (
-        <SectorNdviPanel
-          sector={sector}
-          overlay={ndviOverlay}
-          onOverlay={onNdviOverlay}
-        />
-      ) : null}
+      <SectorInsightsPanel
+        sectorId={sector.id}
+        satellite={
+          onNdviOverlay ? (
+            <SectorNdviPanel
+              sector={sector}
+              overlay={ndviOverlay}
+              onOverlay={onNdviOverlay}
+              embedded
+            />
+          ) : undefined
+        }
+      />
     </VStack>
   );
 }
