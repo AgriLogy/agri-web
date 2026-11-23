@@ -19,6 +19,7 @@ import {
 import {
   Cloud,
   Sun,
+  CloudOff,
   CloudRain,
   Wind,
   Droplets,
@@ -32,8 +33,15 @@ import {
 import useColorModeStyles from '@/app/utils/useColorModeStyles';
 import WeatherDetailsModal, {
   OPEN_METEO_PARAMS,
-  type WeatherData,
 } from '@/app/components/dashboard/WeatherDetailsModal';
+import {
+  nextWeatherData,
+  parseOpenMeteoResponse,
+  roundOrDash,
+  timeOrDash,
+  type Num,
+  type WeatherData,
+} from '@/app/utils/openMeteoResponse';
 import WeatherLocationPicker from '@/app/components/weather/WeatherLocationPicker';
 import Loading from '../common/Loading';
 
@@ -85,10 +93,14 @@ const WeatherDashboard = () => {
         const response = await fetch(
           `https://api.open-meteo.com/v1/forecast/?latitude=${location.lat}&longitude=${location.lon}&${OPEN_METEO_PARAMS}`
         );
-        const data = await response.json();
-        if (!cancelled) setWeatherData(data);
+        // An error answer (rate limit, outage) has no `current` / `daily`:
+        // validate before storing, and keep the last good forecast if any.
+        const body: unknown = await response.json().catch(() => null);
+        const parsed = parseOpenMeteoResponse(response.ok, body);
+        if (!parsed) console.warn('Open-Meteo: unusable response', body);
+        if (!cancelled) setWeatherData((prev) => nextWeatherData(prev, parsed));
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Open-Meteo fetch failed:', error);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -133,12 +145,15 @@ const WeatherDashboard = () => {
 
   const toFahrenheit = (celsius: number) => (celsius * 9) / 5 + 32;
   const toMilesPerHour = (kmph: number) => kmph * 0.621371;
+  const tempLabel = (c: Num) =>
+    `${roundOrDash(c, useImperial ? toFahrenheit : undefined)}°${useImperial ? 'F' : 'C'}`;
 
   const handleUnitToggle = () => {
     setUseImperial((prevState) => !prevState);
   };
 
-  const getWeatherIcon = (code: number) => {
+  const getWeatherIcon = (code: Num) => {
+    if (code == null) return <Icon as={Cloud} color="gray.400" />;
     switch (code) {
       case 0:
         return <Icon as={Sun} color="yellow.500" />;
@@ -152,21 +167,51 @@ const WeatherDashboard = () => {
     }
   };
 
-  const formatTime = (time: string) =>
-    new Date(time).toLocaleTimeString(localeTag(locale), {
+  const formatTime = (time: string | undefined) =>
+    timeOrDash(time, localeTag(locale), {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
     });
 
-  const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString(localeTag(locale), { weekday: 'short' });
+  const formatDate = (date: string) => {
+    const d = new Date(date);
+    return Number.isNaN(d.getTime())
+      ? '—'
+      : d.toLocaleDateString(localeTag(locale), { weekday: 'short' });
+  };
 
   if (loading) {
     return <Loading />;
   }
 
-  if (!weatherData) return null;
+  // No usable forecast yet (Open-Meteo error / outage on the first load):
+  // a compact placeholder instead of crashing the whole dashboard.
+  if (!weatherData) {
+    return (
+      <Box
+        bg={tableBg}
+        p={p}
+        width="100%"
+        borderRadius="md"
+        boxShadow="lg"
+        role="status"
+      >
+        <HStack justify="space-between" align="start" mb={2}>
+          <VStack align="start" spacing={0}>
+            <Text color="app.text" fontSize="lg" fontWeight="bold">
+              {t('shell.weather.title')}
+            </Text>
+            <WeatherLocationPicker size="xs" onChange={setLocation} />
+          </VStack>
+        </HStack>
+        <HStack spacing={2} color={secondaryText} py={2}>
+          <Icon as={CloudOff} boxSize="18px" />
+          <Text fontSize="sm">{t('shell.weather.unavailable')}</Text>
+        </HStack>
+      </Box>
+    );
+  }
 
   const { current, daily } = weatherData;
 
@@ -227,18 +272,12 @@ const WeatherDashboard = () => {
         <HStack spacing={3}>
           {getWeatherIcon(current.weather_code)}
           <Text fontSize="3xl" fontWeight="light" color={primaryText}>
-            {useImperial
-              ? Math.round(toFahrenheit(current.temperature_2m))
-              : Math.round(current.temperature_2m)}
-            °{useImperial ? 'F' : 'C'}
+            {tempLabel(current.temperature_2m)}
           </Text>
         </HStack>
         <Text fontSize="xs" color={secondaryText}>
           {t('shell.weather.feelsLike')}{' '}
-          {useImperial
-            ? Math.round(toFahrenheit(current.apparent_temperature))
-            : Math.round(current.apparent_temperature)}
-          °{useImperial ? 'F' : 'C'}
+          {tempLabel(current.apparent_temperature)}
         </Text>
       </VStack>
 
@@ -255,9 +294,10 @@ const WeatherDashboard = () => {
         >
           <Icon as={Wind} boxSize="24px" color="primary.500" mb={1} />
           <Text fontSize="xs" color={primaryText}>
-            {useImperial
-              ? Math.round(toMilesPerHour(current.wind_speed_10m))
-              : Math.round(current.wind_speed_10m)}{' '}
+            {roundOrDash(
+              current.wind_speed_10m,
+              useImperial ? toMilesPerHour : undefined
+            )}{' '}
             {useImperial ? 'mph' : 'km/h'}
           </Text>
         </Box>
@@ -272,7 +312,7 @@ const WeatherDashboard = () => {
         >
           <Icon as={Droplets} boxSize="24px" color="primary.400" mb={1} />
           <Text fontSize="xs" color={primaryText}>
-            {current.relative_humidity_2m}%
+            {roundOrDash(current.relative_humidity_2m)}%
           </Text>
         </Box>
         <Box
@@ -310,7 +350,7 @@ const WeatherDashboard = () => {
         {daily.time.slice(0, 7).map((date, index) => (
           <Box
             _hover={{ cursor: 'pointer', borderColor: hoverColor }}
-            key={date}
+            key={`${date}-${index}`}
             onClick={() => setDetailsOpen(true)}
             bg={bgColor}
             p={2}
@@ -330,19 +370,13 @@ const WeatherDashboard = () => {
               {index === 0 ? t('shell.weather.today') : formatDate(date)}
             </Text>
             <Flex justify="center" mb={1}>
-              {getWeatherIcon(daily.weather_code[index])}
+              {getWeatherIcon(daily.weather_code[index] ?? null)}
             </Flex>
             <Text fontSize="xs" color={primaryText} fontWeight="bold">
-              {useImperial
-                ? Math.round(toFahrenheit(daily.temperature_2m_max[index]))
-                : Math.round(daily.temperature_2m_max[index])}
-              °{useImperial ? 'F' : 'C'}
+              {tempLabel(daily.temperature_2m_max[index] ?? null)}
             </Text>
             <Text fontSize="xs" color={secondaryText}>
-              {useImperial
-                ? Math.round(toFahrenheit(daily.temperature_2m_min[index]))
-                : Math.round(daily.temperature_2m_min[index])}
-              °{useImperial ? 'F' : 'C'}
+              {tempLabel(daily.temperature_2m_min[index] ?? null)}
             </Text>
           </Box>
         ))}

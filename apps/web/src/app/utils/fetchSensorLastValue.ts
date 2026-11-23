@@ -41,7 +41,8 @@ export async function fetchLastSensorSample(
   zoneId: number | null
 ): Promise<LastSensorSample | null> {
   const spec = getSensorEndpointSpec(sensorKey);
-  if (!spec) return null;
+  // Unknown key, or a catalog key agri-api has no slug for: no request at all.
+  if (!spec || spec.kind === 'unavailable') return null;
 
   const params: Record<string, string | number> = {
     ...dateRangeParams(),

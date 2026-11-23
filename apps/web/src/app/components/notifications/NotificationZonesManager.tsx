@@ -264,7 +264,7 @@ const NotificationZonesManager: React.FC = () => {
         onOk={handleSave}
         confirmLoading={saving}
         okText={t('notificationZones.save')}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form form={form} layout="vertical">
           <Form.Item

@@ -307,7 +307,7 @@ const ZoneNotificationConfigureForm: React.FC<
   const [zoneId, setZoneId] = useState<number>(0);
   const [form, setForm] = useState<ZoneNotificationConfig | null>(null);
   const [nameError, setNameError] = useState(false);
-  /** Live VPD reading pulled from the captor (`/sensors/vpd`) for the selected zone. */
+  /** Live VPD reading pulled from the captor (`/sensors/vpdweather`) for the selected zone. */
   const [vpdLive, setVpdLive] = useState<number | null>(null);
   const [vpdLoading, setVpdLoading] = useState(false);
 
@@ -437,7 +437,7 @@ const ZoneNotificationConfigureForm: React.FC<
   }, []);
 
   // VPD is read from the captor, never typed by the user. Pull the latest
-  // `/sensors/vpd` sample for the selected zone and mirror it into the form so
+  // `/sensors/vpdweather` sample for the selected zone and mirror it into the form so
   // the saved config + decision engine use the real sensor value.
   useEffect(() => {
     if (!zoneId) return;

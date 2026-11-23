@@ -48,52 +48,17 @@ import {
   Umbrella,
   Wind,
 } from 'lucide-react';
+import {
+  fixedOrDash,
+  roundOrDash,
+  timeOrDash,
+  type Num,
+  type WeatherData,
+} from '@/app/utils/openMeteoResponse';
 
-export interface WeatherData {
-  current: {
-    time: string;
-    temperature_2m: number;
-    relative_humidity_2m: number;
-    apparent_temperature: number;
-    precipitation: number;
-    weather_code: number;
-    wind_speed_10m: number;
-    wind_direction_10m: number;
-    wind_gusts_10m: number;
-    pressure_msl: number;
-    cloud_cover: number;
-  };
-  hourly: {
-    time: string[];
-    temperature_2m: number[];
-    precipitation_probability: number[];
-    precipitation: number[];
-    uv_index: number[];
-    wind_speed_10m: number[];
-    wind_gusts_10m: number[];
-    relative_humidity_2m: number[];
-    dew_point_2m: number[];
-    soil_temperature_6cm: number[];
-    soil_moisture_3_to_9cm: number[];
-    et0_fao_evapotranspiration: number[];
-  };
-  daily: {
-    time: string[];
-    weather_code: number[];
-    temperature_2m_max: number[];
-    temperature_2m_min: number[];
-    sunrise: string[];
-    sunset: string[];
-    uv_index_max: number[];
-    precipitation_sum: number[];
-    precipitation_probability_max: number[];
-    wind_speed_10m_max: number[];
-    wind_gusts_10m_max: number[];
-    wind_direction_10m_dominant: number[];
-    et0_fao_evapotranspiration: number[];
-    sunshine_duration: number[];
-  };
-}
+// The normalized, defensively-parsed Open-Meteo shape lives in a pure helper
+// (unit-tested); re-exported here for existing importers.
+export type { WeatherData };
 
 /** Extended open-meteo variable set the card requests (single source). */
 export const OPEN_METEO_PARAMS =
@@ -137,10 +102,14 @@ const COMPASS = [
   'NW',
   'NNW',
 ];
-const compass = (deg: number) => COMPASS[Math.round(deg / 22.5) % 16];
+const compass = (deg: Num) =>
+  deg == null ? '' : COMPASS[((Math.round(deg / 22.5) % 16) + 16) % 16];
 
 const toF = (c: number) => (c * 9) / 5 + 32;
 const toMph = (kmh: number) => kmh * 0.621371;
+
+const at = <T,>(arr: readonly T[] | undefined, i: number): T | null =>
+  arr && i >= 0 && i < arr.length ? (arr[i] ?? null) : null;
 
 type Props = {
   isOpen: boolean;
@@ -165,28 +134,34 @@ const WeatherDetailsModal: React.FC<Props> = ({
 
   const { current, hourly, daily } = data;
 
-  const temp = (c: number) =>
-    `${Math.round(useImperial ? toF(c) : c)}°${useImperial ? 'F' : 'C'}`;
-  const speed = (kmh: number) =>
-    `${Math.round(useImperial ? toMph(kmh) : kmh)} ${useImperial ? 'mph' : 'km/h'}`;
-  const hourLabel = (iso: string) =>
-    new Date(iso).toLocaleTimeString(localeTag(locale), {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  const dayLabel = (iso: string) =>
-    new Date(iso).toLocaleDateString(localeTag(locale), {
-      weekday: 'short',
-      day: 'numeric',
-    });
+  const temp = (c: Num) =>
+    c == null
+      ? '—'
+      : `${Math.round(useImperial ? toF(c) : c)}°${useImperial ? 'F' : 'C'}`;
+  const speed = (kmh: Num) =>
+    kmh == null
+      ? '—'
+      : `${Math.round(useImperial ? toMph(kmh) : kmh)} ${useImperial ? 'mph' : 'km/h'}`;
+  const pct = (v: Num) => (v == null ? '—' : `${Math.round(v)}%`);
+  const hourLabel = (iso: string) => timeOrDash(iso, localeTag(locale));
+  const dayLabel = (iso: string) => {
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime())
+      ? '—'
+      : d.toLocaleDateString(localeTag(locale), {
+          weekday: 'short',
+          day: 'numeric',
+        });
+  };
 
   // Index of the current hour in the hourly arrays.
+  const nowTime = current.time ? new Date(current.time) : new Date();
   const nowIdx = Math.max(
     0,
-    hourly.time.findIndex((tISO) => new Date(tISO) >= new Date(current.time))
+    hourly.time.findIndex((tISO) => new Date(tISO) >= nowTime)
   );
-  const uvNow = hourly.uv_index[nowIdx] ?? 0;
-  const uv = uvRisk(uvNow);
+  const uvNow = at(hourly.uv_index, nowIdx);
+  const uv = uvRisk(uvNow ?? 0);
   const next24 = hourly.time
     .map((_, i) => i)
     .filter((i) => i >= nowIdx && i < nowIdx + 24);
@@ -230,65 +205,72 @@ const WeatherDetailsModal: React.FC<Props> = ({
               `${uv.color}.500`,
               dTs('uvIndex'),
               <>
-                {uvNow.toFixed(1)}{' '}
-                <Badge colorScheme={uv.color} fontSize="2xs">
-                  {dTs(`uv.${uv.key}`)}
-                </Badge>
+                {fixedOrDash(uvNow, 1)}{' '}
+                {uvNow != null && (
+                  <Badge colorScheme={uv.color} fontSize="2xs">
+                    {dTs(`uv.${uv.key}`)}
+                  </Badge>
+                )}
               </>
             )}
             {stat(
               Umbrella,
               'blue.400',
               dTs('precipProb'),
-              `${hourly.precipitation_probability[nowIdx] ?? 0}%`
+              pct(at(hourly.precipitation_probability, nowIdx))
             )}
             {stat(
               Wind,
               'primary.500',
               dTs('windGusts'),
-              `${speed(current.wind_speed_10m)} / ${speed(current.wind_gusts_10m)} ${compass(current.wind_direction_10m)}`
+              `${speed(current.wind_speed_10m)} / ${speed(current.wind_gusts_10m)} ${compass(current.wind_direction_10m)}`.trim()
             )}
             {stat(
               Droplet,
               'cyan.500',
               dTs('dewPoint'),
-              temp(hourly.dew_point_2m[nowIdx] ?? 0)
+              temp(at(hourly.dew_point_2m, nowIdx))
             )}
             {stat(
               Gauge,
               'gray.500',
               dTs('pressure'),
-              `${Math.round(current.pressure_msl)} hPa`
+              current.pressure_msl == null
+                ? '—'
+                : `${Math.round(current.pressure_msl)} hPa`
             )}
             {stat(
               Cloud,
               'gray.400',
               dTs('cloudCover'),
-              `${current.cloud_cover}%`
+              pct(current.cloud_cover)
             )}
             {stat(
               Leaf,
               'green.500',
               dTs('et0Today'),
-              `${(daily.et0_fao_evapotranspiration[0] ?? 0).toFixed(1)} mm`
+              `${fixedOrDash(at(daily.et0_fao_evapotranspiration, 0), 1)} mm`
             )}
             {stat(
               Thermometer,
               'orange.400',
               dTs('soilTemp'),
-              temp(hourly.soil_temperature_6cm[nowIdx] ?? 0)
+              temp(at(hourly.soil_temperature_6cm, nowIdx))
             )}
             {stat(
               Sprout,
               'green.400',
               dTs('soilMoisture'),
-              `${Math.round((hourly.soil_moisture_3_to_9cm[nowIdx] ?? 0) * 100)}%`
+              roundOrDash(
+                at(hourly.soil_moisture_3_to_9cm, nowIdx),
+                (v) => v * 100
+              ) + '%'
             )}
             {stat(
               Droplets,
               'blue.500',
               dTs('humidity'),
-              `${current.relative_humidity_2m}%`
+              pct(current.relative_humidity_2m)
             )}
           </SimpleGrid>
 
@@ -300,7 +282,7 @@ const WeatherDetailsModal: React.FC<Props> = ({
             <HStack spacing={2} minW="max-content">
               {next24.map((i) => (
                 <VStack
-                  key={hourly.time[i]}
+                  key={`${hourly.time[i]}-${i}`}
                   bg={tileBg}
                   borderRadius="lg"
                   px={2}
@@ -312,27 +294,26 @@ const WeatherDetailsModal: React.FC<Props> = ({
                     {hourLabel(hourly.time[i])}
                   </Text>
                   <Text fontSize="sm" fontWeight="semibold" color={primaryText}>
-                    {temp(hourly.temperature_2m[i])}
+                    {temp(at(hourly.temperature_2m, i))}
                   </Text>
                   <HStack spacing={0.5}>
                     <Icon as={Umbrella} boxSize="10px" color="blue.400" />
                     <Text fontSize="2xs" color="blue.400">
-                      {hourly.precipitation_probability[i] ?? 0}%
+                      {pct(at(hourly.precipitation_probability, i))}
                     </Text>
                   </HStack>
                   <HStack spacing={0.5}>
                     <Icon as={Sun} boxSize="10px" color="yellow.500" />
                     <Text fontSize="2xs" color={secondaryText}>
-                      {(hourly.uv_index[i] ?? 0).toFixed(0)}
+                      {fixedOrDash(at(hourly.uv_index, i), 0)}
                     </Text>
                   </HStack>
                   <HStack spacing={0.5}>
                     <Icon as={Wind} boxSize="10px" color="primary.500" />
                     <Text fontSize="2xs" color={secondaryText}>
-                      {Math.round(
-                        useImperial
-                          ? toMph(hourly.wind_speed_10m[i])
-                          : hourly.wind_speed_10m[i]
+                      {roundOrDash(
+                        at(hourly.wind_speed_10m, i),
+                        useImperial ? toMph : undefined
                       )}
                     </Text>
                   </HStack>
@@ -375,43 +356,40 @@ const WeatherDetailsModal: React.FC<Props> = ({
               </Thead>
               <Tbody>
                 {daily.time.slice(0, 7).map((date, i) => {
-                  const dUv = uvRisk(daily.uv_index_max[i] ?? 0);
+                  const dUvMax = at(daily.uv_index_max, i);
+                  const dUv = uvRisk(dUvMax ?? 0);
                   return (
-                    <Tr key={date}>
+                    <Tr key={`${date}-${i}`}>
                       <Td px={2} fontSize="xs">
                         {dayLabel(date)}
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
-                        {temp(daily.temperature_2m_min[i])} /{' '}
-                        <b>{temp(daily.temperature_2m_max[i])}</b>
+                        {temp(at(daily.temperature_2m_min, i))} /{' '}
+                        <b>{temp(at(daily.temperature_2m_max, i))}</b>
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
-                        {daily.precipitation_probability_max[i] ?? 0}% ·{' '}
-                        {(daily.precipitation_sum[i] ?? 0).toFixed(1)} mm
+                        {pct(at(daily.precipitation_probability_max, i))} ·{' '}
+                        {fixedOrDash(at(daily.precipitation_sum, i), 1)} mm
                       </Td>
                       <Td px={2} fontSize="xs">
                         <Badge colorScheme={dUv.color} fontSize="2xs">
-                          {(daily.uv_index_max[i] ?? 0).toFixed(0)}
+                          {fixedOrDash(dUvMax, 0)}
                         </Badge>
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
-                        {speed(daily.wind_gusts_10m_max[i] ?? 0)}{' '}
-                        {compass(daily.wind_direction_10m_dominant[i] ?? 0)}
+                        {speed(at(daily.wind_gusts_10m_max, i))}{' '}
+                        {compass(at(daily.wind_direction_10m_dominant, i))}
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
-                        {(daily.et0_fao_evapotranspiration[i] ?? 0).toFixed(1)}{' '}
+                        {fixedOrDash(
+                          at(daily.et0_fao_evapotranspiration, i),
+                          1
+                        )}{' '}
                         mm
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
-                        {new Date(daily.sunrise[i]).toLocaleTimeString(
-                          localeTag(locale),
-                          { hour: '2-digit', minute: '2-digit' }
-                        )}{' '}
-                        /{' '}
-                        {new Date(daily.sunset[i]).toLocaleTimeString(
-                          localeTag(locale),
-                          { hour: '2-digit', minute: '2-digit' }
-                        )}
+                        {timeOrDash(at(daily.sunrise, i), localeTag(locale))} /{' '}
+                        {timeOrDash(at(daily.sunset, i), localeTag(locale))}
                       </Td>
                     </Tr>
                   );

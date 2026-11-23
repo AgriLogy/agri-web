@@ -961,6 +961,7 @@
       "edit": "Edit",
       "emptyTitle": "No water source yet",
       "emptyHint": "Add each basin, tank or well to follow its level, volume and usable reserve. Use the simulator to test before the level sensor is installed.",
+      "emptyHintReadOnly": "No water source has been set up for this farm yet.",
       "loadFailed": "Water sources could not be loaded.",
       "type": {
         "BASIN": "Basin",
@@ -2525,7 +2526,8 @@
         "rain": "Rain",
         "gusts": "Gusts",
         "source": "Forecast data: Open-Meteo"
-      }
+      },
+      "unavailable": "Weather unavailable right now. Please try again later."
     }
   },
   "station": {

@@ -108,6 +108,16 @@ describe('SensorGroupsCard', () => {
     expect(screen.getByText('Zone 5')).toBeInTheDocument();
   });
 
+  it('keeps the expand state of the virtual ungrouped section local (A5)', async () => {
+    await renderCard();
+    const ungrouped = screen.getByRole('button', {
+      name: new RegExp(frMessages.sensorGroups.ungrouped),
+    });
+    fireEvent.click(ungrouped);
+    fireEvent.click(ungrouped);
+    expect(mockPatch).not.toHaveBeenCalled();
+  });
+
   it('collapses and re-expands a group on click', async () => {
     server.seedGroup('Serre A', [
       { device_id: 10, sensor_key: 'soil_temperature' },
@@ -180,18 +190,16 @@ describe('SensorGroupsCard', () => {
     expect(screen.queryByText('Groupe local')).not.toBeInTheDocument();
   });
 
-  it('says grouping is unavailable when the migration is missing, and still lists the sensors', async () => {
+  it('sends no write on open, even with no groups and a missing migration (A5)', async () => {
     server.degraded = true;
     await renderCard();
 
-    expect(screen.getByTestId('sensor-groups-unavailable')).toBeInTheDocument();
-    expect(
-      screen.getByText(frMessages.sensorGroups.unavailableBody)
-    ).toBeInTheDocument();
-    // No empty "no groups" pretence, and the sensors are still listed.
-    expect(
-      screen.queryByText(frMessages.sensorGroups.empty)
-    ).not.toBeInTheDocument();
+    // Opening the dashboard must never PATCH anything — the old schema probe
+    // (`PATCH /sensor-groups/0`) 404'd for farmers and 403'd for technicians.
+    expect(mockPatch).not.toHaveBeenCalled();
+    expect(mockPost).not.toHaveBeenCalled();
+    expect(mockDelete).not.toHaveBeenCalled();
+    // The sensors stay reachable under the virtual "ungrouped" section.
     fireEvent.click(
       screen.getByRole('button', {
         name: new RegExp(frMessages.sensorGroups.ungrouped),

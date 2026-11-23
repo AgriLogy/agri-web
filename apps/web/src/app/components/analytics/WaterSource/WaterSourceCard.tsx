@@ -57,10 +57,14 @@ const WaterSourceCard = ({
   source,
   zoneNames,
   onEdit,
+  canEdit = false,
 }: {
   source: WaterSourceWithStatus;
   zoneNames: string[];
-  onEdit: () => void;
+  /** Omitted for read-only callers: no edit button is rendered. */
+  onEdit?: () => void;
+  /** Editor+ only: shows the Modifier button and the level simulator. */
+  canEdit?: boolean;
 }) => {
   const t = useTranslations('analytics.waterSource');
   const border = useColorModeValue('gray.200', 'gray.600');
@@ -127,14 +131,16 @@ const WaterSourceCard = ({
           <Badge colorScheme={dataStatusScheme(status.data_status)}>
             {t(`dataStatus.${status.data_status}`)}
           </Badge>
-          <Button
-            size="sm"
-            leftIcon={<FaPen />}
-            variant="outline"
-            onClick={onEdit}
-          >
-            {t('edit')}
-          </Button>
+          {canEdit && onEdit && (
+            <Button
+              size="sm"
+              leftIcon={<FaPen />}
+              variant="outline"
+              onClick={onEdit}
+            >
+              {t('edit')}
+            </Button>
+          )}
         </HStack>
       </Flex>
 
@@ -257,7 +263,7 @@ const WaterSourceCard = ({
             </Box>
           </SimpleGrid>
 
-          {isSimulated && (
+          {isSimulated && canEdit && (
             <Box
               borderWidth="1px"
               borderStyle="dashed"

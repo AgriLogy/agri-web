@@ -22,7 +22,7 @@ export default function ForbiddenNotifier() {
     const handler = () => {
       notification.warning({
         key: 'agri-forbidden',
-        message: t('access.forbiddenTitle'),
+        title: t('access.forbiddenTitle'),
         description: t('access.forbiddenBody'),
         duration: 5,
       });

@@ -310,7 +310,7 @@ const TechniciansSection: React.FC = () => {
         }
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        width={420}
+        size={420}
         destroyOnHidden
         footer={
           <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>

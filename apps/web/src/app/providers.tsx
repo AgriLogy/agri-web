@@ -1,7 +1,7 @@
 // app/providers.tsx
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, type CSSProperties } from 'react';
 import { ChakraProvider, useColorMode } from '@chakra-ui/react';
 import {
   App as AntdApp,
@@ -47,6 +47,14 @@ const dayjsLocales: Record<Locale, string> = {
  * library renders the matching theme. Also propagates the active locale's
  * text direction to AntD.
  */
+const APP_WRAPPER_STYLE: CSSProperties = {
+  display: 'contents',
+  color: 'inherit',
+  fontSize: 'inherit',
+  lineHeight: 'inherit',
+  fontFamily: 'inherit',
+};
+
 function ThemedAntdProvider({
   children,
   locale,
@@ -76,8 +84,13 @@ function ThemedAntdProvider({
             : antdAlgorithm.defaultAlgorithm,
       }}
     >
+      {/* antd v6 always emits CSS variables, and `component={false}` then
+          warns ("[antd: App] When using cssVar…"). A real element is needed
+          for the cssVar class; `display: contents` keeps it out of layout and
+          the inherited typography keeps Chakra's body styles untouched. */}
       <AntdApp
-        component={false}
+        component="div"
+        style={APP_WRAPPER_STYLE}
         message={{ maxCount: 3 }}
         notification={{ placement: dir === 'rtl' ? 'topLeft' : 'topRight' }}
       >

@@ -263,7 +263,7 @@ const CropCalendarMain = () => {
         title={editing ? t('cropCalendar.editCrop') : t('cropCalendar.newCrop')}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        width={460}
+        size={460}
         extra={
           <Button type="primary" loading={saving} onClick={submit}>
             {t('cropCalendar.save')}

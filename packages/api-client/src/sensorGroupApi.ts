@@ -75,6 +75,19 @@ export interface GroupSensorInput {
  */
 export type SensorGroupsAvailability = SchemaAvailability;
 
+/**
+ * Real server-side groups have a positive id. The dashboard's "Capteurs non
+ * groupés" section is virtual (no row, id null/0): a write aimed at it can only
+ * 404 / 403, so it is refused here before any request leaves (QA tour, A5).
+ */
+export const isPersistedGroupId = (id: unknown): id is number =>
+  typeof id === 'number' && Number.isInteger(id) && id > 0;
+
+const virtualGroupWrite = (id: unknown): Promise<never> =>
+  Promise.reject(
+    new Error(`sensor group ${String(id)} is virtual; refusing to write it`)
+  );
+
 export const sensorGroupApi = {
   list: (): Promise<SensorGroup[]> =>
     api.get<SensorGroup[]>('/sensor-groups').then((r) => r.data),
@@ -86,23 +99,33 @@ export const sensorGroupApi = {
     id: number,
     payload: SensorGroupWritePayload
   ): Promise<SensorGroup> =>
-    api.patch<SensorGroup>(`/sensor-groups/${id}`, payload).then((r) => r.data),
+    isPersistedGroupId(id)
+      ? api
+          .patch<SensorGroup>(`/sensor-groups/${id}`, payload)
+          .then((r) => r.data)
+      : virtualGroupWrite(id),
 
   remove: (id: number): Promise<void> =>
-    api.delete(`/sensor-groups/${id}`).then(() => undefined),
+    isPersistedGroupId(id)
+      ? api.delete(`/sensor-groups/${id}`).then(() => undefined)
+      : virtualGroupWrite(id),
 
   addSensor: (
     id: number,
     payload: GroupSensorInput
   ): Promise<SensorGroupSensor> =>
-    api
-      .post<SensorGroupSensor>(`/sensor-groups/${id}/sensors`, payload)
-      .then((r) => r.data),
+    isPersistedGroupId(id)
+      ? api
+          .post<SensorGroupSensor>(`/sensor-groups/${id}/sensors`, payload)
+          .then((r) => r.data)
+      : virtualGroupWrite(id),
 
   removeSensor: (id: number, sensorId: number): Promise<void> =>
-    api
-      .delete(`/sensor-groups/${id}/sensors/${sensorId}`)
-      .then(() => undefined),
+    isPersistedGroupId(id)
+      ? api
+          .delete(`/sensor-groups/${id}/sensors/${sensorId}`)
+          .then(() => undefined)
+      : virtualGroupWrite(id),
 
   /**
    * Is the feature actually writable here?
