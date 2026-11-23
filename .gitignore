@@ -112,3 +112,5 @@ Untitled-*
 # Playwright e2e suite output (apps/web/e2e)
 e2e-results/
 e2e-report/
+# Screenshot tour output (apps/web/tour-output, npm run test:tour)
+tour-output/

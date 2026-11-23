@@ -1042,6 +1042,11 @@ export default function AgricultureMapboxMap({
     const draw = new MapboxDraw(drawOptions);
     map.addControl(draw, 'top-left');
     mapRef.current = map;
+    // Test hook for the screenshot tour (e2e/tour): lets it click a sector by
+    // projecting its centroid. Never shipped in production builds.
+    if (process.env.NODE_ENV !== 'production')
+      (window as unknown as { __agrilogyMap?: mapboxgl.Map }).__agrilogyMap =
+        map;
     drawRef.current = draw;
 
     // Keep the canvas sized to its container (tools panel, tabs, window).

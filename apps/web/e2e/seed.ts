@@ -11,10 +11,20 @@ export interface SeedUser {
   owner_id?: number;
 }
 
+/** Extra demo data on farmer A, created by `e2e_seed.py --demo`. */
+export interface DemoSeed {
+  sectors: { id: number; name: string }[];
+  kc_id: number;
+  ndvi_points: number;
+  water_source_id: number;
+}
+
 export interface Seed {
   run: string;
   readings_seeded: number;
   users: { a: SeedUser; b: SeedUser; tech: SeedUser };
+  /** Present only when seeded with `{ demo: true }`. */
+  demo?: DemoSeed;
 }
 
 const SEED_FILE = path.join(__dirname, '..', 'e2e-results', 'seed.json');
@@ -31,6 +41,18 @@ export function runSeed(args = ''): string {
     stdio: ['ignore', 'pipe', 'inherit'],
     timeout: 240_000,
   });
+}
+
+/**
+ * Clear leftovers from an aborted run, then create this run's tenants.
+ * `demo` adds farmer A's demo farm (sectors, Kc table, NDVI history, basin)
+ * used by the screenshot tour.
+ */
+export function seedTenants(opts: { demo?: boolean } = {}): Seed {
+  runSeed('--cleanup');
+  const seed = JSON.parse(runSeed(opts.demo ? '--demo' : '')) as Seed;
+  saveSeed(seed);
+  return seed;
 }
 
 export function saveSeed(seed: Seed): void {

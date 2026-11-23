@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Ferme démo</name>
+<Placemark><name>Bloc Est</name><Polygon><outerBoundaryIs><LinearRing><coordinates>
+-7.5826,33.2650,0 -7.5790,33.2651,0 -7.5788,33.2622,0 -7.5824,33.2620,0 -7.5826,33.2650,0
+</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>
+<Placemark><name>Parcelle Nord</name><Polygon><outerBoundaryIs><LinearRing><coordinates>
+-7.5875,33.2650 -7.5835,33.2652 -7.5832,33.2622 -7.5875,33.2650
+</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>
+<Placemark><name>Puits</name><Point><coordinates>-7.5850,33.2630</coordinates></Point></Placemark>
+</Document></kml>

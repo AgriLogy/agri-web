@@ -14,6 +14,7 @@ const config = [
       // Playwright e2e output (generated, gitignored)
       'e2e-report/**',
       'e2e-results/**',
+      'tour-output/**',
     ],
   },
   ...nextCoreWebVitals,
