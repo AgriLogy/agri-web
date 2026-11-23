@@ -123,7 +123,7 @@ export interface ZoneNotificationConfig {
   soilPermeabilityPct: number;
   /** Vanne is manual-only (the automatic mode was removed). */
   valveMode: 'manual';
-  /** VPD (kPa) read live from the `/sensors/vpd` captor — not user-entered. */
+  /** VPD (kPa) read live from the `/sensors/vpdweather` captor — not user-entered. */
   vpdThresholdKpa: number;
   rootMonitoring: 'on' | 'off';
   criticalThresholdPct: number;
