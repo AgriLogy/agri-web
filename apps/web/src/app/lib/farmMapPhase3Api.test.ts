@@ -28,6 +28,20 @@ it('sectorInsights → GET /farm-map/sectors/{id}/insights', async () => {
   expect(mocked.get).toHaveBeenCalledWith('/farm-map/sectors/3/insights');
 });
 
+it.each(['fr', 'ar', 'en'] as const)(
+  'sectorInsights(id, %s) → ?lang=%s',
+  async (lang) => {
+    mocked.get.mockResolvedValue({ data: { sector_id: 3, lang } });
+    await expect(farmMapApi.sectorInsights(3, lang)).resolves.toEqual({
+      sector_id: 3,
+      lang,
+    });
+    expect(mocked.get).toHaveBeenCalledWith('/farm-map/sectors/3/insights', {
+      params: { lang },
+    });
+  }
+);
+
 it('forecast → GET /farm-map/forecast?days=N (default 3)', async () => {
   mocked.get.mockResolvedValue({ data: { provider: 'mock' } });
   await farmMapApi.forecast(7);

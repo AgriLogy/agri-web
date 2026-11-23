@@ -275,7 +275,13 @@ export interface SectorInsights {
   water_balance: WaterBalance;
   recommendation: IrrigationRecommendation | null;
   vegetation: VegetationInsight | null;
+  /** Language the agronomy wording came back in (absent on older servers,
+   *  which always answer in French). */
+  lang?: InsightsLang;
 }
+
+/** Languages the insights endpoint translates its wording into. */
+export type InsightsLang = 'fr' | 'ar' | 'en';
 
 export interface ForecastDay {
   date: string;
@@ -387,10 +393,16 @@ export const farmMapApi = {
       .then((r) => r.data),
 
   // ---- phase 3 -----------------------------------------------------------
-  sectorInsights: (sectorId: number) =>
-    api
-      .get<SectorInsights>(`/farm-map/sectors/${sectorId}/insights`)
-      .then((r) => r.data),
+  /** `lang` picks the language of the agronomy wording (recommendation /
+   *  vegetation messages, balance assumption); older servers ignore it. */
+  sectorInsights: (sectorId: number, lang?: InsightsLang) => {
+    const url = `/farm-map/sectors/${sectorId}/insights`;
+    return (
+      lang
+        ? api.get<SectorInsights>(url, { params: { lang } })
+        : api.get<SectorInsights>(url)
+    ).then((r) => r.data);
+  },
   forecast: (days = 3) =>
     api
       .get<FarmForecast>('/farm-map/forecast', { params: { days } })
