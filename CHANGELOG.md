@@ -1,3 +1,5 @@
+## [1.41.1](https://github.com/AgriLogy/agri-web/compare/v1.41.0...v1.41.1) (2026-11-23)
+
 # [1.41.0](https://github.com/AgriLogy/agri-web/compare/v1.40.3...v1.41.0) (2026-11-23)
 
 
