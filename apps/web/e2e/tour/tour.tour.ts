@@ -46,6 +46,7 @@ interface StepResult {
   role: string;
   locale: string;
   viewport: string;
+  theme: string;
   path: string;
   caption: string;
   howToTest: string[];
@@ -182,8 +183,18 @@ test.describe('screenshot tour', () => {
         isMobile: mobile,
         hasTouch: mobile,
         deviceScaleFactor: mobile ? 2 : 1,
-        locale: step.locale === 'ar' ? 'ar-MA' : 'fr-FR',
+        locale:
+          step.locale === 'ar'
+            ? 'ar-MA'
+            : step.locale === 'en'
+              ? 'en-GB'
+              : 'fr-FR',
+        colorScheme: step.theme === 'dark' ? 'dark' : 'light',
       });
+      // Chakra keeps the colour mode in localStorage; pin it per step.
+      await context.addInitScript((mode) => {
+        window.localStorage.setItem('chakra-ui-color-mode', mode);
+      }, step.theme ?? 'light');
       await context.addCookies([
         { name: 'NEXT_LOCALE', value: step.locale, url: BASE_URL },
       ]);
@@ -353,6 +364,7 @@ test.describe('screenshot tour', () => {
         role: step.role,
         locale: step.locale,
         viewport: step.viewport,
+        theme: step.theme ?? 'light',
         path: step.path,
         caption: step.caption,
         howToTest: step.howToTest,

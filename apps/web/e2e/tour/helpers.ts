@@ -6,12 +6,13 @@
 import type { APIRequestContext, Locator, Page } from '@playwright/test';
 import fr from '../../../../packages/i18n/src/messages/fr.json';
 import ar from '../../../../packages/i18n/src/messages/ar.json';
+import en from '../../../../packages/i18n/src/messages/en.json';
 import type { Seed } from '../seed';
 
-export type Locale = 'fr' | 'ar';
+export type Locale = 'fr' | 'ar' | 'en';
 export type Role = 'farmer' | 'technician' | 'guest';
 
-const CATALOGUES: Record<Locale, unknown> = { fr, ar };
+const CATALOGUES: Record<Locale, unknown> = { fr, ar, en };
 
 /** Top-level message namespaces, to recognise raw keys leaking into the UI. */
 export const I18N_NAMESPACES = Object.keys(fr);

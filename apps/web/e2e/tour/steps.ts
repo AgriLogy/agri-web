@@ -23,12 +23,13 @@ import {
   type TourCtx,
 } from './helpers';
 
-export type Viewport = 'desktop' | 'tall' | 'mobile';
+export type Viewport = 'desktop' | 'tall' | 'tablet' | 'mobile';
 
 export const VIEWPORTS: Record<Viewport, { width: number; height: number }> = {
   desktop: { width: 1440, height: 900 },
   // Map modal steps: the sector panel sits above the map, so give it room.
   tall: { width: 1440, height: 1700 },
+  tablet: { width: 820, height: 1180 },
   mobile: { width: 390, height: 844 },
 };
 
@@ -52,6 +53,8 @@ export interface TourStep {
   role: Role;
   locale: Locale;
   viewport: Viewport;
+  /** Colour mode (default light). */
+  theme?: 'light' | 'dark';
   path: string;
   actions?: (ctx: TourCtx) => Promise<void>;
   /** Runs after the screenshot (close a dialog, switch a layer back off). */
@@ -77,6 +80,9 @@ const S = {
   tech: 'Technicien',
   rtl: 'Arabe (RTL)',
   mobile: 'Mobile',
+  dark: 'Mode sombre',
+  en: 'Anglais',
+  tablet: 'Tablette',
 } as const;
 
 const NORD = 'Parcelle Nord';
@@ -118,7 +124,7 @@ async function openSector(ctx: TourCtx, name: string) {
   await selectSector(ctx, name);
 }
 
-export const STEPS: TourStep[] = [
+const BASE_STEPS: TourStep[] = [
   // ---------------------------------------------------------------- accueil
   {
     id: 'login',
@@ -1088,6 +1094,180 @@ export const STEPS: TourStep[] = [
     expect: [{ key: 'alertsPage.main.pageTitle' }],
   },
 ];
+
+export const STEPS: TourStep[] = [...BASE_STEPS, ...variants()];
+
+/**
+ * The same screens in the other display modes (dark, English, tablet, Arabic
+ * on a phone). Each variant reuses its base step's path and actions; catalogue
+ * expectations follow the variant's locale automatically, plain French text
+ * expectations are dropped outside French.
+ */
+function variants(): TourStep[] {
+  const byId = (id: string) => {
+    const base = BASE_STEPS.find((s) => s.id === id);
+    if (!base) throw new Error(`unknown tour step ${id}`);
+    return base;
+  };
+  const make = (
+    id: string,
+    baseId: string,
+    over: Partial<TourStep> & Pick<TourStep, 'section' | 'title' | 'caption'>
+  ): TourStep => {
+    const base = byId(baseId);
+    const locale = over.locale ?? base.locale;
+    return {
+      ...base,
+      howToTest: base.howToTest,
+      expect:
+        locale === 'fr'
+          ? base.expect
+          : base.expect?.filter((e) => e.text === undefined),
+      ...over,
+      id,
+    };
+  };
+  const darkHow = (screen: string) => [
+    'Cliquer sur l’icône lune en haut à droite pour passer en mode sombre.',
+    `Ouvrir ${screen}.`,
+    'Résultat attendu : fonds sombres, textes lisibles, aucun bloc resté blanc, graphiques contrastés.',
+  ];
+  return [
+    make('dark-dashboard', 'dashboard', {
+      section: S.dark,
+      theme: 'dark',
+      title: 'Tableau de bord — mode sombre',
+      caption:
+        'Le tableau de bord en mode sombre : mêmes cartes et graphiques, couleurs adaptées à la nuit.',
+      howToTest: darkHow('le tableau de bord'),
+    }),
+    make('dark-map-insights', 'map-insights-nord', {
+      section: S.dark,
+      theme: 'dark',
+      title: 'Conseil d’irrigation — mode sombre',
+      caption:
+        'Le panneau Conseil de « Parcelle Nord » en mode sombre : jauge, recommandation, graphique 14 jours et carte Végétation.',
+      howToTest: darkHow('la carte, puis cliquer sur « Parcelle Nord »'),
+    }),
+    make('dark-forecast', 'map-forecast-balance', {
+      section: S.dark,
+      theme: 'dark',
+      title: 'Calque Prévisions — mode sombre',
+      caption:
+        'Le calque Prévisions (bilan pluie − ET0) et sa légende en mode sombre.',
+      howToTest: darkHow('la carte et activer le calque « Prévisions »'),
+    }),
+    make('dark-station', 'station', {
+      section: S.dark,
+      theme: 'dark',
+      title: 'Station météo — mode sombre',
+      caption: 'La station météo en mode sombre.',
+      howToTest: darkHow('« Station météo »'),
+    }),
+    make('dark-water', 'water', {
+      section: S.dark,
+      theme: 'dark',
+      title: 'Eau — mode sombre',
+      caption: 'Les sources d’eau et la jauge du bassin en mode sombre.',
+      howToTest: darkHow('« Eau »'),
+    }),
+    make('dark-alerts', 'alerts', {
+      section: S.dark,
+      theme: 'dark',
+      title: 'Alertes — mode sombre',
+      caption: 'La gestion des alertes en mode sombre.',
+      howToTest: darkHow('« Alertes »'),
+    }),
+    make('dark-settings', 'settings-profile', {
+      section: S.dark,
+      theme: 'dark',
+      title: 'Paramètres — mode sombre',
+      caption: 'Les paramètres du compte en mode sombre.',
+      howToTest: darkHow('« Paramètres »'),
+    }),
+    make('en-dashboard', 'dashboard', {
+      section: S.en,
+      locale: 'en',
+      title: 'Tableau de bord en anglais',
+      caption: 'Le tableau de bord avec l’interface en anglais.',
+      howToTest: [
+        'Dans Paramètres → Profil, choisir la langue « English ».',
+        'Ouvrir le tableau de bord.',
+        'Résultat attendu : tous les libellés sont en anglais, aucun texte technique (clé de traduction) visible.',
+      ],
+    }),
+    make('en-map-insights', 'map-insights-nord', {
+      section: S.en,
+      locale: 'en',
+      title: 'Conseil d’irrigation en anglais',
+      caption:
+        'Le panneau Conseil en anglais. Les messages agronomiques calculés par le serveur restent en français pour l’instant.',
+      howToTest: [
+        'Langue « English », ouvrir la carte, cliquer sur « Parcelle Nord ».',
+        'Résultat attendu : titres et étiquettes en anglais ; les phrases de recommandation sont en français (limite connue).',
+      ],
+    }),
+    make('en-water', 'water', {
+      section: S.en,
+      locale: 'en',
+      title: 'Eau en anglais',
+      caption: 'Les sources d’eau avec l’interface en anglais.',
+      howToTest: [
+        'Langue « English », ouvrir « Eau ».',
+        'Résultat attendu : libellés en anglais, unités (m, m³, %) inchangées.',
+      ],
+    }),
+    make('tablet-dashboard', 'dashboard', {
+      section: S.tablet,
+      viewport: 'tablet',
+      title: 'Tableau de bord sur tablette',
+      caption: 'Le tableau de bord sur une tablette en portrait (820 × 1180).',
+      howToTest: [
+        'Ouvrir l’application sur une tablette en portrait.',
+        'Résultat attendu : menu accessible, cartes empilées proprement, aucun défilement horizontal.',
+      ],
+    }),
+    make('tablet-map', 'map-overview', {
+      section: S.tablet,
+      viewport: 'tablet',
+      title: 'Carte sur tablette',
+      caption: 'La carte de la ferme sur tablette.',
+      howToTest: [
+        'Sur tablette, ouvrir la carte.',
+        'Résultat attendu : la carte occupe l’écran, les boutons d’outils restent utilisables au doigt.',
+      ],
+    }),
+    make('tablet-water', 'water', {
+      section: S.tablet,
+      viewport: 'tablet',
+      title: 'Eau sur tablette',
+      caption: 'Les sources d’eau sur tablette.',
+      howToTest: [
+        'Sur tablette, ouvrir « Eau ».',
+        'Résultat attendu : la jauge et le simulateur tiennent sans zoom.',
+      ],
+    }),
+    make('ar-mobile-dashboard', 'ar-dashboard', {
+      section: S.rtl,
+      viewport: 'mobile',
+      title: 'Tableau de bord en arabe sur téléphone',
+      caption: 'Le tableau de bord en arabe (droite à gauche) sur téléphone.',
+      howToTest: [
+        'Langue arabe, sur téléphone, ouvrir le tableau de bord.',
+        'Résultat attendu : lecture de droite à gauche, menu à droite, aucun texte coupé.',
+      ],
+    }),
+    make('dark-mobile-map-insights', 'mobile-map-insights', {
+      section: S.dark,
+      theme: 'dark',
+      title: 'Conseil sur téléphone — mode sombre',
+      caption: 'Le panneau Conseil d’un secteur sur téléphone, en mode sombre.',
+      howToTest: darkHow(
+        'la carte sur téléphone, puis toucher « Parcelle Nord »'
+      ),
+    }),
+  ];
+}
 
 /** French catalogue text, for expectations that are always French. */
 function msgText(key: string): string {

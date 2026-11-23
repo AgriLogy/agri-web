@@ -44,7 +44,7 @@ export interface ExpectResult {
 }
 
 export interface StepSignals {
-  locale: 'fr' | 'ar';
+  locale: 'fr' | 'ar' | 'en';
   /** The step navigates here; null for the public login page. */
   expectedPath: string;
   requiresAuth: boolean;

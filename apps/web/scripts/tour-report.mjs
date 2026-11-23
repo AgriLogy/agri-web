@@ -17,9 +17,17 @@ import { chromium } from '@playwright/test';
 
 const args = process.argv.slice(2);
 const founder = args.includes('--founder');
-const runArg = args.find((a) => !a.startsWith('--'));
+// --analysis <file.html>: a written analysis (HTML fragment) placed after the
+// summary, in both versions of the report.
+const analysisAt = args.indexOf('--analysis');
+const analysisArg = analysisAt >= 0 ? args[analysisAt + 1] : null;
+const runArg = args.find(
+  (a, i) => !a.startsWith('--') && !(analysisAt >= 0 && i === analysisAt + 1)
+);
 if (!runArg) {
-  console.error('Usage: tour-report.mjs <run-dir> [--founder]');
+  console.error(
+    'Usage: tour-report.mjs <run-dir> [--founder] [--analysis <file.html>]'
+  );
   process.exit(1);
 }
 // npm -w runs this from apps/web; accept a path relative to either apps/web
@@ -52,9 +60,24 @@ const ROLE = {
 const VIEWPORT = {
   desktop: 'Ordinateur',
   tall: 'Ordinateur (grand écran)',
+  tablet: 'Tablette',
   mobile: 'Téléphone',
 };
-const LOCALE = { fr: 'Français', ar: 'Arabe' };
+const LOCALE = { fr: 'Français', ar: 'Arabe', en: 'Anglais' };
+const THEME = { light: 'Mode clair', dark: 'Mode sombre' };
+
+function analysis() {
+  if (!analysisArg) return '';
+  const file = [process.cwd(), process.env.INIT_CWD]
+    .filter(Boolean)
+    .map((d) => path.resolve(d, analysisArg))
+    .find((f) => existsSync(f));
+  if (!file) {
+    console.error(`analyse introuvable : ${analysisArg}`);
+    process.exit(1);
+  }
+  return `<section class="analysis">${readFileSync(file, 'utf8')}</section>`;
+}
 
 const esc = (s) =>
   String(s ?? '')
@@ -245,6 +268,7 @@ function stepBlock(s, img) {
       <span>${esc(ROLE[s.role] ?? s.role)}</span>
       <span>${esc(LOCALE[s.locale] ?? s.locale)}</span>
       <span>${esc(VIEWPORT[s.viewport] ?? s.viewport)}</span>
+      ${s.theme === 'dark' ? `<span>${esc(THEME.dark)}</span>` : ''}
       <span class="path">${esc(s.path)}</span>
     </div>
   </div>
@@ -336,6 +360,21 @@ table.checks tr.fail .detail { color: #9b2c2c; } table.checks tr.warn .detail { 
 .missing { color: #c53030; }
 .notes { margin-top: 6mm; font-size: 9pt; color: #4a5568; } .notes h4 { font-size: 10pt; margin-bottom: 1mm; } .notes ul { margin: 0; padding-left: 5mm; }
 .appendix { page-break-before: always; }
+.analysis { page-break-after: always; font-size: 10pt; line-height: 1.5; }
+.analysis h2 { font-size: 18pt; margin: 0 0 5mm; }
+.analysis h3 { font-size: 12.5pt; margin: 6mm 0 2mm; color: #22543d; page-break-after: avoid; }
+.analysis h4 { font-size: 10.5pt; margin: 4mm 0 1mm; page-break-after: avoid; }
+.analysis p { margin: 1.5mm 0; }
+.analysis ul, .analysis ol { margin: 1mm 0 2mm; padding-left: 6mm; }
+.analysis li { margin: .8mm 0; }
+.analysis table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9pt; page-break-inside: avoid; }
+.analysis th, .analysis td { border-bottom: 1px solid #e2e8f0; padding: 1.5mm 2mm; text-align: left; vertical-align: top; }
+.analysis th { background: #f7fafc; color: #4a5568; font-weight: 600; }
+.analysis .sev { display: inline-block; padding: 0 2mm; border-radius: 2mm; font-size: 8pt; font-weight: 700; }
+.analysis .sev.high { background: #fed7d7; color: #9b2c2c; }
+.analysis .sev.med { background: #feebc8; color: #9c4221; }
+.analysis .sev.low { background: #e2e8f0; color: #2d3748; }
+.analysis .callout { background: #f0fff4; border-left: 3px solid #38a169; padding: 2mm 3mm; margin: 3mm 0; }
 .app-step { margin-bottom: 4mm; break-inside: avoid; }
 .app-step h4 { font-size: 11pt; margin-bottom: 1mm; } .app-step small { color: #718096; font-weight: normal; }
 .app-step ul { margin: 0; padding-left: 5mm; font-size: 9pt; list-style: none; } .app-step li { margin: .6mm 0; word-break: break-word; }
@@ -354,6 +393,7 @@ ${CSS}</style></head>
 <body>
 ${cover()}
 ${summary()}
+${analysis()}
 ${steps.map((s) => stepBlock(s, images[s.id])).join('\n')}
 ${appendix()}
 </body></html>`;
