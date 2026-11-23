@@ -392,8 +392,15 @@ function applyLayerPrefs(
   const s = prefs.sectors;
   for (const id of [...DRAW_FILL_LAYERS, ...DRAW_LINE_LAYERS])
     setVisibility(map, id, s.visible);
+  // With the forecast layer on, the sectors' own fill would tint its colours
+  // (draw sits above it): keep only their outlines.
   for (const id of DRAW_FILL_LAYERS)
-    setPaint(map, id, 'fill-opacity', 0.38 * s.opacity);
+    setPaint(
+      map,
+      id,
+      'fill-opacity',
+      prefs.forecast.visible ? 0 : 0.38 * s.opacity
+    );
   for (const id of DRAW_LINE_LAYERS)
     setPaint(map, id, 'line-opacity', s.opacity);
 
