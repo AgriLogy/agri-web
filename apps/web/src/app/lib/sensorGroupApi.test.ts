@@ -4,7 +4,10 @@
  * No rendering: axios is mocked and we assert the URL + payload shape the
  * agri-api router expects, plus the availability probe's verdicts.
  */
-import { sensorGroupApi } from '@agri/api-client/sensorGroupApi';
+import {
+  isPersistedGroupId,
+  sensorGroupApi,
+} from '@agri/api-client/sensorGroupApi';
 
 jest.mock('@agri/api-client/api', () => {
   const get = jest.fn();
@@ -149,4 +152,33 @@ describe('sensorGroupApi.probeAvailability', () => {
     mocked.patch.mockRejectedValue(new Error('Network Error'));
     await expect(sensorGroupApi.probeAvailability()).resolves.toBe('unknown');
   });
+});
+
+describe('virtual group guard (A5)', () => {
+  it('only treats positive integer ids as real groups', () => {
+    expect(isPersistedGroupId(7)).toBe(true);
+    expect(isPersistedGroupId(0)).toBe(false);
+    expect(isPersistedGroupId(-1)).toBe(false);
+    expect(isPersistedGroupId(null)).toBe(false);
+    expect(isPersistedGroupId(1.5)).toBe(false);
+  });
+
+  it.each([0, null as unknown as number])(
+    'never sends a write for the virtual ungrouped group (id %p)',
+    async (id) => {
+      await expect(sensorGroupApi.update(id, { name: 'x' })).rejects.toThrow(
+        /virtual/
+      );
+      await expect(sensorGroupApi.remove(id)).rejects.toThrow(/virtual/);
+      await expect(
+        sensorGroupApi.addSensor(id, { device_id: 1, sensor_key: 'k' })
+      ).rejects.toThrow(/virtual/);
+      await expect(sensorGroupApi.removeSensor(id, 3)).rejects.toThrow(
+        /virtual/
+      );
+      expect(mocked.patch).not.toHaveBeenCalled();
+      expect(mocked.post).not.toHaveBeenCalled();
+      expect(mocked.delete).not.toHaveBeenCalled();
+    }
+  );
 });

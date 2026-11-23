@@ -77,13 +77,14 @@ jest.mock('@agri/api-client/api', () => ({
 // This suite exercises the group CRUD as an editing user; RBAC gating
 // (agri-web #99) is proven separately in AlertMain.rbac.test — here we grant
 // full access so the edit controls stay interactive.
+let mockCanEdit = true;
 jest.mock('@/app/hooks/useAccessLevel', () => ({
   useCan: () => ({
-    level: 'admin',
+    level: mockCanEdit ? 'admin' : 'monitor',
     loading: false,
-    canEdit: true,
-    canDelete: true,
-    canManageUsers: true,
+    canEdit: mockCanEdit,
+    canDelete: mockCanEdit,
+    canManageUsers: mockCanEdit,
   }),
 }));
 
@@ -111,6 +112,7 @@ const renderSettings = async () => {
 };
 
 beforeEach(() => {
+  mockCanEdit = true;
   localStorage.clear();
   mockGet.mockReset();
   mockPost.mockReset();
@@ -298,6 +300,21 @@ describe('SensorGroupsSettings — degraded schema', () => {
 
     await waitFor(() =>
       expect(screen.getByTestId('groups-unavailable')).toBeInTheDocument()
+    );
+  });
+});
+
+describe('SensorGroupsSettings — read-only caller (A5)', () => {
+  it('never sends the PATCH probe for a user who cannot edit', async () => {
+    mockCanEdit = false;
+    await renderSettings();
+    expect(mockPatch).not.toHaveBeenCalled();
+  });
+
+  it('probes PATCH /sensor-groups/0 only for an editor with no groups', async () => {
+    await renderSettings();
+    await waitFor(() =>
+      expect(mockPatch).toHaveBeenCalledWith('/sensor-groups/0', {})
     );
   });
 });

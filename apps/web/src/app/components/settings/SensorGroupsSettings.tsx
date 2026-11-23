@@ -53,6 +53,9 @@ const SensorGroupsSettings = () => {
   const t = useTranslations();
   const toast = useToast();
   const { borderColor, bgColor, mutedTextColor } = useColorModeStyles();
+  const { canEdit, canDelete } = useCan();
+  // Only a caller who can write needs to know whether a write would succeed;
+  // a read-only user must not send the PATCH probe (403 toast).
   const {
     groups,
     available,
@@ -61,12 +64,11 @@ const SensorGroupsSettings = () => {
     availability,
     reload,
     markUnavailable,
-  } = useSensorGroups();
+  } = useSensorGroups({ probe: canEdit });
   const [newName, setNewName] = useState('');
   const [busy, setBusy] = useState(false);
   const [importOffer, setImportOffer] = useState(false);
   const [nameDrafts, setNameDrafts] = useState<Record<number, string>>({});
-  const { canEdit, canDelete } = useCan();
 
   const unavailable = availability === 'unavailable';
   // Editor+ may create/rename groups and add/move/remove members; only admin
