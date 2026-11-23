@@ -17,6 +17,7 @@ import {
   type WaterSourceWithStatus,
 } from '@agri/api-client/waterLevelApi';
 import type { ZoneOption } from '@/app/components/layout/ZoneSelect';
+import { useCan } from '@/app/hooks/useAccessLevel';
 import { logOptionalApiFailure } from '@/app/utils/apiClientErrors';
 import WaterSourceCard from './WaterSourceCard';
 import WaterSourceFormModal from './WaterSourceFormModal';
@@ -33,6 +34,9 @@ const WaterSourcesSection = ({ zones }: { zones: ZoneOption[] }) => {
   const [editing, setEditing] = useState<WaterSourceWithStatus | null>(null);
   const [openCount, setOpenCount] = useState(0);
   const modal = useDisclosure();
+  // Read-only callers (technicians, monitors) still see every source, but no
+  // add / edit / simulate control: the server would reject those writes.
+  const { canEdit } = useCan();
 
   const load = useCallback(() => {
     waterLevelApi
@@ -68,14 +72,16 @@ const WaterSourcesSection = ({ zones }: { zones: ZoneOption[] }) => {
             {t('sectionSubtitle')}
           </Text>
         </Box>
-        <Button
-          size="sm"
-          colorScheme="blue"
-          leftIcon={<FaPlus />}
-          onClick={() => open(null)}
-        >
-          {t('add')}
-        </Button>
+        {canEdit && (
+          <Button
+            size="sm"
+            colorScheme="blue"
+            leftIcon={<FaPlus />}
+            onClick={() => open(null)}
+          >
+            {t('add')}
+          </Button>
+        )}
       </Flex>
 
       {sources == null ? (
@@ -96,7 +102,7 @@ const WaterSourcesSection = ({ zones }: { zones: ZoneOption[] }) => {
           </Text>
           {!failed && (
             <Text fontSize="sm" color={muted} maxW="md">
-              {t('emptyHint')}
+              {canEdit ? t('emptyHint') : t('emptyHintReadOnly')}
             </Text>
           )}
         </Flex>
@@ -109,20 +115,23 @@ const WaterSourcesSection = ({ zones }: { zones: ZoneOption[] }) => {
               zoneNames={s.zone_ids
                 .map(zoneName)
                 .filter((n): n is string => Boolean(n))}
-              onEdit={() => open(s)}
+              onEdit={canEdit ? () => open(s) : undefined}
+              canEdit={canEdit}
             />
           ))}
         </Stack>
       )}
 
-      <WaterSourceFormModal
-        key={openCount}
-        isOpen={modal.isOpen}
-        onClose={modal.onClose}
-        source={editing}
-        zones={zones}
-        onSaved={load}
-      />
+      {canEdit && (
+        <WaterSourceFormModal
+          key={openCount}
+          isOpen={modal.isOpen}
+          onClose={modal.onClose}
+          source={editing}
+          zones={zones}
+          onSaved={load}
+        />
+      )}
     </Box>
   );
 };

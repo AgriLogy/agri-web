@@ -961,6 +961,7 @@
       "edit": "Modifier",
       "emptyTitle": "Aucune source d'eau",
       "emptyHint": "Ajoutez chaque bassin, réservoir ou puits pour suivre son niveau, son volume et sa réserve utilisable. Le simulateur permet de tester avant l'installation du capteur de niveau.",
+      "emptyHintReadOnly": "Aucune source d'eau n'est encore configurée pour cette exploitation.",
       "loadFailed": "Impossible de charger les sources d'eau.",
       "type": {
         "BASIN": "Bassin",
@@ -2380,7 +2381,8 @@
         "rain": "Pluie",
         "gusts": "Rafales",
         "source": "Données de prévision : Open-Meteo"
-      }
+      },
+      "unavailable": "Météo indisponible pour le moment. Réessayez plus tard."
     }
   },
   "station": {
