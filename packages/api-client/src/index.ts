@@ -32,6 +32,7 @@ export * from './sensorGroupApi';
 export * from './sensorGroupModel';
 export * from './technicianApi';
 export * from './userProfileApi';
+export * from './waterLevelApi';
 export * from './weatherLocationStorage';
 export * from './zoneLiveMetricsApi';
 export * from './zoneNotificationConfigStorage';
