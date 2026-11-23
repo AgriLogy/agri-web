@@ -1,3 +1,25 @@
+# [1.42.0](https://github.com/AgriLogy/agri-web/compare/v1.41.1...v1.42.0) (2026-11-23)
+
+
+### Bug Fixes
+
+* **antd:** clear v6 deprecation warnings ([b6f5c5f](https://github.com/AgriLogy/agri-web/commit/b6f5c5f8289838ddd20bfe2cb89a565cefeac634)), closes [#183](https://github.com/AgriLogy/agri-web/issues/183)
+* **farm-map:** measure-only clicks, distinct no-rain style, read-only technician map ([4cc3d72](https://github.com/AgriLogy/agri-web/commit/4cc3d727aef2668d75f2ba86aadaf160deae7ea4))
+* **farm-map:** repaint the forecast once sectors and the style are ready ([5e9449c](https://github.com/AgriLogy/agri-web/commit/5e9449cae3cd168c8db0d48669ec350754dc045c))
+* **farm-map:** show 'Stable' for a near-flat NDVI trend ([ec5a32a](https://github.com/AgriLogy/agri-web/commit/ec5a32af66ca008b5001717677f9a9a32eed7f96))
+* **farm-map:** show forecast colours untinted by the sector fill ([79074ed](https://github.com/AgriLogy/agri-web/commit/79074ed0bd2a165cf2acd875c6d84857c5e064f0))
+* **farm-map:** tidy the phase 3 panels found by the screenshot tour ([0c8617c](https://github.com/AgriLogy/agri-web/commit/0c8617c09b83a61a892b6ecf415af0bd49ed77b1))
+* **farm-map:** widen the forecast legend so the metric label fits ([2263b61](https://github.com/AgriLogy/agri-web/commit/2263b61339d7fa8e13f96ed0d4623fa3cfb21119))
+* **sensor-catalog:** request only slugs agri-api serves ([29a4289](https://github.com/AgriLogy/agri-web/commit/29a42891a00b4c5ac810d4b7a6479fd1fc1a96c3)), closes [#183](https://github.com/AgriLogy/agri-web/issues/183)
+* **sensor-groups:** stop sending PATCH /sensor-groups/0 on page open ([ec3f258](https://github.com/AgriLogy/agri-web/commit/ec3f25821d2d3167df6ffe44dc8d45af5110198b)), closes [#183](https://github.com/AgriLogy/agri-web/issues/183)
+* **water:** hide water-station write controls for read-only users ([015e850](https://github.com/AgriLogy/agri-web/commit/015e85093638537e125e21fb086eda296b1d479c)), closes [#183](https://github.com/AgriLogy/agri-web/issues/183)
+* **weather:** validate Open-Meteo responses instead of crashing ([6e3d270](https://github.com/AgriLogy/agri-web/commit/6e3d2706c2dd5898ed0af739bea086ab5e699a94)), closes [#183](https://github.com/AgriLogy/agri-web/issues/183)
+
+
+### Features
+
+* **farm-map:** add insights, forecast layer, satellite history and KML import ([95b841c](https://github.com/AgriLogy/agri-web/commit/95b841cc0456e106e9e3650bdf98449c3a49e6ca)), closes [agri-api#459](https://github.com/agri-api/issues/459) [#179](https://github.com/AgriLogy/agri-web/issues/179)
+
 ## [1.41.1](https://github.com/AgriLogy/agri-web/compare/v1.41.0...v1.41.1) (2026-11-23)
 
 # [1.41.0](https://github.com/AgriLogy/agri-web/compare/v1.40.3...v1.41.0) (2026-11-23)
