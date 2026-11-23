@@ -1555,6 +1555,8 @@ export default function AgricultureMapboxMap({
       if (!mapRef.current) return;
 
       sectorRowsRef.current = new Map(sectors.map((s) => [s.id, s]));
+      // The forecast may have arrived before the shapes it colours.
+      repaintForecast(mapRef.current);
       const drawn = sectors
         .map(sectorToDrawFeature)
         .filter((f): f is GeoJSON.Feature => f != null);
@@ -1922,6 +1924,18 @@ export default function AgricultureMapboxMap({
     );
   }, []);
 
+  /** Repaint now, or once the map is idle if its style is still loading
+   * (isStyleLoaded() is briefly false while sources load; skipping then left
+   * the sectors uncoloured until the next metric change). */
+  const repaintForecast = useCallback(
+    (map: mapboxgl.Map | null) => {
+      if (!map) return;
+      if (map.isStyleLoaded()) pushForecast(map);
+      else map.once('idle', () => pushForecast(map));
+    },
+    [pushForecast]
+  );
+
   const forecastVisible = layerPrefs.forecast.visible;
   useEffect(() => {
     if (!forecastVisible) return;
@@ -1945,9 +1959,8 @@ export default function AgricultureMapboxMap({
   // Repaint on new data, metric change, or when sector shapes change.
   useEffect(() => {
     forecastMetricRef.current = forecastMetric;
-    const map = mapRef.current;
-    if (map && map.isStyleLoaded()) pushForecast(map);
-  }, [forecast, forecastMetric, view, pushForecast]);
+    repaintForecast(mapRef.current);
+  }, [forecast, forecastMetric, view, repaintForecast]);
 
   const forecastState: 'loading' | 'ready' | 'error' =
     forecastFor?.days !== forecastHorizon
