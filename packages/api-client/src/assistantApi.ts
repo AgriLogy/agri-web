@@ -8,6 +8,8 @@
  *   GET    /assistant/conversations            — list the caller's threads
  *   PUT    /assistant/conversations/{clientId} — create/replace a thread
  *   DELETE /assistant/conversations/{clientId} — delete a thread
+ *   GET    /assistant/voice                    — is server voice input on
+ *   POST   /assistant/transcribe               — speech → text (Whisper)
  */
 import api from './api';
 
@@ -78,6 +80,18 @@ export interface AssistantConversationDTO {
   updatedAt: string;
 }
 
+export interface AssistantVoiceStatus {
+  active: boolean;
+  max_seconds: number;
+}
+
+export interface AssistantTranscription {
+  text: string;
+  language: string | null;
+  duration_s: number | null;
+  model: string;
+}
+
 export interface AssistantConversationBody {
   title: string;
   messages: unknown[];
@@ -113,6 +127,34 @@ export const assistantApi = {
       { params }
     );
     return data as { tool: string; data: Record<string, unknown> };
+  },
+
+  /** Whether the server transcribes voice questions (Whisper on Groq). When
+   *  not active the chat falls back to the browser's speech recognition. */
+  async voiceStatus(): Promise<AssistantVoiceStatus> {
+    const { data } = await api.get('/assistant/voice');
+    return data as AssistantVoiceStatus;
+  },
+
+  /** Speech → text for a recorded question. `language` is the chat language
+   *  (Darija/Arabic make the transcript Arabic script). Nothing is stored. */
+  async transcribe(
+    audio: Blob,
+    language?: AssistantLanguage
+  ): Promise<AssistantTranscription> {
+    const form = new FormData();
+    const ext = audio.type.includes('mp4')
+      ? 'm4a'
+      : audio.type.includes('ogg')
+        ? 'ogg'
+        : 'webm';
+    form.append('file', audio, `question.${ext}`);
+    if (language && language !== 'auto') form.append('language', language);
+    const { data } = await api.post('/assistant/transcribe', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 60000,
+    });
+    return data as AssistantTranscription;
   },
 
   async listConversations(): Promise<AssistantConversationDTO[]> {

@@ -1645,7 +1645,9 @@
         "stop": "Stop dictation",
         "listening": "Listening…",
         "permissionDenied": "Microphone access denied. Allow it in your browser settings to use voice input.",
-        "genericError": "Voice input isn't available right now. Please try again or type your message."
+        "genericError": "Voice input isn't available right now. Please try again or type your message.",
+        "transcribing": "Transcribing…",
+        "nothingHeard": "I didn't hear anything. Tap the mic and speak close to the phone."
       },
       "alertsCard": {
         "intro": "Here are your active alerts:"

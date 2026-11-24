@@ -1645,7 +1645,9 @@
         "stop": "Arrêter la dictée",
         "listening": "Écoute en cours…",
         "permissionDenied": "Accès au microphone refusé. Autorisez-le dans les paramètres de votre navigateur pour utiliser la saisie vocale.",
-        "genericError": "La saisie vocale n'est pas disponible pour le moment. Réessayez ou saisissez votre message."
+        "genericError": "La saisie vocale n'est pas disponible pour le moment. Réessayez ou saisissez votre message.",
+        "transcribing": "Transcription en cours…",
+        "nothingHeard": "Je n'ai rien entendu. Appuyez sur le micro et parlez près du téléphone."
       },
       "alertsCard": {
         "intro": "Voici vos alertes actives :"
