@@ -9,6 +9,7 @@
 
 import type {
   GeometrySource,
+  InsightsLang,
   KcSource,
   VegetationStatus,
   WaterBalance,
@@ -189,4 +190,52 @@ export function isStableTrend(trend: number | null | undefined): boolean {
     Number.isFinite(trend) &&
     Math.abs(trend) < NDVI_STABLE_PER_WEEK
   );
+}
+
+// ---- language + tabs -------------------------------------------------------
+
+/** Languages the insights endpoint can word its messages in. */
+export const INSIGHTS_LANGS: readonly InsightsLang[] = ['fr', 'ar', 'en'];
+
+/**
+ * The `lang` to ask the insights endpoint for, from the UI locale
+ * ("ar", "ar-MA", "EN" …). Anything unsupported falls back to French, the
+ * server's own default.
+ */
+export function insightsLang(locale: string | null | undefined): InsightsLang {
+  const base = (locale ?? '').toLowerCase().split(/[-_]/)[0];
+  return (INSIGHTS_LANGS as readonly string[]).includes(base)
+    ? (base as InsightsLang)
+    : 'fr';
+}
+
+/**
+ * Text direction for the API's agronomy wording. A server that reports its
+ * `lang` is trusted (Arabic → rtl). Older servers send no `lang` and answer
+ * in French whatever the UI language, so let the browser decide ("auto").
+ */
+export function insightsTextDir(
+  lang: string | null | undefined
+): 'ltr' | 'rtl' | 'auto' {
+  if (lang === 'ar') return 'rtl';
+  if (lang === 'fr' || lang === 'en') return 'ltr';
+  return 'auto';
+}
+
+/** Tabs of the sector panel, in display order. */
+export const INSIGHT_TABS = ['irrigation', 'vegetation', 'satellite'] as const;
+export type InsightTab = (typeof INSIGHT_TABS)[number];
+
+/** The tabs shown: "satellite" only when the NDVI panel is available. */
+export function visibleInsightTabs(withSatellite: boolean): InsightTab[] {
+  return INSIGHT_TABS.filter((k) => withSatellite || k !== 'satellite');
+}
+
+/** Index of `tab` among `tabs`, or 0 (first tab) when it is not shown. */
+export function insightTabIndex(
+  tabs: readonly InsightTab[],
+  tab: InsightTab | null | undefined
+): number {
+  const i = tab ? tabs.indexOf(tab) : -1;
+  return i < 0 ? 0 : i;
 }

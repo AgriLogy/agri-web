@@ -55,6 +55,12 @@ type MapWindow = Window & {
     jumpTo(o: { center: [number, number]; zoom: number }): void;
     project(p: [number, number]): { x: number; y: number };
     once(ev: string, cb: () => void): void;
+    isMoving(): boolean;
+    getLayer(id: string): unknown;
+    queryRenderedFeatures(
+      p: [number, number],
+      o: { layers: string[] }
+    ): unknown[];
   };
   __tourPrevMap?: unknown;
 };
@@ -228,6 +234,38 @@ export async function setForecastOptions(
     .catch(() => {});
 }
 
+/** Map ids of the forecast layer (AgricultureMapboxMap). */
+const FORECAST_SOURCE = 'agrilogy-forecast';
+const FORECAST_FILL = 'agrilogy-forecast-fill';
+const HOVER_ATTEMPTS = 3;
+
+/**
+ * Wait until the map is idle (style + tiles loaded, not moving), the forecast
+ * source holds features and its fill is actually rendered under `lngLat`.
+ * The forecast repaints on the map's next idle, so hovering any earlier can
+ * land on a sector with no fill yet and never open the popup. Polls every
+ * animation frame: no fixed sleep.
+ */
+async function waitForForecastFill(
+  page: Page,
+  lngLat: [number, number]
+): Promise<void> {
+  await page.waitForFunction(
+    ({ pt, source, fill }) => {
+      const m = (window as unknown as MapWindow).__agrilogyMap;
+      if (!m || !m.loaded() || m.isMoving() || !m.getLayer(fill)) return false;
+      const data = m.getSource(source)?.serialize().data as
+        | { features?: unknown[] }
+        | undefined;
+      if (!data?.features?.length) return false;
+      const xy = m.project(pt);
+      return m.queryRenderedFeatures([xy.x, xy.y], { layers: [fill] }).length;
+    },
+    { pt: lngLat, source: FORECAST_SOURCE, fill: FORECAST_FILL },
+    { timeout: 20_000, polling: 'raf' }
+  );
+}
+
 /** Hover the sector so the forecast popup shows its values. */
 export async function hoverSector(ctx: TourCtx, name: string): Promise<void> {
   const { page } = ctx;
@@ -237,15 +275,53 @@ export async function hoverSector(ctx: TourCtx, name: string): Promise<void> {
   }[];
   const sector = sectors.find((s) => s.name === name);
   if (!sector?.geometry) throw new Error(`Secteur « ${name} » introuvable`);
-  const p = await page.evaluate((pt) => {
-    const m = (window as unknown as MapWindow).__agrilogyMap!;
-    const r = m.getCanvas().getBoundingClientRect();
-    const xy = m.project(pt);
-    return { x: r.x + xy.x, y: r.y + xy.y };
-  }, clickPoint(sector.geometry));
-  await page.mouse.move(p.x, p.y);
-  await page.mouse.move(p.x + 2, p.y + 2);
-  await page.locator('.agrilogy-forecast-popup').waitFor({ timeout: 8_000 });
+  const target = clickPoint(sector.geometry);
+  const popup = page.locator('.agrilogy-forecast-popup');
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= HOVER_ATTEMPTS; attempt++) {
+    await waitForForecastFill(page, target);
+    const { p, corner } = await page.evaluate((pt) => {
+      const m = (window as unknown as MapWindow).__agrilogyMap!;
+      const r = m.getCanvas().getBoundingClientRect();
+      const xy = m.project(pt);
+      return {
+        p: { x: r.x + xy.x, y: r.y + xy.y },
+        corner: { x: r.x + 4, y: r.y + 4 },
+      };
+    }, target);
+    // Leave the sector first so each attempt is a fresh enter + move.
+    if (attempt > 1) await page.mouse.move(corner.x, corner.y);
+    await page.mouse.move(p.x, p.y);
+    await page.mouse.move(p.x + 2, p.y + 2);
+    try {
+      await popup.waitFor({ timeout: 4_000 });
+      return;
+    } catch (e) {
+      lastError = e;
+    }
+  }
+  throw new Error(
+    `Forecast popup never opened over « ${name} » after ${HOVER_ATTEMPTS} hovers: ${String(lastError)}`
+  );
+}
+
+/** Open one tab of the sector panel ("Irrigation", "Végétation", "Satellite"). */
+export async function openInsightsTab(
+  ctx: TourCtx,
+  tab: 'irrigation' | 'vegetation' | 'satellite'
+): Promise<void> {
+  const button = ctx.page
+    .locator('#sector-insights-panel:visible')
+    .first()
+    .getByRole('tab', {
+      name: msg(ctx.locale, `misc.map.insights.tabs.${tab}`),
+    });
+  await button.click();
+  await button.and(ctx.page.locator('[aria-selected="true"]')).waitFor();
+  // The satellite tab mounts (and fetches) on first open.
+  await ctx.page
+    .waitForLoadState('networkidle', { timeout: 8_000 })
+    .catch(() => {});
 }
 
 /** Clicks on the map canvas at offsets (px) from its centre. */

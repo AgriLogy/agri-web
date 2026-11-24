@@ -1471,7 +1471,12 @@
         "trendStable": "Stable",
         "soilMoisture": "Humidité du sol",
         "criticalAt": "seuil {value}",
-        "noVegetation": "Pas encore d'analyse de la végétation."
+        "noVegetation": "Pas encore d'analyse de la végétation.",
+        "tabs": {
+          "irrigation": "Irrigation",
+          "vegetation": "Végétation",
+          "satellite": "Satellite"
+        }
       },
       "forecast": {
         "title": "Prévisions",

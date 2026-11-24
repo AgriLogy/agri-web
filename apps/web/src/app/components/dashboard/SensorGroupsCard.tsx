@@ -234,13 +234,25 @@ const SensorGroupsCard = () => {
               transition="background 0.15s ease"
               _hover={{ bg: headerHoverBg }}
             >
-              <Box color={mutedTextColor} fontSize="xs">
+              <Box color={mutedTextColor} fontSize="xs" flexShrink={0}>
                 {expanded ? <FaChevronDown /> : <FaChevronRight />}
               </Box>
-              <Text fontWeight="semibold" noOfLines={1}>
+              {/* Wraps to two lines on a phone instead of "Capteur…". */}
+              <Text
+                fontWeight="semibold"
+                noOfLines={2}
+                lineHeight="short"
+                minW={0}
+                textAlign="start"
+              >
                 {title}
               </Text>
-              <Badge colorScheme="brand" borderRadius="full" px={2}>
+              <Badge
+                colorScheme="brand"
+                borderRadius="full"
+                px={2}
+                flexShrink={0}
+              >
                 {t('sensorGroups.sensorCount', { count: sensors.length })}
               </Badge>
               {singleZone && (
@@ -251,6 +263,11 @@ const SensorGroupsCard = () => {
                   px={2}
                   fontWeight="normal"
                   textTransform="none"
+                  // The group name wins the room; a long zone name is clipped.
+                  minW={0}
+                  maxW="40%"
+                  isTruncated
+                  title={singleZone}
                 >
                   {singleZone}
                 </Badge>
@@ -319,7 +336,8 @@ const SensorGroupsCard = () => {
                               <Text
                                 fontSize="sm"
                                 fontWeight="medium"
-                                noOfLines={1}
+                                noOfLines={2}
+                                lineHeight="short"
                               >
                                 {sensorLabel(sensor.sensorKey)}
                               </Text>

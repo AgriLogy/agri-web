@@ -1471,7 +1471,12 @@
         "trendStable": "Stable",
         "soilMoisture": "Soil moisture",
         "criticalAt": "threshold {value}",
-        "noVegetation": "No vegetation analysis yet."
+        "noVegetation": "No vegetation analysis yet.",
+        "tabs": {
+          "irrigation": "Irrigation",
+          "vegetation": "Vegetation",
+          "satellite": "Satellite"
+        }
       },
       "forecast": {
         "title": "Forecast",

@@ -1471,7 +1471,12 @@
         "trendStable": "مستقر",
         "soilMoisture": "رطوبة التربة",
         "criticalAt": "العتبة {value}",
-        "noVegetation": "لا يوجد تحليل للغطاء النباتي بعد."
+        "noVegetation": "لا يوجد تحليل للغطاء النباتي بعد.",
+        "tabs": {
+          "irrigation": "الري",
+          "vegetation": "الغطاء النباتي",
+          "satellite": "الأقمار الصناعية"
+        }
       },
       "forecast": {
         "title": "التوقعات",
