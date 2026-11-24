@@ -1,3 +1,10 @@
+# [1.43.0](https://github.com/AgriLogy/agri-web/compare/v1.42.0...v1.43.0) (2026-11-24)
+
+
+### Features
+
+* **map:** sector Conseil tabs, insights language, mobile titles, tour hover fix ([#188](https://github.com/AgriLogy/agri-web/issues/188)) ([5f6072a](https://github.com/AgriLogy/agri-web/commit/5f6072a4e2927f72780c16482f191ef71d5d8474))
+
 # [1.42.0](https://github.com/AgriLogy/agri-web/compare/v1.41.1...v1.42.0) (2026-11-23)
 
 
