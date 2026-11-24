@@ -222,11 +222,14 @@ const BASE_STEPS: TourStep[] = [
     howToTest: [
       'Ouvrir la carte agrandie et cliquer à l’intérieur de « Parcelle Nord ».',
       'Lire la section « Conseil » sous l’en-tête du secteur : onglets « Irrigation », « Végétation » et « Satellite ».',
-      'Résultat attendu : onglet « Irrigation » ouvert avec Kc 1.15 (table Kc · Mi-saison), déficit d’environ 30 mm, état « Réserve suffisante » ; l’onglet « Végétation » affiche « Saine ».',
+      'Résultat attendu : onglet « Irrigation » ouvert avec Kc 1.15 (table Kc · Mi-saison), déficit de l’ordre de 30 mm et un état (« Réserve suffisante », « Irriguer bientôt » ou « Irriguer maintenant » selon la météo réelle des 14 derniers jours) ; l’onglet « Végétation » affiche « Saine ».',
     ],
     expect: [
       { key: 'misc.map.insights.title' },
-      { key: 'misc.map.insights.status.ok' },
+      // The status chip follows the day's real weather (ok / irrigate soon /
+      // irrigate now), so expect the section, not one particular status.
+      { key: 'misc.map.insights.waterBalance' },
+      { key: 'misc.map.insights.dr' },
       { text: /Kc 1\.15/ },
       { key: 'misc.map.insights.chartTitle' },
     ],
