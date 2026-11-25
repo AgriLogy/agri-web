@@ -1,3 +1,11 @@
+# [1.44.0](https://github.com/AgriLogy/agri-web/compare/v1.43.0...v1.44.0) (2026-11-25)
+
+
+### Features
+
+* **chat:** voice questions transcribed by the server (Whisper on Groq) ([#192](https://github.com/AgriLogy/agri-web/issues/192)) ([6e7af5e](https://github.com/AgriLogy/agri-web/commit/6e7af5ea866cd01e48a486e59d92f301dfa4c96d)), closes [#191](https://github.com/AgriLogy/agri-web/issues/191)
+* **farm:** editors can delete their own sectors ([#190](https://github.com/AgriLogy/agri-web/issues/190)) ([d657f9d](https://github.com/AgriLogy/agri-web/commit/d657f9d04eac5eb2d7a95a2523f3262d8fb96be4)), closes [#526](https://github.com/AgriLogy/agri-web/issues/526) [#189](https://github.com/AgriLogy/agri-web/issues/189)
+
 # [1.43.0](https://github.com/AgriLogy/agri-web/compare/v1.42.0...v1.43.0) (2026-11-24)
 
 
