@@ -2884,7 +2884,12 @@
       "noData": "No data received",
       "lastReceived": "Last received: {when}"
     },
-    "captorCount": "{count, plural, =0 {no captors} one {# captor} other {# captors}}"
+    "captorCount": "{count, plural, =0 {no captors} one {# captor} other {# captors}}",
+    "deleteConfirm": {
+      "title": "Delete the sector “{name}”?",
+      "body": "Its zones are not deleted: they become unassigned again, with their sensors and data.",
+      "confirm": "Delete"
+    }
   },
   "sensorGroups": {
     "title": "Sensors by group",
