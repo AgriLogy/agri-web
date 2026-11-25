@@ -910,7 +910,9 @@
       "yAxisLabel": "ET₀ ({unit})",
       "seriesSensor": "ET₀ المستشعر ({unit})",
       "seriesCalculated": "ET₀ المحسوب ({unit})",
-      "seriesOpenMeteo": "ET₀ Open-Meteo ({unit})"
+      "seriesOpenMeteo": "ET₀ Open-Meteo ({unit})",
+      "yAxisDailyLabel": "ET₀ اليومي (مم/يوم)",
+      "seriesOpenMeteoDaily": "ET₀ Open-Meteo (مم/يوم، مجموع اليوم)"
     },
     "et0LastData": {
       "heading": "التبخر النتحي المرجعي (ET₀)",
@@ -2375,7 +2377,8 @@
       "unitHour": "ساعات",
       "unitDay": "أيام",
       "apply": "تطبيق",
-      "cancel": "إلغاء"
+      "cancel": "إلغاء",
+      "native": "كل القياسات"
     },
     "dashboard": {
       "title": "لوحة التحكم",

@@ -1,5 +1,6 @@
 import { Box, Text, VStack, useColorModeValue } from '@chakra-ui/react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { localeTag } from '@/app/utils/localeTag';
 import { WiStrongWind } from 'react-icons/wi';
 import {
   formatCalibratedReading,
@@ -17,7 +18,8 @@ interface WindData {
 
 const timeAgo = (
   timestamp: string,
-  t: ReturnType<typeof useTranslations>
+  t: ReturnType<typeof useTranslations>,
+  tag: string
 ): string => {
   const now = new Date();
   const then = new Date(timestamp);
@@ -30,7 +32,7 @@ const timeAgo = (
     return t('analytics.lastData.minutesAgo', { count: diffMin });
   if (diffH < 24)
     return t('analytics.lastData.hoursAgoShort', { count: diffH });
-  return then.toLocaleDateString();
+  return then.toLocaleDateString(tag);
 };
 
 const WindRadarLastData = ({
@@ -41,6 +43,7 @@ const WindRadarLastData = ({
   windDirectionData: WindData[];
 }) => {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   useUnitOverridesRevision();
   const latestSpeed = windSpeedData[windSpeedData.length - 1];
   const latestDirection = windDirectionData[windDirectionData.length - 1];
@@ -121,7 +124,7 @@ const WindRadarLastData = ({
         {latestSpeed && (
           <Text fontSize="xs" color={subColor} mt={3}>
             {t('analytics.lastData.measuredAt', {
-              time: timeAgo(latestSpeed.timestamp, t),
+              time: timeAgo(latestSpeed.timestamp, t, tag),
             })}
           </Text>
         )}

@@ -180,7 +180,9 @@ const WeatherDetailsModal: React.FC<Props> = ({
         {label}
       </Text>
       <Text fontSize="sm" fontWeight="semibold" color={primaryText}>
-        {value}
+        {/* Values + units read left to right even in the Arabic UI
+            ("1018 hPa", not "hPa 1018"). */}
+        <bdi dir="ltr">{value}</bdi>
       </Text>
     </Box>
   );
@@ -364,12 +366,16 @@ const WeatherDetailsModal: React.FC<Props> = ({
                         {dayLabel(date)}
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
-                        {temp(at(daily.temperature_2m_min, i))} /{' '}
-                        <b>{temp(at(daily.temperature_2m_max, i))}</b>
+                        <bdi dir="ltr">
+                          {temp(at(daily.temperature_2m_min, i))} /{' '}
+                          <b>{temp(at(daily.temperature_2m_max, i))}</b>
+                        </bdi>
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
-                        {pct(at(daily.precipitation_probability_max, i))} ·{' '}
-                        {fixedOrDash(at(daily.precipitation_sum, i), 1)} mm
+                        <bdi dir="ltr">
+                          {pct(at(daily.precipitation_probability_max, i))} ·{' '}
+                          {fixedOrDash(at(daily.precipitation_sum, i), 1)} mm
+                        </bdi>
                       </Td>
                       <Td px={2} fontSize="xs">
                         <Badge colorScheme={dUv.color} fontSize="2xs">
@@ -377,15 +383,19 @@ const WeatherDetailsModal: React.FC<Props> = ({
                         </Badge>
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
-                        {speed(at(daily.wind_gusts_10m_max, i))}{' '}
-                        {compass(at(daily.wind_direction_10m_dominant, i))}
+                        <bdi dir="ltr">
+                          {speed(at(daily.wind_gusts_10m_max, i))}{' '}
+                          {compass(at(daily.wind_direction_10m_dominant, i))}
+                        </bdi>
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
-                        {fixedOrDash(
-                          at(daily.et0_fao_evapotranspiration, i),
-                          1
-                        )}{' '}
-                        mm
+                        <bdi dir="ltr">
+                          {fixedOrDash(
+                            at(daily.et0_fao_evapotranspiration, i),
+                            1
+                          )}{' '}
+                          mm
+                        </bdi>
                       </Td>
                       <Td px={2} fontSize="xs" whiteSpace="nowrap">
                         {timeOrDash(at(daily.sunrise, i), localeTag(locale))} /{' '}

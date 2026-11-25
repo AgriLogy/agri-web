@@ -1,5 +1,7 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
+import { useLocale } from 'next-intl';
+import { localeTag } from '@/app/utils/localeTag';
 import { MarkdownMessage } from './MarkdownMessage';
 import type { Message } from './types';
 
@@ -24,6 +26,7 @@ export const AgrilogyMessageBubble = ({
   message,
   isTyping = false,
 }: AgrilogyMessageBubbleProps) => {
+  const locale = useLocale();
   const isUser = message.role === 'user';
 
   // ── Light / dark tokens ──────────────────────────────────────────────────
@@ -116,7 +119,7 @@ export const AgrilogyMessageBubble = ({
 
       {/* Timestamp */}
       <Text fontSize="10px" color={timestampColor} fontFamily="mono" px="4px">
-        {message.timestamp.toLocaleTimeString([], {
+        {message.timestamp.toLocaleTimeString(localeTag(locale), {
           hour: '2-digit',
           minute: '2-digit',
         })}

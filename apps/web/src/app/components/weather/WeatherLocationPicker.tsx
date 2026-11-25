@@ -26,6 +26,7 @@ import {
   WEATHER_LOCATION_UPDATED_EVENT,
   type WeatherLocation,
 } from '@agri/api-client/weatherLocationStorage';
+import { geoLang, reverseGeocodeCity } from '@/app/utils/reverseGeocode';
 
 interface GeoResult {
   id: number;
@@ -35,9 +36,6 @@ interface GeoResult {
   country?: string;
   admin1?: string;
 }
-
-const geoLang = (locale: string): string =>
-  locale === 'ar' ? 'ar' : locale === 'en' ? 'en' : 'fr';
 
 // Default station coordinates the forecast falls back to when nothing is picked.
 const STATION_LAT = 32.906323;
@@ -103,23 +101,9 @@ const WeatherLocationPicker = ({
       return;
     }
     let cancelled = false;
-    fetch(
-      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${location.lat}&longitude=${location.lon}&localityLanguage=${geoLang(locale)}`
-    )
-      .then((r) => r.json())
-      .then((data) => {
-        if (cancelled) return;
-        setCityName(
-          data?.city ||
-            data?.locality ||
-            data?.principalSubdivision ||
-            data?.countryName ||
-            null
-        );
-      })
-      .catch(() => {
-        /* city label is best-effort; ignore failures */
-      });
+    reverseGeocodeCity(location.lat, location.lon, locale).then((city) => {
+      if (!cancelled) setCityName(city);
+    });
     return () => {
       cancelled = true;
     };
