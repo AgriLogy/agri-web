@@ -1,3 +1,10 @@
+## [1.45.1](https://github.com/AgriLogy/agri-web/compare/v1.45.0...v1.45.1) (2026-11-25)
+
+
+### Bug Fixes
+
+* **brand:** give the Agrogo logo a transparent background ([#204](https://github.com/AgriLogy/agri-web/issues/204)) ([#205](https://github.com/AgriLogy/agri-web/issues/205)) ([77b6626](https://github.com/AgriLogy/agri-web/commit/77b6626093aa8abfc82a372757dd90e77f1c9890))
+
 # [1.45.0](https://github.com/AgriLogy/agri-web/compare/v1.44.3...v1.45.0) (2026-11-25)
 
 
