@@ -1,3 +1,10 @@
+## [1.44.1](https://github.com/AgriLogy/agri-web/compare/v1.44.0...v1.44.1) (2026-11-25)
+
+
+### Bug Fixes
+
+* **farm:** ask for confirmation before deleting a sector ([#194](https://github.com/AgriLogy/agri-web/issues/194)) ([315ff21](https://github.com/AgriLogy/agri-web/commit/315ff21ae30d1468590f158c625fca8651b538dc)), closes [#193](https://github.com/AgriLogy/agri-web/issues/193)
+
 # [1.44.0](https://github.com/AgriLogy/agri-web/compare/v1.43.0...v1.44.0) (2026-11-25)
 
 
