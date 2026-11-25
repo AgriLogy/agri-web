@@ -479,6 +479,9 @@ interface AgricultureMapboxMapProps {
   /** Stretch to the parent's height (e.g. inside the expanded-map modal)
    *  instead of sizing to content; the map canvas takes the leftover space. */
   fillHeight?: boolean;
+  /** Dashboard-card preview: no view controls, no zoom buttons, no panning.
+   *  The card opens the full map in a modal on click (like Météo). */
+  preview?: boolean;
 }
 
 export default function AgricultureMapboxMap({
@@ -486,6 +489,7 @@ export default function AgricultureMapboxMap({
   lon,
   showToolsPanel = true,
   fillHeight = false,
+  preview = false,
 }: AgricultureMapboxMapProps) {
   const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? '';
   // Read-only tiers (monitor) get no drawing/save/delete tools (#99), but
@@ -1040,6 +1044,7 @@ export default function AgricultureMapboxMap({
       center: initialCenter(readWeatherLocation(), { lat, lon }),
       zoom: 14,
       maxZoom: 20,
+      interactive: !preview,
       // Mapbox's terms require visible attribution: compact control below.
       attributionControl: false,
     });
@@ -1047,10 +1052,12 @@ export default function AgricultureMapboxMap({
       new mapboxgl.AttributionControl({ compact: true }),
       'bottom-right'
     );
-    map.addControl(
-      new mapboxgl.NavigationControl({ showCompass: true }),
-      'top-right'
-    );
+    if (!preview) {
+      map.addControl(
+        new mapboxgl.NavigationControl({ showCompass: true }),
+        'top-right'
+      );
+    }
     map.addControl(
       new mapboxgl.ScaleControl({ unit: 'metric' }),
       'bottom-left'
@@ -2787,8 +2794,14 @@ export default function AgricultureMapboxMap({
         </Alert>
       ) : null}
 
-      {/* View controls — available to every tier, tools open or not. */}
-      <HStack spacing={2} flexWrap="wrap" rowGap={2}>
+      {/* View controls — available to every tier, tools open or not; the
+          dashboard-card preview leaves them to the modal. */}
+      <HStack
+        spacing={2}
+        flexWrap="wrap"
+        rowGap={2}
+        display={preview ? 'none' : 'flex'}
+      >
         <Popover placement="bottom-start" isLazy>
           <PopoverTrigger>
             <Button size="sm" variant="outline" rightIcon={<ChevronDownIcon />}>

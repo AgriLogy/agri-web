@@ -4,6 +4,7 @@ module.exports = {
   setupFiles: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@component/(.*)$': '<rootDir>/src/app/components/$1',
     // Resolve shared workspace packages to their TS source so babel-jest
     // transforms them (avoids the node_modules transform-ignore problem).
     '^@agri/api-client/(.*)$': '<rootDir>/../../packages/api-client/src/$1',

@@ -33,8 +33,8 @@ export default function GoogleMapWeather() {
   const t = useTranslations();
   const { canEdit } = useCan();
   const p = useBreakpointValue({ base: 2, md: 4 }) ?? 2;
-  // Editing happens only in the modal (like Météo → details modal): the card
-  // map is read-only, and "Outils carte" opens the modal with the tools out.
+  // Editing happens only in the modal (like Météo → details modal): a click on
+  // the card map opens it, and "Outils carte" opens it with the tools out.
   const [mapToolsOpen, setMapToolsOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const toggleTools = () => setMapToolsOpen((o) => !o);
@@ -73,11 +73,34 @@ export default function GoogleMapWeather() {
           </Text>
         </Box>
       ) : (
-        <AgricultureMapboxMap
-          lat={DEFAULT_LAT}
-          lon={DEFAULT_LON}
-          showToolsPanel={false}
-        />
+        <>
+          <AgricultureMapboxMap
+            lat={DEFAULT_LAT}
+            lon={DEFAULT_LON}
+            showToolsPanel={false}
+            preview
+          />
+          {/* Like the Météo card: a click anywhere on the card map opens the
+              big view. The card map is a preview; panning, layers and tools
+              live in the modal. */}
+          <Box
+            as="button"
+            type="button"
+            position="absolute"
+            inset={0}
+            zIndex={2}
+            w="100%"
+            h="100%"
+            bg="transparent"
+            cursor="pointer"
+            aria-label={t('misc.googleMapWeather.expand')}
+            onClick={() => openModal(false)}
+            _hover={{ bg: 'blackAlpha.100' }}
+            _focusVisible={{ boxShadow: 'outline', outline: 'none' }}
+            transition="background-color 0.15s"
+            data-testid="farm-map-card-open"
+          />
+        </>
       )}
     </Box>
   );

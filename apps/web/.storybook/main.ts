@@ -1,4 +1,10 @@
+import { fileURLToPath } from 'node:url';
 import type { StorybookConfig } from '@storybook/nextjs-vite';
+
+// Mapbox needs a token, WebGL and real tiles: stories get a drawn stand-in.
+const fakeMap = fileURLToPath(
+  new URL('../src/stories/mocks/FakeMapboxMap.tsx', import.meta.url)
+);
 
 /**
  * Component documentation for the farmer web app (agri-web #195).
@@ -23,6 +29,23 @@ const config: StorybookConfig = {
   // also forces the axios baseURL, in case a .env file overrides this.
   viteFinal: async (cfg) => ({
     ...cfg,
+    resolve: {
+      ...cfg.resolve,
+      alias: [
+        {
+          find: /^@component\/map\/AgricultureMapboxMap$/,
+          replacement: fakeMap,
+        },
+        ...(Array.isArray(cfg.resolve?.alias)
+          ? cfg.resolve.alias
+          : Object.entries(cfg.resolve?.alias ?? {}).map(
+              ([find, replacement]) => ({
+                find,
+                replacement: String(replacement),
+              })
+            )),
+      ],
+    },
     define: {
       ...cfg.define,
       'process.env.NEXT_PUBLIC_API_URL': JSON.stringify(
