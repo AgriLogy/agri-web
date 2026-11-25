@@ -19,6 +19,22 @@ export const theme = extendTheme({
   colors: {
     primary,
     neutral,
+    // Chakra's own greys lean blue (#1A202C, #2D3748). Every built-in dark
+    // surface (modal, menu, popover, drawer, tooltip) and every `gray.*` in
+    // the app used them, so dark mode showed navy panels on the green-tinted
+    // page. Mapping `gray` onto the neutral scale keeps one palette.
+    gray: {
+      50: neutral[50],
+      100: neutral[100],
+      200: neutral[200],
+      300: neutral[300],
+      400: neutral[400],
+      500: neutral[500],
+      600: neutral[600],
+      700: neutral[700],
+      800: neutral[800],
+      900: neutral[900],
+    },
     success: { 500: semantic.success },
     warning: { 500: semantic.warning },
     danger: { 500: semantic.danger },
