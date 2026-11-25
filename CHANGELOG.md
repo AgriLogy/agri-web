@@ -1,3 +1,15 @@
+# [1.45.0](https://github.com/AgriLogy/agri-web/compare/v1.44.3...v1.45.0) (2026-11-25)
+
+
+### Bug Fixes
+
+* **theme:** use the neutral palette for Chakra's greys, so dark mode has no navy panels ([#202](https://github.com/AgriLogy/agri-web/issues/202)) ([#203](https://github.com/AgriLogy/agri-web/issues/203)) ([ac4a762](https://github.com/AgriLogy/agri-web/commit/ac4a762670474e86ea3f32ad354bc414c3c21890))
+
+
+### Features
+
+* **dashboard:** open the farm map window on a click on the card, like Météo ([#200](https://github.com/AgriLogy/agri-web/issues/200)) ([#201](https://github.com/AgriLogy/agri-web/issues/201)) ([77dd4b0](https://github.com/AgriLogy/agri-web/commit/77dd4b097ff807acbe931ab79994040b61a5771e))
+
 ## [1.44.3](https://github.com/AgriLogy/agri-web/compare/v1.44.2...v1.44.3) (2026-11-25)
 
 
