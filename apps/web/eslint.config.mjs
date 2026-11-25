@@ -15,6 +15,10 @@ const config = [
       'e2e-report/**',
       'e2e-results/**',
       'tour-output/**',
+      // Storybook builds + the generated MSW worker (agri-web #195)
+      'storybook-static/**',
+      'public/storybook/**',
+      '.storybook/public/**',
     ],
   },
   ...nextCoreWebVitals,

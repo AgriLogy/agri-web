@@ -114,3 +114,7 @@ e2e-results/
 e2e-report/
 # Screenshot tour output (apps/web/tour-output, npm run test:tour)
 tour-output/
+
+# storybook (agri-web #195): local builds and the copy the deploy workflows build
+storybook-static/
+apps/web/public/storybook/

@@ -1,0 +1,47 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Introduction" />
+
+# Agrogo — composants de l'application agriculteur
+
+Documentation vivante des composants de `apps/web` (agri-web #195). Chaque
+page montre un composant dans ses états réels — normal, vide, chargement,
+erreur — avec les mêmes thèmes, traductions et bibliothèques que l'application.
+
+## Utiliser ce Storybook
+
+- **Barre d'outils** : _Langue_ (Français, العربية en droite-à-gauche, English)
+  et _Thème_ (clair / sombre). Tout composant doit rester lisible dans les six
+  combinaisons.
+- **Docs** : la page générée de chaque composant liste ses propriétés ; l'onglet
+  _Controls_ permet de les modifier en direct.
+- **Accessibilité** : l'onglet _Accessibility_ lance axe sur l'histoire affichée.
+
+## Données
+
+Aucune histoire n'appelle un vrai serveur. Le client API est forcé vers
+`https://api.storybook.invalid` et les réponses viennent de faux points d'accès
+(MSW) définis dans l'histoire ou dans `src/stories/mocks/`. Les fermes, zones et
+mesures sont inventées.
+
+## Groupes
+
+| Groupe          | Contenu                                                                      |
+| --------------- | ---------------------------------------------------------------------------- |
+| Fondations      | Couleurs, typographie, espacements, rayons, ombres (`@agri/ui`)              |
+| Commun          | Briques partagées : états vides / erreur, légendes, indicateurs, permissions |
+| Mise en page    | En-têtes de page, sélecteurs de zone, de période et de fréquence             |
+| Tableau de bord | Cartes de l'accueil : météo, pompes, électrovannes, notifications            |
+| Capteurs        | Graphiques et dernières valeurs par famille de capteurs                      |
+| Assistant       | Le chat agronomique : messages, cartes de données, micro                     |
+| Alertes         | Création et modification d'alertes                                           |
+| Carte           | Légendes et graphiques du panneau secteur                                    |
+| Vannes & pompes | Schémas d'irrigation                                                         |
+| Pages           | Pages complètes avec données factices                                        |
+
+## Ajouter une histoire
+
+Créer `MonComposant.stories.tsx` à côté du composant (voir
+`common/EmptyBox.stories.tsx` pour un composant simple et
+`main/FarmMain.stories.tsx` pour un composant qui charge ses données), puis
+`npm run storybook -w web`.

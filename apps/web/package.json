@@ -17,7 +17,9 @@
     "test:jest": "jest --passWithNoTests",
     "test:e2e": "playwright test",
     "test:tour": "playwright test -c playwright.tour.config.ts",
-    "tour:report": "node scripts/tour-report.mjs"
+    "tour:report": "node scripts/tour-report.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build -o storybook-static"
   },
   "dependencies": {
     "@agri/api-client": "*",
@@ -74,6 +76,9 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.1",
     "@semantic-release/release-notes-generator": "^14.0.1",
+    "@storybook/addon-a11y": "^10.6.9",
+    "@storybook/addon-docs": "^10.6.9",
+    "@storybook/nextjs-vite": "^10.6.9",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -93,11 +98,15 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.2.10",
+    "msw": "^2.15.0",
+    "msw-storybook-addon": "^3.0.3",
     "postcss": "^8",
     "prettier": "^3.8.1",
     "sass": "^1.99.0",
     "semantic-release": "^24.2.1",
+    "storybook": "^10.6.9",
     "tailwindcss": "^3.4.1",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vite": "^6.4.6"
   }
 }

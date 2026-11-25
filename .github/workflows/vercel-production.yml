@@ -41,6 +41,14 @@ jobs:
         with:
           node-version: 20
 
+      - name: Build Storybook into public/storybook
+        # Component docs (agri-web #195), served by this deploy at /storybook.
+        # Built before `vercel pull`, so no Vercel env file is in reach; the
+        # Storybook config also pins the API to a fake host.
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build-storybook -w web -- -o public/storybook --quiet
+
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 

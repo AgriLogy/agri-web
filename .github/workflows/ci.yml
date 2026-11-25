@@ -39,3 +39,8 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # Component docs (agri-web #195): a story that no longer compiles fails
+      # here rather than in the deploy.
+      - name: Build Storybook
+        run: npm run build-storybook -w web -- --quiet
