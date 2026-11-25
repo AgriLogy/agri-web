@@ -226,10 +226,27 @@ const EC0Chart = ({
             <XAxis {...xAxisProps} />
             <YAxis
               {...yProps}
+              yAxisId="hourly"
               label={yAxisLabelInsideLeft(
                 t('analytics.et0Chart.yAxisLabel', { unit: et0Unit }),
                 tickFill
               )}
+            />
+            {/* Open-Meteo gives one ET₀ total per day (mm/day), about 10×
+                an hourly value, so it gets its own axis rather than sharing
+                the hourly scale of the bars. */}
+            <YAxis
+              {...yProps}
+              yAxisId="daily"
+              orientation="right"
+              hide={!seriesVisible.et0_openmeteo || openMeteoData.length === 0}
+              label={{
+                value: t('analytics.et0Chart.yAxisDailyLabel'),
+                angle: 90,
+                position: 'insideRight',
+                fill: tickFill,
+                fontSize: 11,
+              }}
             />
             <Tooltip content={<UnifiedTooltip valuesAlreadyCalibrated />} />
             <Legend
@@ -243,6 +260,7 @@ const EC0Chart = ({
             />
             <Bar
               dataKey="et0_sensor"
+              yAxisId="hourly"
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               fill={colorForSensor('et0_sensor')}
@@ -251,6 +269,7 @@ const EC0Chart = ({
             />
             <Bar
               dataKey="et0_calculated"
+              yAxisId="hourly"
               {...defaultBarProps}
               maxBarSize={maxBarSizeForPointCount(chartData.length)}
               fill={colorForSensor('et0_calculated')}
@@ -260,13 +279,14 @@ const EC0Chart = ({
             <Line
               type="monotone"
               dataKey="et0_openmeteo"
+              yAxisId="daily"
               stroke={colorForSensor('et0_openmeteo')}
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 4 }}
               connectNulls
               isAnimationActive={false}
-              name={t('analytics.et0Chart.seriesOpenMeteo', { unit: et0Unit })}
+              name={t('analytics.et0Chart.seriesOpenMeteoDaily')}
               hide={!seriesVisible.et0_openmeteo}
             />
           </ComposedChart>

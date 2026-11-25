@@ -43,13 +43,11 @@ import {
   type WeatherData,
 } from '@/app/utils/openMeteoResponse';
 import WeatherLocationPicker from '@/app/components/weather/WeatherLocationPicker';
+import { reverseGeocodeCity } from '@/app/utils/reverseGeocode';
 import Loading from '../common/Loading';
 
 const localeTag = (locale: string): string =>
   locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
-
-const geoLang = (locale: string): string =>
-  locale === 'ar' ? 'ar' : locale === 'en' ? 'en' : 'fr';
 
 // Default station coordinates the forecast is anchored to.
 const STATION_LAT = 32.906323;
@@ -119,25 +117,9 @@ const WeatherDashboard = () => {
       return;
     }
     let cancelled = false;
-    const fetchCity = async () => {
-      try {
-        const res = await fetch(
-          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${location.lat}&longitude=${location.lon}&localityLanguage=${geoLang(locale)}`
-        );
-        const data = await res.json();
-        if (cancelled) return;
-        setCityName(
-          data?.city ||
-            data?.locality ||
-            data?.principalSubdivision ||
-            data?.countryName ||
-            null
-        );
-      } catch {
-        /* city label is best-effort; ignore failures */
-      }
-    };
-    fetchCity();
+    reverseGeocodeCity(location.lat, location.lon, locale).then((city) => {
+      if (!cancelled) setCityName(city);
+    });
     return () => {
       cancelled = true;
     };
@@ -277,7 +259,8 @@ const WeatherDashboard = () => {
         </HStack>
         <Text fontSize="xs" color={secondaryText}>
           {t('shell.weather.feelsLike')}{' '}
-          {tempLabel(current.apparent_temperature)}
+          {/* Keep "16°C" in reading order inside Arabic text. */}
+          <bdi dir="ltr">{tempLabel(current.apparent_temperature)}</bdi>
         </Text>
       </VStack>
 
@@ -294,11 +277,13 @@ const WeatherDashboard = () => {
         >
           <Icon as={Wind} boxSize="24px" color="primary.500" mb={1} />
           <Text fontSize="xs" color={primaryText}>
-            {roundOrDash(
-              current.wind_speed_10m,
-              useImperial ? toMilesPerHour : undefined
-            )}{' '}
-            {useImperial ? 'mph' : 'km/h'}
+            <bdi dir="ltr">
+              {roundOrDash(
+                current.wind_speed_10m,
+                useImperial ? toMilesPerHour : undefined
+              )}{' '}
+              {useImperial ? 'mph' : 'km/h'}
+            </bdi>
           </Text>
         </Box>
         <Box

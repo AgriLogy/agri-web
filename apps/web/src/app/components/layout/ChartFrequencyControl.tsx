@@ -88,7 +88,7 @@ export function ChartFrequencyControl({
       openCustom();
       return;
     }
-    onChange({ kind: next as 'minute' | 'hour' | 'day' });
+    onChange({ kind: next as 'native' | 'minute' | 'hour' | 'day' });
   };
 
   const applyCustom = () => {
@@ -113,6 +113,11 @@ export function ChartFrequencyControl({
         _hover={{ borderColor: 'app.accent' }}
         _focus={{ borderColor: 'app.accent', boxShadow: 'none' }}
       >
+        {/* `native` (no bucketing) has no menu entry; show it as it is
+            rather than letting the select fall back to "minute". */}
+        {value.kind === 'native' && (
+          <option value="native">{t('shell.chartDataFrequency.native')}</option>
+        )}
         <option value="minute">{t('shell.chartDataFrequency.minute')}</option>
         <option value="hour">{t('shell.chartDataFrequency.hour')}</option>
         <option value="day">{t('shell.chartDataFrequency.day')}</option>

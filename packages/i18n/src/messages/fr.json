@@ -910,7 +910,9 @@
       "yAxisLabel": "ET₀ ({unit})",
       "seriesSensor": "ET₀ capteur ({unit})",
       "seriesCalculated": "ET₀ calculé ({unit})",
-      "seriesOpenMeteo": "ET₀ Open-Meteo ({unit})"
+      "seriesOpenMeteo": "ET₀ Open-Meteo ({unit})",
+      "yAxisDailyLabel": "ET₀ du jour (mm/j)",
+      "seriesOpenMeteoDaily": "ET₀ Open-Meteo (mm/j, total du jour)"
     },
     "et0LastData": {
       "heading": "Évapotranspiration de référence (ET₀)",
@@ -2375,7 +2377,8 @@
       "unitHour": "heures",
       "unitDay": "jours",
       "apply": "Appliquer",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "native": "Toutes les mesures"
     },
     "dashboard": {
       "title": "Tableau de bord",

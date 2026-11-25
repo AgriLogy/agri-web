@@ -5,7 +5,8 @@ import {
   Divider,
   VStack,
 } from '@chakra-ui/react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { localeTag } from '@/app/utils/localeTag';
 import { GiWaterDrop, GiWaterTank, GiGroundbreaker } from 'react-icons/gi';
 import { FaTachometerAlt } from 'react-icons/fa';
 import { SensorData } from '@/app/types';
@@ -22,7 +23,8 @@ import LastDataPanel from '../../common/LastDataPanel';
 
 const timeAgo = (
   timestamp: string,
-  t: ReturnType<typeof useTranslations>
+  t: ReturnType<typeof useTranslations>,
+  tag: string
 ): string => {
   const now = new Date();
   const then = new Date(timestamp);
@@ -34,7 +36,7 @@ const timeAgo = (
   if (diffMin < 60)
     return t('analytics.lastData.minutesAgo', { count: diffMin });
   if (diffH < 24) return t('analytics.lastData.hoursAgo', { count: diffH });
-  return then.toLocaleDateString();
+  return then.toLocaleDateString(tag);
 };
 
 const SensorRow = ({
@@ -49,6 +51,7 @@ const SensorRow = ({
   sensorKey: string;
 }) => {
   const t = useTranslations();
+  const tag = localeTag(useLocale());
   const isMobile = useIsMobile();
   const valueColor = useColorModeValue('brand.700', 'brand.200');
   const textColor = useColorModeValue('gray.600', 'gray.400');
@@ -85,7 +88,7 @@ const SensorRow = ({
         {data && (
           <Text fontSize="xs" color={timeColor} textAlign="right" mt={0.5}>
             {t('analytics.lastData.measuredAt', {
-              time: timeAgo(data.timestamp, t),
+              time: timeAgo(data.timestamp, t, tag),
             })}
           </Text>
         )}
@@ -114,7 +117,7 @@ const SensorRow = ({
       <Text fontSize="xs" color={timeColor} mt={1}>
         {data
           ? t('analytics.lastData.measuredAt', {
-              time: timeAgo(data.timestamp, t),
+              time: timeAgo(data.timestamp, t, tag),
             })
           : ''}
       </Text>
