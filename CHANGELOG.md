@@ -1,3 +1,10 @@
+## [1.44.3](https://github.com/AgriLogy/agri-web/compare/v1.44.2...v1.44.3) (2026-11-25)
+
+
+### Bug Fixes
+
+* **ui:** six display fixes found while writing the Storybook ([#199](https://github.com/AgriLogy/agri-web/issues/199)) ([ee98be4](https://github.com/AgriLogy/agri-web/commit/ee98be4f6f5b0db452d3054a62111e4280ebc1e8)), closes [#198](https://github.com/AgriLogy/agri-web/issues/198)
+
 ## [1.44.2](https://github.com/AgriLogy/agri-web/compare/v1.44.1...v1.44.2) (2026-11-25)
 
 ## [1.44.1](https://github.com/AgriLogy/agri-web/compare/v1.44.0...v1.44.1) (2026-11-25)
