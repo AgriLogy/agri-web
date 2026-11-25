@@ -21,6 +21,8 @@ import {
   localeToRecognitionLang,
   useSpeechRecognition,
 } from '../../hooks/useSpeechRecognition';
+import { useVoiceRecorder } from '../../hooks/useVoiceRecorder';
+import { assistantApi } from '@agri/api-client/assistantApi';
 
 const SendIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
@@ -83,7 +85,8 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
   const locale = useLocale();
   const toast = useToast();
   const timeTag = locale === 'ar' ? 'ar' : locale === 'en' ? 'en-GB' : 'fr-FR';
-  const { activeConversation, streaming, sendMessage, stop } = useChat();
+  const { activeConversation, streaming, sendMessage, stop, language } =
+    useChat();
 
   const [input, setInput] = useState('');
   const endRef = useRef<HTMLDivElement>(null);
@@ -129,13 +132,66 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
     onError: handleVoiceError,
   });
 
+  // Server voice (Whisper on Groq) understands Darija far better than the
+  // browser's recognition; use it whenever the server says it is on.
+  const [serverVoice, setServerVoice] = useState<{
+    active: boolean;
+    maxSeconds: number;
+  }>({ active: false, maxSeconds: 120 });
+  useEffect(() => {
+    let alive = true;
+    assistantApi
+      .voiceStatus()
+      .then((v) => {
+        if (alive)
+          setServerVoice({ active: v.active, maxSeconds: v.max_seconds });
+      })
+      .catch(() => undefined); // older API or offline: browser recognition
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const recorder = useVoiceRecorder({
+    maxSeconds: serverVoice.maxSeconds,
+    transcribe: async (audio) =>
+      (await assistantApi.transcribe(audio, language)).text,
+    onTranscript: (text) => {
+      const base = voiceBaseRef.current;
+      setInput(base ? `${base} ${text}` : text);
+      setTimeout(() => textareaRef.current?.focus(), 0);
+    },
+    onError: (kind) =>
+      toast({
+        description: t(
+          kind === 'permission'
+            ? 'misc.chatbot.voice.permissionDenied'
+            : kind === 'empty'
+              ? 'misc.chatbot.voice.nothingHeard'
+              : 'misc.chatbot.voice.genericError'
+        ),
+        status: kind === 'empty' ? 'info' : 'error',
+        duration: 4000,
+        isClosable: true,
+      }),
+  });
+  const useServerVoice = serverVoice.active && recorder.supported;
+  const recording = useServerVoice
+    ? recorder.status === 'recording'
+    : listening;
+  const transcribing = useServerVoice && recorder.status === 'transcribing';
+  const micAvailable = useServerVoice || voiceSupported;
+
   const toggleVoice = () => {
-    if (listening) {
-      stopVoice();
+    if (transcribing) return;
+    if (recording) {
+      if (useServerVoice) recorder.stop();
+      else stopVoice();
       return;
     }
     voiceBaseRef.current = input.trim();
-    startVoice();
+    if (useServerVoice) void recorder.start();
+    else startVoice();
   };
 
   const messages = activeConversation?.messages ?? [];
@@ -178,6 +234,7 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
   const submit = () => {
     if (!canSend) return;
     if (listening) stopVoice();
+    if (recorder.status === 'recording') recorder.stop();
     sendMessage(input);
     setInput('');
     const el = textareaRef.current;
@@ -354,10 +411,10 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
             _disabled={{ opacity: 0.5, cursor: 'not-allowed' }}
             disabled={streaming}
           />
-          {voiceSupported && (
+          {micAvailable && (
             <Tooltip
               label={
-                listening
+                recording
                   ? t('misc.chatbot.voice.stop')
                   : t('misc.chatbot.voice.start')
               }
@@ -374,28 +431,28 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
                 borderRadius="10px"
                 border="none"
                 flexShrink={0}
-                cursor={streaming ? 'not-allowed' : 'pointer'}
-                bg={listening ? micActiveBg : micBg}
-                color={listening ? 'white' : micColor}
+                cursor={streaming || transcribing ? 'not-allowed' : 'pointer'}
+                bg={recording ? micActiveBg : micBg}
+                color={recording ? 'white' : micColor}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                opacity={streaming ? 0.35 : 1}
+                opacity={streaming || transcribing ? 0.35 : 1}
                 transition="background 0.15s, transform 0.15s"
-                animation={listening ? `${micPulse} 1.4s infinite` : undefined}
+                animation={recording ? `${micPulse} 1.4s infinite` : undefined}
                 _hover={
-                  streaming ? {} : { bg: listening ? micActiveBg : micHoverBg }
+                  streaming ? {} : { bg: recording ? micActiveBg : micHoverBg }
                 }
                 _active={streaming ? {} : { transform: 'scale(0.95)' }}
-                disabled={streaming}
+                disabled={streaming || transcribing}
                 aria-label={
-                  listening
+                  recording
                     ? t('misc.chatbot.voice.stop')
                     : t('misc.chatbot.voice.start')
                 }
-                aria-pressed={listening}
+                aria-pressed={recording}
               >
-                {listening ? <StopIcon /> : <MicIcon />}
+                {recording ? <StopIcon /> : <MicIcon />}
               </Box>
             </Tooltip>
           )}
@@ -445,7 +502,11 @@ export const ChatThread = ({ onNavigate, autoFocus }: ChatThreadProps) => {
             >
               {t('misc.chatbot.stopGeneration')}
             </Box>
-          ) : listening ? (
+          ) : transcribing ? (
+            <Text fontSize="11px" fontFamily="mono" color={hintColor}>
+              {t('misc.chatbot.voice.transcribing')}
+            </Text>
+          ) : recording ? (
             <Flex align="center" gap="5px" color="red.400">
               <Box
                 w="7px"
