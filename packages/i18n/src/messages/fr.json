@@ -2884,7 +2884,12 @@
       "noData": "Aucune donnée reçue",
       "lastReceived": "Dernière donnée : {when}"
     },
-    "captorCount": "{count, plural, =0 {aucun capteur} one {# capteur} other {# capteurs}}"
+    "captorCount": "{count, plural, =0 {aucun capteur} one {# capteur} other {# capteurs}}",
+    "deleteConfirm": {
+      "title": "Supprimer le secteur « {name} » ?",
+      "body": "Ses zones ne sont pas supprimées : elles redeviennent non assignées, avec leurs capteurs et leurs données.",
+      "confirm": "Supprimer"
+    }
   },
   "sensorGroups": {
     "title": "Capteurs par groupe",

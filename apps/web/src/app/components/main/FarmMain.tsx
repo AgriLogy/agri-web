@@ -8,10 +8,16 @@
  * A light manager lets you create sectors and assign zones.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Box,
   Button,
   Checkbox,
@@ -63,6 +69,12 @@ export default function FarmMain() {
   );
   const [picked, setPicked] = useState<Set<number>>(new Set());
   const { isOpen, onOpen, onClose } = useDisclosure();
+  // Sector waiting for the delete confirmation (agri-web #193).
+  const [toDelete, setToDelete] = useState<{ id: number; name: string } | null>(
+    null
+  );
+  const [deleting, setDeleting] = useState(false);
+  const cancelDeleteRef = useRef<HTMLButtonElement>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -136,12 +148,17 @@ export default function FarmMain() {
     }
   };
 
-  const removeSector = async (id: number) => {
+  const removeSector = async () => {
+    if (!toDelete) return;
+    setDeleting(true);
     try {
-      await farmApi.deleteSector(id);
+      await farmApi.deleteSector(toDelete.id);
+      setToDelete(null);
       await load();
     } catch {
       toast({ title: t('farm.saveError'), status: 'error', duration: 3000 });
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -275,7 +292,12 @@ export default function FarmMain() {
                       variant="ghost"
                       colorScheme="red"
                       icon={<FaTrash />}
-                      onClick={() => removeSector(sector.sector_id!)}
+                      onClick={() =>
+                        setToDelete({
+                          id: sector.sector_id!,
+                          name: sector.sector_name ?? '',
+                        })
+                      }
                     />
                   </PermissionGate>
                 </HStack>
@@ -333,6 +355,40 @@ export default function FarmMain() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <AlertDialog
+        isOpen={!!toDelete}
+        leastDestructiveRef={cancelDeleteRef}
+        onClose={() => !deleting && setToDelete(null)}
+        isCentered
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent mx={4}>
+            <AlertDialogHeader fontSize="md">
+              {t('farm.deleteConfirm.title', { name: toDelete?.name ?? '' })}
+            </AlertDialogHeader>
+            <AlertDialogBody fontSize="sm">
+              {t('farm.deleteConfirm.body')}
+            </AlertDialogBody>
+            <AlertDialogFooter gap={2}>
+              <Button
+                ref={cancelDeleteRef}
+                onClick={() => setToDelete(null)}
+                isDisabled={deleting}
+              >
+                {t('farm.cancel')}
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={removeSector}
+                isLoading={deleting}
+              >
+                {t('farm.deleteConfirm.confirm')}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 }

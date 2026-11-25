@@ -2884,7 +2884,12 @@
       "noData": "لم تُستلم أي بيانات",
       "lastReceived": "آخر استلام: {when}"
     },
-    "captorCount": "{count} مستشعر"
+    "captorCount": "{count} مستشعر",
+    "deleteConfirm": {
+      "title": "حذف القطاع «{name}»؟",
+      "body": "لن تُحذف مناطقه: ستعود غير مُسندة، مع أجهزة الاستشعار والبيانات الخاصة بها.",
+      "confirm": "حذف"
+    }
   },
   "sensorGroups": {
     "title": "المستشعرات حسب المجموعة",
