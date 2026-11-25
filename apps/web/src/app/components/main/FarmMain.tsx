@@ -49,7 +49,8 @@ export default function FarmMain() {
   const router = useRouter();
   const toast = useToast();
   const { bgColor, borderColor, mutedTextColor } = useColorModeStyles();
-  const { canEdit, canDelete } = useCan();
+  // Sector deletes are editor tier (agri-api #526): they only unassign zones.
+  const { canEdit } = useCan();
 
   const [data, setData] = useState<FarmSectorNode[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -264,8 +265,8 @@ export default function FarmMain() {
                     </Button>
                   </PermissionGate>
                   <PermissionGate
-                    blocked={!canDelete}
-                    reason={t('access.deleteRequiresAdmin')}
+                    blocked={!canEdit}
+                    reason={t('access.editRequiresEditor')}
                     ui="chakra"
                   >
                     <IconButton
